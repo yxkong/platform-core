@@ -1,0 +1,4 @@
+com/github/platform/core/sleuth/configuration/filter/TracingFilter.class
+com/github/platform/core/sleuth/configuration/filter/SkipHeaderEnum.class
+com/github/platform/core/sleuth/configuration/SleuthFilterConfiguration.class
+com/github/platform/core/sleuth/configuration/filter/SkipUrlSuffixEnum.class

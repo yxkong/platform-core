@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.schedule.SysJobLogMapper">
+
+	<resultMap type="com.github.platform.core.schedule.domain.common.entity.SysJobLogBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="jobId" property="jobId" />
+		<id column="beanName" property="beanName" />
+		<id column="handlerParam" property="handlerParam" />
+		<id column="startTime" property="startTime" />
+		<id column="endDate" property="endDate" />
+		<id column="executeId" property="executeId" />
+		<id column="executeNum" property="executeNum" />
+		<id column="executeTime" property="executeTime" />
+		<id column="result" property="result" />
+		<id column="tenantId" property="tenantId" />
+		<id column="status" property="status" />
+		<id column="createTime" property="createTime" />
+		<id column="createBy" property="createBy" />
+		<id column="updateTime" property="updateTime" />
+		<id column="updateBy" property="updateBy" />
+		<id column="remark" property="remark" />
+    </resultMap>
+    <sql id="BaseColumnList">
+		t.id,
+		t.job_id as jobId,
+		t.bean_name as beanName,
+		t.handler_param as handlerParam,
+		t.start_time as startTime,
+		t.end_date as endDate,
+		t.execute_id as executeId,
+		t.execute_num as executeNum,
+		t.execute_time as executeTime,
+		t.result,
+		t.tenant_id as tenantId,
+		t.status,
+		t.create_time as createTime,
+		t.create_by as createBy,
+		t.update_time as updateTime,
+		t.update_by as updateBy,
+		t.remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.schedule.domain.common.entity.SysJobLogBase">
+		insert into t_sys_job_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="jobId != null">
+				job_id,
+			</if>
+			<if test="beanName != null">
+				bean_name,
+			</if>
+			<if test="handlerParam != null">
+				handler_param,
+			</if>
+			<if test="startTime != null">
+				start_time,
+			</if>
+			<if test="endDate != null">
+				end_date,
+			</if>
+			<if test="executeId != null and executeId != ''">
+				execute_id,
+			</if>
+		    <if test="executeNum != null">
+				execute_num,
+			</if>
+			<if test="executeTime != null">
+				execute_time,
+			</if>
+			<if test="result != null">
+				result,
+			</if>
+			<if test="tenantId != null">
+				tenant_id,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createBy != null">
+				create_by,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="jobId != null">
+				#{jobId},
+			</if>
+			<if test="beanName != null">
+				#{beanName},
+			</if>
+			<if test="handlerParam != null">
+				#{handlerParam},
+			</if>
+			<if test="startTime != null">
+				#{startTime},
+			</if>
+			<if test="endDate != null">
+				#{endDate},
+			</if>
+			<if test="executeId != null and executeId != ''">
+				#{executeId},
+			</if>
+			<if test="executeNum != null">
+				#{executeNum},
+			</if>
+			<if test="executeTime != null">
+				#{executeTime},
+			</if>
+			<if test="result != null">
+				#{result},
+			</if>
+			<if test="tenantId != null">
+				#{tenantId},
+			</if>
+			<if test="status != null">
+				#{status},
+			</if>
+			<if test="createTime != null">
+				#{createTime},
+			</if>
+			<if test="createBy != null">
+				#{createBy},
+			</if>
+			<if test="remark != null">
+				#{remark},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.schedule.domain.common.entity.SysJobLogBase">
+		update t_sys_job_log
+		<set>
+			<if test="endDate != null">
+				end_date = #{endDate},
+			</if>
+			<if test="executeTime != null">
+				execute_time = #{executeTime},
+			</if>
+			<if test="result != null">
+				result = #{result},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime},
+			</if>
+			<if test="updateBy != null">
+				update_by = #{updateBy},
+			</if>
+			<if test="remark != null">
+				remark = #{remark},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_sys_job_log t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_sys_job_log t
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.schedule.domain.common.entity.SysJobLogBase">
+		select 
+		<include refid="BaseColumnList" />
+		from t_sys_job_log t
+		<where>
+			<if test="id != null">
+				and t.id = #{id}
+			</if>
+			<if test="jobId != null">
+				and t.job_id = #{jobId}
+			</if>
+			<if test="beanName != null">
+				and t.bean_name = #{beanName}
+			</if>
+			<if test="handlerParam != null">
+				and t.handler_param = #{handlerParam}
+			</if>
+			<if test="searchStartTime != null">
+				and t.start_time between #{searchStartTime} and #{searchEndTime}
+			</if>
+			<if test="endDate != null">
+				and t.end_date = #{endDate}
+			</if>
+			<if test="executeId != null">
+				and t.execute_id = #{executeId}
+			</if>
+		    <if test="executeNum != null">
+				and t.execute_num = #{executeNum}
+			</if>
+			<if test="executeTime != null">
+				and t.execute_time = #{executeTime}
+			</if>
+			<if test="result != null">
+				and t.result = #{result}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="status != null">
+				and t.status = #{status}
+			</if>
+			<if test="createBy != null">
+				and t.create_by = #{createBy}
+			</if>
+		</where>
+		order by id desc
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.schedule.domain.common.entity.SysJobLogBase">
+		select count(t.id) from t_sys_job_log t
+		<where>
+			<if test="id != null">
+				and t.id = #{id}
+			</if>
+			<if test="jobId != null">
+				and t.job_id = #{jobId}
+			</if>
+			<if test="beanName != null">
+				and t.bean_name = #{beanName}
+			</if>
+			<if test="handlerParam != null">
+				and t.handler_param = #{handlerParam}
+			</if>
+			<if test="startTime != null">
+				and t.start_time = #{startTime}
+			</if>
+			<if test="endDate != null">
+				and t.end_date = #{endDate}
+			</if>
+			<if test="executeNum != null">
+				and t.execute_num = #{executeNum}
+			</if>
+			<if test="executeTime != null">
+				and t.execute_time = #{executeTime}
+			</if>
+			<if test="result != null">
+				and t.result = #{result}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="status != null">
+				and t.status = #{status}
+			</if>
+			<if test="createTime != null">
+				and t.create_time = #{createTime}
+			</if>
+			<if test="createBy != null">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="remark != null">
+				and t.remark = #{remark}
+			</if>
+		</where>
+	</select>
+	<select id="findListSub" resultType="com.github.platform.core.schedule.domain.common.entity.SysJobLogBase">
+		select
+		<include refid="BaseColumnList" />
+		from t_sys_job_log t where  t.id != #{id}
+		<if test="beanName != null">
+			and t.bean_name = #{beanName}
+		</if>
+		<if test="startTime != null">
+			and t.start_time between #{searchStartTime} and #{searchEndTime}
+		</if>
+		<if test="executeId != null">
+			and t.execute_id = #{executeId}
+		</if>
+		order by id desc
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_job_log where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_job_log
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

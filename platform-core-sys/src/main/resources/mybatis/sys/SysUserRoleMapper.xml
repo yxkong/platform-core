@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sys.SysUserRoleMapper">
+
+	 <resultMap type="com.github.platform.core.sys.domain.common.entity.SysUserRoleBase" id="BaseResultMap">
+    	 <id column="userId" property="userId" /> 
+		  <id column="roleId" property="roleId" /> 
+		  <id column="tenantId" property="tenantId" />
+  
+    </resultMap>
+    <sql id="Base_Column_List">
+    	 t.user_id as userId ,
+ 		 t.role_id as roleId ,
+ 		 t.tenant_id as tenantId
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysUserRoleBase">
+		insert into  t_sys_user_role
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="userId != null">
+ 				user_id,
+ 			</if>
+ 			<if test="roleId != null">
+ 				role_id,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="userId != null">
+ 				#{userId},
+ 			</if>
+ 			<if test="roleId != null">
+ 				#{roleId},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+		</trim>
+	</insert>
+	<insert id="insertList"  parameterType="java.util.List">
+		insert into  t_sys_user_role
+		(user_id,role_id,tenant_id)
+		values
+		<foreach item="item"  collection="list"  separator=","  >
+		(#{item.userId},#{item.roleId},#{item.tenantId})
+		</foreach>
+	</insert>
+
+	<update id="updateById" parameterType="com.github.platform.core.sys.domain.common.entity.SysUserRoleBase">
+		update   t_sys_user_role
+ 		 <set>
+ 			 <if test="roleId != null">
+ 				role_id = #{roleId},
+ 			 </if>
+ 			 <if test="tenantId != null">
+ 				tenant_id = #{tenantId},
+ 			 </if>
+ 		 </set>
+     where user_id = #{userId}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_user_role t where t.user_id=#{userId}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_user_role t
+		<where>
+			<foreach item="id"  collection="ids" open="t.user_id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_user_role t
+ 		<where>
+ 			<if test="userId != null">
+ 				and t.user_id = #{userId}
+ 			</if>
+ 			<if test="roleId != null">
+ 				and t.role_id = #{roleId}
+ 			</if>
+ 			<if test="tenantId != null">
+ 				and t.tenant_id = #{tenantId}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysUserRoleBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_user_role t
+ 		<where>
+ 			<if test="userId != null">
+ 				and t.user_id = #{userId}
+ 			</if>
+ 			<if test="roleId != null">
+ 				and t.role_id = #{roleId}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+		</where>
+	</select>
+	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+		select  count(t.user_id) from t_sys_user_role t
+		<where> 
+ 			<if test="userId != null">
+ 				and t.user_id = #{userId}
+ 			</if>
+ 			<if test="roleId != null">
+ 				and t.role_id = #{roleId}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_user_role where user_id = #{userId}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_user_role
+			<where>
+				<foreach item="id"  collection="ids" open="user_id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

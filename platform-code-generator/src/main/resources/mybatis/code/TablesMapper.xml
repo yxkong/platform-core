@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.code.TablesMapper">
+
+	 <resultMap type="com.github.platform.core.persistence.entity.code.TablesBase" id="BaseResultMap">
+		  <id column="tableSchema" property="tableSchema" />
+		  <id column="tableName" property="tableName" />
+		  <id column="engine" property="engine" />
+		  <id column="tableComment" property="tableComment" />
+		  <id column="createTime" property="createTime" />
+	 </resultMap>
+    <sql id="Base_Column_List">
+ 		 t.table_schema as tableSchema ,
+ 		 t.table_name as tableName ,
+ 		 t.engine as engine ,
+ 		 t.table_comment as tableComment ,
+ 		 t.create_time as createTime
+    </sql>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.persistence.entity.code.TablesBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from information_schema.tables t
+		<where>
+			<if test="tableSchema != null  and tableSchema != ''">
+				and t.table_schema = #{tableSchema}
+			</if>
+			<if test="tableSchema == null">
+				and t.table_schema = (select database())
+			</if>
+			<if test="tableName != null and tableName != ''">
+     			and t.table_name  like concat('%', #{tableName}, '%')
+			</if>
+		</where>
+	</select>
+	<select id="findByTableName" resultType="com.github.platform.core.persistence.entity.code.TablesBase">
+		select
+		<include refid="Base_Column_List" />
+		from information_schema.tables  t
+		where
+		<if test="tableSchema != null  and tableSchema != ''">
+			and t.table_schema = #{tableSchema}
+		</if>
+		<if test="tableSchema == null">
+			and t.table_schema = (select database())
+		</if>
+		  and  t.table_name  like concat('%', #{tableName}, '%')
+	</select>
+</mapper>

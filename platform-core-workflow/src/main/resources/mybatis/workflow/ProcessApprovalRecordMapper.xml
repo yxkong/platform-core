@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.workflow.ProcessApprovalRecordMapper">
+
+	<resultMap type="com.github.platform.core.workflow.domain.common.entity.ProcessApprovalRecordBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="instanceName" property="instanceName" />
+		<id column="instanceNo" property="instanceNo" />
+		<id column="instanceId" property="instanceId" />
+		<id column="taskId" property="taskId" />
+		<id column="taskKey" property="taskKey" />
+		<id column="taskName" property="taskName" />
+		<id column="formInstNo" property="formInstNo" />
+		<id column="enAssignee" property="enAssignee" />
+		<id column="cnAssignee" property="cnAssignee" />
+		<id column="optType" property="optType" />
+		<id column="comment" property="comment" />
+		<id column="candidate" property="candidate" />
+		<id column="startTime" property="startTime" />
+		<id column="endTime" property="endTime" />
+		<id column="tenantId" property="tenantId" />
+		<id column="createTime" property="createTime" />
+		<id column="updateTime" property="updateTime" />
+		<id column="updateBy" property="updateBy" />
+		<id column="createBy" property="createBy" />
+		<id column="remark" property="remark" />
+	</resultMap>
+	<sql id="BaseColumnList">
+		t.id,
+		t.instance_name as instanceName,
+		t.instance_no as instanceNo,
+		t.instance_id as instanceId,
+		t.task_id as taskId,
+		t.task_key as taskKey,
+		t.task_name as taskName,
+		t.form_inst_no as formInstNo,
+		t.en_assignee as enAssignee,
+		t.cn_assignee as cnAssignee,
+		t.opt_type as optType,
+		t.comment,
+		t.candidate,
+		t.start_time as startTime,
+		t.end_time as endTime,
+		t.tenant_id as tenantId,
+		t.create_time as createTime,
+		t.update_time as updateTime,
+		t.update_by as updateBy,
+		t.create_by as createBy,
+		t.remark
+	</sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessApprovalRecordBase">
+		insert into t_flw_process_approval_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null ">
+				id,
+			</if>
+			<if test="instanceName != null  and instanceName != ''">
+				instance_name,
+			</if>
+			<if test="instanceNo != null  and instanceNo != ''">
+				instance_no,
+			</if>
+			<if test="instanceId != null  and instanceId != ''">
+				instance_id,
+			</if>
+			<if test="taskId != null  and taskId != ''">
+				task_id,
+			</if>
+			<if test="taskKey != null  and taskKey != ''">
+				task_key,
+			</if>
+			<if test="taskName != null  and taskName != ''">
+				task_name,
+			</if>
+			<if test="formInstNo != null  and formInstNo != ''">
+				form_inst_no,
+			</if>
+			<if test="enAssignee != null  and enAssignee != ''">
+				en_assignee,
+			</if>
+			<if test="cnAssignee != null  and cnAssignee != ''">
+				cn_assignee,
+			</if>
+			<if test="optType != null  and optType != ''">
+				opt_type,
+			</if>
+			<if test="comment != null  and comment != ''">
+				comment,
+			</if>
+			<if test="candidate != null  and candidate != ''">
+				candidate,
+			</if>
+			<if test="startTime != null ">
+				start_time,
+			</if>
+		    <if test="endTime != null ">
+			    end_time,
+			</if>
+			<if test="tenantId != null ">
+				tenant_id,
+			</if>
+			<if test="createTime != null ">
+				create_time,
+			</if>
+			<if test="updateTime != null ">
+				update_time,
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				update_by,
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				create_by,
+			</if>
+			<if test="remark != null  and remark != ''">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null ">
+				#{id},
+			</if>
+			<if test="instanceName != null  and instanceName != ''">
+				#{instanceName},
+			</if>
+			<if test="instanceNo != null  and instanceNo != ''">
+				#{instanceNo},
+			</if>
+			<if test="instanceId != null  and instanceId != ''">
+				#{instanceId},
+			</if>
+			<if test="taskId != null  and taskId != ''">
+				#{taskId},
+			</if>
+			<if test="taskKey != null  and taskKey != ''">
+				#{taskKey},
+			</if>
+			<if test="taskName != null  and taskName != ''">
+				#{taskName},
+			</if>
+			<if test="formInstNo != null  and formInstNo != ''">
+				#{formInstNo},
+			</if>
+			<if test="enAssignee != null  and enAssignee != ''">
+				#{enAssignee},
+			</if>
+			<if test="cnAssignee != null  and cnAssignee != ''">
+				#{cnAssignee},
+			</if>
+			<if test="optType != null  and optType != ''">
+				#{optType},
+			</if>
+			<if test="comment != null  and comment != ''">
+				#{comment},
+			</if>
+			<if test="candidate != null  and candidate != ''">
+				#{candidate},
+			</if>
+			<if test="startTime != null ">
+				#{startTime},
+			</if>
+			<if test="endTime != null ">
+				#{endTime},
+			</if>
+			<if test="tenantId != null ">
+				#{tenantId},
+			</if>
+			<if test="createTime != null ">
+				#{createTime},
+			</if>
+			<if test="updateTime != null ">
+				#{updateTime},
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				#{updateBy},
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				#{createBy},
+			</if>
+			<if test="remark != null  and remark != ''">
+				#{remark},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateById" parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessApprovalRecordBase">
+		update t_flw_process_approval_record
+		<set>
+			<if test="instanceName != null  and instanceName != ''">
+				instance_name = #{instanceName},
+			</if>
+			<if test="instanceNo != null  and instanceNo != ''">
+				instance_no = #{instanceNo},
+			</if>
+			<if test="instanceId != null  and instanceId != ''">
+				instance_id = #{instanceId},
+			</if>
+			<if test="taskId != null  and taskId != ''">
+				task_id = #{taskId},
+			</if>
+			<if test="taskKey != null  and taskKey != ''">
+				task_key = #{taskKey},
+			</if>
+			<if test="taskName != null  and taskName != ''">
+				task_name = #{taskName},
+			</if>
+			<if test="formInstNo != null  and formInstNo != ''">
+				form_inst_no = #{formInstNo},
+			</if>
+			<if test="enAssignee != null  and enAssignee != ''">
+				en_assignee = #{enAssignee},
+			</if>
+			<if test="cnAssignee != null  and cnAssignee != ''">
+				cn_assignee = #{cnAssignee},
+			</if>
+			<if test="optType != null  and optType != ''">
+				opt_type = #{optType},
+			</if>
+			<if test="comment != null  and comment != ''">
+				comment = #{comment},
+			</if>
+			<if test="candidate != null  and candidate != ''">
+				candidate = #{candidate},
+			</if>
+			<if test="startTime != null ">
+				start_time = #{startTime},
+			</if>
+			<if test="endTime != null ">
+				end_time = #{endTime},
+			</if>
+			<if test="tenantId != null ">
+				tenant_id = #{tenantId},
+			</if>
+			<if test="createTime != null ">
+				create_time = #{createTime},
+			</if>
+			<if test="updateTime != null ">
+				update_time = #{updateTime},
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				update_by = #{updateBy},
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				create_by = #{createBy},
+			</if>
+			<if test="remark != null  and remark != ''">
+				remark = #{remark},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_flw_process_approval_record t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_flw_process_approval_record t
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessApprovalRecordBase">
+		select
+		<include refid="BaseColumnList" />
+		from t_flw_process_approval_record t
+		<where>
+			<if test="id != null ">
+				and t.id = #{id}
+			</if>
+			<if test="instanceName != null  and instanceName != ''">
+				and t.instance_name like concat('%', #{instanceName}, '%')
+			</if>
+			<if test="instanceNo != null  and instanceNo != ''">
+				and t.instance_no = #{instanceNo}
+			</if>
+			<if test="instanceId != null  and instanceId != ''">
+				and t.instance_id = #{instanceId}
+			</if>
+			<if test="taskId != null  and taskId != ''">
+				and t.task_id = #{taskId}
+			</if>
+			<if test="taskKey != null  and taskKey != ''">
+				and t.task_key = #{taskKey}
+			</if>
+			<if test="taskName != null  and taskName != ''">
+				and t.task_name like concat('%', #{taskName}, '%')
+			</if>
+			<if test="formInstNo != null  and formInstNo != ''">
+				and t.form_inst_no = #{formInstNo}
+			</if>
+			<if test="enAssignee != null  and enAssignee != ''">
+				and t.en_assignee = #{enAssignee}
+			</if>
+			<if test="cnAssignee != null  and cnAssignee != ''">
+				and t.cn_assignee = #{cnAssignee}
+			</if>
+			<if test="optType != null  and optType != ''">
+				and t.opt_type = #{optType}
+			</if>
+			<if test="comment != null  and comment != ''">
+				and t.comment = #{comment}
+			</if>
+			<if test="candidate != null  and candidate != ''">
+				and t.candidate = #{candidate}
+			</if>
+			<if test="startTime != null ">
+				and t.start_time = #{startTime}
+			</if>
+			<if test="tenantId != null ">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessApprovalRecordBase">
+		select count(t.id) from t_flw_process_approval_record t
+		<where>
+			<if test="id != null ">
+				and t.id = #{id}
+			</if>
+			<if test="instanceName != null  and instanceName != ''">
+				and t.instance_name = #{instanceName}
+			</if>
+			<if test="instanceNo != null  and instanceNo != ''">
+				and t.instance_no = #{instanceNo}
+			</if>
+			<if test="instanceId != null  and instanceId != ''">
+				and t.instance_id = #{instanceId}
+			</if>
+			<if test="taskId != null  and taskId != ''">
+				and t.task_id = #{taskId}
+			</if>
+			<if test="taskKey != null  and taskKey != ''">
+				and t.task_key = #{taskKey}
+			</if>
+			<if test="taskName != null  and taskName != ''">
+				and t.task_name = #{taskName}
+			</if>
+			<if test="formInstNo != null  and formInstNo != ''">
+				and t.form_inst_no = #{formInstNo}
+			</if>
+			<if test="enAssignee != null  and enAssignee != ''">
+				and t.en_assignee = #{enAssignee}
+			</if>
+			<if test="cnAssignee != null  and cnAssignee != ''">
+				and t.cn_assignee = #{cnAssignee}
+			</if>
+			<if test="optType != null  and optType != ''">
+				and t.opt_type = #{optType}
+			</if>
+			<if test="comment != null  and comment != ''">
+				and t.comment = #{comment}
+			</if>
+			<if test="candidate != null  and candidate != ''">
+				and t.candidate = #{candidate}
+			</if>
+			<if test="startTime != null ">
+				and t.start_time = #{startTime}
+			</if>
+			<if test="tenantId != null ">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="createTime != null ">
+				and t.create_time = #{createTime}
+			</if>
+			<if test="updateTime != null ">
+				and t.update_time = #{updateTime}
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="remark != null  and remark != ''">
+				and t.remark = #{remark}
+			</if>
+		</where>
+	</select>
+	<select id="findByUserInstanceNoAndTaskId"
+	        resultType="com.github.platform.core.workflow.domain.dto.ProcessApprovalRecordDto">
+		select
+		<include refid="BaseColumnList" />
+		from t_flw_process_approval_record t
+		where t.en_assignee = #{assignee} and t.instance_no = #{instanceNo} and t.task_id = #{taskId}
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_flw_process_approval_record where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_flw_process_approval_record
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

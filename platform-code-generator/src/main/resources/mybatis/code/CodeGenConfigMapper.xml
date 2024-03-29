@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.code.CodeGenConfigMapper">
+
+	 <resultMap type="com.github.platform.core.code.domain.common.entity.CodeGenConfigBase" id="BaseResultMap">
+    	 <id column="id" property="id" /> 
+		  <id column="tableName" property="tableName" /> 
+		  <id column="tableComment" property="tableComment" />
+		  <id column="author" property="author" />
+		  <id column="cover" property="cover" /> 
+		  <id column="urlPrefix" property="urlPrefix" />
+		  <id column="entityName" property="entityName" />
+		  <id column="moduleName" property="moduleName" />
+		  <id column="packageName" property="packageName" />
+		  <id column="path" property="path" /> 
+		  <id column="apiPath" property="apiPath" /> 
+		  <id column="prefix" property="prefix" /> 
+		  <id column="apiAlias" property="apiAlias" /> 
+		  <id column="tenantId" property="tenantId" />
+		  <id column="status" property="status" /> 
+		  <id column="createBy" property="createBy" /> 
+		  <id column="createTime" property="createTime" /> 
+		  <id column="updateBy" property="updateBy" /> 
+		  <id column="updateTime" property="updateTime" /> 
+		  <id column="remark" property="remark" /> 
+  
+    </resultMap>
+    <sql id="Base_Column_List">
+    	 t.id as id ,
+ 		 t.table_name as tableName ,
+ 		 t.table_comment as tableComment ,
+ 		 t.author as author ,
+ 		 t.cover as cover ,
+ 		 t.url_prefix as urlPrefix ,
+ 		 t.entity_name as entityName ,
+ 		 t.module_name as moduleName ,
+ 		 t.package_name as packageName ,
+ 		 t.path as path ,
+ 		 t.api_path as apiPath ,
+ 		 t.prefix as prefix ,
+ 		 t.api_alias as apiAlias ,
+ 		 t.tenant_id as tenantId ,
+ 		 t.status as status ,
+ 		 t.create_by as createBy ,
+ 		 t.create_time as createTime ,
+ 		 t.update_by as updateBy ,
+ 		 t.update_time as updateTime ,
+ 		 t.remark as remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.code.domain.common.entity.CodeGenConfigBase">
+		insert into  t_code_gen_config
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="tableName != null">
+ 				table_name,
+ 			</if>
+			<if test="tableComment != null">
+				table_comment,
+ 			</if>
+ 			<if test="author != null">
+ 				author,
+ 			</if>
+ 			<if test="cover != null">
+ 				cover,
+ 			</if>
+			<if test="urlPrefix != null">
+				url_prefix,
+			</if>
+			<if test="entityName != null">
+				entity_name,
+			</if>
+ 			<if test="moduleName != null">
+ 				module_name,
+ 			</if>
+ 			<if test="packageName != null">
+				package_name,
+ 			</if>
+ 			<if test="path != null">
+ 				path,
+ 			</if>
+ 			<if test="apiPath != null">
+ 				api_path,
+ 			</if>
+ 			<if test="prefix != null">
+ 				prefix,
+ 			</if>
+ 			<if test="apiAlias != null">
+ 				api_alias,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="status != null">
+ 				status,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by,
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="tableName != null">
+ 				#{tableName},
+ 			</if>
+			<if test="tableComment != null">
+ 				#{tableComment},
+ 			</if>
+ 			<if test="author != null">
+ 				#{author},
+ 			</if>
+ 			<if test="cover != null">
+ 				#{cover},
+ 			</if>
+			<if test="urlPrefix != null">
+ 				#{urlPrefix},
+ 			</if>
+			<if test="entityName != null">
+ 				#{entityName},
+ 			</if>
+ 			<if test="moduleName != null">
+ 				#{moduleName},
+ 			</if>
+ 			<if test="packageName != null">
+ 				#{packageName},
+ 			</if>
+ 			<if test="path != null">
+ 				#{path},
+ 			</if>
+ 			<if test="apiPath != null">
+ 				#{apiPath},
+ 			</if>
+ 			<if test="prefix != null">
+ 				#{prefix},
+ 			</if>
+ 			<if test="apiAlias != null">
+ 				#{apiAlias},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="status != null">
+ 				#{status},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				#{updateBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				#{updateTime},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.code.domain.common.entity.CodeGenConfigBase">
+		update   t_code_gen_config
+ 		 <set>
+ 			 <if test="tableName != null">
+ 				table_name = #{tableName},
+ 			 </if>
+			 <if test="tableComment != null">
+				table_comment= #{tableComment},
+			 </if>
+ 			 <if test="author != null">
+ 				author = #{author},
+ 			 </if>
+ 			 <if test="cover != null">
+ 				 cover = #{cover},
+ 			 </if>
+			 <if test="urlPrefix != null">
+				 url_prefix = #{urlPrefix},
+ 			 </if>
+			 <if test="entityName != null">
+				 entity_name = #{entityName},
+ 			 </if>
+ 			 <if test="moduleName != null">
+ 				module_name = #{moduleName},
+ 			 </if>
+ 			 <if test="packageName != null">
+ 				package_name = #{packageName},
+ 			 </if>
+ 			 <if test="path != null">
+ 				path = #{path},
+ 			 </if>
+ 			 <if test="apiPath != null">
+ 				api_path = #{apiPath},
+ 			 </if>
+ 			 <if test="prefix != null">
+ 				prefix = #{prefix},
+ 			 </if>
+ 			 <if test="apiAlias != null">
+ 				api_alias = #{apiAlias},
+ 			 </if>
+			 <if test="tenantId != null">
+				 tenant_id = #{tenantId},
+			 </if>
+ 			 <if test="status != null">
+ 				status = #{status},
+ 			 </if>
+ 			 <if test="createBy != null">
+ 				create_by = #{createBy},
+ 			 </if>
+ 			 <if test="createTime != null">
+ 				create_time = #{createTime},
+ 			 </if>
+ 			 <if test="updateBy != null">
+ 				update_by = #{updateBy},
+ 			 </if>
+ 			 <if test="updateTime != null">
+ 				update_time = #{updateTime},
+ 			 </if>
+ 			 <if test="remark != null">
+ 				remark = #{remark},
+ 			 </if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_code_gen_config t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_code_gen_config
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_code_gen_config t
+ 		<where>
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="tableName != null">
+ 				and t.table_name like concat('%', #{tableName}, '%')
+ 			</if>
+			<if test="tableComment != null">
+				t.table_comment= #{tableComment},
+			</if>
+ 			<if test="author != null">
+ 				and t.author = #{author}
+ 			</if>
+ 			<if test="cover != null">
+ 				and t.cover = #{cover}
+ 			</if>
+			<if test="urlPrefix != null">
+				and t.url_prefix = #{urlPrefix},
+			</if>
+			<if test="entityName != null">
+				and t.entity_name = #{entityName},
+			</if>
+ 			<if test="moduleName != null">
+ 				and t.module_name = #{moduleName}
+ 			</if>
+ 			<if test="packageName != null">
+ 				and t.package_name = #{packageName}
+ 			</if>
+ 			<if test="path != null">
+ 				and t.path = #{path}
+ 			</if>
+ 			<if test="apiPath != null">
+ 				and t.api_path = #{apiPath}
+ 			</if>
+ 			<if test="prefix != null">
+ 				and t.prefix = #{prefix}
+ 			</if>
+ 			<if test="apiAlias != null">
+ 				and t.api_alias = #{apiAlias}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.code.domain.common.entity.CodeGenConfigBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_code_gen_config t
+ 		<where>
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="tableName != null">
+ 				and t.table_name  like concat('%', #{tableName}, '%')
+ 			</if>
+			<if test="tableComment != null">
+				t.table_comment= #{tableComment},
+			</if>
+ 			<if test="author != null">
+ 				and t.author = #{author}
+ 			</if>
+ 			<if test="cover != null">
+ 				and t.cover = #{cover}
+ 			</if>
+			<if test="urlPrefix != null">
+				and t.url_prefix = #{urlPrefix},
+			</if>
+			<if test="entityName != null">
+				and t.entity_name = #{entityName},
+			</if>
+ 			<if test="moduleName != null">
+ 				and t.module_name = #{moduleName}
+ 			</if>
+ 			<if test="packageName != null">
+ 				and t.package_name = #{packageName}
+ 			</if>
+ 			<if test="path != null">
+ 				and t.path = #{path}
+ 			</if>
+ 			<if test="apiPath != null">
+ 				and t.api_path = #{apiPath}
+ 			</if>
+ 			<if test="prefix != null">
+ 				and t.prefix = #{prefix}
+ 			</if>
+ 			<if test="apiAlias != null">
+ 				and t.api_alias = #{apiAlias}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+		select  count(t.id) from t_code_gen_config t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="tableName != null">
+ 				and t.table_name = #{tableName}
+ 			</if>
+			<if test="tableComment != null">
+				t.table_comment= #{tableComment},
+			</if>
+ 			<if test="author != null">
+ 				and t.author = #{author}
+ 			</if>
+ 			<if test="cover != null">
+ 				and t.cover = #{cover}
+ 			</if>
+			<if test="urlPrefix != null">
+				and t.url_prefix = #{urlPrefix},
+			</if>
+			<if test="entityName != null">
+				and t.entity_name = #{entityName},
+			</if>
+ 			<if test="moduleName != null">
+ 				and t.module_name = #{moduleName}
+ 			</if>
+			<if test="packageName != null">
+				and t.package_name = #{packageName}
+			</if>
+ 			<if test="path != null">
+ 				and t.path = #{path}
+ 			</if>
+ 			<if test="apiPath != null">
+ 				and t.api_path = #{apiPath}
+ 			</if>
+ 			<if test="prefix != null">
+ 				and t.prefix = #{prefix}
+ 			</if>
+ 			<if test="apiAlias != null">
+ 				and t.api_alias = #{apiAlias}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Integer"  parameterType="com.github.platform.core.code.domain.common.entity.CodeGenConfigBase">
+		select  count(t.id) from t_code_gen_config t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="tableName != null">
+ 				and t.table_name = #{tableName}
+ 			</if>
+			<if test="tableComment != null">
+				t.table_comment= #{tableComment},
+			</if>
+ 			<if test="author != null">
+ 				and t.author = #{author}
+ 			</if>
+ 			<if test="cover != null">
+ 				and t.cover = #{cover}
+ 			</if>
+			<if test="urlPrefix != null">
+				and t.url_prefix = #{urlPrefix},
+			</if>
+			<if test="entityName != null">
+				and t.entity_name = #{entityName},
+			</if>
+ 			<if test="moduleName != null">
+ 				and t.module_name = #{moduleName}
+ 			</if>
+			<if test="packageName != null">
+				and t.package_name = #{packageName}
+			</if>
+ 			<if test="path != null">
+ 				and t.path = #{path}
+ 			</if>
+ 			<if test="apiPath != null">
+ 				and t.api_path = #{apiPath}
+ 			</if>
+ 			<if test="prefix != null">
+ 				and t.prefix = #{prefix}
+ 			</if>
+ 			<if test="apiAlias != null">
+ 				and t.api_alias = #{apiAlias}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_code_gen_config where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_code_gen_config
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+	<delete id="deleteByTableName">
+		delete from t_code_gen_config where table_name = #{tableName}
+	</delete>
+</mapper>

@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+  com.github.platform.core.workflow.infra.configuration.environment.FlowableDisableEnvironmentPostProcessor

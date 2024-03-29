@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sys.SysDictMapper">
+
+	 <resultMap type="com.github.platform.core.sys.domain.common.entity.SysDictBase" id="BaseResultMap">
+    	 <id column="id" property="id" /> 
+		  <id column="key" property="key" /> 
+		  <id column="label" property="label" />
+		  <id column="dictType" property="dictType" /> 
+		  <id column="cssClass" property="cssClass" />
+		  <id column="listClass" property="listClass" />
+		  <id column="sort" property="sort" />
+		  <id column="tenantId" property="tenantId" />
+		  <id column="status" property="status" /> 
+		  <id column="createBy" property="createBy" />
+		  <id column="createTime" property="createTime" /> 
+		  <id column="updateBy" property="updateBy" /> 
+		  <id column="updateTime" property="updateTime" /> 
+		  <id column="remark" property="remark" /> 
+  
+    </resultMap>
+	<resultMap type="com.github.platform.core.sys.domain.dto.SysDictDto" id="dictDtoMap">
+		<id column="id" property="id" />
+		<id column="key" property="key" />
+		<id column="label" property="label" />
+		<id column="dictType" property="dictType" />
+		<id column="cssClass" property="cssClass" />
+		<id column="listClass" property="listClass" />
+		<id column="charType" property="charType" />
+		<id column="dictTypeName" property="dictTypeName" />
+		<id column="sort" property="sort" />
+		<id column="tenantId" property="tenantId" />
+		<id column="status" property="status" />
+		<id column="createBy" property="createBy" />
+		<id column="createTime" property="createTime" />
+		<id column="updateBy" property="updateBy" />
+		<id column="updateTime" property="updateTime" />
+		<id column="remark" property="remark" />
+
+	</resultMap>
+    <sql id="Base_Column_List">
+    	 t.id as id ,
+ 		 t.`key` as `key` ,
+ 		 t.label as `label` ,
+ 		 t.dict_type as dictType ,
+ 		 t.css_class as cssClass ,
+ 		 t.list_class as listClass ,
+ 		 t.sort as sort ,
+ 		 t.tenant_id as tenantId ,
+ 		 t.status as status ,
+ 		 t.create_by as createBy ,
+ 		 t.create_time as createTime ,
+ 		 t.update_by as updateBy ,
+ 		 t.update_time as updateTime ,
+ 		 t.remark as remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysDictBase">
+		insert into  t_sys_dict
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="key != null">
+				`key`,
+ 			</if>
+ 			<if test="label != null">
+				label,
+ 			</if>
+ 			<if test="dictType != null">
+ 				dict_type,
+ 			</if>
+			<if test="cssClass != null">
+				css_class,
+			</if>
+			<if test="listClass != null">
+				list_class,
+			</if>
+ 			<if test="sort != null">
+ 				sort,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="status != null">
+ 				status,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by,
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="key != null">
+ 				#{key},
+ 			</if>
+ 			<if test="label != null">
+ 				#{label},
+ 			</if>
+ 			<if test="dictType != null">
+ 				#{dictType},
+ 			</if>
+			<if test="cssClass != null">
+				#{cssClass},
+			</if>
+			<if test="listClass != null">
+				#{listClass},
+			</if>
+ 			<if test="sort != null">
+ 				#{sort},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="status != null">
+ 				#{status},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				#{updateBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				#{updateTime},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sys.domain.common.entity.SysDictBase">
+		update   t_sys_dict
+ 		 <set>
+ 			 <if test="label != null and label !=''">
+				 label = #{label},
+ 			 </if>
+			 <if test="cssClass != null and cssClass != ''">
+				css_class = #{cssClass},
+			 </if>
+			 <if test="listClass != null and listClass !=''">
+				list_class = #{listClass},
+			 </if>
+ 			 <if test="sort != null">
+ 				sort = #{sort},
+ 			 </if>
+			 <if test="tenantId != null">
+				 tenant_id = #{tenantId},
+			 </if>
+ 			 <if test="status != null">
+ 				status = #{status},
+ 			 </if>
+ 			 <if test="createBy != null">
+ 				create_by = #{createBy},
+ 			 </if>
+ 			 <if test="createTime != null">
+ 				create_time = #{createTime},
+ 			 </if>
+ 			 <if test="updateBy != null">
+ 				update_by = #{updateBy},
+ 			 </if>
+ 			 <if test="updateTime != null">
+ 				update_time = #{updateTime},
+ 			 </if>
+ 			 <if test="remark != null">
+ 				remark = #{remark},
+ 			 </if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_dict t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_dict
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+ 		<include refid="Base_Column_List" />
+		from t_sys_dict t
+        <where>
+			<if test="key != null">
+				and t.`key` = #{key}
+			</if>
+			<if test="label != null">
+				and t.label like concat('%', #{label}, '%')
+			</if>
+			<if test="dictType != null">
+				and t.dict_type = #{dictType}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="status != null">
+				and t.status = #{status}
+			</if>
+			<if test="searchStartTime != null ">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null ">
+				and t.create_time <![CDATA[<=]]>  #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysDictBase">
+		select
+		<include refid="Base_Column_List" />
+		from t_sys_dict t
+		<where>
+			<if test="key != null">
+				and t.`key` = #{key}
+			</if>
+			<if test="label != null">
+				and t.label like concat('%', #{label}, '%')
+			</if>
+			<if test="dictType != null">
+				and t.dict_type = #{dictType}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="status != null">
+				and t.status = #{status}
+			</if>
+			<if test="searchStartTime != null ">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null ">
+				and t.create_time <![CDATA[<=]]>  #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findDtoListBy" resultMap="dictDtoMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysDictBase">
+		select 
+ 		<include refid="Base_Column_List" />,dt.name as dictTypeName,dt.char_type as charType
+		from t_sys_dict t ,t_sys_dict_type dt
+		where t.dict_type = dt.type
+		<if test="key != null">
+			and t.`key` = #{key}
+		</if>
+		<if test="label != null">
+			and t.label like concat('%', #{label}, '%')
+		</if>
+		<if test="dictType != null">
+			and t.dict_type = #{dictType}
+		</if>
+		<if test="sort != null">
+			and t.sort = #{sort}
+		</if>
+		<if test="tenantId != null">
+			and t.tenant_id = #{tenantId}
+		</if>
+		<if test="status != null">
+			and t.status = #{status}
+		</if>
+		<if test="createBy != null">
+			and t.create_by = #{createBy}
+		</if>
+		<if test="createTime != null">
+			and t.create_time = #{createTime}
+		</if>
+		<if test="updateBy != null">
+			and t.update_by = #{updateBy}
+		</if>
+		<if test="updateTime != null">
+			and t.update_time = #{updateTime}
+		</if>
+		<if test="searchStartTime != null ">
+			and t.create_time <![CDATA[>=]]> #{searchStartTime}
+		</if>
+		<if test="searchEndTime != null ">
+			and t.create_time <![CDATA[<=]]>  #{searchEndTime}
+		</if>
+		order by t.dict_type,t.sort
+
+	</select>
+	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+		select  count(t.id) from t_sys_dict t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="key != null">
+ 				and t.`key` = #{key}
+ 			</if>
+ 			<if test="label != null">
+ 				and t.label = #{label}
+ 			</if>
+ 			<if test="dictType != null">
+ 				and t.dict_type = #{dictType}
+ 			</if>
+ 			<if test="sort != null">
+ 				and t.sort = #{sort}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Integer" parameterType="com.github.platform.core.sys.domain.common.entity.SysDictBase">
+		select  count(t.id) from t_sys_dict t
+		<where>
+			<if test="key != null">
+				and t.`key` = #{key}
+			</if>
+			<if test="label != null">
+				and t.label = #{label}
+			</if>
+			<if test="dictType != null">
+				and t.dict_type = #{dictType}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="status != null">
+				and t.status = #{status}
+			</if>
+		</where>
+	</select>
+	<select id="isExistDict" resultType="java.lang.Integer">
+		select count(1) from  t_sys_dict t where t.dict_type = #{dictType}
+		<if test="key != null and label != null">
+			and (t.key = #{key} or t.label = #{label})
+		</if>
+		<if test="key == null and label != null">
+			and  t.label = #{label}
+		</if>
+		<if test="id != null">
+			and t.id != #{id}
+		</if>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_dict where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_dict
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+
+</mapper>

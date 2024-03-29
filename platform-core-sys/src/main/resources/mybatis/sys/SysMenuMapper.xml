@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sys.SysMenuMapper">
+
+	 <resultMap type="com.github.platform.core.sys.domain.common.entity.SysMenuBase" id="BaseResultMap">
+    	 <id column="id" property="id" /> 
+		  <id column="name" property="name" /> 
+		  <id column="parentId" property="parentId" /> 
+		  <id column="sort" property="sort" /> 
+		  <id column="path" property="path" /> 
+		  <id column="component" property="component" /> 
+		  <id column="query" property="query" /> 
+		  <id column="frame" property="frame" /> 
+		  <id column="cache" property="cache" /> 
+		  <id column="type" property="type" /> 
+		  <id column="visible" property="visible" /> 
+		  <id column="giveTenant" property="giveTenant" />
+		  <id column="perms" property="perms" />
+		  <id column="icon" property="icon" /> 
+		  <id column="tenantId" property="tenantId" />
+		  <id column="status" property="status" /> 
+		  <id column="createBy" property="createBy" />
+		  <id column="createTime" property="createTime" /> 
+		  <id column="updateBy" property="updateBy" /> 
+		  <id column="updateTime" property="updateTime" /> 
+		  <id column="remark" property="remark" /> 
+  
+    </resultMap>
+    <sql id="Base_Column_List">
+    	 t.id as id ,
+ 		 t.name as name ,
+ 		 t.parent_id as parentId ,
+ 		 t.sort as sort ,
+ 		 t.path as path ,
+ 		 t.component as component ,
+ 		 t.query as query ,
+ 		 t.frame as frame ,
+ 		 t.cache as cache ,
+ 		 t.type as type ,
+ 		 t.visible as visible ,
+ 		 t.give_tenant as giveTenant ,
+ 		 t.perms as perms ,
+ 		 t.icon as icon ,
+ 		 t.tenant_id as tenantId ,
+ 		 t.status as status ,
+ 		 t.create_by as createBy ,
+ 		 t.create_time as createTime ,
+ 		 t.update_by as updateBy ,
+ 		 t.update_time as updateTime ,
+ 		 t.remark as remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysMenuBase">
+		insert into  t_sys_menu
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="name != null">
+ 				name,
+ 			</if>
+ 			<if test="parentId != null">
+ 				parent_id,
+ 			</if>
+ 			<if test="sort != null">
+ 				sort,
+ 			</if>
+ 			<if test="path != null">
+ 				path,
+ 			</if>
+ 			<if test="component != null">
+ 				component,
+ 			</if>
+ 			<if test="query != null">
+ 				query,
+ 			</if>
+ 			<if test="frame != null">
+ 				frame,
+ 			</if>
+ 			<if test="cache != null">
+ 				cache,
+ 			</if>
+ 			<if test="type != null">
+ 				type,
+ 			</if>
+ 			<if test="visible != null">
+ 				visible,
+ 			</if>
+			<if test="giveTenant != null">
+				give_tenant,
+ 			</if>
+ 			<if test="perms != null">
+ 				perms,
+ 			</if>
+ 			<if test="icon != null">
+ 				icon,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="status != null">
+ 				status,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by,
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="name != null">
+ 				#{name},
+ 			</if>
+ 			<if test="parentId != null">
+ 				#{parentId},
+ 			</if>
+ 			<if test="sort != null">
+ 				#{sort},
+ 			</if>
+ 			<if test="path != null">
+ 				#{path},
+ 			</if>
+ 			<if test="component != null">
+ 				#{component},
+ 			</if>
+ 			<if test="query != null">
+ 				#{query},
+ 			</if>
+ 			<if test="frame != null">
+ 				#{frame},
+ 			</if>
+ 			<if test="cache != null">
+ 				#{cache},
+ 			</if>
+ 			<if test="type != null">
+ 				#{type},
+ 			</if>
+ 			<if test="visible != null">
+ 				#{visible},
+ 			</if>
+			<if test="giveTenant != null">
+ 				#{giveTenant},
+ 			</if>
+ 			<if test="perms != null">
+ 				#{perms},
+ 			</if>
+ 			<if test="icon != null">
+ 				#{icon},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="status != null">
+ 				#{status},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				#{updateBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				#{updateTime},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sys.domain.common.entity.SysMenuBase">
+		update   t_sys_menu
+ 		 <set>
+ 			 <if test="name != null">
+ 				name = #{name},
+ 			 </if>
+ 			 <if test="parentId != null">
+ 				parent_id = #{parentId},
+ 			 </if>
+ 			 <if test="sort != null">
+ 				sort = #{sort},
+ 			 </if>
+ 			 <if test="path != null and path != ''">
+ 				path = #{path},
+ 			 </if>
+ 			 <if test="component != null and component != ''">
+ 				component = #{component},
+ 			 </if>
+ 			 <if test="query != null">
+ 				query = #{query},
+ 			 </if>
+ 			 <if test="frame != null">
+ 				frame = #{frame},
+ 			 </if>
+ 			 <if test="cache != null">
+ 				cache = #{cache},
+ 			 </if>
+ 			 <if test="type != null">
+ 				type = #{type},
+ 			 </if>
+ 			 <if test="visible != null">
+ 				visible = #{visible},
+ 			 </if>
+			 <if test="giveTenant != null">
+				 give_tenant = #{giveTenant},
+ 			 </if>
+ 			 <if test="perms != null">
+ 				perms = #{perms},
+ 			 </if>
+ 			 <if test="icon != null">
+ 				icon = #{icon},
+ 			 </if>
+			 <if test="tenantId != null">
+				 tenant_id = #{tenantId},
+			 </if>
+ 			 <if test="status != null">
+ 				status = #{status},
+ 			 </if>
+ 			 <if test="createBy != null">
+ 				create_by = #{createBy},
+ 			 </if>
+ 			 <if test="createTime != null">
+ 				create_time = #{createTime},
+ 			 </if>
+ 			 <if test="updateBy != null">
+ 				update_by = #{updateBy},
+ 			 </if>
+ 			 <if test="updateTime != null">
+ 				update_time = #{updateTime},
+ 			 </if>
+ 			 <if test="remark != null">
+ 				remark = #{remark},
+ 			 </if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_menu t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_menu
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_menu t
+ 		<where>
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="name != null">
+ 				and t.name like concat('%', #{name}, '%')
+ 			</if>
+ 			<if test="parentId != null">
+ 				and t.parent_id = #{parentId}
+ 			</if>
+ 			<if test="sort != null">
+ 				and t.sort = #{sort}
+ 			</if>
+ 			<if test="path != null">
+ 				and t.path = #{path}
+ 			</if>
+ 			<if test="component != null">
+ 				and t.component = #{component}
+ 			</if>
+ 			<if test="query != null">
+ 				and t.query = #{query}
+ 			</if>
+ 			<if test="frame != null">
+ 				and t.frame = #{frame}
+ 			</if>
+ 			<if test="cache != null">
+ 				and t.cache = #{cache}
+ 			</if>
+ 			<if test="type != null">
+ 				and t.type = #{type}
+ 			</if>
+ 			<if test="visible != null">
+ 				and t.visible = #{visible}
+ 			</if>
+			<if test="giveTenant != null">
+ 				and t.give_tenant = #{giveTenant}
+ 			</if>
+ 			<if test="perms != null">
+ 				and t.perms = #{perms}
+ 			</if>
+ 			<if test="icon != null">
+ 				and t.icon = #{icon}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+		order by t.parent_id, t.sort;
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysMenuBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_menu t
+ 		<where>
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="name != null">
+ 				and t.name like concat('%', #{name}, '%')
+ 			</if>
+ 			<if test="parentId != null">
+ 				and t.parent_id = #{parentId}
+ 			</if>
+ 			<if test="sort != null">
+ 				and t.sort = #{sort}
+ 			</if>
+ 			<if test="path != null">
+ 				and t.path = #{path}
+ 			</if>
+ 			<if test="component != null">
+ 				and t.component = #{component}
+ 			</if>
+ 			<if test="query != null">
+ 				and t.query = #{query}
+ 			</if>
+ 			<if test="frame != null">
+ 				and t.frame = #{frame}
+ 			</if>
+ 			<if test="cache != null">
+ 				and t.cache = #{cache}
+ 			</if>
+ 			<if test="type != null">
+ 				and t.type = #{type}
+ 			</if>
+ 			<if test="visible != null">
+ 				and t.visible = #{visible}
+ 			</if>
+			<if test="giveTenant != null">
+ 				and t.give_tenant = #{giveTenant}
+ 			</if>
+ 			<if test="perms != null">
+ 				and t.perms = #{perms}
+ 			</if>
+ 			<if test="icon != null">
+ 				and t.icon = #{icon}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+		order by t.parent_id, t.sort;
+	</select>
+	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+		select  count(t.id) from t_sys_menu t
+		<where>
+ 			<if test="name != null">
+ 				and t.name = #{name}
+ 			</if>
+ 			<if test="parentId != null">
+ 				and t.parent_id = #{parentId}
+ 			</if>
+ 			<if test="frame != null">
+ 				and t.frame = #{frame}
+ 			</if>
+ 			<if test="cache != null">
+ 				and t.cache = #{cache}
+ 			</if>
+ 			<if test="type != null">
+ 				and t.type = #{type}
+ 			</if>
+ 			<if test="visible != null">
+ 				and t.visible = #{visible}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Integer" parameterType="com.github.platform.core.sys.domain.common.entity.SysMenuBase">
+		select  count(t.id) from t_sys_menu t
+		<where>
+			<if test="name != null">
+				and t.name = #{name}
+			</if>
+			<if test="parentId != null">
+				and t.parent_id = #{parentId}
+			</if>
+			<if test="path != null">
+				and t.path = #{path}
+			</if>
+			<if test="frame != null">
+				and t.frame = #{frame}
+			</if>
+			<if test="cache != null">
+				and t.cache = #{cache}
+			</if>
+			<if test="type != null">
+				and t.type = #{type}
+			</if>
+			<if test="visible != null">
+				and t.visible = #{visible}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="status != null">
+				and t.status = #{status}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_menu where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_menu
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+	<select id="findMenuAll" resultMap="BaseResultMap" >
+		select
+		<include refid="Base_Column_List" />
+		from t_sys_menu t where t.type in ('A','D', 'M') and t.status = 1
+		order by t.parent_id, t.sort
+	</select>
+	<select id="findMenuByUserId" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysMenuBase">
+		select
+		<include refid="Base_Column_List" />
+		from t_sys_menu t where t.id in(
+		  select rm.menu_id from t_sys_role_menu rm where rm.role_id in(
+			select ur.role_id from t_sys_user_role ur where  ur.user_id = #{userId}
+		  )
+		)
+		<if test="menu != null and menu.name != null  and menu.name != ''">
+			and t.name like concat('%', #{menu.name}, '%')
+		</if>
+		<if test="flag != null and flag != ''">
+			and t.type in ('A','D', 'M')
+		</if>
+		<if test=" menu != null and menu.visible != null ">
+			and t.visible = #{menu.visible}
+		</if>
+		<if test="menu != null and menu.status != null ">
+			and t.status = #{menu.status}
+		</if>
+		order by t.parent_id, t.sort;
+	</select>
+	<select id="findMenuByRoleIds" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysMenuBase">
+		select
+		<include refid="Base_Column_List" />
+		from t_sys_menu t where t.id in(
+		  select rm.menu_id from t_sys_role_menu rm where
+			<foreach item="roleId"  collection="roleIds" open="rm.role_id  in (" separator="," close=")" >
+				#{roleId}
+			</foreach>
+		)
+		<if test="menu != null and menu.name != null  and menu.name != ''">
+			and t.name like concat('%', #{menu.name}, '%')
+		</if>
+		<if test=" menu != null and menu.visible != null ">
+			and t.visible = #{menu.visible}
+		</if>
+		<if test="menu != null and menu.status != null ">
+			and t.status = #{menu.status}
+		</if>
+		order by t.parent_id, t.sort;
+	</select>
+	<select id="findAllMenuIds" resultType="Long" >
+		select t.id
+		from t_sys_menu t
+		where t.status = 1 and t.give_tenant = #{giveTenant}
+		order by t.parent_id, t.sort
+	</select>
+
+</mapper>

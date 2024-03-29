@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<!-- Log4j 2.DSConfig 配置文件。每60秒自动检查和应用配置文件的更新； -->
+<Configuration status="warn" monitorInterval="60" strict="true">
+    <Properties>
+        <Property name="PROJECT_NAME">wkQuota</Property>
+        <Property name="LOG_HOME">/app/logs/${PROJECT_NAME}</Property>
+        <Property name="COMMON_LEVEL">warn</Property>
+        <Property name="ERROR_LEVEL">error</Property>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss,SSS} [%C %M %L] %t [%p] - %msg%n
+        </Property>
+        <Property name="kafka.bootstrap.servers">data11.bigdata.9f.cn:9092,data12.bigdata.9f.cn:9092,data13.bigdata.9f.cn:9092,data14.bigdata.9f.cn:9092,data15.bigdata.9f.cn:9092</Property>
+        <Property name="biz.kafka.bootstrap.servers">data06.bigdata.9f.cn:9092,data07.bigdata.9f.cn:9092,data08.bigdata.9f.cn:9092,data09.bigdata.9f.cn:9092,data10.bigdata.9f.cn:9092</Property>
+    </Properties>
+    <Appenders>
+        <!-- 输出到控制台
+        <Console name="console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout charset="utf-8" pattern="${LOG_PATTERN}" />
+        </Console>-->
+        <RollingFile name="debugAppender" fileName="${LOG_HOME}/debug.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/$${date:MM-dd}/debug-%d{MM-dd}.%i.log">
+            <filters>
+                <ThresholdFilter level="error" onMatch="DENY"
+                                 onMismatch="NEUTRAL" />
+                <ThresholdFilter level="info" onMatch="DENY"
+                                 onMismatch="NEUTRAL" />
+                <ThresholdFilter level="warn" onMatch="DENY"
+                                 onMismatch="NEUTRAL" />
+                <ThresholdFilter level="debug" onMatch="ACCEPT"
+                                 onMismatch="DENY" />
+            </filters>
+            <PatternLayout charset="UTF-8">
+                <pattern>${LOG_PATTERN}</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy />
+                <!-- 封存文件的大小 -->
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <!-- 封存文件的序号的最大值。（超过最大值时，将有文件被删除）默认7 -->
+            <DefaultRolloverStrategy max="500">
+                <Delete basePath="${LOG_HOME}" maxDepth="500">
+                    <IfFileName glob="*/*/debug-*.log">
+                        <IfLastModified age="15d" />
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <RollingFile name="infoAppender" fileName="${LOG_HOME}/info.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/$${date:MM-dd}/info-%d{MM-dd}.%i.log">
+            <filters>
+                <ThresholdFilter level="error" onMatch="DENY"
+                                 onMismatch="NEUTRAL" />
+                <ThresholdFilter level="warn" onMatch="DENY"
+                                 onMismatch="NEUTRAL" />
+                <ThresholdFilter level="info" onMatch="ACCEPT"
+                                 onMismatch="DENY" />
+            </filters>
+            <PatternLayout charset="UTF-8">
+                <pattern>${LOG_PATTERN}</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="500">
+                <Delete basePath="${LOG_HOME}" maxDepth="500">
+                    <IfFileName glob="*/*/info-*.log">
+                        <IfLastModified age="15d" />
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <RollingFile name="warnAppender" fileName="${LOG_HOME}/warn.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/$${date:MM-dd}/warn-%d{MM-dd}.%i.log">
+            <filters>
+                <ThresholdFilter level="error" onMatch="DENY"
+                                 onMismatch="NEUTRAL" />
+                <ThresholdFilter level="warn" onMatch="ACCEPT"
+                                 onMismatch="DENY" />
+            </filters>
+            <PatternLayout charset="UTF-8">
+                <pattern>${LOG_PATTERN}</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="500">
+                <Delete basePath="${LOG_HOME}" maxDepth="500">
+                    <IfFileName glob="*/*/warn-*.log">
+                        <IfLastModified age="15d" />
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <RollingFile name="errorAppender" fileName="${LOG_HOME}/error.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/$${date:MM-dd}/error-%d{MM-dd}.%i.log">
+            <filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT"
+                                 onMismatch="DENY" />
+            </filters>
+            <PatternLayout charset="UTF-8">
+                <pattern>${LOG_PATTERN}</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="100 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="500">
+                <Delete basePath="${LOG_HOME}" maxDepth="500">
+                    <IfFileName glob="*/*/error-*.log">
+                        <IfLastModified age="15d" />
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <Kafka name="kafka_Log_info_Appender" topic="wk.log.info"
+               syncSend="true">
+            <Property name="compression.type">gzip</Property>
+            <Property name="timeout.ms">5000</Property>
+            <Property name="bootstrap.servers">${kafka.bootstrap.servers}</Property>
+            <JSONLayout charset="UTF-8" locationInfo="true"
+                        properties="true" complete="false" compact="true" eventEol="false"
+                        propertiesAsList="false" includeStacktrace="true">
+                <KeyValuePair key="serviceName" value="${PROJECT_NAME}" />
+            </JSONLayout>
+            <filters>
+                <ThresholdFilter level="error" onMatch="DENY"
+                                 onMismatch="NEUTRAL" />
+                <ThresholdFilter level="warn" onMatch="DENY"
+                                 onMismatch="NEUTRAL" />
+                <ThresholdFilter level="info" onMatch="ACCEPT"
+                                 onMismatch="DENY" />
+            </filters>
+        </Kafka>
+        <Kafka name="kafka_Log_warn_Appender" topic="wk.log.warn"
+               syncSend="true">
+            <Property name="compression.type">gzip</Property>
+            <Property name="timeout.ms">5000</Property>
+            <Property name="bootstrap.servers">${kafka.bootstrap.servers}</Property>
+            <JSONLayout charset="UTF-8" locationInfo="true"
+                        properties="true" complete="false" compact="true" eventEol="false"
+                        propertiesAsList="false" includeStacktrace="true">
+                <KeyValuePair key="serviceName" value="${PROJECT_NAME}" />
+            </JSONLayout>
+            <filters>
+                <ThresholdFilter level="error" onMatch="DENY"
+                                 onMismatch="NEUTRAL" />
+                <ThresholdFilter level="warn" onMatch="ACCEPT"
+                                 onMismatch="DENY" />
+            </filters>
+        </Kafka>
+        <Kafka name="kafka_Log_error_Appender" topic="wk.log.error"
+               syncSend="true">
+            <Property name="compression.type">gzip</Property>
+            <Property name="timeout.ms">5000</Property>
+            <Property name="bootstrap.servers">${kafka.bootstrap.servers}</Property>
+            <JSONLayout charset="UTF-8" locationInfo="true"
+                        properties="true" complete="false" compact="true" eventEol="false"
+                        propertiesAsList="false" includeStacktrace="true">
+                <KeyValuePair key="serviceName" value="${PROJECT_NAME}" />
+            </JSONLayout>
+            <filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT"
+                                 onMismatch="DENY" />
+            </filters>
+        </Kafka>
+        <!-- 接入大数据 -->
+        <Kafka name="kafka_bigdata_Appender" topic="onecard_big_data_save"
+               syncSend="true">
+            <Property name="compression.type">gzip</Property>
+            <Property name="timeout.ms">5000</Property>
+            <Property name="bootstrap.servers">${biz.kafka.bootstrap.servers}</Property>
+            <PatternLayout charset="UTF-8">
+                <pattern>%msg</pattern>
+            </PatternLayout>
+            <filters>
+                <ThresholdFilter level="error" onMatch="DENY"
+                                 onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="warn" onMatch="ACCEPT"
+                                 onMismatch="DENY"/>
+                <ThresholdFilter level="info" onMatch="DENY"
+                                 onMismatch="NEUTRAL"/>
+            </filters>
+        </Kafka>
+        <Async name="KafkaAsyncAppender" includeLocation="true">
+            <!-- <appender-ref ref="kafka_Log_info_Appender" />
+            <appender-ref ref="kafka_Log_warn_Appender" /> -->
+            <appender-ref ref="kafka_Log_error_Appender" />
+        </Async>
+    </Appenders>
+    <Loggers>
+        <AsyncRoot level="${COMMON_LEVEL}" includeLocation="true" >
+            <!-- <AppenderRef ref="console" /> -->
+            <!-- <AppenderRef ref="debugAppender" /> -->
+            <AppenderRef ref="infoAppender" />
+            <AppenderRef ref="warnAppender" />
+            <AppenderRef ref="errorAppender" />
+            <appender-ref ref="KafkaAsyncAppender" />
+        </AsyncRoot>
+        <!-- error日志输出到kafaka
+          <AsyncLogger name="errorToKafkaAsyncLogger" level="${ERROR_LEVEL}" additivity="false">
+              <AppenderRef ref="KafkaAsyncAppender" />
+          </AsyncLogger> -->
+        <!--接入大数据-->
+        <AsyncLogger name="bigDataSaveLogger" level="warn"
+                     includeLocation="true">
+            <AppenderRef ref="kafka_bigdata_Appender"/>
+        </AsyncLogger>
+    </Loggers>
+</Configuration>

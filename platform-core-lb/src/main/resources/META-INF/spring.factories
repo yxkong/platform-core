@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.github.platform.core.loadbalancer.configuration.NacosLoadBalancerConfiguration

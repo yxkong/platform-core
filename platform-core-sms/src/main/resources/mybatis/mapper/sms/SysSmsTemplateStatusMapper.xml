@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sms.SysSmsTemplateStatusMapper">
+
+	<resultMap type="com.github.platform.core.sms.domain.common.entity.SysSmsTemplateStatusBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="tempNo" property="tempNo" />
+		<id column="proNo" property="proNo" />
+		<id column="signStatus" property="signStatus" />
+		<id column="signMsgId" property="signMsgId" />
+		<id column="tempStatus" property="tempStatus" />
+		<id column="tempId" property="tempId" />
+		<id column="tempMsgId" property="tempMsgId" />
+		<id column="tenantId" property="tenantId" />
+		<id column="sort" property="sort" />
+		<id column="status" property="status" />
+		<id column="type" property="type" />
+		<id column="createTime" property="createTime" />
+		<id column="createBy" property="createBy" />
+		<id column="updateTime" property="updateTime" />
+		<id column="updateBy" property="updateBy" />
+		<id column="remark" property="remark" />
+
+    </resultMap>
+    <sql id="Base_Column_List">
+		t.id as id ,
+ 		t.temp_no as tempNo ,
+ 		t.pro_no as proNo ,
+ 		t.sign_status as signStatus ,
+ 		t.sign_msg_id as signMsgId ,
+ 		t.temp_status as tempStatus ,
+ 		t.temp_id as tempId ,
+ 		t.temp_msg_id as tempMsgId ,
+ 		t.tenant_id as tenantId ,
+	    t.sort ,
+ 		t.status ,
+ 		t.type ,
+ 		t.create_time as createTime ,
+ 		t.create_by as createBy ,
+ 		t.update_time as updateTime ,
+ 		t.update_by as updateBy ,
+ 		t.remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsTemplateStatusBase">
+		insert into  t_sys_sms_template_status
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="tempNo != null">
+ 				temp_no,
+ 			</if>
+ 			<if test="proNo != null">
+ 				pro_no,
+ 			</if>
+ 			<if test="signStatus != null">
+ 				sign_status,
+ 			</if>
+ 			<if test="signMsgId != null">
+ 				sign_msg_id,
+ 			</if>
+ 			<if test="tempStatus != null">
+ 				temp_status,
+ 			</if>
+ 			<if test="tempId != null">
+ 				temp_id,
+ 			</if>
+ 			<if test="tempMsgId != null">
+ 				temp_msg_id,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="sort != null">
+			    sort,
+ 			</if>
+		    <if test="status != null">
+ 				status,
+ 			</if>
+ 			<if test="type != null">
+ 				type,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time,
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="tempNo != null">
+ 				#{tempNo},
+ 			</if>
+ 			<if test="proNo != null">
+ 				#{proNo},
+ 			</if>
+ 			<if test="signStatus != null">
+ 				#{signStatus},
+ 			</if>
+ 			<if test="signMsgId != null">
+ 				#{signMsgId},
+ 			</if>
+ 			<if test="tempStatus != null">
+ 				#{tempStatus},
+ 			</if>
+ 			<if test="tempId != null">
+ 				#{tempId},
+ 			</if>
+ 			<if test="tempMsgId != null">
+ 				#{tempMsgId},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="sort != null">
+ 				#{sort},
+ 			</if>
+		    <if test="status != null">
+ 				#{status},
+ 			</if>
+ 			<if test="type != null">
+ 				#{type},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				#{updateTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				#{updateBy},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsTemplateStatusBase">
+		update   t_sys_sms_template_status
+ 		<set>
+ 			<if test="tempNo != null">
+ 				temp_no = #{tempNo},
+ 			</if>
+ 			<if test="proNo != null">
+ 				pro_no = #{proNo},
+ 			</if>
+ 			<if test="signStatus != null">
+ 				sign_status = #{signStatus},
+ 			</if>
+ 			<if test="signMsgId != null">
+ 				sign_msg_id = #{signMsgId},
+ 			</if>
+ 			<if test="tempStatus != null">
+ 				temp_status = #{tempStatus},
+ 			</if>
+ 			<if test="tempId != null">
+ 				temp_id = #{tempId},
+ 			</if>
+ 			<if test="tempMsgId != null">
+ 				temp_msg_id = #{tempMsgId},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id = #{tenantId},
+ 			</if>
+ 			<if test="sort != null">
+			    sort = #{sort},
+ 			</if>
+		    <if test="status != null">
+ 				status = #{status},
+ 			</if>
+ 			<if test="type != null">
+ 				type = #{type},
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time = #{createTime},
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by = #{createBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time = #{updateTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by = #{updateBy},
+ 			</if>
+ 			<if test="remark != null">
+ 				remark = #{remark},
+ 			</if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_sms_template_status t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_sms_template_status
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsTemplateStatusBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_sms_template_status t
+ 		<where>
+ 			<if test="id!= null">
+ 				and t.id =  #{id}
+ 			</if>
+ 			<if test="tempNo!= null">
+ 				and t.temp_no =  #{tempNo}
+ 			</if>
+ 			<if test="proNo!= null">
+ 				and t.pro_no =  #{proNo}
+ 			</if>
+ 			<if test="signStatus!= null">
+ 				and t.sign_status =  #{signStatus}
+ 			</if>
+ 			<if test="signMsgId!= null">
+ 				and t.sign_msg_id =  #{signMsgId}
+ 			</if>
+ 			<if test="tempStatus!= null">
+ 				and t.temp_status =  #{tempStatus}
+ 			</if>
+ 			<if test="tempId!= null">
+ 				and t.temp_id =  #{tempId}
+ 			</if>
+ 			<if test="tempMsgId!= null">
+ 				and t.temp_msg_id =  #{tempMsgId}
+ 			</if>
+ 			<if test="tenantId!= null">
+ 				and t.tenant_id =  #{tenantId}
+ 			</if>
+ 			<if test="status!= null">
+ 				and t.status =  #{status}
+ 			</if>
+ 			<if test="type!= null">
+ 				and t.type =  #{type}
+ 			</if>
+ 			<if test="createTime!= null">
+ 				and t.create_time =  #{createTime}
+ 			</if>
+ 			<if test="createBy!= null">
+ 				and t.create_by =  #{createBy}
+ 			</if>
+ 			<if test="updateTime!= null">
+ 				and t.update_time =  #{updateTime}
+ 			</if>
+ 			<if test="updateBy!= null">
+ 				and t.update_by =  #{updateBy}
+ 			</if>
+ 			<if test="remark!= null">
+ 				and t.remark =  #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsTemplateStatusBase">
+		select  count(t.id) from t_sys_sms_template_status t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="tempNo != null">
+ 				and t.temp_no = #{tempNo}
+ 			</if>
+ 			<if test="proNo != null">
+ 				and t.pro_no = #{proNo}
+ 			</if>
+ 			<if test="signStatus != null">
+ 				and t.sign_status = #{signStatus}
+ 			</if>
+ 			<if test="signMsgId != null">
+ 				and t.sign_msg_id = #{signMsgId}
+ 			</if>
+ 			<if test="tempStatus != null">
+ 				and t.temp_status = #{tempStatus}
+ 			</if>
+ 			<if test="tempId != null">
+ 				and t.temp_id = #{tempId}
+ 			</if>
+ 			<if test="tempMsgId != null">
+ 				and t.temp_msg_id = #{tempMsgId}
+ 			</if>
+ 			<if test="tenantId != null">
+ 				and t.tenant_id = #{tenantId}
+ 			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="type != null">
+ 				and t.type = #{type}
+ 			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_sms_template_status where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_sms_template_status
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

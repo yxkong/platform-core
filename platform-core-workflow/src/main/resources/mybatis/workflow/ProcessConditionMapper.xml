@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.workflow.ProcessConditionMapper">
+
+	<resultMap type="com.github.platform.core.workflow.domain.common.entity.ProcessConditionBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="name" property="name" />
+		<id column="expression" property="expression" />
+		<id column="processType" property="processType" />
+		<id column="status" property="status" />
+		<id column="createTime" property="createTime" />
+		<id column="updateTime" property="updateTime" />
+		<id column="updateBy" property="updateBy" />
+		<id column="createBy" property="createBy" />
+		<id column="remark" property="remark" />
+    </resultMap>
+    <sql id="BaseColumnList">
+		t.id,
+		t.name,
+		t.expression,
+		t.process_type as processType,
+		t.status,
+		t.create_time as createTime,
+		t.update_time as updateTime,
+		t.update_by as updateBy,
+		t.create_by as createBy,
+		t.remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessConditionBase">
+		insert into t_flw_process_condition
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null ">
+				id,
+			</if>
+			<if test="name != null  and name != ''">
+				name,
+			</if>
+			<if test="expression != null  and expression != ''">
+				expression,
+			</if>
+			<if test="processType != null  and processType != ''">
+				process_type,
+			</if>
+			<if test="status != null ">
+				status,
+			</if>
+			<if test="createTime != null ">
+				create_time,
+			</if>
+			<if test="updateTime != null ">
+				update_time,
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				update_by,
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				create_by,
+			</if>
+			<if test="remark != null  and remark != ''">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null ">
+				#{id},
+			</if>
+			<if test="name != null  and name != ''">
+				#{name},
+			</if>
+			<if test="expression != null  and expression != ''">
+				#{expression},
+			</if>
+			<if test="processType != null  and processType != ''">
+				#{processType},
+			</if>
+			<if test="status != null ">
+				#{status},
+			</if>
+			<if test="createTime != null ">
+				#{createTime},
+			</if>
+			<if test="updateTime != null ">
+				#{updateTime},
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				#{updateBy},
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				#{createBy},
+			</if>
+			<if test="remark != null  and remark != ''">
+				#{remark},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessConditionBase">
+		update t_flw_process_condition
+		<set>
+			<if test="name != null  and name != ''">
+				name = #{name},
+			</if>
+			<if test="expression != null  and expression != ''">
+				expression = #{expression},
+			</if>
+			<if test="processType != null  and processType != ''">
+				process_type = #{processType},
+			</if>
+			<if test="status != null ">
+				status = #{status},
+			</if>
+			<if test="createTime != null ">
+				create_time = #{createTime},
+			</if>
+			<if test="updateTime != null ">
+				update_time = #{updateTime},
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				update_by = #{updateBy},
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				create_by = #{createBy},
+			</if>
+			<if test="remark != null  and remark != ''">
+				remark = #{remark},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_flw_process_condition t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_flw_process_condition t
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+		<include refid="BaseColumnList" />
+		from t_flw_process_condition t
+		<where>
+			<if test="id != null ">
+				and t.id = #{id}
+			</if>
+			<if test="name != null  and name != ''">
+				and t.name = #{name}
+			</if>
+			<if test="expression != null  and expression != ''">
+				and t.expression = #{expression}
+			</if>
+			<if test="processType != null  and processType != ''">
+				and t.process_type = #{processType}
+			</if>
+			<if test="status != null ">
+				and t.status = #{status}
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessConditionBase">
+		select 
+		<include refid="BaseColumnList" />
+		from t_flw_process_condition t
+		<where>
+			<if test="id != null ">
+				and t.id = #{id}
+			</if>
+			<if test="name != null  and name != ''">
+				and t.name = #{name}
+			</if>
+			<if test="expression != null  and expression != ''">
+				and t.expression = #{expression}
+			</if>
+			<if test="processType != null  and processType != ''">
+				and t.process_type = #{processType}
+			</if>
+			<if test="status != null ">
+				and t.status = #{status}
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findListCount" resultType="java.lang.Long"  parameterType="java.util.Map">
+		select count(t.id) from t_flw_process_condition t
+		<where>
+			<if test="id != null ">
+				and t.id = #{id}
+			</if>
+			<if test="name != null  and name != ''">
+				and t.name = #{name}
+			</if>
+			<if test="expression != null  and expression != ''">
+				and t.expression = #{expression}
+			</if>
+			<if test="processType != null  and processType != ''">
+				and t.process_type = #{processType}
+			</if>
+			<if test="status != null ">
+				and t.status = #{status}
+			</if>
+			<if test="createTime != null ">
+				and t.create_time = #{createTime}
+			</if>
+			<if test="updateTime != null ">
+				and t.update_time = #{updateTime}
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="remark != null  and remark != ''">
+				and t.remark = #{remark}
+			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessConditionBase">
+		select count(t.id) from t_flw_process_condition t
+		<where>
+			<if test="id != null ">
+				and t.id = #{id}
+			</if>
+			<if test="name != null  and name != ''">
+				and t.name = #{name}
+			</if>
+			<if test="expression != null  and expression != ''">
+				and t.expression = #{expression}
+			</if>
+			<if test="processType != null  and processType != ''">
+				and t.process_type = #{processType}
+			</if>
+			<if test="status != null ">
+				and t.status = #{status}
+			</if>
+			<if test="createTime != null ">
+				and t.create_time = #{createTime}
+			</if>
+			<if test="updateTime != null ">
+				and t.update_time = #{updateTime}
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="remark != null  and remark != ''">
+				and t.remark = #{remark}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_flw_process_condition where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_flw_process_condition
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

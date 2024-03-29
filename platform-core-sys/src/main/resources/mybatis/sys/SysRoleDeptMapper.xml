@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sys.SysRoleDeptMapper">
+
+	 <resultMap type="com.github.platform.core.sys.domain.common.entity.SysRoleDeptBase" id="BaseResultMap">
+    	 <id column="roleId" property="roleId" /> 
+		  <id column="deptId" property="deptId" /> 
+		  <id column="tenantId" property="tenantId" />
+  
+    </resultMap>
+    <sql id="Base_Column_List">
+    	 t.role_id as roleId ,
+ 		 t.dept_id as deptId ,
+ 		 t.tenant_id as tenantId
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysRoleDeptBase">
+		insert into  t_sys_role_dept
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="roleId != null">
+ 				role_id,
+ 			</if>
+ 			<if test="deptId != null">
+ 				dept_id,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="roleId != null">
+ 				#{roleId},
+ 			</if>
+ 			<if test="deptId != null">
+ 				#{deptId},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sys.domain.common.entity.SysRoleDeptBase">
+		update   t_sys_role_dept
+ 		 <set>
+ 			 <if test="deptId != null">
+ 				dept_id = #{deptId},
+ 			 </if>
+ 			 <if test="tenantId != null">
+ 				tenant_id = #{tenantId},
+ 			 </if>
+ 		 </set>
+     where role_id = #{roleId}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_role_dept t where t.role_id=#{roleId}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_role_dept
+		<where>
+			<foreach item="id"  collection="ids" open="role_id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_role_dept t
+ 		<where>
+ 			<if test="roleId != null">
+ 				and t.role_id = #{roleId}
+ 			</if>
+ 			<if test="deptId != null">
+ 				and t.dept_id = #{deptId}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+		</where>
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysRoleDeptBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_role_dept t
+ 		<where>
+ 			<if test="roleId != null">
+ 				and t.role_id = #{roleId}
+ 			</if>
+ 			<if test="deptId != null">
+ 				and t.dept_id = #{deptId}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+		</where>
+	</select>
+	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+		select  count(t.role_id) from t_sys_role_dept t
+		<where> 
+ 			<if test="roleId != null">
+ 				and t.role_id = #{roleId}
+ 			</if>
+ 			<if test="deptId != null">
+ 				and t.dept_id = #{deptId}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_role_dept where role_id = #{roleId}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_role_dept
+			<where>
+				<foreach item="id"  collection="ids" open="role_id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

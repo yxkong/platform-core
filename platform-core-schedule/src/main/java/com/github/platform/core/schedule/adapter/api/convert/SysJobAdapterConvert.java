@@ -1,0 +1,30 @@
+package com.github.platform.core.schedule.adapter.api.convert;
+
+import com.github.platform.core.schedule.adapter.api.command.SysJobCmd;
+import com.github.platform.core.schedule.adapter.api.command.SysJobQuery;
+import com.github.platform.core.schedule.domain.context.SysJobContext;
+import com.github.platform.core.schedule.domain.context.SysJobQueryContext;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+/**
+* 任务管理Controller到Application层的适配
+* @website <a href="https://www.5ycode.com/">5ycode</a>
+* @author yxkong
+* @datetime 2023-09-05 11:37:59.627
+* @version 1.0
+*/
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface SysJobAdapterConvert {
+    /**
+    * 查询实体转查询上下文
+    * @param query 查询实体
+    * @return 查询上下文
+    */
+    SysJobQueryContext toQuery(SysJobQuery query);
+    /**
+    * 操作实体转操作上下文
+    * @param cmd 操作实体
+    * @return 操作上下文
+    */
+    SysJobContext toContext(SysJobCmd cmd);
+}

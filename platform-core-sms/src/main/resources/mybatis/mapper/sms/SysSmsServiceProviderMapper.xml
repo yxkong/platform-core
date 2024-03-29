@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sms.SysSmsServiceProviderMapper">
+
+	<resultMap type="com.github.platform.core.sms.domain.common.entity.SysSmsServiceProviderBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="proNo" property="proNo" />
+		<id column="proAlias" property="proAlias" />
+		<id column="proName" property="proName" />
+		<id column="beanName" property="beanName" />
+		<id column="interfaceUrl" property="interfaceUrl" />
+		<id column="account" property="account" />
+		<id column="encryptPwd" property="encryptPwd" />
+		<id column="salt" property="salt" />
+		<id column="tenantId" property="tenantId" />
+		<id column="status" property="status" />
+		<id column="usableNum" property="usableNum" />
+		<id column="alarmThreshold" property="alarmThreshold" />
+		<id column="sort" property="sort" />
+		<id column="createTime" property="createTime" />
+		<id column="createBy" property="createBy" />
+		<id column="updateTime" property="updateTime" />
+		<id column="updateBy" property="updateBy" />
+		<id column="remark" property="remark" />
+
+    </resultMap>
+    <sql id="Base_Column_List">
+		t.id as id ,
+ 		t.pro_no as proNo ,
+ 		t.pro_alias as proAlias ,
+ 		t.pro_name as proName ,
+ 		t.bean_name as beanName ,
+ 		t.interface_url as interfaceUrl ,
+ 		t.account as account ,
+ 		t.encrypt_pwd as encryptPwd ,
+ 		t.salt as salt ,
+ 		t.tenant_id as tenantId ,
+ 		t.status as status ,
+ 		t.usable_num as usableNum ,
+ 		t.alarm_threshold as alarmThreshold ,
+ 		t.sort as sort ,
+ 		t.create_time as createTime ,
+ 		t.create_by as createBy ,
+ 		t.update_time as updateTime ,
+ 		t.update_by as updateBy ,
+ 		t.remark as remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsServiceProviderBase">
+		insert into  t_sys_sms_service_provider
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="proNo != null">
+ 				pro_no,
+ 			</if>
+ 			<if test="proAlias != null">
+ 				pro_alias,
+ 			</if>
+ 			<if test="proName != null">
+ 				pro_name,
+ 			</if>
+ 			<if test="beanName != null">
+ 				bean_name,
+ 			</if>
+ 			<if test="interfaceUrl != null">
+ 				interface_url,
+ 			</if>
+ 			<if test="account != null">
+ 				account,
+ 			</if>
+ 			<if test="encryptPwd != null">
+ 				encrypt_pwd,
+ 			</if>
+ 			<if test="salt != null">
+ 				salt,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="status != null">
+ 				status,
+ 			</if>
+ 			<if test="usableNum != null">
+ 				usable_num,
+ 			</if>
+ 			<if test="alarmThreshold != null">
+ 				alarm_threshold,
+ 			</if>
+ 			<if test="sort != null">
+ 				sort,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time,
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="proNo != null">
+ 				#{proNo},
+ 			</if>
+ 			<if test="proAlias != null">
+ 				#{proAlias},
+ 			</if>
+ 			<if test="proName != null">
+ 				#{proName},
+ 			</if>
+ 			<if test="beanName != null">
+ 				#{beanName},
+ 			</if>
+ 			<if test="interfaceUrl != null">
+ 				#{interfaceUrl},
+ 			</if>
+ 			<if test="account != null">
+ 				#{account},
+ 			</if>
+ 			<if test="encryptPwd != null">
+ 				#{encryptPwd},
+ 			</if>
+ 			<if test="salt != null">
+ 				#{salt},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="status != null">
+ 				#{status},
+ 			</if>
+ 			<if test="usableNum != null">
+ 				#{usableNum},
+ 			</if>
+ 			<if test="alarmThreshold != null">
+ 				#{alarmThreshold},
+ 			</if>
+ 			<if test="sort != null">
+ 				#{sort},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				#{updateTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				#{updateBy},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsServiceProviderBase">
+		update   t_sys_sms_service_provider
+ 		<set>
+ 			<if test="proNo != null">
+ 				pro_no = #{proNo},
+ 			</if>
+ 			<if test="proAlias != null">
+ 				pro_alias = #{proAlias},
+ 			</if>
+ 			<if test="proName != null">
+ 				pro_name = #{proName},
+ 			</if>
+ 			<if test="beanName != null">
+ 				bean_name = #{beanName},
+ 			</if>
+ 			<if test="interfaceUrl != null">
+ 				interface_url = #{interfaceUrl},
+ 			</if>
+ 			<if test="account != null">
+ 				account = #{account},
+ 			</if>
+ 			<if test="encryptPwd != null">
+ 				encrypt_pwd = #{encryptPwd},
+ 			</if>
+ 			<if test="salt != null">
+ 				salt = #{salt},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id = #{tenantId},
+ 			</if>
+ 			<if test="status != null">
+ 				status = #{status},
+ 			</if>
+ 			<if test="usableNum != null">
+ 				usable_num = #{usableNum},
+ 			</if>
+ 			<if test="alarmThreshold != null">
+ 				alarm_threshold = #{alarmThreshold},
+ 			</if>
+ 			<if test="sort != null">
+ 				sort = #{sort},
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time = #{createTime},
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by = #{createBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time = #{updateTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by = #{updateBy},
+ 			</if>
+ 			<if test="remark != null">
+ 				remark = #{remark},
+ 			</if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_sms_service_provider t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_sms_service_provider
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_sms_service_provider t
+ 		<where>
+ 			<if test="id!= null">
+ 				and t.id =  #{id}
+ 			</if>
+ 			<if test="proNo!= null">
+ 				and t.pro_no =  #{proNo}
+ 			</if>
+ 			<if test="proAlias!= null">
+ 				and t.pro_alias =  #{proAlias}
+ 			</if>
+ 			<if test="proName!= null">
+ 				and t.pro_name  like concat('%',#{proName},'%')
+ 			</if>
+ 			<if test="beanName!= null">
+ 				and t.bean_name =  #{beanName}
+ 			</if>
+ 			<if test="interfaceUrl!= null">
+ 				and t.interface_url =  #{interfaceUrl}
+ 			</if>
+ 			<if test="account!= null">
+ 				and t.account =  #{account}
+ 			</if>
+ 			<if test="encryptPwd!= null">
+ 				and t.encrypt_pwd =  #{encryptPwd}
+ 			</if>
+ 			<if test="salt!= null">
+ 				and t.salt =  #{salt}
+ 			</if>
+ 			<if test="tenantId!= null">
+ 				and t.tenant_id =  #{tenantId}
+ 			</if>
+ 			<if test="status!= null">
+ 				and t.status =  #{status}
+ 			</if>
+ 			<if test="usableNum!= null">
+ 				and t.usable_num =  #{usableNum}
+ 			</if>
+ 			<if test="alarmThreshold!= null">
+ 				and t.alarm_threshold =  #{alarmThreshold}
+ 			</if>
+ 			<if test="sort!= null">
+ 				and t.sort =  #{sort}
+ 			</if>
+ 			<if test="createTime!= null">
+ 				and t.create_time =  #{createTime}
+ 			</if>
+ 			<if test="createBy!= null">
+ 				and t.create_by =  #{createBy}
+ 			</if>
+ 			<if test="updateTime!= null">
+ 				and t.update_time =  #{updateTime}
+ 			</if>
+ 			<if test="updateBy!= null">
+ 				and t.update_by =  #{updateBy}
+ 			</if>
+ 			<if test="remark!= null">
+ 				and t.remark =  #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsServiceProviderBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_sms_service_provider t
+ 		<where>
+ 			<if test="id!= null">
+ 				and t.id =  #{id}
+ 			</if>
+ 			<if test="proNo!= null">
+ 				and t.pro_no =  #{proNo}
+ 			</if>
+ 			<if test="proAlias!= null">
+ 				and t.pro_alias =  #{proAlias}
+ 			</if>
+ 			<if test="proName!= null">
+ 				and t.pro_name  like concat('%',#{proName},'%')
+ 			</if>
+ 			<if test="beanName!= null">
+ 				and t.bean_name =  #{beanName}
+ 			</if>
+ 			<if test="interfaceUrl!= null">
+ 				and t.interface_url =  #{interfaceUrl}
+ 			</if>
+ 			<if test="account!= null">
+ 				and t.account =  #{account}
+ 			</if>
+ 			<if test="encryptPwd!= null">
+ 				and t.encrypt_pwd =  #{encryptPwd}
+ 			</if>
+ 			<if test="salt!= null">
+ 				and t.salt =  #{salt}
+ 			</if>
+ 			<if test="tenantId!= null">
+ 				and t.tenant_id =  #{tenantId}
+ 			</if>
+ 			<if test="status!= null">
+ 				and t.status =  #{status}
+ 			</if>
+ 			<if test="usableNum!= null">
+ 				and t.usable_num =  #{usableNum}
+ 			</if>
+ 			<if test="alarmThreshold!= null">
+ 				and t.alarm_threshold =  #{alarmThreshold}
+ 			</if>
+ 			<if test="sort!= null">
+ 				and t.sort =  #{sort}
+ 			</if>
+ 			<if test="createTime!= null">
+ 				and t.create_time =  #{createTime}
+ 			</if>
+ 			<if test="createBy!= null">
+ 				and t.create_by =  #{createBy}
+ 			</if>
+ 			<if test="updateTime!= null">
+ 				and t.update_time =  #{updateTime}
+ 			</if>
+ 			<if test="updateBy!= null">
+ 				and t.update_by =  #{updateBy}
+ 			</if>
+ 			<if test="remark!= null">
+ 				and t.remark =  #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListCount" resultType="java.lang.Long"  parameterType="java.util.Map">
+		select  count(t.id) from t_sys_sms_service_provider t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="proNo != null">
+ 				and t.pro_no = #{proNo}
+ 			</if>
+ 			<if test="proAlias != null">
+ 				and t.pro_alias = #{proAlias}
+ 			</if>
+ 			<if test="proName != null">
+ 				and t.pro_name = #{proName}
+ 			</if>
+ 			<if test="beanName != null">
+ 				and t.bean_name = #{beanName}
+ 			</if>
+ 			<if test="interfaceUrl != null">
+ 				and t.interface_url = #{interfaceUrl}
+ 			</if>
+ 			<if test="account != null">
+ 				and t.account = #{account}
+ 			</if>
+ 			<if test="encryptPwd != null">
+ 				and t.encrypt_pwd = #{encryptPwd}
+ 			</if>
+ 			<if test="salt != null">
+ 				and t.salt = #{salt}
+ 			</if>
+ 			<if test="tenantId != null">
+ 				and t.tenant_id = #{tenantId}
+ 			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="usableNum != null">
+ 				and t.usable_num = #{usableNum}
+ 			</if>
+ 			<if test="alarmThreshold != null">
+ 				and t.alarm_threshold = #{alarmThreshold}
+ 			</if>
+ 			<if test="sort != null">
+ 				and t.sort = #{sort}
+ 			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsServiceProviderBase">
+		select  count(t.id) from t_sys_sms_service_provider t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="proNo != null">
+ 				and t.pro_no = #{proNo}
+ 			</if>
+ 			<if test="proAlias != null">
+ 				and t.pro_alias = #{proAlias}
+ 			</if>
+ 			<if test="proName != null">
+ 				and t.pro_name = #{proName}
+ 			</if>
+ 			<if test="beanName != null">
+ 				and t.bean_name = #{beanName}
+ 			</if>
+ 			<if test="interfaceUrl != null">
+ 				and t.interface_url = #{interfaceUrl}
+ 			</if>
+ 			<if test="account != null">
+ 				and t.account = #{account}
+ 			</if>
+ 			<if test="encryptPwd != null">
+ 				and t.encrypt_pwd = #{encryptPwd}
+ 			</if>
+ 			<if test="salt != null">
+ 				and t.salt = #{salt}
+ 			</if>
+ 			<if test="tenantId != null">
+ 				and t.tenant_id = #{tenantId}
+ 			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="usableNum != null">
+ 				and t.usable_num = #{usableNum}
+ 			</if>
+ 			<if test="alarmThreshold != null">
+ 				and t.alarm_threshold = #{alarmThreshold}
+ 			</if>
+ 			<if test="sort != null">
+ 				and t.sort = #{sort}
+ 			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findByProNo" resultType="com.github.platform.core.sms.domain.common.entity.SysSmsServiceProviderBase" parameterType="java.lang.String">
+		select <include refid="Base_Column_List" /> from t_sys_sms_service_provider t where t.pro_no = #{proNo} and  t.status = 1
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_sms_service_provider where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_sms_service_provider
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

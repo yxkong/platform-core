@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.workflow.ProcessDefinitionMapper">
+
+	<resultMap type="com.github.platform.core.workflow.domain.common.entity.ProcessDefinitionBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="processNo" property="processNo" />
+		<id column="processName" property="processName" />
+		<id column="processType" property="processType" />
+		<id column="processDesc" property="processDesc" />
+		<id column="processVersion" property="processVersion" />
+		<id column="processFile" property="processFile" />
+		<id column="deployId" property="deployId" />
+		<id column="tenantId" property="tenantId" />
+		<id column="deptId" property="deptId" />
+		<id column="deleted" property="deleted" />
+		<id column="status" property="status" />
+		<id column="createTime" property="createTime" />
+		<id column="updateTime" property="updateTime" />
+		<id column="updateBy" property="updateBy" />
+		<id column="createBy" property="createBy" />
+		<id column="remark" property="remark" />
+    </resultMap>
+	
+    <sql id="BaseColumnList">
+		t.id,
+		t.process_no as processNo,
+		t.process_name as processName,
+		t.process_type as processType,
+		t.process_desc as processDesc,
+		t.process_version as processVersion,
+		t.process_file as processFile,
+		t.deploy_id as deployId,
+		t.tenant_id as tenantId,
+		t.dept_id as deptId,
+		t.deleted,
+		t.status,
+		t.create_time as createTime,
+		t.update_time as updateTime,
+		t.update_by as updateBy,
+		t.create_by as createBy,
+		t.remark
+    </sql>
+	<sql id="noFileColumnList">
+		t.id,
+		t.process_no as processNo,
+		t.process_name as processName,
+		t.process_type as processType,
+		t.process_desc as processDesc,
+		t.process_version as processVersion,
+		t.deploy_id as deployId,
+		t.tenant_id as tenantId,
+		t.dept_id as deptId,
+		t.deleted,
+		t.status,
+		t.create_time as createTime,
+		t.update_time as updateTime,
+		t.update_by as updateBy,
+		t.create_by as createBy,
+		t.remark
+	</sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessDefinitionBase">
+		insert into t_flw_process_definition
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="processNo != null">
+				process_no,
+			</if>
+			<if test="processName != null">
+				process_name,
+			</if>
+			<if test="processType != null">
+				process_type,
+			</if>
+			<if test="processDesc != null">
+				process_desc,
+			</if>
+			<if test="processVersion != null">
+				process_version,
+			</if>
+			<if test="processFile != null">
+				process_file,
+			</if>
+		    <if test="deployId != null">
+			    deploy_id,
+			</if>
+			<if test="tenantId != null">
+				tenant_id,
+			</if>
+			<if test="deptId != null">
+				dept_id,
+			</if>
+			<if test="deleted != null">
+				deleted,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updateBy != null">
+				update_by,
+			</if>
+			<if test="createBy != null">
+				create_by,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="processNo != null">
+				#{processNo},
+			</if>
+			<if test="processName != null">
+				#{processName},
+			</if>
+			<if test="processType != null">
+				#{processType},
+			</if>
+			<if test="processDesc != null">
+				#{processDesc},
+			</if>
+			<if test="processVersion != null">
+				#{processVersion},
+			</if>
+			<if test="processFile != null">
+				#{processFile},
+			</if>
+		    <if test="deployId != null">
+				#{deployId},
+			</if>
+			<if test="tenantId != null">
+				#{tenantId},
+			</if>
+			<if test="deptId != null">
+				#{deptId},
+			</if>
+			<if test="deleted != null">
+				#{deleted},
+			</if>
+			<if test="status != null">
+				#{status},
+			</if>
+			<if test="createTime != null">
+				#{createTime},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime},
+			</if>
+			<if test="updateBy != null">
+				#{updateBy},
+			</if>
+			<if test="createBy != null">
+				#{createBy},
+			</if>
+			<if test="remark != null">
+				#{remark},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessDefinitionBase">
+		update t_flw_process_definition
+		<set>
+			<if test="processNo != null">
+				process_no = #{processNo},
+			</if>
+			<if test="processName != null">
+				process_name = #{processName},
+			</if>
+			<if test="processType != null">
+				process_type = #{processType},
+			</if>
+			<if test="processDesc != null">
+				process_desc = #{processDesc},
+			</if>
+			<if test="processVersion != null">
+				process_version = #{processVersion},
+			</if>
+			<if test="processFile != null">
+				process_file = #{processFile},
+			</if>
+		    <if test="deployId != null">
+			    deploy_id = #{deployId},
+			</if>
+			<if test="tenantId != null">
+				tenant_id = #{tenantId},
+			</if>
+			<if test="deptId != null">
+				dept_id = #{deptId},
+			</if>
+			<if test="deleted != null">
+				deleted = #{deleted},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime},
+			</if>
+			<if test="updateBy != null">
+				update_by = #{updateBy},
+			</if>
+			<if test="createBy != null">
+				create_by = #{createBy},
+			</if>
+			<if test="remark != null">
+				remark = #{remark},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_flw_process_definition t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_flw_process_definition t
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+		<include refid="BaseColumnList" />
+		from t_flw_process_definition t
+		<where>
+			<if test="id != null">
+				and t.id = #{id}
+			</if>
+			<if test="processNo != null">
+				and t.process_no = #{processNo}
+			</if>
+			<if test="processName != null">
+				and t.process_name like concat('%', #{processName}, '%')
+			</if>
+			<if test="processType != null">
+				and t.process_type = #{processType}
+			</if>
+			<if test="processDesc != null">
+				and t.process_desc = #{processDesc}
+			</if>
+			<if test="processVersion != null">
+				and t.process_version = #{processVersion}
+			</if>
+			<if test="processFile != null">
+				and t.process_file = #{processFile}
+			</if>
+			<if test="deployId != null">
+				and t.deploy_id = #{deployId}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="deptId != null">
+				and t.dept_id = #{deptId}
+			</if>
+			<if test="deleted != null">
+				and t.deleted = #{deleted}
+			</if>
+			<if test="status != null">
+				and t.status = #{status}
+			</if>
+			<if test="updateBy != null">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findPageBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessDefinitionBase">
+		select
+		<include refid="noFileColumnList" />
+		from t_flw_process_definition t
+		where t.status !=2
+		<if test="processNo != null">
+			and t.process_no = #{processNo}
+		</if>
+		<if test="processName != null">
+			and t.process_name like concat('%', #{processName}, '%')
+		</if>
+		<if test="processType != null">
+			and t.process_type = #{processType}
+		</if>
+		<if test="deployId != null">
+			and t.deploy_id = #{deployId}
+		</if>
+		<if test="tenantId != null">
+			and t.tenant_id = #{tenantId}
+		</if>
+		<if test="deleted != null">
+			and t.deleted = #{deleted}
+		</if>
+		<if test="status != null">
+			and t.status = #{status}
+		</if>
+		<if test="updateBy != null">
+			and t.update_by = #{updateBy}
+		</if>
+		<if test="createBy != null">
+			and t.create_by = #{createBy}
+		</if>
+		<if test="searchStartTime != null">
+			and t.create_time <![CDATA[>=]]> #{searchStartTime}
+		</if>
+		<if test="searchEndTime != null">
+			and t.create_time <![CDATA[<=]]> #{searchEndTime}
+		</if>
+		group by t.process_no
+		order by t.process_no
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessDefinitionBase">
+		select 
+		<include refid="BaseColumnList" />
+		from t_flw_process_definition t
+		<where>
+			<if test="id != null">
+				and t.id = #{id}
+			</if>
+			<if test="processNo != null">
+				and t.process_no = #{processNo}
+			</if>
+			<if test="processName != null">
+				and t.process_name like concat('%', #{processName}, '%')
+			</if>
+			<if test="processType != null">
+				and t.process_type = #{processType}
+			</if>
+			<if test="processDesc != null">
+				and t.process_desc = #{processDesc}
+			</if>
+			<if test="processVersion != null">
+				and t.process_version = #{processVersion}
+			</if>
+			<if test="deployId != null">
+				and t.deploy_id = #{deployId}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="deptId != null">
+				and t.dept_id = #{deptId}
+			</if>
+			<if test="deleted != null">
+				and t.deleted = #{deleted}
+			</if>
+			<if test="status != null">
+				and t.status = #{status}
+			</if>
+			<if test="updateBy != null">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+		order by id desc
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessDefinitionBase">
+		select count(t.id) from t_flw_process_definition t
+		<where>
+			<if test="id != null">
+				and t.id = #{id}
+			</if>
+			<if test="processNo != null">
+				and t.process_no = #{processNo}
+			</if>
+			<if test="processName != null">
+				and t.process_name = #{processName}
+			</if>
+			<if test="processType != null">
+				and t.process_type = #{processType}
+			</if>
+			<if test="processDesc != null">
+				and t.process_desc = #{processDesc}
+			</if>
+			<if test="processVersion != null">
+				and t.process_version = #{processVersion}
+			</if>
+			<if test="deployId != null">
+				and t.deploy_id = #{deployId}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="deptId != null">
+				and t.dept_id = #{deptId}
+			</if>
+			<if test="deleted != null">
+				and t.deleted = #{deleted}
+			</if>
+			<if test="status != null">
+				and t.status = #{status}
+			</if>
+			<if test="createTime != null">
+				and t.create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and t.update_time = #{updateTime}
+			</if>
+			<if test="updateBy != null">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="remark != null">
+				and t.remark = #{remark}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_flw_process_definition where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_flw_process_definition
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

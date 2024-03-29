@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sys.SysDeptMapper">
+
+	 <resultMap type="com.github.platform.core.sys.domain.common.entity.SysDeptBase" id="BaseResultMap">
+    	 <id column="id" property="id" /> 
+		  <id column="parentId" property="parentId" /> 
+		  <id column="ancestors" property="ancestors" /> 
+		  <id column="deptName" property="deptName" /> 
+		  <id column="sort" property="sort" /> 
+		  <id column="leader" property="leader" /> 
+		  <id column="leaderMobile" property="leaderMobile" /> 
+		  <id column="tenantId" property="tenantId" />
+		  <id column="status" property="status" /> 
+		  <id column="createBy" property="createBy" />
+		  <id column="createTime" property="createTime" /> 
+		  <id column="updateBy" property="updateBy" /> 
+		  <id column="updateTime" property="updateTime" /> 
+		  <id column="remark" property="remark" /> 
+  
+    </resultMap>
+    <sql id="Base_Column_List">
+    	 t.id as id ,
+ 		 t.parent_id as parentId ,
+ 		 t.ancestors as ancestors ,
+ 		 t.dept_name as deptName ,
+ 		 t.sort as sort ,
+ 		 t.leader as leader ,
+ 		 t.leader_mobile as leaderMobile ,
+ 		 t.tenant_id as tenantId ,
+ 		 t.status as status ,
+ 		 t.create_by as createBy ,
+ 		 t.create_time as createTime ,
+ 		 t.update_by as updateBy ,
+ 		 t.update_time as updateTime ,
+ 		 t.remark as remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysDeptBase">
+		insert into  t_sys_dept
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="parentId != null">
+ 				parent_id,
+ 			</if>
+ 			<if test="ancestors != null">
+ 				ancestors,
+ 			</if>
+ 			<if test="deptName != null">
+ 				dept_name,
+ 			</if>
+ 			<if test="sort != null">
+ 				sort,
+ 			</if>
+ 			<if test="leader != null">
+ 				leader,
+ 			</if>
+ 			<if test="leaderMobile != null">
+ 				leader_mobile,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="status != null">
+ 				status,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by,
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="parentId != null">
+ 				#{parentId},
+ 			</if>
+ 			<if test="ancestors != null">
+ 				#{ancestors},
+ 			</if>
+ 			<if test="deptName != null">
+ 				#{deptName},
+ 			</if>
+ 			<if test="sort != null">
+ 				#{sort},
+ 			</if>
+ 			<if test="leader != null">
+ 				#{leader},
+ 			</if>
+ 			<if test="leaderMobile != null">
+ 				#{leaderMobile},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="status != null">
+ 				#{status},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				#{updateBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				#{updateTime},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sys.domain.common.entity.SysDeptBase">
+		update   t_sys_dept
+ 		 <set>
+ 			 <if test="parentId != null">
+ 				parent_id = #{parentId},
+ 			 </if>
+ 			 <if test="ancestors != null and ancestors !=''">
+ 				ancestors = #{ancestors},
+ 			 </if>
+ 			 <if test="deptName != null and deptName != ''">
+ 				dept_name = #{deptName},
+ 			 </if>
+ 			 <if test="sort != null">
+ 				sort = #{sort},
+ 			 </if>
+ 			 <if test="leader != null and leader != ''">
+ 				leader = #{leader},
+ 			 </if>
+ 			 <if test="leaderMobile != null and leaderMobile !=''">
+ 				leader_mobile = #{leaderMobile},
+ 			 </if>
+			 <if test="tenantId != null">
+				 tenant_id = #{tenantId},
+			 </if>
+ 			 <if test="status != null">
+ 				status = #{status},
+ 			 </if>
+ 			 <if test="createBy != null">
+ 				create_by = #{createBy},
+ 			 </if>
+ 			 <if test="createTime != null">
+ 				create_time = #{createTime},
+ 			 </if>
+ 			 <if test="updateBy != null">
+ 				update_by = #{updateBy},
+ 			 </if>
+ 			 <if test="updateTime != null">
+ 				update_time = #{updateTime},
+ 			 </if>
+ 			 <if test="remark != null">
+ 				remark = #{remark},
+ 			 </if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_dept t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_dept
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_dept t
+ 		<where>
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="parentId != null">
+ 				and t.parent_id = #{parentId}
+ 			</if>
+ 			<if test="ancestors != null">
+				and t.ancestors like concat('%', #{ancestors}, '%')
+ 			</if>
+ 			<if test="deptName != null">
+				and t.dept_name like concat('%', #{deptName}, '%')
+ 			</if>
+ 			<if test="sort != null">
+ 				and t.sort = #{sort}
+ 			</if>
+ 			<if test="leader != null">
+ 				and t.leader = #{leader}
+ 			</if>
+ 			<if test="leaderMobile != null">
+ 				and t.leader_mobile = #{leaderMobile}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+		order by t.parent_id, t.sort
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysDeptBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_dept t
+ 		<where>
+ 			<if test="idGtZero != null">
+ 				and t.id > 0
+ 			</if>
+		    <if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="parentId != null">
+ 				and t.parent_id = #{parentId}
+ 			</if>
+			<if test="ancestors != null and ancestors != ''">
+				and t.ancestors like concat('%', #{ancestors}, '%')
+			</if>
+ 			<if test="deptName != null">
+				and t.dept_name like concat('%', #{deptName}, '%')
+ 			</if>
+ 			<if test="sort != null">
+ 				and t.sort = #{sort}
+ 			</if>
+ 			<if test="leader != null">
+ 				and t.leader = #{leader}
+ 			</if>
+ 			<if test="leaderMobile != null">
+ 				and t.leader_mobile = #{leaderMobile}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+			<if test="searchStartTime != null ">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null ">
+				and t.create_time <![CDATA[<=]]>  #{searchEndTime}
+			</if>
+		</where>
+		order by t.parent_id, t.sort
+	</select>
+	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+		select  count(t.id) from t_sys_dept t
+		<where>
+ 			<if test="parentId != null">
+ 				and t.parent_id = #{parentId}
+ 			</if>
+			<if test="ancestors != null and ancestors != ''">
+				and t.ancestors like concat('%', #{ancestors}, '%')
+			</if>
+ 			<if test="deptName != null">
+ 				and t.dept_name = #{deptName}
+ 			</if>
+ 			<if test="sort != null">
+ 				and t.sort = #{sort}
+ 			</if>
+ 			<if test="leader != null">
+ 				and t.leader = #{leader}
+ 			</if>
+ 			<if test="leaderMobile != null">
+ 				and t.leader_mobile = #{leaderMobile}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Integer"  parameterType="com.github.platform.core.sys.domain.common.entity.SysDeptBase">
+		select  count(t.id) from t_sys_dept t
+		<where>
+			<if test="parentId != null">
+				and t.parent_id = #{parentId}
+			</if>
+			<if test="deptName != null">
+				and t.dept_name = #{deptName}
+			</if>
+			<if test="ancestors != null and ancestors != ''">
+				and t.ancestors like concat('%', #{ancestors}, '%')
+			</if>
+			<if test="leader != null">
+				and t.leader = #{leader}
+			</if>
+			<if test="leaderMobile != null">
+				and t.leader_mobile = #{leaderMobile}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="status != null">
+				and t.status = #{status}
+			</if>
+		</where>
+	</select>
+	<select id="isExistDept" resultType="java.lang.Integer">
+		select  count(t.id) from t_sys_dept t
+		    where t.parent_id = #{parentId} and t.dept_name = #{deptName}
+		<if test="id != null">
+			and t.id != #{id}
+		</if>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_dept  where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_dept
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

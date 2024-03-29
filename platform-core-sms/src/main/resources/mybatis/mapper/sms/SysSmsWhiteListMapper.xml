@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sms.SysSmsWhiteListMapper">
+
+	<resultMap type="com.github.platform.core.sms.domain.common.entity.SysSmsWhiteListBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="channel" property="channel" />
+		<id column="name" property="name" />
+		<id column="mobile" property="mobile" />
+		<id column="status" property="status" />
+		<id column="tenantId" property="tenantId" />
+		<id column="createTime" property="createTime" />
+		<id column="createBy" property="createBy" />
+		<id column="updateTime" property="updateTime" />
+		<id column="updateBy" property="updateBy" />
+		<id column="remark" property="remark" />
+
+    </resultMap>
+    <sql id="Base_Column_List">
+		t.id as id ,
+ 		t.channel as channel ,
+ 		t.name as name ,
+ 		t.mobile as mobile ,
+ 		t.status as status ,
+ 		t.tenant_id as tenantId ,
+ 		t.create_time as createTime ,
+ 		t.create_by as createBy ,
+ 		t.update_time as updateTime ,
+ 		t.update_by as updateBy ,
+ 		t.remark as remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsWhiteListBase">
+		insert into  t_sys_sms_white_list
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="channel != null">
+ 				channel,
+ 			</if>
+ 			<if test="name != null">
+ 				name,
+ 			</if>
+ 			<if test="mobile != null">
+ 				mobile,
+ 			</if>
+ 			<if test="status != null">
+ 				status,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time,
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="channel != null">
+ 				#{channel},
+ 			</if>
+ 			<if test="name != null">
+ 				#{name},
+ 			</if>
+ 			<if test="mobile != null">
+ 				#{mobile},
+ 			</if>
+ 			<if test="status != null">
+ 				#{status},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				#{updateTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				#{updateBy},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsWhiteListBase">
+		update   t_sys_sms_white_list
+ 		<set>
+ 			<if test="channel != null">
+ 				channel = #{channel},
+ 			</if>
+ 			<if test="name != null">
+ 				name = #{name},
+ 			</if>
+ 			<if test="mobile != null">
+ 				mobile = #{mobile},
+ 			</if>
+ 			<if test="status != null">
+ 				status = #{status},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id = #{tenantId},
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time = #{createTime},
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by = #{createBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time = #{updateTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by = #{updateBy},
+ 			</if>
+ 			<if test="remark != null">
+ 				remark = #{remark},
+ 			</if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_sms_white_list t where t.id=#{id}
+	</select>
+	<select id="findByMobile" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select <include refid="Base_Column_List" /> from t_sys_sms_white_list t where t.mobile = #{mobile}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_sms_white_list
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_sms_white_list t
+ 		<where>
+ 			<if test="id!= null">
+ 				and t.id =  #{id}
+ 			</if>
+ 			<if test="channel!= null">
+ 				and t.channel =  #{channel}
+ 			</if>
+ 			<if test="name!= null">
+ 				and t.name like concat('%',#{name},'%')
+ 			</if>
+ 			<if test="mobile!= null">
+ 				and t.mobile =  #{mobile}
+ 			</if>
+ 			<if test="status!= null">
+ 				and t.status =  #{status}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId},
+			</if>
+ 			<if test="createTime!= null">
+ 				and t.create_time =  #{createTime}
+ 			</if>
+ 			<if test="createBy!= null">
+ 				and t.create_by =  #{createBy}
+ 			</if>
+ 			<if test="updateTime!= null">
+ 				and t.update_time =  #{updateTime}
+ 			</if>
+ 			<if test="updateBy!= null">
+ 				and t.update_by =  #{updateBy}
+ 			</if>
+ 			<if test="remark!= null">
+ 				and t.remark =  #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsWhiteListBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_sms_white_list t
+ 		<where>
+ 			<if test="id!= null">
+ 				and t.id =  #{id}
+ 			</if>
+ 			<if test="channel!= null">
+ 				and t.channel =  #{channel}
+ 			</if>
+ 			<if test="name!= null">
+ 				and t.name like concat('%',#{name},'%')
+ 			</if>
+ 			<if test="mobile!= null">
+ 				and t.mobile =  #{mobile}
+ 			</if>
+ 			<if test="status!= null">
+ 				and t.status =  #{status}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId},
+			</if>
+ 			<if test="createTime!= null">
+ 				and t.create_time =  #{createTime}
+ 			</if>
+ 			<if test="createBy!= null">
+ 				and t.create_by =  #{createBy}
+ 			</if>
+ 			<if test="updateTime!= null">
+ 				and t.update_time =  #{updateTime}
+ 			</if>
+ 			<if test="updateBy!= null">
+ 				and t.update_by =  #{updateBy}
+ 			</if>
+ 			<if test="remark!= null">
+ 				and t.remark =  #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListCount" resultType="java.lang.Long"  parameterType="java.util.Map">
+		select  count(t.id) from t_sys_sms_white_list t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="channel != null">
+ 				and t.channel = #{channel}
+ 			</if>
+ 			<if test="name != null">
+ 				and t.name = #{name}
+ 			</if>
+ 			<if test="mobile != null">
+ 				and t.mobile = #{mobile}
+ 			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId},
+			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsWhiteListBase">
+		select  count(t.id) from t_sys_sms_white_list t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="channel != null">
+ 				and t.channel = #{channel}
+ 			</if>
+ 			<if test="name != null">
+ 				and t.name = #{name}
+ 			</if>
+ 			<if test="mobile != null">
+ 				and t.mobile = #{mobile}
+ 			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId},
+			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_sms_white_list where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_sms_white_list
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

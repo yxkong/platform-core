@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.code.CodeColumnConfigMapper">
+
+	 <resultMap type="com.github.platform.core.code.domain.common.entity.CodeColumnConfigBase" id="BaseResultMap">
+    	 <id column="id" property="id" /> 
+		  <id column="tableName" property="tableName" /> 
+		  <id column="columnName" property="columnName" /> 
+		  <id column="columnType" property="columnType" /> 
+		  <id column="dictName" property="dictName" /> 
+		  <id column="extra" property="extra" /> 
+		  <id column="queryShow" property="queryShow" />
+		  <id column="formShow" property="formShow" />
+		  <id column="formType" property="formType" />
+		  <id column="columnKey" property="columnKey" />
+		  <id column="listShow" property="listShow" /> 
+		  <id column="notNull" property="notNull" /> 
+		  <id column="queryType" property="queryType" /> 
+		  <id column="tenantId" property="tenantId" />
+		  <id column="status" property="status" /> 
+		  <id column="sort" property="sort" />
+		  <id column="createBy" property="createBy" />
+		  <id column="createTime" property="createTime" /> 
+		  <id column="updateBy" property="updateBy" /> 
+		  <id column="updateTime" property="updateTime" /> 
+		  <id column="remark" property="remark" /> 
+  
+    </resultMap>
+    <sql id="Base_Column_List">
+    	 t.id as id ,
+ 		 t.table_name as tableName ,
+ 		 t.column_name as columnName ,
+ 		 t.column_type as columnType ,
+ 		 t.dict_name as dictName ,
+ 		 t.extra as extra ,
+ 		 t.query_show as queryShow ,
+ 		 t.form_show as formShow ,
+ 		 t.form_type as formType ,
+ 		 t.column_key as columnKey ,
+ 		 t.list_show as listShow ,
+ 		 t.not_null as notNull ,
+ 		 t.query_type as queryType ,
+ 		 t.tenant_id as tenantId ,
+ 		 t.status as status ,
+ 		 t.sort as sort ,
+ 		 t.create_by as createBy ,
+ 		 t.create_time as createTime ,
+ 		 t.update_by as updateBy ,
+ 		 t.update_time as updateTime ,
+ 		 t.remark as remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.code.domain.common.entity.CodeColumnConfigBase">
+		insert into  t_code_column_config
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="tableName != null">
+ 				table_name,
+ 			</if>
+ 			<if test="columnName != null">
+ 				column_name,
+ 			</if>
+ 			<if test="columnType != null">
+ 				column_type,
+ 			</if>
+ 			<if test="dictName != null">
+ 				dict_name,
+ 			</if>
+ 			<if test="extra != null">
+ 				extra,
+ 			</if>
+			<if test="queryShow != null">
+				query_show,
+			</if>
+ 			<if test="formShow != null">
+ 				form_show,
+ 			</if>
+ 			<if test="formType != null">
+ 				form_type,
+ 			</if>
+ 			<if test="columnKey != null">
+ 				column_key,
+ 			</if>
+ 			<if test="listShow != null">
+ 				list_show,
+ 			</if>
+ 			<if test="notNull != null">
+ 				not_null,
+ 			</if>
+ 			<if test="queryType != null">
+ 				query_type,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="status != null">
+ 				status,
+ 			</if>
+			<if test="sort != null">
+				sort,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by,
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="tableName != null">
+ 				#{tableName},
+ 			</if>
+ 			<if test="columnName != null">
+ 				#{columnName},
+ 			</if>
+ 			<if test="columnType != null">
+ 				#{columnType},
+ 			</if>
+ 			<if test="dictName != null">
+ 				#{dictName},
+ 			</if>
+ 			<if test="extra != null">
+ 				#{extra},
+ 			</if>
+			<if test="queryShow != null">
+				#{queryShow},
+			</if>
+ 			<if test="formShow != null">
+ 				#{formShow},
+ 			</if>
+ 			<if test="formType != null">
+ 				#{formType},
+ 			</if>
+ 			<if test="columnKey != null">
+ 				#{columnKey},
+ 			</if>
+ 			<if test="listShow != null">
+ 				#{listShow},
+ 			</if>
+ 			<if test="notNull != null">
+ 				#{notNull},
+ 			</if>
+ 			<if test="queryType != null">
+ 				#{queryType},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="status != null">
+ 				#{status},
+ 			</if>
+			<if test="sort != null">
+ 				#{sort},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				#{updateBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				#{updateTime},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.code.domain.common.entity.CodeColumnConfigBase">
+		update   t_code_column_config
+ 		 <set>
+ 			 <if test="tableName != null">
+ 				table_name = #{tableName},
+ 			 </if>
+ 			 <if test="columnName != null">
+ 				column_name = #{columnName},
+ 			 </if>
+ 			 <if test="columnType != null">
+ 				column_type = #{columnType},
+ 			 </if>
+ 			 <if test="dictName != null">
+ 				dict_name = #{dictName},
+ 			 </if>
+ 			 <if test="extra != null">
+ 				extra = #{extra},
+ 			 </if>
+			 <if test="queryShow != null">
+				 query_show = #{queryShow},
+			 </if>
+ 			 <if test="formShow != null">
+ 				form_show = #{formShow},
+ 			 </if>
+ 			 <if test="formType != null">
+ 				form_type = #{formType},
+ 			 </if>
+ 			 <if test="columnKey != null">
+ 				column_key = #{columnKey},
+ 			 </if>
+ 			 <if test="listShow != null">
+ 				list_show = #{listShow},
+ 			 </if>
+ 			 <if test="notNull != null">
+ 				not_null = #{notNull},
+ 			 </if>
+ 			 <if test="queryType != null">
+ 				query_type = #{queryType},
+ 			 </if>
+ 			 <if test="tenantId != null">
+ 				tenant_id = #{tenantId},
+ 			 </if>
+ 			 <if test="status != null">
+ 				status = #{status},
+ 			 </if>
+			 <if test="sort != null">
+				 sort = #{sort},
+ 			 </if>
+ 			 <if test="createBy != null">
+ 				create_by = #{createBy},
+ 			 </if>
+ 			 <if test="createTime != null">
+ 				create_time = #{createTime},
+ 			 </if>
+ 			 <if test="updateBy != null">
+ 				update_by = #{updateBy},
+ 			 </if>
+ 			 <if test="updateTime != null">
+ 				update_time = #{updateTime},
+ 			 </if>
+ 			 <if test="remark != null">
+ 				remark = #{remark},
+ 			 </if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<update id="updateColumnsById" parameterType="java.util.List">
+		<foreach collection="list" item="item" separator=";">
+			update   t_code_column_config
+			<set>
+				<if test="item.columnType != null">
+					column_type = #{item.columnType},
+				</if>
+				<if test="item.dictName != null">
+					dict_name = #{item.dictName},
+				</if>
+				<if test="item.extra != null">
+					extra = #{item.extra},
+				</if>
+				<if test="item.queryShow != null">
+					query_show = #{item.queryShow},
+				</if>
+				<if test="item.formShow != null">
+					form_show = #{item.formShow},
+				</if>
+				<if test="item.formType != null">
+					form_type = #{item.formType},
+				</if>
+				<if test="item.columnKey != null">
+					column_key = #{item.columnKey},
+				</if>
+				<if test="item.listShow != null">
+					list_show = #{item.listShow},
+				</if>
+				<if test="item.notNull != null">
+					not_null = #{item.notNull},
+				</if>
+				<if test="item.queryType != null">
+					query_type = #{item.queryType},
+				</if>
+				<if test="item.sort != null">
+					sort = #{item.sort},
+				</if>
+			</set>
+			where id = #{item.id}
+		</foreach>
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_code_column_config t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_code_column_config
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_code_column_config t
+ 		<where>
+ 			<if test="tableName != null">
+ 				and t.table_name = #{tableName}
+ 			</if>
+ 			<if test="columnName != null">
+ 				and t.column_name = #{columnName}
+ 			</if>
+ 			<if test="columnType != null">
+ 				and t.column_type = #{columnType}
+ 			</if>
+ 			<if test="dictName != null">
+ 				and t.dict_name = #{dictName}
+ 			</if>
+ 			<if test="extra != null">
+ 				and t.extra = #{extra}
+ 			</if>
+			<if test="queryShow != null">
+				and t.query_show = #{queryShow},
+			</if>
+ 			<if test="formShow != null">
+ 				and t.form_show = #{formShow}
+ 			</if>
+ 			<if test="formType != null">
+ 				and t.form_type = #{formType}
+ 			</if>
+ 			<if test="columnKey != null">
+ 				and t.column_key = #{columnKey}
+ 			</if>
+ 			<if test="listShow != null">
+ 				and t.list_show = #{listShow}
+ 			</if>
+ 			<if test="notNull != null">
+ 				and t.not_null = #{notNull}
+ 			</if>
+ 			<if test="queryType != null">
+ 				and t.query_type = #{queryType}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+		</where>
+		order by t.sort
+	</select>
+	<select id="findListByTableName" resultMap="BaseResultMap" parameterType="java.lang.String">
+	select
+	<include refid="Base_Column_List" />
+	from t_code_column_config t where  t.table_name = #{tableName}  order by t.sort
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.code.domain.common.entity.CodeColumnConfigBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_code_column_config t
+ 		<where>
+ 			<if test="tableName != null">
+				and t.table_name  like concat('%', #{tableName}, '%')
+ 			</if>
+ 			<if test="columnName != null">
+				and t.column_name = #{columnName}
+ 			</if>
+ 			<if test="columnType != null">
+ 				and t.column_type = #{columnType}
+ 			</if>
+ 			<if test="dictName != null">
+ 				and t.dict_name = #{dictName}
+ 			</if>
+ 			<if test="extra != null">
+ 				and t.extra = #{extra}
+ 			</if>
+			<if test="queryShow != null">
+				and t.query_show = #{queryShow},
+			</if>
+ 			<if test="formShow != null">
+ 				and t.form_show = #{formShow}
+ 			</if>
+ 			<if test="formType != null">
+ 				and t.form_type = #{formType}
+ 			</if>
+ 			<if test="columnKey != null">
+ 				and t.column_key = #{columnKey}
+ 			</if>
+ 			<if test="listShow != null">
+ 				and t.list_show = #{listShow}
+ 			</if>
+ 			<if test="notNull != null">
+ 				and t.not_null = #{notNull}
+ 			</if>
+ 			<if test="queryType != null">
+ 				and t.query_type = #{queryType}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+		</where>
+		order by t.sort
+	</select>
+	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+		select  count(t.id) from t_code_column_config t
+		<where>
+ 			<if test="tableName != null">
+ 				and t.table_name = #{tableName}
+ 			</if>
+ 			<if test="columnName != null">
+ 				and t.column_name = #{columnName}
+ 			</if>
+ 			<if test="columnType != null">
+ 				and t.column_type = #{columnType}
+ 			</if>
+ 			<if test="dictName != null">
+ 				and t.dict_name = #{dictName}
+ 			</if>
+ 			<if test="extra != null">
+ 				and t.extra = #{extra}
+ 			</if>
+			<if test="queryShow != null">
+				and t.query_show = #{queryShow},
+			</if>
+ 			<if test="formShow != null">
+ 				and t.form_show = #{formShow}
+ 			</if>
+ 			<if test="formType != null">
+ 				and t.form_type = #{formType}
+ 			</if>
+ 			<if test="columnKey != null">
+ 				and t.column_key = #{columnKey}
+ 			</if>
+ 			<if test="listShow != null">
+ 				and t.list_show = #{listShow}
+ 			</if>
+ 			<if test="notNull != null">
+ 				and t.not_null = #{notNull}
+ 			</if>
+ 			<if test="queryType != null">
+ 				and t.query_type = #{queryType}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Integer"  parameterType="com.github.platform.core.code.domain.common.entity.CodeColumnConfigBase">
+		select  count(t.id) from t_code_column_config t
+		<where>
+ 			<if test="tableName != null">
+ 				and t.table_name = #{tableName}
+ 			</if>
+ 			<if test="columnName != null">
+ 				and t.column_name = #{columnName}
+ 			</if>
+ 			<if test="columnType != null">
+ 				and t.column_type = #{columnType}
+ 			</if>
+ 			<if test="dictName != null">
+ 				and t.dict_name = #{dictName}
+ 			</if>
+ 			<if test="extra != null">
+ 				and t.extra = #{extra}
+ 			</if>
+			<if test="queryShow != null">
+				and t.query_show = #{queryShow},
+			</if>
+ 			<if test="formShow != null">
+ 				and t.form_show = #{formShow}
+ 			</if>
+ 			<if test="formType != null">
+ 				and t.form_type = #{formType}
+ 			</if>
+ 			<if test="columnKey != null">
+ 				and t.column_key = #{columnKey}
+ 			</if>
+ 			<if test="listShow != null">
+ 				and t.list_show = #{listShow}
+ 			</if>
+ 			<if test="notNull != null">
+ 				and t.not_null = #{notNull}
+ 			</if>
+ 			<if test="queryType != null">
+ 				and t.query_type = #{queryType}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_code_column_config where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_code_column_config
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+	<delete id="deleteByTableName">
+		delete from t_code_column_config where table_name = #{tableName}
+	</delete>
+</mapper>

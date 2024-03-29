@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sys.SysDictTypeMapper">
+
+	 <resultMap type="com.github.platform.core.sys.domain.common.entity.SysDictTypeBase" id="BaseResultMap">
+    	 <id column="id" property="id" />
+		  <id column="name" property="name" />
+		  <id column="type" property="type" />
+		  <id column="classify" property="classify" />
+		  <id column="charType" property="charType" />
+		  <id column="tenant_id" property="tenantId" />
+		  <id column="status" property="status" />
+		  <id column="createBy" property="createBy" />
+		  <id column="createTime" property="createTime" />
+		  <id column="updateBy" property="updateBy" />
+		  <id column="updateTime" property="updateTime" />
+		  <id column="remark" property="remark" />
+
+    </resultMap>
+    <sql id="Base_Column_List">
+    	 t.id as id ,
+ 		 t.name as name ,
+ 		 t.type as type ,
+		 t.classify as classify ,
+ 		 t.char_type as charType ,
+ 		 t.tenant_id as tenantId ,
+ 		 t.status as status ,
+ 		 t.create_by as createBy ,
+ 		 t.create_time as createTime ,
+ 		 t.update_by as updateBy ,
+ 		 t.update_time as updateTime ,
+ 		 t.remark as remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysDictTypeBase">
+		insert into  t_sys_dict_type
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="name != null">
+ 				name,
+ 			</if>
+ 			<if test="type != null">
+ 				type,
+ 			</if>
+			<if test="classify != null">
+				classify,
+			</if>
+			<if test="charType != null">
+				char_type,
+			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="status != null">
+ 				status,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by,
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="name != null">
+ 				#{name},
+ 			</if>
+ 			<if test="type != null">
+ 				#{type},
+ 			</if>
+			<if test="classify != null">
+				#{classify},
+			</if>
+			<if test="charType != null">
+				#{charType},
+			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="status != null">
+ 				#{status},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				#{updateBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				#{updateTime},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sys.domain.common.entity.SysDictTypeBase">
+		update   t_sys_dict_type
+ 		 <set>
+ 			 <if test="name != null and name !=''">
+ 				name = #{name},
+ 			 </if>
+ 			 <if test="type != null and type != ''">
+ 				type = #{type},
+ 			 </if>
+			 <if test="classify != null">
+				 classify = #{classify},
+			 </if>
+			 <if test="charType != null and charType !=''">
+				char_type = #{charType},
+			 </if>
+			 <if test="tenantId != null">
+				 tenant_id = #{tenantId},
+			 </if>
+ 			 <if test="status != null">
+ 				status = #{status},
+ 			 </if>
+ 			 <if test="createBy != null">
+ 				create_by = #{createBy},
+ 			 </if>
+ 			 <if test="createTime != null">
+ 				create_time = #{createTime},
+ 			 </if>
+ 			 <if test="updateBy != null">
+ 				update_by = #{updateBy},
+ 			 </if>
+ 			 <if test="updateTime != null">
+ 				update_time = #{updateTime},
+ 			 </if>
+ 			 <if test="remark != null">
+ 				remark = #{remark},
+ 			 </if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_dict_type t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_dict_type
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysDictTypeBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_dict_type t
+ 		<where>
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="name != null">
+ 				and t.name  like concat ('%',#{name},'%')
+ 			</if>
+ 			<if test="type != null">
+ 				and t.type = #{type}
+ 			</if>
+			<if test="classify!= null">
+				and t.classify =  #{classify}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+			<if test="searchStartTime != null and searchStartTime != ''"><!-- 开始时间检索 -->
+				and t.create_time <![CDATA[>=]]>  #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null and searchEndTime != ''"><!-- 结束时间检索 -->
+				and t.create_time <![CDATA[<=]]>  #{searchEndTime}
+			</if>
+		</where>
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_dict_type  where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_dict_type
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+
+	<select id="checkDictTypeUnique" parameterType="String" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" /> from t_sys_dict_type t
+		where t.type = #{type} limit 1
+	</select>
+    <select id="isExistDictTypeInsert" resultType="java.lang.Integer">
+		select count(1) from t_sys_dict_type t
+		where  t.type = #{type} or t.name = #{name}
+	</select>
+	<select id="isExistDictTypeUpdate" resultType="java.lang.Integer">
+		select count(1) from t_sys_dict_type t
+	    where t.id != #{id} and  t.name = #{name}
+	</select>
+</mapper>

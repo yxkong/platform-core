@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.code.ColumnsMapper">
+
+	 <resultMap type="com.github.platform.core.persistence.entity.code.ColumnsBase" id="BaseResultMap">
+		  <id column="tableSchema" property="tableSchema" />
+		  <id column="tableName" property="tableName" />
+		  <id column="columnName" property="columnName" />
+		  <id column="isNullable" property="isNullable" />
+		  <id column="dataType" property="dataType" />
+		  <id column="columnComment" property="columnComment" />
+		  <id column="columnKey" property="columnKey" />
+		  <id column="extra" property="extra" />
+	 </resultMap>
+    <sql id="Base_Column_List">
+ 		 t.table_schema as tableSchema ,
+ 		 t.table_name as tableName ,
+ 		 t.column_name as columnName ,
+ 		 t.is_nullable as isNullable ,
+ 		 t.data_type as dataType ,
+ 		 t.column_comment as columnComment ,
+		 t.column_key as columnKey,
+ 		 t.extra as extra
+    </sql>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.persistence.entity.code.ColumnsBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from information_schema.columns t
+		<where>
+			<if test="tableSchema != null">
+				and t.table_schema = #{tableSchema}
+			</if>
+			<if test="tableSchema == null">
+				and t.table_schema = (select database())
+			</if>
+			<if test="tableName != null">
+				and t.table_name = #{tableName}
+			</if>
+		</where>
+	</select>
+</mapper>

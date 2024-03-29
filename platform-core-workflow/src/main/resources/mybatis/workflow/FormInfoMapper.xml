@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.workflow.FormInfoMapper">
+
+	<resultMap type="com.github.platform.core.workflow.domain.common.entity.FormInfoBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="formNo" property="formNo" />
+		<id column="type" property="type" />
+		<id column="label" property="label" />
+		<id column="name" property="name" />
+		<id column="len" property="len" />
+		<id column="required" property="required" />
+		<id column="sort" property="sort" />
+		<id column="optionName" property="optionName" />
+		<id column="status" property="status" />
+		<id column="defaultVal" property="defaultVal" />
+		<id column="tenantId" property="tenantId" />
+		<id column="createTime" property="createTime" />
+		<id column="updateTime" property="updateTime" />
+		<id column="updateBy" property="updateBy" />
+		<id column="createBy" property="createBy" />
+		<id column="remark" property="remark" />
+    </resultMap>
+    <sql id="BaseColumnList">
+		t.id,
+		t.form_no as formNo,
+		t.type,
+		t.label,
+		t.name,
+		t.len,
+		t.required,
+		t.sort,
+		t.option_name as optionName,
+		t.status,
+		t.default_val as defaultVal,
+		t.tenant_id as tenantId,
+		t.create_time as createTime,
+		t.update_time as updateTime,
+		t.update_by as updateBy,
+		t.create_by as createBy,
+		t.remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyColumn="id" parameterType="com.github.platform.core.workflow.domain.common.entity.FormInfoBase">
+		insert into t_flw_form_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null ">
+				id,
+			</if>
+			<if test="formNo != null  and formNo != ''">
+				form_no,
+			</if>
+			<if test="type != null  and type != ''">
+				`type`,
+			</if>
+			<if test="label != null  and label != ''">
+				label,
+			</if>
+			<if test="name != null  and name != ''">
+				name,
+			</if>
+			<if test="len != null ">
+				len,
+			</if>
+			<if test="required != null ">
+				required,
+			</if>
+			<if test="sort != null ">
+				sort,
+			</if>
+			<if test="optionName != null  and optionName != ''">
+				option_name,
+			</if>
+			<if test="status != null ">
+				status,
+			</if>
+			<if test="defaultVal != null  and defaultVal != ''">
+				default_val,
+			</if>
+			<if test="tenantId != null ">
+				tenant_id,
+			</if>
+			<if test="createTime != null ">
+				create_time,
+			</if>
+			<if test="updateTime != null ">
+				update_time,
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				update_by,
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				create_by,
+			</if>
+			<if test="remark != null  and remark != ''">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null ">
+				#{id},
+			</if>
+			<if test="formNo != null  and formNo != ''">
+				#{formNo},
+			</if>
+			<if test="type != null  and type != ''">
+				#{type},
+			</if>
+			<if test="label != null  and label != ''">
+				#{label},
+			</if>
+			<if test="name != null  and name != ''">
+				#{name},
+			</if>
+			<if test="len != null ">
+				#{len},
+			</if>
+			<if test="required != null ">
+				#{required},
+			</if>
+			<if test="sort != null ">
+				#{sort},
+			</if>
+			<if test="optionName != null  and optionName != ''">
+				#{optionName},
+			</if>
+			<if test="status != null ">
+				#{status},
+			</if>
+			<if test="defaultVal != null  and defaultVal != ''">
+				#{defaultVal},
+			</if>
+			<if test="tenantId != null ">
+				#{tenantId},
+			</if>
+			<if test="createTime != null ">
+				#{createTime},
+			</if>
+			<if test="updateTime != null ">
+				#{updateTime},
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				#{updateBy},
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				#{createBy},
+			</if>
+			<if test="remark != null  and remark != ''">
+				#{remark},
+			</if>
+		</trim>
+	</insert>
+	<insert id="insertList"  parameterType="java.util.List">
+		insert into  t_flw_form_info
+		(form_no,`type`,label,name,len,required,sort,default_val,option_name,status,tenant_id,create_by)
+		values
+		<foreach item="item"  collection="list"  separator=","  >
+		(#{item.formNo},#{item.type},#{item.label},#{item.name},#{item.len},#{item.required},#{item.sort},#{item.defaultVal},#{item.optionName},#{item.status},#{item.tenantId},#{item.createBy})
+		</foreach>
+	</insert>
+	<update id="updateById" parameterType="com.github.platform.core.workflow.domain.common.entity.FormInfoBase">
+		update t_flw_form_info
+		<set>
+			<if test="formNo != null  and formNo != ''">
+				form_no = #{formNo},
+			</if>
+			<if test="type != null  and type != ''">
+				`type` = #{type},
+			</if>
+			<if test="label != null  and label != ''">
+				label = #{label},
+			</if>
+			<if test="name != null  and name != ''">
+				name = #{name},
+			</if>
+			<if test="len != null ">
+				len = #{len},
+			</if>
+			<if test="required != null ">
+				required = #{required},
+			</if>
+			<if test="sort != null ">
+				sort = #{sort},
+			</if>
+			<if test="optionName != null  and optionName != ''">
+				option_name = #{optionName},
+			</if>
+			<if test="status != null ">
+				status = #{status},
+			</if>
+			<if test="defaultVal != null  and defaultVal != ''">
+				default_val = #{defaultVal},
+			</if>
+			<if test="tenantId != null ">
+				tenant_id = #{tenantId},
+			</if>
+			<if test="createTime != null ">
+				create_time = #{createTime},
+			</if>
+			<if test="updateTime != null ">
+				update_time = #{updateTime},
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				update_by = #{updateBy},
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				create_by = #{createBy},
+			</if>
+			<if test="remark != null  and remark != ''">
+				remark = #{remark},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	<update id="updateList" parameterType="java.util.List">
+		<foreach collection="list" item="item" separator=";">
+			UPDATE t_flw_form_info
+			<set>
+				<if test="item.type != null and item.type != ''">`type` = <![CDATA[#{item.type}]]>,</if>
+				<if test="item.label != null and item.label != ''">label = <![CDATA[#{item.label}]]>,</if>
+				<if test="item.name != null and item.name != ''">name = <![CDATA[#{item.name}]]>,</if>
+				<if test="item.len != null">len = #{item.len},</if>
+				<if test="item.required != null">required = #{item.required},</if>
+				<if test="item.sort != null">sort = #{item.sort},</if>
+				<if test="item.defaultVal != null and item.defaultVal != ''">default_val = <![CDATA[#{item.defaultVal}]]>,</if>
+				<if test="item.optionName != null and item.optionName != ''">option_name = <![CDATA[#{item.optionName}]]>,</if>
+				<if test="item.status != null">status = #{item.status},</if>
+				<if test="item.updateBy != null and item.updateBy != ''">update_by = <![CDATA[#{item.updateBy}]]>,</if>
+			</set>
+			WHERE id = #{item.id}
+		</foreach>
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_flw_form_info t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_flw_form_info t
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+		<include refid="BaseColumnList" />
+		from t_flw_form_info t
+		<where>
+			<if test="id != null ">
+				and t.id = #{id}
+			</if>
+			<if test="formNo != null  and formNo != ''">
+				and t.form_no = #{formNo}
+			</if>
+			<if test="type != null  and type != ''">
+				and t.type = #{type}
+			</if>
+			<if test="label != null  and label != ''">
+				and t.label = #{label}
+			</if>
+			<if test="name != null  and name != ''">
+				and t.name = #{name}
+			</if>
+			<if test="len != null ">
+				and t.len = #{len}
+			</if>
+			<if test="required != null ">
+				and t.required = #{required}
+			</if>
+			<if test="sort != null ">
+				and t.sort = #{sort}
+			</if>
+			<if test="optionName != null  and optionName != ''">
+				and t.option_name = #{optionName}
+			</if>
+			<if test="status != null ">
+				and t.status = #{status}
+			</if>
+			<if test="tenantId != null ">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.workflow.domain.common.entity.FormInfoBase">
+		select 
+		<include refid="BaseColumnList" />
+		from t_flw_form_info t
+		<where>
+			<if test="id != null ">
+				and t.id = #{id}
+			</if>
+			<if test="formNo != null  and formNo != ''">
+				and t.form_no = #{formNo}
+			</if>
+			<if test="type != null  and type != ''">
+				and t.type = #{type}
+			</if>
+			<if test="label != null  and label != ''">
+				and t.label = #{label}
+			</if>
+			<if test="name != null  and name != ''">
+				and t.name = #{name}
+			</if>
+			<if test="len != null ">
+				and t.len = #{len}
+			</if>
+			<if test="required != null ">
+				and t.required = #{required}
+			</if>
+			<if test="sort != null ">
+				and t.sort = #{sort}
+			</if>
+			<if test="optionName != null  and optionName != ''">
+				and t.option_name = #{optionName}
+			</if>
+			<if test="status != null ">
+				and t.status = #{status}
+			</if>
+			<if test="tenantId != null ">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findListCount" resultType="java.lang.Long"  parameterType="java.util.Map">
+		select count(t.id) from t_flw_form_info t
+		<where>
+			<if test="id != null ">
+				and t.id = #{id}
+			</if>
+			<if test="formNo != null  and formNo != ''">
+				and t.form_no = #{formNo}
+			</if>
+			<if test="type != null  and type != ''">
+				and t.type = #{type}
+			</if>
+			<if test="label != null  and label != ''">
+				and t.label = #{label}
+			</if>
+			<if test="name != null  and name != ''">
+				and t.name = #{name}
+			</if>
+			<if test="len != null ">
+				and t.len = #{len}
+			</if>
+			<if test="required != null ">
+				and t.required = #{required}
+			</if>
+			<if test="sort != null ">
+				and t.sort = #{sort}
+			</if>
+			<if test="optionName != null  and optionName != ''">
+				and t.option_name = #{optionName}
+			</if>
+			<if test="status != null ">
+				and t.status = #{status}
+			</if>
+			<if test="tenantId != null ">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="createTime != null ">
+				and t.create_time = #{createTime}
+			</if>
+			<if test="updateTime != null ">
+				and t.update_time = #{updateTime}
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="remark != null  and remark != ''">
+				and t.remark = #{remark}
+			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.workflow.domain.common.entity.FormInfoBase">
+		select count(t.id) from t_flw_form_info t
+		<where>
+			<if test="id != null ">
+				and t.id = #{id}
+			</if>
+			<if test="formNo != null  and formNo != ''">
+				and t.form_no = #{formNo}
+			</if>
+			<if test="type != null  and type != ''">
+				and t.type = #{type}
+			</if>
+			<if test="label != null  and label != ''">
+				and t.label = #{label}
+			</if>
+			<if test="name != null  and name != ''">
+				and t.name = #{name}
+			</if>
+			<if test="len != null ">
+				and t.len = #{len}
+			</if>
+			<if test="required != null ">
+				and t.required = #{required}
+			</if>
+			<if test="sort != null ">
+				and t.sort = #{sort}
+			</if>
+			<if test="optionName != null  and optionName != ''">
+				and t.option_name = #{optionName}
+			</if>
+			<if test="status != null ">
+				and t.status = #{status}
+			</if>
+			<if test="tenantId != null ">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="createTime != null ">
+				and t.create_time = #{createTime}
+			</if>
+			<if test="updateTime != null ">
+				and t.update_time = #{updateTime}
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				and t.update_by = #{updateBy}
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				and t.create_by = #{createBy}
+			</if>
+			<if test="remark != null  and remark != ''">
+				and t.remark = #{remark}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_flw_form_info where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_flw_form_info
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

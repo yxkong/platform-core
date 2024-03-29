@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sys.SysRoleMapper">
+
+	 <resultMap type="com.github.platform.core.sys.domain.common.entity.SysRoleBase" id="BaseResultMap">
+    	 <id column="id" property="id" /> 
+		  <id column="name" property="name" /> 
+		  <id column="key" property="key" /> 
+		  <id column="sort" property="sort" /> 
+		  <id column="dataScope" property="dataScope" /> 
+		  <id column="tenantId" property="tenantId" />
+		  <id column="status" property="status" /> 
+		  <id column="createBy" property="createBy" />
+		  <id column="createTime" property="createTime" /> 
+		  <id column="updateBy" property="updateBy" /> 
+		  <id column="updateTime" property="updateTime" /> 
+		  <id column="remark" property="remark" /> 
+  
+    </resultMap>
+    <sql id="Base_Column_List">
+    	 t.id as id ,
+ 		 t.name as `name` ,
+ 		 t.key as `key` ,
+ 		 t.sort as sort ,
+ 		 t.data_scope as dataScope ,
+ 		 t.tenant_id as tenantId ,
+ 		 t.status as status ,
+ 		 t.create_by as createBy ,
+ 		 t.create_time as createTime ,
+ 		 t.update_by as updateBy ,
+ 		 t.update_time as updateTime ,
+ 		 t.remark as remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysRoleBase">
+		insert into  t_sys_role
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="name != null">
+ 				name,
+ 			</if>
+ 			<if test="key != null">
+ 				`key`,
+ 			</if>
+ 			<if test="sort != null">
+ 				sort,
+ 			</if>
+ 			<if test="dataScope != null">
+ 				data_scope,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="status != null">
+ 				status,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by,
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="name != null">
+ 				#{name},
+ 			</if>
+ 			<if test="key != null">
+ 				#{key},
+ 			</if>
+ 			<if test="sort != null">
+ 				#{sort},
+ 			</if>
+ 			<if test="dataScope != null">
+ 				#{dataScope},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="status != null">
+ 				#{status},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				#{updateBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				#{updateTime},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sys.domain.common.entity.SysRoleBase">
+		update   t_sys_role
+ 		 <set>
+ 			 <if test="name != null and name != ''">
+ 				name = #{name},
+ 			 </if>
+ 			 <if test="key != null and key != ''">
+ 				`key` = #{key},
+ 			 </if>
+ 			 <if test="sort != null">
+ 				sort = #{sort},
+ 			 </if>
+ 			 <if test="dataScope != null and dataScope != ''">
+ 				data_scope = #{dataScope},
+ 			 </if>
+ 			 <if test="tenantId != null">
+ 				tenant_id = #{tenantId},
+ 			 </if>
+ 			 <if test="status != null">
+ 				status = #{status},
+ 			 </if>
+ 			 <if test="createBy != null">
+ 				create_by = #{createBy},
+ 			 </if>
+ 			 <if test="createTime != null">
+ 				create_time = #{createTime},
+ 			 </if>
+ 			 <if test="updateBy != null">
+ 				update_by = #{updateBy},
+ 			 </if>
+ 			 <if test="updateTime != null">
+ 				update_time = #{updateTime},
+ 			 </if>
+ 			 <if test="remark != null">
+ 				remark = #{remark},
+ 			 </if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_role t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_role t
+		<where>
+			<foreach item="id"  collection="ids" open="t.id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysRoleBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_role t
+		<where>
+			<if test="id != null">
+				and t.id = #{id}
+			</if>
+			<if test="name != null">
+				and t.name  like concat ('%',#{name},'%')
+			</if>
+			<if test="key != null">
+				and t.key = #{key}
+			</if>
+			<if test="sort != null">
+				and t.sort = #{sort}
+			</if>
+			<if test="dataScope != null">
+				and t.data_scope = #{dataScope}
+			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="status != null">
+				and t.status = #{status}
+			</if>
+			<if test="searchStartTime != null ">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null ">
+				and t.create_time <![CDATA[<=]]>  #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findByNameOrKeyAndTenant" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/>
+		    from t_sys_role t
+			where (t.name = #{name} or t.key=#{key}) and t.tenant_id = #{tenantId} ;
+	</select>
+	<select id="findByExist" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/>
+		from t_sys_role t
+		where t.id != #{id} and  (t.name = #{name} or t.key=#{key}) and t.tenant_id = #{tenantId} ;
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_role where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_role
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</if>
+	</delete>
+</mapper>

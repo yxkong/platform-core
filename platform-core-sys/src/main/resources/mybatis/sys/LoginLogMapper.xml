@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sys.LoginLogMapper">
+
+	<resultMap type="com.github.platform.core.sys.domain.common.entity.SysLoginLogBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="requestIp" property="requestIp" />
+		<id column="loginWay" property="loginWay" />
+		<id column="loginLocation" property="loginLocation" />
+		<id column="browser" property="browser" />
+		<id column="token" property="token" />
+		<id column="os" property="os" />
+		<id column="status" property="status" />
+		<id column="message" property="message" />
+		<id column="tenantId" property="tenantId" />
+		<id column="createBy" property="createBy" />
+		<id column="createTime" property="createTime" />
+		<id column="remark" property="remark" />
+
+    </resultMap>
+    <sql id="Base_Column_List">
+		t.id as id ,
+ 		t.request_ip as requestIp ,
+ 		t.login_way as loginWay ,
+ 		t.login_location as loginLocation ,
+ 		t.browser as browser ,
+ 		t.token as token ,
+ 		t.os as os ,
+ 		t.status as status ,
+ 		t.message as message ,
+ 		t.tenant_id as tenantId ,
+ 		t.create_by as createBy ,
+ 		t.create_time as createTime ,
+ 		t.remark as remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysLoginLogBase">
+		insert into  t_sys_login_log
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="requestIp != null">
+ 				request_ip,
+ 			</if>
+ 			<if test="loginWay != null">
+ 				login_way,
+ 			</if>
+ 			<if test="loginLocation != null">
+ 				login_location,
+ 			</if>
+ 			<if test="browser != null">
+ 				browser,
+ 			</if>
+ 			<if test="token != null">
+ 				token,
+ 			</if>
+ 			<if test="os != null">
+ 				os,
+ 			</if>
+ 			<if test="status != null">
+ 				status,
+ 			</if>
+ 			<if test="message != null">
+ 				message,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="requestIp != null">
+ 				#{requestIp},
+ 			</if>
+ 			<if test="loginWay != null">
+ 				#{loginWay},
+ 			</if>
+ 			<if test="loginLocation != null">
+ 				#{loginLocation},
+ 			</if>
+ 			<if test="browser != null">
+ 				#{browser},
+ 			</if>
+ 			<if test="token != null">
+ 				#{token},
+ 			</if>
+ 			<if test="os != null">
+ 				#{os},
+ 			</if>
+ 			<if test="status != null">
+ 				#{status},
+ 			</if>
+ 			<if test="message != null">
+ 				#{message},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sys.domain.common.entity.SysLoginLogBase">
+		update   t_sys_login_log
+ 		<set>
+ 			<if test="requestIp != null">
+ 				request_ip = #{requestIp},
+ 			</if>
+ 			<if test="loginWay != null">
+ 				login_way = #{loginWay},
+ 			</if>
+ 			<if test="loginLocation != null">
+ 				login_location = #{loginLocation},
+ 			</if>
+ 			<if test="browser != null">
+ 				browser = #{browser},
+ 			</if>
+ 			<if test="token != null">
+ 				token = #{token},
+ 			</if>
+ 			<if test="os != null">
+ 				os = #{os},
+ 			</if>
+ 			<if test="status != null">
+ 				status = #{status},
+ 			</if>
+ 			<if test="message != null">
+ 				message = #{message},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id = #{tenantId},
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by = #{createBy},
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time = #{createTime},
+ 			</if>
+ 			<if test="remark != null">
+ 				remark = #{remark},
+ 			</if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_login_log t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_login_log
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_login_log t
+ 		<where>
+ 			<if test="id!= null">
+ 				and t.id =  #{id}
+ 			</if>
+ 			<if test="requestIp!= null">
+ 				and t.request_ip =  #{requestIp}
+ 			</if>
+ 			<if test="loginWay!= null">
+ 				and t.login_way =  #{loginWay}
+ 			</if>
+ 			<if test="status!= null">
+ 				and t.status =  #{status}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="createBy!= null">
+ 				and t.create_by  like concat('%',#{createBy},'%')
+ 			</if>
+			<if test="searchStartTime != null ">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null ">
+				and t.create_time <![CDATA[<=]]>  #{searchEndTime}
+			</if>
+		</where>
+		order by id desc
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysLoginLogBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_login_log t
+ 		<where>
+ 			<if test="id!= null">
+ 				and t.id =  #{id}
+ 			</if>
+ 			<if test="requestIp!= null">
+ 				and t.request_ip =  #{requestIp}
+ 			</if>
+ 			<if test="loginWay!= null">
+ 				and t.login_way =  #{loginWay}
+ 			</if>
+ 			<if test="loginLocation!= null">
+ 				and t.login_location =  #{loginLocation}
+ 			</if>
+ 			<if test="browser!= null">
+ 				and t.browser =  #{browser}
+ 			</if>
+ 			<if test="status!= null">
+ 				and t.status =  #{status}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="createBy!= null">
+				and t.create_by  like concat('%',#{createBy},'%')
+			</if>
+			<if test="searchStartTime != null ">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null ">
+				and t.create_time <![CDATA[<=]]>  #{searchEndTime}
+			</if>
+		</where>
+		order by id desc
+	</select>
+	<select id="findListCount" resultType="java.lang.Long"  parameterType="java.util.Map">
+		select  count(t.id) from t_sys_login_log t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="requestIp != null">
+ 				and t.request_ip = #{requestIp}
+ 			</if>
+ 			<if test="loginWay != null">
+ 				and t.login_way = #{loginWay}
+ 			</if>
+ 			<if test="loginLocation != null">
+ 				and t.login_location = #{loginLocation}
+ 			</if>
+ 			<if test="browser != null">
+ 				and t.browser = #{browser}
+ 			</if>
+ 			<if test="token != null">
+ 				and t.token = #{token}
+ 			</if>
+ 			<if test="os != null">
+ 				and t.os = #{os}
+ 			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="message != null">
+ 				and t.message = #{message}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="searchStartTime != null ">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null ">
+				and t.create_time <![CDATA[<=]]>  #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.sys.domain.common.entity.SysLoginLogBase">
+		select  count(t.id) from t_sys_login_log t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="requestIp != null">
+ 				and t.request_ip = #{requestIp}
+ 			</if>
+ 			<if test="loginWay != null">
+ 				and t.login_way = #{loginWay}
+ 			</if>
+ 			<if test="loginLocation != null">
+ 				and t.login_location = #{loginLocation}
+ 			</if>
+ 			<if test="browser != null">
+ 				and t.browser = #{browser}
+ 			</if>
+ 			<if test="token != null">
+ 				and t.token = #{token}
+ 			</if>
+ 			<if test="os != null">
+ 				and t.os = #{os}
+ 			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="message != null">
+ 				and t.message = #{message}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+			<if test="searchStartTime != null ">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null ">
+				and t.create_time <![CDATA[<=]]>  #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_login_log where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_login_log
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sys.SysUserLogMapper">
+
+	 <resultMap type="com.github.platform.core.sys.domain.common.entity.SysUserLogBase" id="BaseResultMap">
+    	 <id column="id" property="id" /> 
+		  <id column="loginName" property="loginName" /> 
+		  <id column="bizType" property="bizType" /> 
+		  <id column="requestIp" property="requestIp" /> 
+		  <id column="tenantId" property="tenantId" />
+		  <id column="createTime" property="createTime" /> 
+		  <id column="createBy" property="createBy" /> 
+  
+    </resultMap>
+    <sql id="Base_Column_List">
+    	 t.id as id ,
+ 		 t.login_name as loginName ,
+ 		 t.biz_type as bizType ,
+ 		 t.request_ip as requestIp ,
+ 		 t.tenant_id as tenantId ,
+ 		 t.create_time as createTime ,
+ 		 t.create_by as createBy
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysUserLogBase">
+		insert into  t_sys_user_log
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="loginName != null">
+ 				login_name,
+ 			</if>
+ 			<if test="bizType != null">
+ 				biz_type,
+ 			</if>
+ 			<if test="requestIp != null">
+ 				request_ip,
+ 			</if>
+ 			<if test="tenantId != null">
+				tenant_id,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="loginName != null">
+ 				#{loginName},
+ 			</if>
+ 			<if test="bizType != null">
+ 				#{bizType},
+ 			</if>
+ 			<if test="requestIp != null">
+ 				#{requestIp},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sys.domain.common.entity.SysUserLogBase">
+		update   t_sys_user_log
+ 		 <set>
+ 			 <if test="loginName != null">
+ 				login_name = #{loginName},
+ 			 </if>
+ 			 <if test="bizType != null">
+ 				biz_type = #{bizType},
+ 			 </if>
+ 			 <if test="requestIp != null">
+ 				request_ip = #{requestIp},
+ 			 </if>
+ 			 <if test="tenantId != null">
+ 				tenant_id = #{tenantId},
+ 			 </if>
+ 			 <if test="createTime != null">
+ 				create_time = #{createTime},
+ 			 </if>
+ 			 <if test="createBy != null">
+ 				create_by = #{createBy},
+ 			 </if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_user_log t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_user_log
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_user_log t
+ 		<where>
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="loginName != null">
+ 				and t.login_name = #{loginName}
+ 			</if>
+ 			<if test="bizType != null">
+ 				and t.biz_type = #{bizType}
+ 			</if>
+ 			<if test="requestIp != null">
+ 				and t.request_ip = #{requestIp}
+ 			</if>
+ 			<if test="tenantId != null">
+ 				and t.tenant_id = #{tenantId}
+ 			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysUserLogBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_user_log t
+ 		<where>
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="loginName != null">
+ 				and t.login_name = #{loginName}
+ 			</if>
+ 			<if test="bizType != null">
+ 				and t.biz_type = #{bizType}
+ 			</if>
+ 			<if test="requestIp != null">
+ 				and t.request_ip = #{requestIp}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+		select  count(t.id) from t_sys_user_log t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="loginName != null">
+ 				and t.login_name = #{loginName}
+ 			</if>
+ 			<if test="bizType != null">
+ 				and t.biz_type = #{bizType}
+ 			</if>
+ 			<if test="requestIp != null">
+ 				and t.request_ip = #{requestIp}
+ 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_user_log where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_user_log
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

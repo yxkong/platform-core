@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sms.SysSmsTemplateMapper">
+
+	<resultMap type="com.github.platform.core.sms.domain.common.entity.SysSmsTemplateBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="tempNo" property="tempNo" />
+		<id column="smsType" property="smsType" />
+		<id column="name" property="name" />
+		<id column="signName" property="signName" />
+		<id column="content" property="content" />
+		<id column="routeType" property="routeType" />
+		<id column="proNo" property="proNo" />
+		<id column="type" property="type" />
+		<id column="useTimeType" property="useTimeType" />
+		<id column="workInterval" property="workInterval" />
+		<id column="holidayInterval" property="holidayInterval" />
+		<id column="applyName" property="applyName" />
+		<id column="applyUrl" property="applyUrl" />
+		<id column="applyReason" property="applyReason" />
+		<id column="tenantId" property="tenantId" />
+		<id column="status" property="status" />
+		<id column="createTime" property="createTime" />
+		<id column="createBy" property="createBy" />
+		<id column="updateTime" property="updateTime" />
+		<id column="updateBy" property="updateBy" />
+		<id column="remark" property="remark" />
+
+    </resultMap>
+    <sql id="Base_Column_List">
+		t.id as id ,
+ 		t.temp_no as tempNo ,
+ 		t.sms_type as smsType ,
+ 		t.name as name ,
+ 		t.sign_name as signName ,
+ 		t.content as content ,
+ 		t.route_type as routeType ,
+ 		t.pro_no as proNo ,
+ 		t.type as type ,
+ 		t.use_time_type as useTimeType ,
+ 		t.work_interval as workInterval ,
+ 		t.holiday_interval as holidayInterval ,
+ 		t.apply_name as applyName ,
+ 		t.apply_url as applyUrl ,
+ 		t.apply_reason as applyReason ,
+ 		t.tenant_id as tenantId ,
+ 		t.status as status ,
+ 		t.create_time as createTime ,
+ 		t.create_by as createBy ,
+ 		t.update_time as updateTime ,
+ 		t.update_by as updateBy ,
+ 		t.remark as remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsTemplateBase">
+		insert into  t_sys_sms_template
+		<trim prefix="(" suffix=")" suffixOverrides=","> 
+ 			<if test="id != null">
+ 				id,
+ 			</if>
+ 			<if test="tempNo != null">
+ 				temp_no,
+ 			</if>
+ 			<if test="smsType != null">
+ 				sms_type,
+ 			</if>
+ 			<if test="name != null">
+ 				name,
+ 			</if>
+ 			<if test="signName != null">
+ 				sign_name,
+ 			</if>
+ 			<if test="content != null">
+ 				content,
+ 			</if>
+			<if test="routeType != null and routeType != ''">
+ 				route_type,
+ 			</if>
+			<if test="proNo != null and proNo != ''">
+ 				pro_no,
+ 			</if>
+			<if test="type != null">
+ 				type,
+ 			</if>
+ 			<if test="useTimeType != null">
+ 				use_time_type,
+ 			</if>
+ 			<if test="workInterval != null">
+ 				work_interval,
+ 			</if>
+ 			<if test="holidayInterval != null">
+ 				holiday_interval,
+ 			</if>
+ 			<if test="applyName != null">
+ 				apply_name,
+ 			</if>
+ 			<if test="applyUrl != null">
+ 				apply_url,
+ 			</if>
+ 			<if test="applyReason != null">
+ 				apply_reason,
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id,
+ 			</if>
+ 			<if test="status != null">
+ 				status,
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time,
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by,
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time,
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by,
+ 			</if>
+ 			<if test="remark != null">
+ 				remark,
+ 			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+ 			<if test="id != null">
+ 				#{id},
+ 			</if>
+ 			<if test="tempNo != null">
+ 				#{tempNo},
+ 			</if>
+ 			<if test="smsType != null">
+ 				#{smsType},
+ 			</if>
+ 			<if test="name != null">
+ 				#{name},
+ 			</if>
+ 			<if test="signName != null">
+ 				#{signName},
+ 			</if>
+ 			<if test="content != null">
+ 				#{content},
+ 			</if>
+			<if test="routeType != null and routeType != ''">
+				#{routeType},
+			</if>
+			<if test="proNo != null and proNo != ''">
+				#{proNo},
+			</if>
+ 			<if test="type != null">
+ 				#{type},
+ 			</if>
+ 			<if test="useTimeType != null">
+ 				#{useTimeType},
+ 			</if>
+ 			<if test="workInterval != null">
+ 				#{workInterval},
+ 			</if>
+ 			<if test="holidayInterval != null">
+ 				#{holidayInterval},
+ 			</if>
+ 			<if test="applyName != null">
+ 				#{applyName},
+ 			</if>
+ 			<if test="applyUrl != null">
+ 				#{applyUrl},
+ 			</if>
+ 			<if test="applyReason != null">
+ 				#{applyReason},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				#{tenantId},
+ 			</if>
+ 			<if test="status != null">
+ 				#{status},
+ 			</if>
+ 			<if test="createTime != null">
+ 				#{createTime},
+ 			</if>
+ 			<if test="createBy != null">
+ 				#{createBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				#{updateTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				#{updateBy},
+ 			</if>
+ 			<if test="remark != null">
+ 				#{remark},
+ 			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsTemplateBase">
+		update   t_sys_sms_template
+ 		<set>
+ 			<if test="tempNo != null">
+ 				temp_no = #{tempNo},
+ 			</if>
+ 			<if test="smsType != null">
+ 				sms_type = #{smsType},
+ 			</if>
+ 			<if test="name != null">
+ 				name = #{name},
+ 			</if>
+ 			<if test="signName != null">
+ 				sign_name = #{signName},
+ 			</if>
+ 			<if test="content != null">
+ 				content = #{content},
+ 			</if>
+		    <if test="routeType != null and routeType != ''">
+			    route_type = #{routeType},
+		    </if>
+		    <if test="proNo != null and proNo != ''">
+			    pro_no = #{proNo},
+		    </if>
+ 			<if test="type != null">
+ 				type = #{type},
+ 			</if>
+ 			<if test="useTimeType != null">
+ 				use_time_type = #{useTimeType},
+ 			</if>
+ 			<if test="workInterval != null">
+ 				work_interval = #{workInterval},
+ 			</if>
+ 			<if test="holidayInterval != null">
+ 				holiday_interval = #{holidayInterval},
+ 			</if>
+ 			<if test="applyName != null">
+ 				apply_name = #{applyName},
+ 			</if>
+ 			<if test="applyUrl != null">
+ 				apply_url = #{applyUrl},
+ 			</if>
+ 			<if test="applyReason != null">
+ 				apply_reason = #{applyReason},
+ 			</if>
+ 			<if test="tenantId != null">
+ 				tenant_id = #{tenantId},
+ 			</if>
+ 			<if test="status != null">
+ 				status = #{status},
+ 			</if>
+ 			<if test="createTime != null">
+ 				create_time = #{createTime},
+ 			</if>
+ 			<if test="createBy != null">
+ 				create_by = #{createBy},
+ 			</if>
+ 			<if test="updateTime != null">
+ 				update_time = #{updateTime},
+ 			</if>
+ 			<if test="updateBy != null">
+ 				update_by = #{updateBy},
+ 			</if>
+ 			<if test="remark != null">
+ 				remark = #{remark},
+ 			</if>
+ 		 </set>
+     where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_sms_template t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="Base_Column_List" /> from t_sys_sms_template
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_sms_template t
+ 		<where>
+ 			<if test="id!= null">
+ 				and t.id =  #{id}
+ 			</if>
+ 			<if test="tempNo!= null">
+ 				and t.temp_no =  #{tempNo}
+ 			</if>
+ 			<if test="smsType!= null">
+ 				and t.sms_type =  #{smsType}
+ 			</if>
+ 			<if test="name!= null">
+ 				and t.name  like concat('%',#{name},'%')
+ 			</if>
+ 			<if test="signName!= null">
+ 				and t.sign_name =  #{signName}
+ 			</if>
+ 			<if test="content!= null">
+ 				and t.content =  #{content}
+ 			</if>
+ 			<if test="type!= null">
+ 				and t.type =  #{type}
+ 			</if>
+ 			<if test="useTimeType!= null">
+ 				and t.use_time_type =  #{useTimeType}
+ 			</if>
+ 			<if test="workInterval!= null">
+ 				and t.work_interval =  #{workInterval}
+ 			</if>
+ 			<if test="holidayInterval!= null">
+ 				and t.holiday_interval =  #{holidayInterval}
+ 			</if>
+ 			<if test="applyName!= null">
+ 				and t.apply_name =  #{applyName}
+ 			</if>
+ 			<if test="applyUrl!= null">
+ 				and t.apply_url =  #{applyUrl}
+ 			</if>
+ 			<if test="applyReason!= null">
+ 				and t.apply_reason =  #{applyReason}
+ 			</if>
+ 			<if test="tenantId!= null">
+ 				and t.tenant_id =  #{tenantId}
+ 			</if>
+ 			<if test="status!= null">
+ 				and t.status =  #{status}
+ 			</if>
+ 			<if test="createTime!= null">
+ 				and t.create_time =  #{createTime}
+ 			</if>
+ 			<if test="createBy!= null">
+ 				and t.create_by =  #{createBy}
+ 			</if>
+ 			<if test="updateTime!= null">
+ 				and t.update_time =  #{updateTime}
+ 			</if>
+ 			<if test="updateBy!= null">
+ 				and t.update_by =  #{updateBy}
+ 			</if>
+ 			<if test="remark!= null">
+ 				and t.remark =  #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsTemplateBase">
+		select 
+ 		<include refid="Base_Column_List" />
+ 		from t_sys_sms_template t
+ 		<where>
+ 			<if test="id!= null">
+ 				and t.id =  #{id}
+ 			</if>
+ 			<if test="tempNo!= null">
+ 				and t.temp_no =  #{tempNo}
+ 			</if>
+ 			<if test="smsType!= null">
+ 				and t.sms_type =  #{smsType}
+ 			</if>
+ 			<if test="name!= null">
+ 				and t.name  like concat('%',#{name},'%')
+ 			</if>
+ 			<if test="signName!= null">
+ 				and t.sign_name =  #{signName}
+ 			</if>
+ 			<if test="content!= null">
+ 				and t.content =  #{content}
+ 			</if>
+ 			<if test="type!= null">
+ 				and t.type =  #{type}
+ 			</if>
+ 			<if test="useTimeType!= null">
+ 				and t.use_time_type =  #{useTimeType}
+ 			</if>
+ 			<if test="workInterval!= null">
+ 				and t.work_interval =  #{workInterval}
+ 			</if>
+ 			<if test="holidayInterval!= null">
+ 				and t.holiday_interval =  #{holidayInterval}
+ 			</if>
+ 			<if test="applyName!= null">
+ 				and t.apply_name =  #{applyName}
+ 			</if>
+ 			<if test="applyUrl!= null">
+ 				and t.apply_url =  #{applyUrl}
+ 			</if>
+ 			<if test="applyReason!= null">
+ 				and t.apply_reason =  #{applyReason}
+ 			</if>
+ 			<if test="tenantId!= null">
+ 				and t.tenant_id =  #{tenantId}
+ 			</if>
+ 			<if test="status!= null">
+ 				and t.status =  #{status}
+ 			</if>
+ 			<if test="createTime!= null">
+ 				and t.create_time =  #{createTime}
+ 			</if>
+ 			<if test="createBy!= null">
+ 				and t.create_by =  #{createBy}
+ 			</if>
+ 			<if test="updateTime!= null">
+ 				and t.update_time =  #{updateTime}
+ 			</if>
+ 			<if test="updateBy!= null">
+ 				and t.update_by =  #{updateBy}
+ 			</if>
+ 			<if test="remark!= null">
+ 				and t.remark =  #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListCount" resultType="java.lang.Long"  parameterType="java.util.Map">
+		select  count(t.id) from t_sys_sms_template t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="tempNo != null">
+ 				and t.temp_no = #{tempNo}
+ 			</if>
+ 			<if test="smsType != null">
+ 				and t.sms_type = #{smsType}
+ 			</if>
+ 			<if test="name != null">
+ 				and t.name = #{name}
+ 			</if>
+ 			<if test="signName != null">
+ 				and t.sign_name = #{signName}
+ 			</if>
+ 			<if test="content != null">
+ 				and t.content = #{content}
+ 			</if>
+ 			<if test="type != null">
+ 				and t.type = #{type}
+ 			</if>
+ 			<if test="useTimeType != null">
+ 				and t.use_time_type = #{useTimeType}
+ 			</if>
+ 			<if test="workInterval != null">
+ 				and t.work_interval = #{workInterval}
+ 			</if>
+ 			<if test="holidayInterval != null">
+ 				and t.holiday_interval = #{holidayInterval}
+ 			</if>
+ 			<if test="applyName != null">
+ 				and t.apply_name = #{applyName}
+ 			</if>
+ 			<if test="applyUrl != null">
+ 				and t.apply_url = #{applyUrl}
+ 			</if>
+ 			<if test="applyReason != null">
+ 				and t.apply_reason = #{applyReason}
+ 			</if>
+ 			<if test="tenantId != null">
+ 				and t.tenant_id = #{tenantId}
+ 			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsTemplateBase">
+		select  count(t.id) from t_sys_sms_template t
+		<where> 
+ 			<if test="id != null">
+ 				and t.id = #{id}
+ 			</if>
+ 			<if test="tempNo != null">
+ 				and t.temp_no = #{tempNo}
+ 			</if>
+ 			<if test="smsType != null">
+ 				and t.sms_type = #{smsType}
+ 			</if>
+ 			<if test="name != null">
+ 				and t.name = #{name}
+ 			</if>
+ 			<if test="signName != null">
+ 				and t.sign_name = #{signName}
+ 			</if>
+ 			<if test="content != null">
+ 				and t.content = #{content}
+ 			</if>
+ 			<if test="type != null">
+ 				and t.type = #{type}
+ 			</if>
+ 			<if test="useTimeType != null">
+ 				and t.use_time_type = #{useTimeType}
+ 			</if>
+ 			<if test="workInterval != null">
+ 				and t.work_interval = #{workInterval}
+ 			</if>
+ 			<if test="holidayInterval != null">
+ 				and t.holiday_interval = #{holidayInterval}
+ 			</if>
+ 			<if test="applyName != null">
+ 				and t.apply_name = #{applyName}
+ 			</if>
+ 			<if test="applyUrl != null">
+ 				and t.apply_url = #{applyUrl}
+ 			</if>
+ 			<if test="applyReason != null">
+ 				and t.apply_reason = #{applyReason}
+ 			</if>
+ 			<if test="tenantId != null">
+ 				and t.tenant_id = #{tenantId}
+ 			</if>
+ 			<if test="status != null">
+ 				and t.status = #{status}
+ 			</if>
+ 			<if test="createTime != null">
+ 				and t.create_time = #{createTime}
+ 			</if>
+ 			<if test="createBy != null">
+ 				and t.create_by = #{createBy}
+ 			</if>
+ 			<if test="updateTime != null">
+ 				and t.update_time = #{updateTime}
+ 			</if>
+ 			<if test="updateBy != null">
+ 				and t.update_by = #{updateBy}
+ 			</if>
+ 			<if test="remark != null">
+ 				and t.remark = #{remark}
+ 			</if>
+		</where>
+	</select>
+	<select id="findByTempNo" resultType="com.github.platform.core.sms.domain.common.entity.SysSmsTemplateBase">
+		select <include refid="Base_Column_List" /> from t_sys_sms_template t where t.temp_no = #{tempNo}
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_sms_template where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_sms_template
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>
