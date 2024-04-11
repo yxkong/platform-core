@@ -10,8 +10,9 @@ import com.github.platform.core.dingtalk.infra.configuration.DingProperties;
 import com.github.platform.core.dingtalk.infra.rpc.external.DingBaseFeignClient;
 import com.github.platform.core.dingtalk.infra.rpc.external.DingContactFeignClient;
 import com.github.platform.core.dingtalk.infra.rpc.external.DingIMFeignClient;
-import com.github.platform.core.dingtalk.infra.rpc.external.command.DingAccessTokenCmd;
+import com.github.platform.core.dingtalk.infra.rpc.external.command.DingAppAccessTokenCmd;
 import com.github.platform.core.dingtalk.infra.rpc.external.command.DingCreateGroupCmd;
+import com.github.platform.core.dingtalk.infra.rpc.external.command.DingGroupUserCmd;
 import com.github.platform.core.dingtalk.infra.rpc.external.command.DingSendMessageCmd;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.*;
 import com.github.platform.core.dingtalk.infra.rpc.external.query.DingDeptQuery;
@@ -20,11 +21,15 @@ import com.github.platform.core.dingtalk.infra.rpc.external.query.DingUserQuery;
 import com.github.platform.core.dingtalk.infra.service.IDingTalkService;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -53,8 +58,8 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
         if(StringUtils.isNotEmpty(token)){
             return token;
         }
-        DingAccessTokenCmd cmd = new DingAccessTokenCmd(dingProperties.getAppKey(),dingProperties.getAppSecret());
-        DingAccessTokenDto result = baseFeignClient.getToken(cmd);
+        DingAppAccessTokenCmd cmd = new DingAppAccessTokenCmd(dingProperties.getAppKey(),dingProperties.getAppSecret());
+        DingAppAccessTokenDto result = baseFeignClient.getAccessToken(cmd);
 
         if(Objects.isNull(result)){
             exception("1000","获取accessToken异常！");
@@ -182,4 +187,21 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
         }
         return false;
     }
+
+    @Override
+    public Pair<Boolean,String> groupUserOpt(String groupId, List<String> users, Boolean isAdd) {
+        if (StringUtils.isEmpty(groupId) || CollectionUtil.isEmpty(users)){
+            return Pair.of(false,"groupId或users 为空");
+        }
+        String token = getAccessToken();
+        DingGroupUserCmd cmd = DingGroupUserCmd.builder().openConversationId(groupId).userIds(String.join(SymbolConstant.comma, users)).build();
+        DingResultBean dingResultBean = null;
+        if (isAdd){
+            dingResultBean = imFeignClient.groupAddUser(token, cmd);
+        } else {
+            dingResultBean = imFeignClient.groupDeleteUser(token, cmd);
+        }
+        return Pair.of(dingResultBean.isSuc(),dingResultBean.getMsg());
+    }
+
 }

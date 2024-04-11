@@ -68,6 +68,11 @@ public class SysMenuBase extends BaseAdminEntity   {
     @Schema(description = "菜单图标")
     protected String icon;
 
+
+    @JsonIgnore
+    public boolean isGiveTenantMenu(){
+        return MenuConstant.GIVE_TENANT_YES.equals(this.giveTenant);
+    }
     @JsonIgnore
     public Boolean isMenuTree(){
         return isMenu() || isDir();

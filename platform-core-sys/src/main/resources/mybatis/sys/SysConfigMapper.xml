@@ -17,7 +17,7 @@
 		  <id column="remark" property="remark" /> 
   
     </resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
     	 t.id as id ,
  		 t.name as name ,
  		 t.`key` as `key` ,
@@ -152,10 +152,10 @@
      where id = #{id}
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_config t where t.id=#{Id}
+		select <include refid="BaseColumnList" /> from t_sys_config t where t.id=#{Id}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_config
+		select <include refid="BaseColumnList" /> from t_sys_config
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
 				#{id}
@@ -165,7 +165,7 @@
 	</select>
 	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_config t
  		<where>
  			<if test="id != null">
@@ -199,7 +199,7 @@
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysConfigBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_config t
  		<where>
  			<if test="id != null">

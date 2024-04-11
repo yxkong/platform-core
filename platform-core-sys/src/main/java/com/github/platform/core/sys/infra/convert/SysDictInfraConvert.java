@@ -44,7 +44,7 @@ public interface SysDictInfraConvert {
     */
     @Mappings({
             @Mapping(target = "strId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getId()))"),
-            @Mapping(target = "id", expression = "java(null)"),
+            
     })
     SysDictDto toDto(SysDictBase entity);
     @Mappings({

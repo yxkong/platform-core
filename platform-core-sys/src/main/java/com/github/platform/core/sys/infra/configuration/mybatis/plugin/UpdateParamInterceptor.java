@@ -18,7 +18,7 @@ import java.util.Properties;
 /**
  * insert or update 前给入参中的entCode、createTime、updateTime赋值
  *
- * @author navyzhung
+ * @author yxkong
  * @date 2021/7/2-11:03
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -28,7 +28,7 @@ import java.util.Properties;
         @Signature(type = Executor.class, method = "createCacheKey", args = {MappedStatement.class, Object.class, RowBounds.class, BoundSql.class})*/
 }
 )
-public class UpdateParamInterceptor extends InterceptorBase implements Interceptor {
+public class UpdateParamInterceptor extends InterceptorBase{
 
 
 

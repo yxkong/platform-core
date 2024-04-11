@@ -22,17 +22,12 @@ import java.util.List;
 public class SysUserDto extends SysUserBase{
     @Schema(description ="部门名称")
     private String deptName;
-    /**
-     * 用户角色ID列表
-     */
-    @Schema(description ="用户角色ID列表,使用逗号分割")
-    private String roleIdStr;
 
     /**
-     * 用户角色ID列表
+     * 用户角色列表
      */
-    @Schema(description ="用户角色ID列表")
-    private List<Long> roleIds;
+    @Schema(description ="用户角色列表")
+    private List<String> roleKeys;
     @Schema(description ="用户角色名称列表")
     private String roleNameStr;
 }

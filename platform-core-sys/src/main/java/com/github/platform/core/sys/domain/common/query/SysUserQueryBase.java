@@ -1,13 +1,10 @@
 package com.github.platform.core.sys.domain.common.query;
 
 import com.github.platform.core.common.entity.query.PageQueryBaseEntity;
-import com.github.platform.core.standard.validate.Other;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import javax.validation.constraints.NotNull;
 
 /**
 * 用户信息查询基类
@@ -38,8 +35,6 @@ public class SysUserQueryBase extends PageQueryBaseEntity {
     @Schema(description ="手机号")
     private String mobile;
 
-    @Schema(description ="角色id")
-    private Long roleId;
     @Schema(description ="角色key")
     private String roleKey;
 

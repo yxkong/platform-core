@@ -5,7 +5,7 @@ import com.github.platform.core.common.configuration.property.PlatformProperties
 import com.github.platform.core.common.constant.PropertyConstant;
 import com.github.platform.core.common.constant.SpringBeanNameConstant;
 import com.github.platform.core.common.constant.SpringBeanOrderConstant;
-import com.github.platform.core.common.service.DefaultDomainEventService;
+import com.github.platform.core.common.service.DefaultDomainEventServiceImpl;
 import com.github.platform.core.common.service.IDomainEventService;
 import com.github.platform.core.common.service.IPublishService;
 import com.github.platform.core.common.service.impl.EventPublishServiceImpl;
@@ -17,11 +17,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * springboot相关的扩展点
@@ -60,11 +58,11 @@ public class SpringBootConfiguration {
     @Order(SpringBeanOrderConstant.DOMAIN_SERVICE_DEFAULT)
     @ConditionalOnMissingBean(IDomainEventService.class)
     public IDomainEventService domainEventService(ApplicationContext applicationContext){
-        return new DefaultDomainEventService(applicationContext);
+        return new DefaultDomainEventServiceImpl(applicationContext);
     }
 
     /**
-     * 发布服务，默认实现
+     * 系统事件，发布服务，默认实现
      * @param applicationContext
      * @return
      */

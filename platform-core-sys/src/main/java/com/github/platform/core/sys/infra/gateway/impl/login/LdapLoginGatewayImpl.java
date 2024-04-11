@@ -57,11 +57,13 @@ public class LdapLoginGatewayImpl extends BaseGatewayImpl implements ISysLoginGa
         if (innerUsers.contains(context.getLoginName())){
             return loginGateway.login(context);
         }
+        //TODO 这里也需要根据租户路由到不同的配置
         Pair<Boolean, ThirdUserEntity> validate = ldapService.validate(context.getLoginName(), context.getPwd());
         if (!validate.getLeft()){
             exception(SysInfraResultEnum.LDAP_LOGIN_FAIL);
         }
         ThirdUserEntity ldapUser = validate.getRight();
+        //设置租户
         ldapUser.setTenantId(context.getTenantId());
         //查找三方用户
         SysThirdUserDto thirdUser =  thirdUserGateway.findByChannel(ldapUser.getOpenId(),ldapUser.getChannel());
@@ -91,8 +93,9 @@ public class LdapLoginGatewayImpl extends BaseGatewayImpl implements ISysLoginGa
                 .userName(ldapUser.getUserName())
                 .email(ldapUser.getEmail())
                 .deptId(DeptConstant.DEFAULT_ID)
-                .roleIds(RoleConstant.thirdRole)
+                .roleKeys(RoleConstant.thirdRole)
                 .logBizTypeEnum(UserLogBizTypeEnum.third)
+                .tenantId(ldapUser.getTenantId())
                 .status(StatusEnum.OFF.getStatus())
                 .createBy(ldapUser.getLoginName())
                 .createTime(LocalDateTimeUtil.dateTime())

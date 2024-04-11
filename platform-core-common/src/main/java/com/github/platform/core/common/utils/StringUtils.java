@@ -5,6 +5,7 @@ import com.github.platform.core.common.constant.Constants;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.Objects;
 import java.util.Random;
@@ -199,7 +200,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     // @.+?[\\s:]
     public final static Pattern REFERER_PATTERN = Pattern.compile("@([^@^\\s^:]{1,})([\\s\\:\\,\\;]{0,1})");
 
-    private static Random randGen = new Random();
+    private static SecureRandom randGen = new SecureRandom();
     private static char[] numbers = ("0123456789").toCharArray();
     private static char[] numbersAndLetters = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*").toCharArray();
 
@@ -345,7 +346,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 将驼峰风格替换为下划线风格
      */
-    public static String camelhumpToUnderline(String str) {
+    public static String camelHumpToUnderline(String str) {
         Matcher matcher = PATTERN.matcher(str);
         StringBuilder builder = new StringBuilder(str);
 
@@ -375,7 +376,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @createDate 2015年12月29日
      * @updateDate
      */
-    public static String underlineToCamelhump(String str) {
+    public static String underlineToCamelHump(String str) {
         Matcher matcher = PATTERN.matcher(str);
         StringBuilder builder = new StringBuilder(str);
         for (int i = 0; matcher.find(); i++) {
@@ -478,6 +479,27 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < length; ++i) {
             sb.append(numbersAndLetters[randGen.nextInt(numbersAndLetters.length)]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 生成16位的traceId
+     * @return
+     */
+    public static String generateTraceId(){
+        return generateTraceId(16);
+    }
+
+    /**
+     * 生成制定长度的traceId
+     * @param length
+     * @return
+     */
+    public static String generateTraceId(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(Integer.toHexString(randGen.nextInt(16)));
         }
         return sb.toString();
     }

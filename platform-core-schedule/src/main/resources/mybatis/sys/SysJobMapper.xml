@@ -242,12 +242,6 @@
 			<if test="status != null">
 				status = #{status},
 			</if>
-			<if test="createTime != null">
-				create_time = #{createTime},
-			</if>
-			<if test="createBy != null">
-				create_by = #{createBy},
-			</if>
 			<if test="updateTime != null">
 				update_time = #{updateTime},
 			</if>
@@ -271,64 +265,6 @@
 			</foreach>
 		</where>
 		limit 200
-	</select>
-	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select 
-		<include refid="BaseColumnList" />
-		from t_sys_job t
-		<where>
-			<if test="id != null">
-				and t.id = #{id}
-			</if>
-			<if test="name != null">
-				and t.name = #{name}
-			</if>
-			<if test="beanName != null">
-				and t.bean_name = #{beanName}
-			</if>
-		    <if test="jobType != null">
-				and t.job_type = #{jobType}
-			</if>
-			<if test="handlerParam != null">
-				and t.handler_param = #{handlerParam}
-			</if>
-			<if test="cronExpression != null">
-				and t.cron_expression = #{cronExpression}
-			</if>
-			<if test="startDate != null">
-				and t.start_date = #{startDate}
-			</if>
-			<if test="endDate != null">
-				and t.end_date = #{endDate}
-			</if>
-			<if test="retryCount != null">
-				and t.retry_count = #{retryCount}
-			</if>
-			<if test="retryInterval != null">
-				and t.retry_interval = #{retryInterval}
-			</if>
-			<if test="monitorTimeout != null">
-				and t.monitor_timeout = #{monitorTimeout}
-			</if>
-			<if test="tenantId != null">
-				and t.tenant_id = #{tenantId}
-			</if>
-			<if test="status != null">
-				and t.status = #{status}
-			</if>
-			<if test="createBy != null">
-				and t.create_by = #{createBy}
-			</if>
-			<if test="updateBy != null">
-				and t.update_by = #{updateBy}
-			</if>
-			<if test="searchStartTime != null">
-				and t.create_time <![CDATA[>=]]> #{searchStartTime}
-			</if>
-			<if test="searchEndTime != null">
-				and t.create_time <![CDATA[<=]]> #{searchEndTime}
-			</if>
-		</where>
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.schedule.domain.common.entity.SysJobBase">
 		select 
@@ -388,68 +324,6 @@
 			</if>
 			<if test="searchEndTime != null">
 				and t.create_time <![CDATA[<=]]> #{searchEndTime}
-			</if>
-		</where>
-	</select>
-	<select id="findListCount" resultType="java.lang.Long"  parameterType="java.util.Map">
-		select count(t.id) from t_sys_job t
-		<where>
-			<if test="id != null">
-				and t.id = #{id}
-			</if>
-			<if test="name != null">
-				and t.name = #{name}
-			</if>
-			<if test="beanName != null">
-				and t.bean_name = #{beanName}
-			</if>
-			<if test="jobType != null">
-				and t.job_type = #{jobType}
-			</if>
-			<if test="handlerParam != null">
-				and t.handler_param = #{handlerParam}
-			</if>
-			<if test="cronExpression != null">
-				and t.cron_expression = #{cronExpression}
-			</if>
-			<if test="startDate != null">
-				and t.start_date = #{startDate}
-			</if>
-			<if test="endDate != null">
-				and t.end_date = #{endDate}
-			</if>
-			<if test="retryCount != null">
-				and t.retry_count = #{retryCount}
-			</if>
-			<if test="retryInterval != null">
-				and t.retry_interval = #{retryInterval}
-			</if>
-			<if test="monitorTimeout != null">
-				and t.monitor_timeout = #{monitorTimeout}
-			</if>
-			<if test="jobStatus != null">
-				and t.job_status = #{jobStatus}
-			</if>
-			<if test="tenantId != null">
-				and t.tenant_id = #{tenantId}
-			</if>
-			<if test="status != null">
-				and t.status = #{status}
-			</if>
-			<if test="createTime != null">
-				and t.create_time = #{createTime}
-			</if>
-			<if test="createBy != null">
-				and t.create_by = #{createBy}
-			</if>
-			<if test="updateTime != null">
-				and t.update_time = #{updateTime}
-			</if>
-			<if test="updateBy != null">
-				and t.update_by = #{updateBy}
-			</if>
-			<if test="remark != null">
-				and t.remark = #{remark}
 			</if>
 		</where>
 	</select>

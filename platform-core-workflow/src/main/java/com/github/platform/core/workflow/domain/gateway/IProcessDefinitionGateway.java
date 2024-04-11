@@ -65,7 +65,7 @@ public interface IProcessDefinitionGateway {
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = {CacheConstant.c8h}, key = "'wf:d:' + #context.processNo",allEntries = true, cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = {CacheConstant.c8h}, key = "'wf:d:' + #context.tenantId+':'+#context.type", cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = {CacheConstant.c8h}, key = "'wf:d:' + #context.tenantId+':'+#context.processType", cacheManager = CacheConstant.cacheManager),
             }
     )
     Pair<Boolean, ProcessDefinitionDto> update(ProcessDefinitionContext context);

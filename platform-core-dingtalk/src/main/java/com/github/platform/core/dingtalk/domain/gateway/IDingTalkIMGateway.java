@@ -1,5 +1,7 @@
 package com.github.platform.core.dingtalk.domain.gateway;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.List;
 
 /**
@@ -38,4 +40,14 @@ public interface IDingTalkIMGateway {
      * @return
      */
     boolean sendProcessMessage(String groupId,String title, String nodeKey,String desc);
+
+
+    /**
+     * 群人员操作
+     * @param groupId
+     * @param users
+     * @param isAdd  是否添加
+     * @return
+     */
+    Pair<Boolean,String> groupUserOpt(String groupId, List<String> users, Boolean isAdd);
 }

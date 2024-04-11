@@ -36,7 +36,7 @@ public interface SysThirdUserInfraConvert {
     @Mappings({
             @Mapping(target = "userIdStr", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getUserId()))"),
             @Mapping(target = "strId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getId()))"),
-            @Mapping(target = "id", expression = "java(null)"),
+            
             @Mapping(target = "userId", expression = "java(null)")
     })
     SysThirdUserDto toDto(SysThirdUserBase entity);

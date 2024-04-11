@@ -37,6 +37,21 @@ public interface SysRoleMapper  {
 	* @return
 	*/
 	List<SysRoleBase> findByIds(@Param("ids") Long[] ids);
+
+	/**
+	 * 根据keys查询角色
+	 * @param roleKeys
+	 * @return
+	 */
+	List<SysRoleBase> findByKeys(@Param("roleKeys") String[] roleKeys,@Param("tenantId") Integer tenantId);
+
+	/**
+	 * 根据角色key查询
+	 * @param roleKey
+	 * @param tenantId
+	 * @return
+	 */
+	SysRoleBase findByKey(@Param("roleKey") String roleKey,@Param("tenantId")Integer tenantId);
 	/**
 	* 通过实体查询
 	* @param record

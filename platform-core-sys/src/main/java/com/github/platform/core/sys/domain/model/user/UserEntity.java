@@ -81,9 +81,9 @@ public class UserEntity implements Serializable {
      */
     private LocalDateTime registerTime;
     /**
-     * 默认角色id，如果存在，表示走的默认角色
+     * 默认角色标识，如果存在，表示走的默认角色,只有登录的时候有用
      */
-    private Set<Long> defaultRoles;
+    private Set<String> defaultRoles;
 
     /**
      * 判断用户输入密码和库里报错的密码是否一致

@@ -31,7 +31,7 @@ public interface ProcessInstanceInfraConvert {
     */
     @Mappings({
             @Mapping(target = "strId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getId()))"),
-            @Mapping(target = "id", expression = "java(null)"),
+            
             @Mapping(target = "duration", expression = "java(com.github.platform.core.standard.util.LocalDateTimeUtil.formatCurrentDurationAsString(entity.getCreateTime()))")
     })
     ProcessInstanceDto toDto(ProcessInstanceBase entity);

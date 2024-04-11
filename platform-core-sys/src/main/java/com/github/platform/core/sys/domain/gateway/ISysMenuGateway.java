@@ -75,5 +75,12 @@ public interface ISysMenuGateway {
      * @param roleIds
      * @return
      */
-    List<SysMenuDto> findRolesMenu(List<Long> roleIds);
+    List<SysMenuDto> findMenuByRoleIds(List<Long> roleIds);
+
+    /**
+     * 根据租户查询菜单
+     * @param tenantId
+     * @return
+     */
+    List<SysMenuDto> findByTenantId(Integer tenantId);
 }

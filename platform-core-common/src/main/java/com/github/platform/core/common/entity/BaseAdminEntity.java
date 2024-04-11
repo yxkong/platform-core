@@ -1,7 +1,6 @@
 package com.github.platform.core.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.SignUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.constant.StatusEnum;

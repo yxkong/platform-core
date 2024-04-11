@@ -53,6 +53,7 @@ public class UploadFileExecutorImpl extends BaseExecutor implements IUploadFileE
             exception(ResultStatusEnum.NO_FOUND_IMPLEMENT);
         }
         SysUploadFileDto uploadFileDto = uploadFileService.uploadAndSave(module, bizNo, fileName, fileSize, is);
+        uploadFileDto.setPermanent(true);
         return UploadEntity.builder().storage(properties.getStorage().name()).fileId(uploadFileDto.getFileId()).url(uploadFileService.getUrl(uploadFileDto)).build() ;
     }
 

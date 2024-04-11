@@ -68,6 +68,6 @@ public class AddUserCmd extends TenantBase {
      * 用户角色
      */
     @Schema(description ="用户角色")
-    private Long[] roleIds;
+    private String[] roleKeys;
 
 }

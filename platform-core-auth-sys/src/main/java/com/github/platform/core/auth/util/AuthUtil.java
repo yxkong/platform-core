@@ -30,11 +30,7 @@ public class AuthUtil {
      * 检验用户是否已经登录，如未登录，则抛出异常
      */
     public static boolean checkLogin() {
-        LoginUserInfo loginUserInfo = LoginUserInfoUtil.getLoginUserInfo();
-        if (Objects.isNull(loginUserInfo) || Objects.isNull(loginUserInfo.getLoginName())) {
-            throw new NoLoginException("未登录或token失效，请重新登录！");
-        }
-        return true;
+        return LoginUserInfoUtil.isLogin();
     }
 
     /**
@@ -57,30 +53,30 @@ public class AuthUtil {
      * 判断是否包含角色
      *
      * @param roles  角色列表
-     * @param roleId 角色
+     * @param roleKey 角色key
      * @return 用户是否具备某角色权限
      */
-    public static boolean hasRole(Collection<Long> roles, Long roleId) {
+    public static boolean hasRole(Collection<String> roles, String roleKey) {
         return roles.stream().filter(Objects::nonNull)
-                .anyMatch(x -> x.equals(roleId));
+                .anyMatch(x -> x.equals(roleKey));
     }
 
     /**
-     * 是否是管理员
+     * 是否是管理员，内置管理员，
      *
      * @return
      */
     public static Boolean isSuperAdmin() {
         LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
-            return LoginUserInfoUtil.getUserRoleIds().contains(RoleConstant.SUPER_ROLE_ID);
+            return userInfo.isSuperAdmin();
         }
         return Boolean.FALSE ;
     }
-    public static Boolean isAdminTenant(){
+    public static Boolean isTenantAdmin(){
         LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
-            return LoginUserInfoUtil.getUserRoleIds().contains(RoleConstant.TENANT_ROLE_ID);
+            return userInfo.isTenantAdmin();
         }
         return Boolean.FALSE ;
     }
@@ -159,20 +155,20 @@ public class AuthUtil {
     /**
      * 判断用户是否拥有某个角色
      *
-     * @param roleId 角色ID
+     * @param roleKey 角色编码
      * @return 用户是否具备某角色
      */
-    public static boolean hasRole(Long roleId) {
-        return hasRole(LoginUserInfoUtil.getUserRoleIds(), roleId);
+    public static boolean hasRole(String roleKey) {
+        return hasRole(LoginUserInfoUtil.getRoleKeys(), roleKey);
     }
 
     /**
      * 判断用户是否拥有某个角色, 如果验证未通过，则抛出异常: NoAuthForDataOptException
      *
-     * @param roleId 角色ID
+     * @param roleKey 角色编码
      */
-    public static boolean checkRole(Long roleId) {
-        return hasRole(roleId);
+    public static boolean checkRole(String roleKey) {
+        return hasRole(roleKey);
     }
 
     /**
@@ -191,12 +187,12 @@ public class AuthUtil {
     /**
      * 验证用户是否含有指定角色，必须全部拥有
      *
-     * @param roleIds 角色ID数组
+     * @param roles 角色标识数组
      */
-    public static boolean checkRoleAnd(String... roleIds) {
-        List<Long> roleIdList = LoginUserInfoUtil.getUserRoleIds();
-        for (String role : roleIds) {
-            if (!hasRole(roleIdList, Long.valueOf(role))) {
+    public static boolean checkRoleAnd(String... roles) {
+        List<String> roleKeys = LoginUserInfoUtil.getRoleKeys();
+        for (String role : roles) {
+            if (!hasRole(roleKeys, role)) {
                 return false;
             }
         }
@@ -206,12 +202,12 @@ public class AuthUtil {
     /**
      * 验证用户是否含有指定角色，只需包含其中一个
      *
-     * @param roleIds 角色id数组
+     * @param roles 角色标识数组
      */
-    public static boolean checkRoleOr(String... roleIds) {
-        List<Long> roleList = LoginUserInfoUtil.getUserRoleIds();
-        for (String role : roleIds) {
-            if (hasRole(roleList, Long.valueOf(role))) {
+    public static boolean checkRoleOr(String... roles) {
+        List<String> roleList = LoginUserInfoUtil.getRoleKeys();
+        for (String role : roles) {
+            if (hasRole(roleList, role)) {
                 return true;
             }
         }

@@ -13,6 +13,7 @@ import com.github.platform.core.persistence.mapper.sys.SysUserRoleMapper;
 import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
+import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import com.github.platform.core.sys.domain.common.entity.SysRoleBase;
 import com.github.platform.core.sys.domain.common.entity.SysRoleMenuBase;
 import com.github.platform.core.sys.domain.common.entity.SysUserBase;
@@ -78,6 +79,13 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
     }
 
     @Override
+    public List<SysRoleDto> findListBy(SysRoleQueryContext context) {
+        SysRoleBase record = roleInfraConvert.toSysRoleBase(context);
+        List<SysRoleBase> list = sysRoleMapper.findListBy(record);
+        return roleInfraConvert.toDtos(list);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(SysRoleContext roleContext) {
         String roleName = roleContext.getName();
@@ -94,8 +102,8 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
         SysRoleBase sysRole = roleInfraConvert.toSysRoleBase(roleContext);
         sysRole.setTenantId(LoginUserInfoUtil.getTenantId());
         sysRoleMapper.insert(sysRole);
-
-        iSysRoleMenuService.insertList(roleContext.getMenuIds(),sysRole.getId(),null);
+        SysRoleDto dto = roleInfraConvert.toDto(sysRole);
+        iSysRoleMenuService.insertList(roleContext.getMenuIds(),dto,null);
     }
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -134,6 +142,28 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
     }
 
     @Override
+    public List<SysRoleDto> findByKeys(List<String> roleKeys,Integer tenantId) {
+        List<SysRoleBase> list = sysRoleMapper.findByKeys(roleKeys.toArray(new String[]{}),tenantId);
+        if (CollectionUtil.isEmpty(list)) {
+            return null;
+        }
+        return roleInfraConvert.toDtos(list);
+    }
+
+    @Override
+    public List<OptionsDto> roles(SysRoleQueryContext context) {
+        List<OptionsDto> rst = new ArrayList<>();
+        SysRoleBase record = roleInfraConvert.toSysRoleBase(context);
+        List<SysRoleBase> list = sysRoleMapper.findListBy(record);
+        if (CollectionUtil.isNotEmpty(list)){
+            list.forEach(s->{
+                rst.add(new OptionsDto(s.getKey(),s.getStrId(),s.getName()));
+            });
+        }
+        return rst;
+    }
+
+    @Override
     public SysRoleDto findByRoleKey(String roleKey) {
         if (StringUtils.isEmpty(roleKey)){
             return null;
@@ -165,9 +195,9 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
         }
         SysRoleBase sysRole = roleInfraConvert.toSysRoleBase(context);
         iSysRoleMenuService.deleteByRoleId(context.getId());
-
-        iSysRoleMenuService.insertList(context.getMenuIds(),sysRole.getId(),null);
         sysRoleMapper.updateById(sysRole);
+        SysRoleDto dto = roleInfraConvert.toDto(sysRole);
+        iSysRoleMenuService.insertList(context.getMenuIds(),dto,null);
     }
 
     @Override
@@ -194,27 +224,30 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addUserRole(Long userId, Set<Long> roleIds) {
-        if (CollectionUtil.isEmpty(roleIds)){
+    public void addUserRole(Long userId,Integer tenantId, Set<String> roleKeys) {
+        if (CollectionUtil.isEmpty(roleKeys)){
             return ;
         }
-        List<SysRoleBase> sysRole = sysRoleMapper.findByIds(roleIds.toArray(new Long[0]));
+        List<SysRoleBase> list = sysRoleMapper.findByKeys(roleKeys.toArray(new String[]{}),tenantId);
         // 校验角色id对应的角色是否存在
-        if (CollectionUtil.isEmpty(sysRole) || roleIds.size() != sysRole.size()) {
+        if (CollectionUtil.isEmpty(list)) {
             exception(SysInfraResultEnum.ROLE_NOT_FIND);
         }
 
         sysUserRoleMapper.deleteById(userId);
-        List<SysUserRoleBase> list = new ArrayList<>();
-        for (Long roleId : roleIds) {
+        List<SysUserRoleBase> rst = new ArrayList<>();
+        for (SysRoleBase role : list) {
             SysUserRoleBase userRole = SysUserRoleBase.builder()
                     .userId(userId)
-                    .roleId(roleId)
+                    .roleId(role.getId())
+                    .roleKey(role.getKey())
+                    .tenantId(tenantId)
+                    .createBy(LoginUserInfoUtil.getLoginName())
+                    .createTime(LocalDateTimeUtil.dateTime())
                     .build();
-            list.add(userRole);
-
+            rst.add(userRole);
         }
-        sysUserRoleMapper.insertList(list);
+        sysUserRoleMapper.insertList(rst);
     }
 
     @Override
@@ -226,16 +259,5 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
         }
         return sysRoleMenuList.stream().map(SysRoleMenuBase::getMenuId).collect(Collectors.toSet());
 
-    }
-    @Override
-    public List<OptionsDto> roles(SysRoleQueryContext context) {
-        List<OptionsDto> rst = new ArrayList<>();
-        List<SysRoleBase> list = sysRoleMapper.findListBy(null);
-        if (CollectionUtil.isNotEmpty(list)){
-            list.forEach(s->{
-                rst.add(new OptionsDto(s.getId()+"",s.getKey(),s.getName()));
-            });
-        }
-        return rst;
     }
 }

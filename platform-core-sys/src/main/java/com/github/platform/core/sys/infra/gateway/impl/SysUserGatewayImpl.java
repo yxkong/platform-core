@@ -11,18 +11,20 @@ import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.gateway.BaseGatewayImpl;
 import com.github.platform.core.common.utils.CollectionUtil;
+import com.github.platform.core.common.utils.EncryptUtil;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.persistence.mapper.sys.SysUserLogMapper;
 import com.github.platform.core.persistence.mapper.sys.SysUserMapper;
 import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.entity.dto.PageBean;
-import com.github.platform.core.common.utils.EncryptUtil;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import com.github.platform.core.standard.util.MD5Utils;
 import com.github.platform.core.sys.domain.common.entity.SysUserBase;
 import com.github.platform.core.sys.domain.common.entity.SysUserLogBase;
-import com.github.platform.core.sys.domain.constant.*;
+import com.github.platform.core.sys.domain.constant.ConfigKeyConstant;
+import com.github.platform.core.sys.domain.constant.DeptConstant;
+import com.github.platform.core.sys.domain.constant.LoginWayEnum;
 import com.github.platform.core.sys.domain.context.ModifyPwdContext;
 import com.github.platform.core.sys.domain.context.RegisterContext;
 import com.github.platform.core.sys.domain.context.ResetPwdContext;
@@ -84,8 +86,8 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         }
         PageHelper.startPage(context.getPageNum(), context.getPageSize());
         List<SysUserDto> list = null;
-        if (Objects.nonNull(context.getRoleId())){
-            list = sysUserMapper.findListByRole(sysUser,context.getRoleId());
+        if (Objects.nonNull(context.getRoleKey())){
+            list = sysUserMapper.findListByRole(sysUser,context.getRoleKey());
         } else {
             list = sysUserMapper.findListBy(sysUser);
         }
@@ -115,22 +117,20 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         Pair<String, PwdResult> pair = initPwd(context.getLoginName(),context.getPwd());
         SysUserBase sysUser = userInfraConvert.of(context, pair.getKey(), pair.getValue().getMd5Pwd());
 
-        if (AuthUtil.isSuperAdmin()) {
-            //系统管理员新增用户的租户以部门所属租户为准
-            SysDeptDto deptDO = deptGateway.findById(context.getDeptId());
-            sysUser.setTenantId(deptDO.getTenantId());
+        if (!AuthUtil.isSuperAdmin()) {
+            //非系统管理员的租户，以操作人的租户为准
+            sysUser.setTenantId(LoginUserInfoUtil.getTenantId());
         }
 
         int insert = sysUserMapper.insert(sysUser);
         SysUserLogBase sysUserLog = userInfraConvert.of(context, sysUser.getCreateBy(), context.getLogBizTypeEnum());
         String ip = WebUtil.getIpAddress();
         sysUserLog.setRequestIp(ip);
+        sysUserLog.setTenantId(sysUser.getTenantId());
         int log = sysUserLogMapper.insert(sysUserLog);
         //级联保存用户角色关系
-        roleGateway.addUserRole(sysUser.getId(), context.getRoleIds());
-        UserEntity target = userInfraConvert.target(sysUser, null);
-        target.setDefaultRoles(context.getRoleIds());
-        return target;
+        roleGateway.addUserRole(sysUser.getId(),sysUser.getTenantId() ,context.getRoleKeys());
+        return userInfraConvert.target(sysUser, null);
     }
 
     /**
@@ -163,13 +163,8 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     @Override
     public void editUser(RegisterContext context) {
         SysUserBase sysUser = userInfraConvert.of(context, "", "");
-//        if (AuthUtil.isSuperAdmin()) {
-//            //系统管理员新增用户的租户以部门所属租户为准
-//            SysDeptDto deptDO = deptGateway.findById(context.getDeptId());
-//            sysUser.setTenantId(deptDO.getTenantId());
-//        }
         int rows = sysUserMapper.updateById(sysUser);
-        roleGateway.addUserRole(sysUser.getId(), context.getRoleIds());
+        roleGateway.addUserRole(sysUser.getId(), sysUser.getTenantId(), context.getRoleKeys());
         //禁用以后，清除用户登录信息
         if (StatusEnum.OFF.getStatus().equals(context.getStatus())) {
             //清除上次token的登陆信息
@@ -266,7 +261,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     }
 
     @Override
-    public String generatorToken(UserEntity entity, Set<Long> roleIds, LoginWayEnum loginWay) {
+    public String generatorToken(UserEntity entity, Set<String> roleKeys, LoginWayEnum loginWay) {
         //清除上次token的登陆信息
         loginTokenService.delUserInfoCache(AuthTypeEnum.SYS,entity.getLoginName(), null);
 
@@ -277,7 +272,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         loginUserInfo.setLoginTime(LocalDateTimeUtil.dateTimeDefaultShort());
         loginUserInfo.setRegisterTime(LocalDateTimeUtil.dateTimeDefault(entity.getRegisterTime()));
 
-        permsDeal(entity, roleIds, loginUserInfo);
+        permsDeal(entity, roleKeys, loginUserInfo);
         Pair<String, String> pair = UserAgentUtil.getOsAndBrowser();
         loginUserInfo.setBrowser(pair.getValue());
         loginUserInfo.setOs(pair.getKey());
@@ -292,48 +287,62 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     /**
      * 处理权限
      * @param entity
-     * @param roleIds
+     * @param roleKeys
      * @param loginUserInfo
      */
-    private void permsDeal(UserEntity entity, Set<Long> roleIds, LoginUserInfo loginUserInfo) {
+    private void permsDeal(UserEntity entity, Set<String> roleKeys, LoginUserInfo loginUserInfo) {
         //角色处理
         List<SysRoleDto> roleEntities = null;
-        if (CollectionUtil.isEmpty(roleIds)){
+        if (CollectionUtil.isEmpty(roleKeys)){
             //获取用户的角色
             roleEntities = roleGateway.findRoleByUserId(entity.getId());
-            loginUserInfo.setRoleIds(roleEntities.stream().map(SysRoleDto::getId).collect(Collectors.toList()));
         } else {
             //使用传递过来的角色
-            List<Long> roles = roleIds.stream().collect(Collectors.toList());
-            loginUserInfo.setRoleIds(roles);
-            roleEntities = roleGateway.findByIds(roles);
+            List<String> roles = roleKeys.stream().collect(Collectors.toList());
+            roleEntities = roleGateway.findByKeys(roles,entity.getTenantId());
         }
         if (CollectionUtil.isNotEmpty(roleEntities)){
             loginUserInfo.setRoleKeys(roleEntities.stream().map(SysRoleDto::getKey).filter(Objects::nonNull).collect(Collectors.toList()));
+            loginUserInfo.setRoleIds(roleEntities.stream().map(SysRoleDto::getId).collect(Collectors.toList()));
         }
-
-
-        if (!loginUserInfo.getRoleIds().contains(RoleConstant.SUPER_ROLE_ID)) {
+        if (loginUserInfo.isSuperAdmin()){
+            Set<DataScopeEnum> dataScopes = new HashSet<>();
+            dataScopes.add(DataScopeEnum.ALL);
+            loginUserInfo.setDataScopes(dataScopes);
+            loginUserInfo.setPerms(Stream.of(RoleConstant.ALL_PERMS).collect(Collectors.toSet()));
+        } else if(loginUserInfo.isTenantAdmin()){
+            Set<DataScopeEnum> dataScopes = new HashSet<>();
+            dataScopes.add(DataScopeEnum.ALL);
+            loginUserInfo.setDataScopes(dataScopes);
+            List<SysMenuDto> menuDtos = menuGateway.findByTenantId(entity.getTenantId());
+            loginUserInfo.setPerms(getPerms(menuDtos));
+        }else {
             //数据权限
             if (CollectionUtil.isNotEmpty(roleEntities)){
                 loginUserInfo.setDataScopes(roleEntities.stream().map(SysRoleDto::getDataScope).map(DataScopeEnum::of).filter(Objects::nonNull).collect(Collectors.toSet()));
             }
+            //非默认部门的时候，查询所在的所有部门
             if (entity.getDeptId()!= null && !DeptConstant.DEFAULT_ID.equals(entity.getDeptId())){
+                //所有部门
                 Set<Long> deptIds = deptGateway.findAllDept(entity.getDeptId()).stream().map(SysDeptDto::getId).collect(Collectors.toSet());
                 loginUserInfo.setDeptIds(deptIds);
             }
             //非管理员查询菜单权限
-            List<SysMenuDto> menuDtos = menuGateway.findRolesMenu(loginUserInfo.getRoleIds());
-            loginUserInfo.setPerms(menuDtos.stream()
-                    .filter(menuDto -> StringUtils.isNotBlank(menuDto.getPerms()))
-                    .map(SysMenuDto::getPerms)
-                    .flatMap(perms -> Stream.of(perms.split(",")))
-                    .filter(StringUtils::isNotEmpty)
-                    .collect(Collectors.toSet()));
-
-        } else {
-            loginUserInfo.setPerms(Stream.of(RoleConstant.ALL_PERMS).collect(Collectors.toSet()));
+            List<SysMenuDto> menuDtos = menuGateway.findMenuByRoleIds(loginUserInfo.getRoleIds());
+            loginUserInfo.setPerms(getPerms(menuDtos));
         }
+    }
+
+    private static Set<String> getPerms(List<SysMenuDto> menuDtos) {
+        if (CollectionUtil.isEmpty(menuDtos)){
+            return new HashSet<>();
+        }
+        return menuDtos.stream()
+                .filter(menuDto -> StringUtils.isNotBlank(menuDto.getPerms()))
+                .map(SysMenuDto::getPerms)
+                .flatMap(perms -> Stream.of(perms.split(",")))
+                .filter(StringUtils::isNotEmpty)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -367,8 +376,8 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     }
 
     @Override
-    public List<SysUserDto> findByRoleIds(List<String> roleIds) {
-        return sysUserMapper.queryByRoleIds(roleIds);
+    public List<SysUserDto> findByRoleKeys(List<String> roleKeys,Integer tenantId) {
+        return sysUserMapper.queryByRoleKeys(roleKeys,tenantId);
     }
 
     @Override

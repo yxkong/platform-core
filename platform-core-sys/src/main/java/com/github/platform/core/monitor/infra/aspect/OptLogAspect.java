@@ -6,6 +6,7 @@ import com.github.platform.core.log.domain.entity.OptLogEntity;
 import com.github.platform.core.log.infra.annotation.OptLog;
 import com.github.platform.core.log.infra.configuration.properties.OptLogProperties;
 import com.github.platform.core.log.infra.event.OptLogEvent;
+import com.github.platform.core.standard.constant.HeaderConstant;
 import com.github.platform.core.standard.constant.OptLogConstant;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import com.github.platform.core.web.util.RequestHolder;
@@ -16,6 +17,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.MDC;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
@@ -83,6 +85,7 @@ public class OptLogAspect {
                 .title(optLog.title())
                 .url(request.getRequestURI())
                 .method(request.getMethod())
+                .traceId(MDC.get(HeaderConstant.TRACE_ID))
                 .requestIp(WebUtil.getIpHost(request))
                 .loginName(LoginUserInfoUtil.getLoginName())
                 .tenantId(LoginUserInfoUtil.getTenantId())

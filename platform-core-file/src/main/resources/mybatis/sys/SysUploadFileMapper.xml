@@ -16,26 +16,30 @@
 		  <id column="status" property="status" /> 
 		  <id column="deleted" property="deleted" />
 		  <id column="createTime" property="createTime" />
-		  <id column="createBy" property="createBy" /> 
-		  <id column="remark" property="remark" /> 
+		  <id column="createBy" property="createBy" />
+		 <id column="updateBy" property="updateBy" />
+		 <id column="updateTime" property="updateTime" />
+		 <id column="remark" property="remark" />
   
     </resultMap>
-    <sql id="Base_Column_List">
-    	 t.id as id ,
- 		 t.module as module ,
+    <sql id="BaseColumnList">
+    	 t.id,
+ 		 t.module,
  		 t.biz_no as bizNo ,
  		 t.file_id as fileId ,
  		 t.file_path as filePath ,
  		 t.file_name as fileName ,
  		 t.file_type as fileType ,
  		 t.file_size as fileSize ,
- 		 t.storage as storage ,
+ 		 t.storage,
  		 t.tenant_id as tenantId ,
- 		 t.status as status ,
- 		 t.deleted as deleted ,
+ 		 t.status ,
+ 		 t.deleted ,
  		 t.create_time as createTime ,
  		 t.create_by as createBy ,
- 		 t.remark as remark
+    	 t.update_time as updateTime ,
+ 		 t.update_by as updateBy ,
+ 		 t.remark
     </sql>
 
 	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.file.domain.common.entity.SysUploadFileBase">
@@ -136,16 +140,16 @@
  			 <if test="module != null">
  				module = #{module},
  			 </if>
- 			 <if test="bizNo != null">
+ 			 <if test="bizNo != null  and updateBy != ''">
  				biz_no = #{bizNo},
  			 </if>
- 			 <if test="fileId != null">
+ 			 <if test="fileId != null  and updateBy != ''">
  				file_id = #{fileId},
  			 </if>
- 			 <if test="fileName != null">
+ 			 <if test="fileName != null  and updateBy != ''">
  				file_name = #{fileName},
  			 </if>
- 			 <if test="storage != null">
+ 			 <if test="storage != null  and updateBy != ''">
  				storage = #{storage},
  			 </if>
  			 <if test="tenantId != null">
@@ -154,12 +158,12 @@
  			 <if test="status != null">
  				status = #{status},
  			 </if>
- 			 <if test="createTime != null">
- 				create_time = #{createTime},
- 			 </if>
- 			 <if test="createBy != null">
- 				create_by = #{createBy},
- 			 </if>
+		     <if test="updateBy != null  and updateBy != ''">
+			     update_by = #{updateBy},
+		     </if>
+		     <if test="updateTime != null ">
+			     update_time = #{updateTime},
+		     </if>
  			 <if test="remark != null">
  				remark = #{remark},
  			 </if>
@@ -167,13 +171,13 @@
      where id = #{id}
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_upload_file t where t.id=#{id}
+		select <include refid="BaseColumnList" /> from t_sys_upload_file t where t.id=#{id}
 	</select>
 	<select id="findByFileId" resultMap="BaseResultMap">
-		select <include refid="Base_Column_List" /> from t_sys_upload_file t where t.storage = #{storage} and  t.file_id = #{fileId}
+		select <include refid="BaseColumnList" /> from t_sys_upload_file t where t.storage = #{storage} and  t.file_id = #{fileId}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_upload_file
+		select <include refid="BaseColumnList" /> from t_sys_upload_file
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
 				#{id}
@@ -183,12 +187,9 @@
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.file.domain.common.entity.SysUploadFileBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_upload_file t
  		<where>
- 			<if test="id != null">
- 				and t.id = #{id}
- 			</if>
  			<if test="module != null">
  				and t.module = #{module}
  			</if>
@@ -210,23 +211,21 @@
  			<if test="status != null">
  				and t.status = #{status}
  			</if>
- 			<if test="createTime != null">
- 				and t.create_time = #{createTime}
- 			</if>
- 			<if test="createBy != null">
- 				and t.create_by = #{createBy}
- 			</if>
- 			<if test="remark != null">
- 				and t.remark = #{remark}
- 			</if>
+		    <if test="searchStartTime != null">
+			    and t.create_time <![CDATA[>=]]> #{searchStartTime}
+		    </if>
+		    <if test="searchEndTime != null">
+			    and t.create_time <![CDATA[<=]]> #{searchEndTime}
+		    </if>
 		    <if test="deleted != null">
 			    and t.deleted = #{deleted}
 		    </if>
 		    <if test="deleted == null">
 			    and t.deleted = 0
 		    </if>
-		</where>
 
+		</where>
+		order by id desc
 	</select>
 
 	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.file.domain.common.entity.SysUploadFileBase">
@@ -256,12 +255,12 @@
  			<if test="status != null">
  				and t.status = #{status}
  			</if>
- 			<if test="createTime != null">
- 				and t.create_time = #{createTime}
- 			</if>
- 			<if test="createBy != null">
- 				and t.create_by = #{createBy}
- 			</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
  			<if test="remark != null">
  				and t.remark = #{remark}
  			</if>

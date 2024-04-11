@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 /**
  * 发送短信请求实体
  * @author: yxkong
- * @date: 2023/3/1 11:57 AM
+ * @date: 2023/3/1 11:57 PM
  * @version: 1.0
  */
 @Data

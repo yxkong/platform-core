@@ -19,7 +19,7 @@
 		  <id column="remark" property="remark" /> 
   
     </resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
     	 t.id as id ,
  		 t.parent_id as parentId ,
  		 t.ancestors as ancestors ,
@@ -174,10 +174,10 @@
      where id = #{id}
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_dept t where t.id=#{id}
+		select <include refid="BaseColumnList" /> from t_sys_dept t where t.id=#{id}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_dept
+		select <include refid="BaseColumnList" /> from t_sys_dept
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
 				#{id}
@@ -187,7 +187,7 @@
 	</select>
 	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_dept t
  		<where>
  			<if test="id != null">
@@ -237,7 +237,7 @@
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysDeptBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_dept t
  		<where>
  			<if test="idGtZero != null">
@@ -250,7 +250,7 @@
  				and t.parent_id = #{parentId}
  			</if>
 			<if test="ancestors != null and ancestors != ''">
-				and t.ancestors like concat('%', #{ancestors}, '%')
+				and t.ancestors like concat(#{ancestors}, '%')
 			</if>
  			<if test="deptName != null">
 				and t.dept_name like concat('%', #{deptName}, '%')

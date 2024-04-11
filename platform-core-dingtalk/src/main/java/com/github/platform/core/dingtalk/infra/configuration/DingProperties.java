@@ -15,10 +15,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = PropertyConstant.DATA_DING_TALK)
 public class DingProperties {
-    /** 钉钉的 appKey*/
+    /** 钉钉企业的 appKey*/
     private String appKey ;
     /** 钉钉的 密钥*/
     private String appSecret;
+    /**钉钉开放平台上，开发者设置的token*/
+    private String token;
+    /**钉钉开放台上，开发者设置的EncodingAESKey*/
+    private String encodingAesKey;
+    /** 企业自建应用-事件订阅, 使用appKey,
+     *  企业自建应用-注册回调地址, 使用corpId
+     *  第三方企业应用, 使用suiteKey
+     */
+    private String corpId;
     /**
      * 默认管理员
      */

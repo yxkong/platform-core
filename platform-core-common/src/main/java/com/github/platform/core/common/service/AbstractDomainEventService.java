@@ -19,7 +19,7 @@ public abstract class AbstractDomainEventService implements IDomainEventService 
     @Override
     public void publish(Object domainEvent) {
         if (log.isDebugEnabled()){
-            log.debug("接收到的事件：{}", JsonUtils.toJson(domainEvent));
+            log.debug("接收到的事件：{},数据体:{}",domainEvent.getClass().getName(), JsonUtils.toJson(domainEvent));
         }
         this.applicationContext.publishEvent(domainEvent);
     }

@@ -1,7 +1,7 @@
 package com.github.platform.core.common.utils;
 
 /**
- * @author Qiuxinchao
+ * @author yxkong
  * @date 2023/2/27 13:41
  * @describe
  */

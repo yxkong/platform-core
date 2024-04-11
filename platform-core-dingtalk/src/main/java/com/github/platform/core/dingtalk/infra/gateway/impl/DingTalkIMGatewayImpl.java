@@ -7,6 +7,7 @@ import com.github.platform.core.dingtalk.infra.configuration.DingProperties;
 import com.github.platform.core.dingtalk.infra.service.IDingTalkService;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -60,7 +61,13 @@ public class DingTalkIMGatewayImpl implements IDingTalkIMGateway {
         Map<String, String> markdownMap = getMarkdownMap(title, markdown);
         return dingTalkService.sendMessage(groupId,dingProperties.getRobotCode(),null,null,true,DingMessageTemplateTypeEnum.markdown,markdownMap);
     }
-    private Map<String,String> getMarkdownMap(String title,String markdown){
+
+    @Override
+    public Pair<Boolean, String> groupUserOpt(String groupId, List<String> users, Boolean isAdd) {
+        return dingTalkService.groupUserOpt(groupId,users,isAdd);
+    }
+
+    private Map<String,String> getMarkdownMap(String title, String markdown){
         Map<String,String> map = new HashMap<>();
         map.put("title",title);
         map.put("markdown_content",markdown);

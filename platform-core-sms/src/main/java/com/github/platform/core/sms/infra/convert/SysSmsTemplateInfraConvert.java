@@ -34,7 +34,6 @@ public interface SysSmsTemplateInfraConvert {
     */
     @Mappings({
             @Mapping(target = "strId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getId()))"),
-            @Mapping(target = "id", expression = "java(null)"),
     })
     SysSmsTemplateDto toDto(SysSmsTemplateBase entity);
     /**

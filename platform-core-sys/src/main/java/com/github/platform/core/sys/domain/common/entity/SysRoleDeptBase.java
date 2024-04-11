@@ -1,6 +1,6 @@
 package com.github.platform.core.sys.domain.common.entity;
 
-import com.github.platform.core.common.entity.BaseAdminEntity;
+import com.github.platform.core.standard.entity.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,11 +16,17 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-public class SysRoleDeptBase extends BaseAdminEntity   {
+public class SysRoleDeptBase extends BaseEntity {
     /** 角色ID */
     @Schema(description = "角色ID")
     protected Long roleId;
+    /** 角色标识 */
+    @Schema(description = "角色标识")
+    protected String roleKey;
     /** 部门ID */
     @Schema(description = "部门ID")
     protected Long deptId;
+    /**创建人*/
+    @Schema(description = "创建人")
+    protected String createBy;
 }

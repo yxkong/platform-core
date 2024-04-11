@@ -1,5 +1,6 @@
 package com.github.platform.core.auth.context;
 
+import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.entity.common.LoginInfo;
 import com.github.platform.core.standard.exception.NoLoginException;
 
@@ -26,43 +27,44 @@ public class SecurityContextImpl<T extends LoginInfo> implements SecurityContext
         return this.loginInfo;
     }
 
+    /**
+     * 统一登录校验
+     * @return
+     */
     @Override
     public Boolean isLogin() {
-        if (Objects.isNull(loginInfo)) {
-           return false;
+        if (Objects.nonNull(loginInfo) && StringUtils.isNotEmpty(loginInfo.getLoginName()) && Objects.nonNull(loginInfo.getId())) {
+           return true;
         }
-        return true;
+        return false;
+    }
+    private void noLoginThrow(){
+        if (!isLogin()) {
+            throw new NoLoginException("未登录或token失效，请重新登录！");
+        }
     }
 
     @Override
     public String getLoginName() {
-        if (Objects.isNull(loginInfo)) {
-            throw new NoLoginException("用户未登陆");
-        }
+        noLoginThrow();
         return this.loginInfo.getLoginName();
     }
 
     @Override
     public Integer getTenantId() {
-        if (Objects.isNull(loginInfo)) {
-            throw new NoLoginException("用户未登陆");
-        }
+        noLoginThrow();
         return this.loginInfo.getTenantId();
     }
 
     @Override
     public String getToken() {
-        if (Objects.isNull(loginInfo)) {
-            throw new NoLoginException("用户未登陆");
-        }
+        noLoginThrow();
         return this.loginInfo.getToken();
     }
 
     @Override
     public String getMobile() {
-        if (Objects.isNull(loginInfo)) {
-            throw new NoLoginException("用户未登陆");
-        }
+        noLoginThrow();
         return this.loginInfo.getMobile();
     }
 }

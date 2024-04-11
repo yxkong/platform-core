@@ -21,7 +21,7 @@
 		  <id column="responseBody" property="responseBody" />
 
     </resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
     	 t.id as id ,
  		 t.trace_id as traceId ,
  		 t.module as module ,
@@ -31,13 +31,14 @@
  		 t.request_ip as requestIp ,
  		 t.exception as exception ,
  		 t.execute_time as executeTime ,
+    	 t.headers as headers ,
+ 		 t.request_body as requestBody ,
+ 		 t.response_body as responseBody,
  		 t.tenant_id as tenantId ,
  		 t.create_by as createBy ,
  		 t.create_time as createTime ,
- 		 t.remark as remark ,
- 		 t.headers as headers ,
- 		 t.request_body as requestBody ,
- 		 t.response_body as responseBody
+ 		 t.remark as remark
+
     </sql>
 
 	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.monitor.domain.common.entity.SysOptLogBase">
@@ -196,10 +197,10 @@
 		where id = #{id}
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_opt_log t where t.id=#{id}
+		select <include refid="BaseColumnList" /> from t_sys_opt_log t where t.id=#{id}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_opt_log
+		select <include refid="BaseColumnList" /> from t_sys_opt_log
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
 				#{id}
@@ -209,7 +210,7 @@
 	</select>
 	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="BaseColumnList" />
 		from t_sys_opt_log t
 		<where>
 			<if test="id!= null">
@@ -254,10 +255,10 @@
 			<if test="createBy!= null">
 				and t.create_by =  #{createBy}
 			</if>
-			<if test="searchStartTime != null">
+			<if test="searchStartTime != null and searchStartTime != ''">
 				and t.create_time <![CDATA[>=]]> #{searchStartTime}
 			</if>
-			<if test="searchEndTime != null">
+			<if test="searchEndTime != null and searchEndTime != ''">
 				and t.create_time <![CDATA[<=]]>  #{searchEndTime}
 			</if>
 		</where>
@@ -265,7 +266,7 @@
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.monitor.domain.common.entity.SysOptLogBase">
 		select
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_opt_log t
  		<where>
  			<if test="id!= null">

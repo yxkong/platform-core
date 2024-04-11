@@ -55,7 +55,7 @@ public class AssigneeExecutorImpl extends BaseExecutor implements IAssigneeExecu
     public PageBean<FlwUser> queryUsers(FlwUserQueryContext context) {
         SysUserQueryContext queryContext = SysUserQueryContext.builder()
                 .deptId(context.getDeptId())
-                .roleId(context.getRoleId())
+                .roleKey(context.getRoleKey())
                 .loginName(context.getLoginName())
                 .mobile(context.getMobile())
                 .userName(context.getUserName())

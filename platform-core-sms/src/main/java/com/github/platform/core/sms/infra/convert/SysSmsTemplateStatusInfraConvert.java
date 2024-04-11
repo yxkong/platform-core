@@ -34,7 +34,6 @@ public interface SysSmsTemplateStatusInfraConvert {
     */
     @Mappings({
             @Mapping(target = "strId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getId()))"),
-            @Mapping(target = "id", expression = "java(null)"),
     })
     SysSmsTemplateStatusDto toDto(SysSmsTemplateStatusBase entity);
     /**

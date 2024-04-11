@@ -37,7 +37,6 @@ public interface GenInfraConvert {
             @Mapping(target = "author", source = "author",defaultValue = "yxkong"),
             @Mapping(target = "path", source = "path",defaultValue = "src.views"),
             @Mapping(target = "apiPath", source = "apiPath",defaultValue = "src.api"),
-            @Mapping(target = "id", expression = "java(null)"),
     })
     GenConfigDto toDto(CodeGenConfigBase genConfig);
 

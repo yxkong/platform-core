@@ -12,7 +12,7 @@
 		  <id column="columnKey" property="columnKey" />
 		  <id column="extra" property="extra" />
 	 </resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
  		 t.table_schema as tableSchema ,
  		 t.table_name as tableName ,
  		 t.column_name as columnName ,
@@ -24,7 +24,7 @@
     </sql>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.persistence.entity.code.ColumnsBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from information_schema.columns t
 		<where>
 			<if test="tableSchema != null">

@@ -57,6 +57,7 @@ public class AuthorizeAspect {
      * 定义AOP签名 (切入所有使用鉴权注解的方法)
      */
     public static final String POINTCUT_SIGN = " @annotation(com.github.platform.core.auth.annotation.RequiredLogin) || "
+            +" @annotation(com.github.platform.core.auth.annotation.NoLogin) ||"
             + "@annotation(com.github.platform.core.auth.annotation.RequiredPermissions) || "
             + "@annotation(com.github.platform.core.auth.annotation.RequiredRoles)";
 
@@ -105,10 +106,8 @@ public class AuthorizeAspect {
             }
         }
         RequiredRoles requiresRoles = method.getAnnotation(RequiredRoles.class);
-        if (Objects.nonNull(requiresRoles) ) {
-            if(AuthUtil.checkRole(requiresRoles)){
-                return true;
-            }
+        if (Objects.nonNull(requiresRoles) && AuthUtil.checkRole(requiresRoles) ) {
+            return true;
         }
         LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
         userInfo.getPerms().addAll(sys.getDefaultPerms());

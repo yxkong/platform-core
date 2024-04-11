@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * 天翼云feign客户端
  * @author: yxkong
- * @date: 2023/2/17 4:25 PM
+ * @date: 2023/2/17 8:25 PM
  * @version: 1.0
  */
 @FeignClient(url = "${platform.feign.url.sms.ctyun}",name="ctyunFeign",configuration = CtyunConfiguration.class)

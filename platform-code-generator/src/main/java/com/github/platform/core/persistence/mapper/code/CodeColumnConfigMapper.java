@@ -39,12 +39,6 @@ public interface CodeColumnConfigMapper  {
     */
     List<CodeColumnConfigBase> findByIds(@Param("ids") Long[] ids);
     /**
-    * 通过map参数获取列表
-    * @param params 参数map
-    * @return List<$CodeColumnConfigDO>
-    */
-    List<CodeColumnConfigBase> findList(Map<String,Object> params);
-    /**
     * 通过实体查询
     * @param record 参数实体
     * @return List<CodeColumnConfigBase>
@@ -56,12 +50,6 @@ public interface CodeColumnConfigMapper  {
      * @return
      */
     List<CodeColumnConfigBase> findListByTableName(@Param("tableName") String tableName);
-    /**
-    * 通过map参数获取 总数
-    * @param params 参数map
-    * @return 总数
-    */
-    long findListCount(Map<String,Object> params);
     /**
     * 通过实体查询总数
     * @param record 参数实体

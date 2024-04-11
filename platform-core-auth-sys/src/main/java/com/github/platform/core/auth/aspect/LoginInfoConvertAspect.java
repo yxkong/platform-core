@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
@@ -61,6 +62,7 @@ public class LoginInfoConvertAspect {
             } else {
                 loginInfo = JsonUtils.fromJson(loginStr, LoginUserInfo.class);
             }
+            MDC.put(HeaderConstant.TRACE_ID,getTraceId());
             LoginUserInfoUtil.setLoginUserInfo(loginInfo);
             if (log.isTraceEnabled()){
                 log.trace("className:{} ,methodName:{} 用户登陆信息为:{}",className,methodName, loginStr);
@@ -69,8 +71,17 @@ public class LoginInfoConvertAspect {
         } catch (Exception e) {
             throw e;
         } finally {
+            MDC.clear();
             LoginUserInfoUtil.clearContext();
         }
+    }
+    private String getTraceId(){
+        String traceId = httpRequest.getHeader(HeaderConstant.TRACE_ID);
+
+        if (StringUtils.isNotEmpty(traceId)){
+            return traceId;
+        }
+        return StringUtils.generateTraceId();
     }
 
     private String getToken() {

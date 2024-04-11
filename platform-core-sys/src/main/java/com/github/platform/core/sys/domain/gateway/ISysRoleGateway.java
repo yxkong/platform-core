@@ -22,6 +22,13 @@ public interface ISysRoleGateway {
     PageBean<SysRoleDto> query(SysRoleQueryContext context);
 
     /**
+     * 查询列表
+     * @param context
+     * @return
+     */
+    List<SysRoleDto> findListBy(SysRoleQueryContext context);
+
+    /**
      * 新增角色
      * @param context
      */
@@ -55,6 +62,13 @@ public interface ISysRoleGateway {
     List<SysRoleDto> findByIds(List<Long> roleIds);
 
     /**
+     * 根据角色key查询
+     * @param roleKeys
+     * @return
+     */
+    List<SysRoleDto> findByKeys(List<String> roleKeys,Integer tenantId);
+
+    /**
      * 更新角色
      * @param context
      */
@@ -83,9 +97,10 @@ public interface ISysRoleGateway {
     /**
      * 新增用户角色
      * @param userId
-     * @param roleIds
+     * @param tenantId
+     * @param roleKeys
      */
-    void addUserRole(Long userId, Set<Long> roleIds);
+    void addUserRole(Long userId,Integer tenantId, Set<String> roleKeys);
 
     @Cacheable(cacheNames =CacheConstant.c1h, key = "'sys:rm:' + #roleId",cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
     Set<Long> queryMenuIds(Long roleId);

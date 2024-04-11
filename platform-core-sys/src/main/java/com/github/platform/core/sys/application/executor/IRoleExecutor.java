@@ -16,9 +16,20 @@ import java.util.List;
  * @version: 1.0
  */
 public interface IRoleExecutor {
+
+    /**
+     * 角色列表查询
+     * @param context
+     * @return
+     */
     PageBean<SysRoleDto> query(SysRoleQueryContext context);
 
-    List<OptionsDto> roles(SysRoleQueryContext context);
+    /**
+     * 角色下拉框
+     * @param context
+     * @return
+     */
+    List<OptionsDto> select(SysRoleQueryContext context);
 
     void addRole(SysRoleContext roleContext);
 

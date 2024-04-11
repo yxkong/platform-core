@@ -120,7 +120,7 @@ public class OnLineUserController extends BaseController {
      * @return
      */
     @Operation(summary = "发送消息给用户",tags = {"online"})
-    @RequiredRoles(value = {RoleConstant.SUPER_ROLE})
+    @RequiredRoles(value = {RoleConstant.SUPER_ROLE_KEY})
     @PostMapping("/sendToUser")
     public ResultBean sendToUser(@RequestBody SendToUserCmd cmd){
         InMessage inMessage = convert.toInMsg(cmd);

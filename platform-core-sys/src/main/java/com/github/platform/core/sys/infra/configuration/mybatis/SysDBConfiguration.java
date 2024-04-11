@@ -1,6 +1,7 @@
 package com.github.platform.core.sys.infra.configuration.mybatis;
 
 import com.github.platform.core.common.plugin.mybatis.ShardingInterceptor;
+import com.github.platform.core.sys.infra.configuration.mybatis.plugin.DataScopeInterceptor;
 import com.github.platform.core.sys.infra.configuration.mybatis.plugin.UpdateParamInterceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -39,11 +40,13 @@ public class SysDBConfiguration {
         //添加分表插件
         ShardingInterceptor shardingInterceptor = new ShardingInterceptor();
         UpdateParamInterceptor updateParamInterceptor = new UpdateParamInterceptor();
-//        DataScopeColumnInterceptor dataScopeColumnInterceptor = new DataScopeColumnInterceptor();
-        factoryBean.setPlugins(shardingInterceptor, updateParamInterceptor);
+        DataScopeInterceptor dataScopeInterceptor = new DataScopeInterceptor();
+        factoryBean.setPlugins(shardingInterceptor, updateParamInterceptor,dataScopeInterceptor);
         factoryBean.setDataSource(dataSource);
+        //设置映射器资源位置
         factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mybatis/**/*Mapper.xml"));
-        factoryBean.setTypeAliasesPackage("com.github..*.infra.persistence.entity");
+        //设置实体类别名包，告诉MyBatis去哪里查找实体类
+        factoryBean.setTypeAliasesPackage("com.github..*.infra.domain.common.entity");
 
         return factoryBean.getObject();
     }

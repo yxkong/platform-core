@@ -7,11 +7,11 @@ import com.github.platform.core.common.gateway.BaseGatewayImpl;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.persistence.mapper.sys.SysMenuMapper;
+import com.github.platform.core.persistence.mapper.sys.SysRoleMapper;
 import com.github.platform.core.standard.constant.ResultStatusEnum;
 import com.github.platform.core.standard.constant.StatusEnum;
-import com.github.platform.core.standard.exception.InfrastructureException;
 import com.github.platform.core.sys.domain.common.entity.SysMenuBase;
-import com.github.platform.core.sys.domain.common.entity.SysRoleMenuBase;
+import com.github.platform.core.sys.domain.common.entity.SysRoleBase;
 import com.github.platform.core.sys.domain.constant.Constants;
 import com.github.platform.core.sys.domain.constant.MenuConstant;
 import com.github.platform.core.sys.domain.context.SysMenuContext;
@@ -23,16 +23,14 @@ import com.github.platform.core.sys.domain.dto.resp.TreeSelectDto;
 import com.github.platform.core.sys.domain.gateway.ISysMenuGateway;
 import com.github.platform.core.sys.infra.constant.SysInfraResultEnum;
 import com.github.platform.core.sys.infra.convert.SysMenuInfraConvert;
+import com.github.platform.core.sys.infra.convert.SysRoleInfraConvert;
 import com.github.platform.core.sys.infra.service.sys.ISysRoleMenuService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,9 +46,14 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
     @Resource
     private SysMenuMapper sysMenuMapper;
     @Resource
+    private SysRoleMapper sysRoleMapper;
+    @Resource
+    private SysRoleInfraConvert roleInfraConvert;
+    @Resource
     private SysMenuInfraConvert infraConvert;
     @Resource
     private ISysRoleMenuService sysRoleMenuService;
+
 
     @Override
     public List<RouterDto> getRouters() {
@@ -99,9 +102,15 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
     }
 
     @Override
-    public List<SysMenuDto> findRolesMenu(List<Long> roleIds) {
+    public List<SysMenuDto> findMenuByRoleIds(List<Long> roleIds) {
         SysMenuBase sysMenuBase = SysMenuBase.builder().status( StatusEnum.ON.getStatus()).build();
         return infraConvert.toDtos(sysMenuMapper.findMenuByRoleIds(roleIds, sysMenuBase));
+    }
+
+    @Override
+    public List<SysMenuDto> findByTenantId(Integer tenantId) {
+        SysMenuBase sysMenuBase = SysMenuBase.builder().tenantId(tenantId).status( StatusEnum.ON.getStatus()).build();
+        return infraConvert.toDtos(sysMenuMapper.findListBy(sysMenuBase));
     }
 
     /**
@@ -204,36 +213,42 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insert(SysMenuContext context) {
-        SysMenuBase menuDO = infraConvert.toSysMenuBase(context);
-        if (Objects.isNull(menuDO.getParentId())) {
+        SysMenuBase sysMenuBase = infraConvert.toSysMenuBase(context);
+        if (Objects.isNull(sysMenuBase.getParentId())) {
             //如果parentId为空，则代表创建1级菜单    需要手动设置为0
-            menuDO.setParentId(MenuConstant.ROOT_ID);
+            sysMenuBase.setParentId(MenuConstant.ROOT_ID);
         }
-        int row = sysMenuMapper.insert(menuDO);
+        int row = sysMenuMapper.insert(sysMenuBase);
         if ( row <= 0) {
             exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
         //添加角色菜单关联信息
-        insertRoleMenu(context.getGiveTenant(), menuDO.getId());
+        insertRoleMenu(context, sysMenuBase.getId());
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void reloadPermission() {
         //查询出所有可以给租户管理员的菜单
         List<Long> menuIds = sysMenuMapper.findAllMenuIds(MenuConstant.GIVE_TENANT_YES);
         if (CollectionUtil.isEmpty(menuIds)) {
-            throw new InfrastructureException(ResultStatusEnum.NO_DATA);
+            exception(SysInfraResultEnum.MENU_RELOAD_PERMISSION_EMPTY);
         }
-
         //清空租户管理员所有权限数据
-        Long[] ids = new Long[]{RoleConstant.TENANT_ROLE_ID};
-        sysRoleMenuService.deleteByRoleIds(ids);
-        //为租户管理赋予权限
-        int i = sysRoleMenuService.insertList(menuIds, RoleConstant.TENANT_ROLE_ID, null);
-        if (i<=0){
-            exception(SysInfraResultEnum.MENU_RELOAD_PERMISSION_FAIL);
-        }
+        sysRoleMenuService.deleteByRoleKey(RoleConstant.TENANT_ADMIN_ROLE_KEY);
+        addTenantMenu(menuIds);
     }
+    private void addTenantMenu(List<Long> menuIds) {
+        List<SysRoleBase> roles = sysRoleMapper.findByKeys(new String[]{RoleConstant.TENANT_ADMIN_ROLE_KEY}, null);
+        if (CollectionUtil.isEmpty(roles)) {
+            exception(SysInfraResultEnum.MENU_RELOAD_PERMISSION_EMPTY);
+        }
+        //为租户管理赋予权限
+        roles.forEach(s->{
+            sysRoleMenuService.insertList(menuIds,roleInfraConvert.toDto(s),s.getTenantId());
+        });
+    }
+
 
     @Override
     public List<SysMenuDto> query(SysMenuQueryContext context) {
@@ -243,19 +258,23 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(SysMenuContext context) {
-        SysMenuBase menuDO = infraConvert.toSysMenuBase(context);
-        SysMenuBase sourceMenu = sysMenuMapper.findById(menuDO.getId());
-        int row = sysMenuMapper.updateById(menuDO);
+        SysMenuBase sysMenuBase = infraConvert.toSysMenuBase(context);
+        SysMenuBase sourceMenu = sysMenuMapper.findById(sysMenuBase.getId());
+        int row = sysMenuMapper.updateById(sysMenuBase);
         //只有当赋予租户改变的时候，才会重新授权给租户管理员
         if ( row <= 0) {
             exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
-        if (!sourceMenu.getGiveTenant().equals(menuDO.getGiveTenant())){
+        if (sourceMenu.isGiveTenantMenu() && !sysMenuBase.isGiveTenantMenu()){
             //删除所有角色关联关系
-            sysRoleMenuService.deleteByRolesAndMenuId(new Long[]{RoleConstant.TENANT_ROLE_ID}, context.getId());
+            sysRoleMenuService.deleteByRolesAndMenuId(new String[]{RoleConstant.TENANT_ADMIN_ROLE_KEY}, context.getId());
+        } else if(!sourceMenu.isGiveTenantMenu() && sysMenuBase.isGiveTenantMenu()){
+            //删除所有角色关联关系（兼容处理，后续需要去掉）
+            sysRoleMenuService.deleteByRolesAndMenuId(new String[]{RoleConstant.TENANT_ADMIN_ROLE_KEY}, context.getId());
             //更新角色菜单关联数据
-            insertRoleMenu(context.getGiveTenant(), context.getId());
+            insertRoleMenu(context, context.getId());
         }
     }
 
@@ -286,16 +305,13 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
     }
 
     /**
-     *
-     * @param giveTenant
+     * @param context
      * @param menuId
      */
-    private void insertRoleMenu(Integer giveTenant, Long menuId) {
+    private void insertRoleMenu(SysMenuContext context, Long menuId) {
         try {
-            if (MenuConstant.GIVE_TENANT_YES.equals(giveTenant)) {
-                //添加租户角色下
-                SysRoleMenuBase menuDO = SysRoleMenuBase.builder().menuId(menuId).roleId(RoleConstant.TENANT_ROLE_ID).build();
-                sysRoleMenuService.insert(menuDO);
+            if (context.isGiveTenantMenu()){
+                addTenantMenu(Arrays.asList(menuId));
             }
         } catch (Exception e) {
         }
@@ -423,6 +439,7 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
     private List<SysMenuDto> getChild(List<SysMenuDto> list, Long parentId) {
         return list.stream().filter(s-> s.getParentId().equals(parentId)).collect(Collectors.toList());
     }
+
 
 //    /**
 //     * 获取组件信息

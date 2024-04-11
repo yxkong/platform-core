@@ -1,7 +1,7 @@
 package com.github.platform.core.dingtalk.infra.rpc.external;
 
-import com.github.platform.core.dingtalk.infra.rpc.external.command.DingAccessTokenCmd;
-import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingAccessTokenDto;
+import com.github.platform.core.dingtalk.infra.rpc.external.command.DingAppAccessTokenCmd;
+import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingAppAccessTokenDto;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingGroupUserDto;
 import com.github.platform.core.dingtalk.infra.rpc.external.query.DingGroupUserQuery;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface DingBaseFeignClient {
 
 	/**
-	 * 获取token
+	 * 获取应用token
 	 * @param cmd 获取token请求
 	 * @return
 	 */
 	@PostMapping(value="/v1.0/oauth2/accessToken")
-	DingAccessTokenDto getToken(DingAccessTokenCmd cmd);
+	DingAppAccessTokenDto getAccessToken(DingAppAccessTokenCmd cmd);
+	@PostMapping(value="/v1.0/oauth2/userAccessToken")
+	DingAppAccessTokenDto getUserAccessToken(DingAppAccessTokenCmd cmd);
 
 	/**
 	 * 获取群消息，群成员id
