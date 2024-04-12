@@ -6,6 +6,7 @@ import com.github.platform.core.auth.context.SecurityContextHolder;
 import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.common.utils.CollectionUtil;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class LoginUserInfoUtil {
         if (AuthUtil.isSuperAdmin()){
             return false;
         }
-        Set<DataScopeEnum> dataScopes = LoginUserInfoUtil.getLoginUserInfo().getDataScopes();
+        Set<DataScopeEnum> dataScopes = getLoginUserInfo().getDataScopes();
         if (CollectionUtil.isNotEmpty(dataScopes)){
             DataScopeEnum dataScopeEnum = dataScopes.stream().filter(s -> !DataScopeEnum.USER.equals(s)).findFirst().orElse(null);
             //dataScopeEnum 有值，表示有非本人权限的数据
@@ -71,13 +72,13 @@ public class LoginUserInfoUtil {
 
     /**
      * 是否包含角色
-     * @param role
+     * @param roleKey
      * @return
      */
-    public static boolean containsRole(String role){
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+    public static boolean containsRole(String roleKey){
+        LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
-            return userInfo.getRoleKeys().contains(role);
+            return userInfo.getRoleKeys().contains(roleKey);
         }
         return false;
     }
@@ -87,11 +88,11 @@ public class LoginUserInfoUtil {
      * @return
      */
     public static Integer getTenantId(){
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getTenantId();
         }
-        return null;
+        return getContext().getTenantId();
     }
 
     /**
@@ -99,7 +100,7 @@ public class LoginUserInfoUtil {
      * @return
      */
     public static String getLoginName(){
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getLoginName();
         }
@@ -111,9 +112,21 @@ public class LoginUserInfoUtil {
      * @return
      */
     public static Long getDeptId(){
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getDeptId();
+        }
+        return null;
+    }
+
+    /**
+     * 获取所有的部门id
+     * @return
+     */
+    public static Set<Long> getAllDeptId(){
+        LoginUserInfo userInfo = getLoginUserInfo();
+        if(Objects.nonNull(userInfo)){
+            return userInfo.getDeptIds();
         }
         return null;
     }
@@ -123,7 +136,7 @@ public class LoginUserInfoUtil {
      * @return
      */
     public static String getDeptName(){
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getDeptName();
         }
@@ -135,7 +148,7 @@ public class LoginUserInfoUtil {
      * @return
      */
     public static String getToken() {
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getToken();
         }
@@ -148,7 +161,7 @@ public class LoginUserInfoUtil {
      * @return
      */
     public static Long getUserId() {
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getId();
         }
@@ -162,11 +175,45 @@ public class LoginUserInfoUtil {
      * @return
      */
     public static List<Long> getUserRoleIds() {
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getRoleIds();
         }
         return null;
+    }
+
+    /**
+     * 获取角色key
+     * @return
+     */
+    public static List<String> getRoleKeys(){
+        LoginUserInfo userInfo = getLoginUserInfo();
+        if(Objects.nonNull(userInfo)){
+            return userInfo.getRoleKeys();
+        }
+        return null;
+    }
+    /**
+     * 获取数据权限枚举
+     */
+    public static Set<DataScopeEnum> getDataScopes(){
+        LoginUserInfo userInfo = getLoginUserInfo();
+        if(Objects.nonNull(userInfo)){
+            return userInfo.getDataScopes();
+        }
+        return null;
+    }
+
+    /**
+     * 获取最大权限,没有配置，默认为个人
+     * @return
+     */
+    public static DataScopeEnum getMaxPrivilege(){
+        LoginUserInfo userInfo = getLoginUserInfo();
+        if(Objects.nonNull(userInfo) && CollectionUtil.isNotEmpty(userInfo.getDataScopes())){
+            return userInfo.getDataScopes().stream().min(Comparator.comparingInt(DataScopeEnum::getScope)).get();
+        }
+        return DataScopeEnum.USER;
     }
 
     /**
@@ -175,7 +222,7 @@ public class LoginUserInfoUtil {
      * @return
      */
     public static Set<String> getUserPerms() {
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getPerms();
         }
@@ -188,7 +235,7 @@ public class LoginUserInfoUtil {
      * @return
      */
     public String getUserName() {
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getUserName();
         }
@@ -201,7 +248,7 @@ public class LoginUserInfoUtil {
      * @return
      */
     public String getMobile() {
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getMobile();
         }

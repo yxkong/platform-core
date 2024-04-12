@@ -17,7 +17,7 @@
 		  <id column="remark" property="remark" /> 
   
     </resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
     	 t.id as id ,
  		 t.rule as rule ,
  		 t.name as name ,
@@ -155,10 +155,10 @@
          update t_gray_rule set status = 0 where id != #{id} and status=1
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_gray_rule t where t.id=#{id}
+		select <include refid="BaseColumnList" /> from t_gray_rule t where t.id=#{id}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_gray_rule
+		select <include refid="BaseColumnList" /> from t_gray_rule
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
 				#{id}
@@ -168,7 +168,7 @@
 	</select>
 	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_gray_rule t
  		<where>
  			<if test="id != null">
@@ -202,7 +202,7 @@
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.loadbalancer.domain.common.entity.GrayRuleBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_gray_rule t
  		<where>
  			<if test="id != null">
@@ -318,7 +318,7 @@
 	</select>
     <select id="findOne" resultType="com.github.platform.core.loadbalancer.domain.common.entity.GrayRuleBase">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="BaseColumnList" />
 		from t_gray_rule
 		where `status` =1
 		order by id desc limit 1

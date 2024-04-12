@@ -46,23 +46,11 @@ public interface SysUserRoleMapper  {
 	List<SysUserRoleBase> findByIds(@Param("ids") Long[] ids);
 
 	/**
-	 * 通过map参数获取列表
-	 * @param params
-	 * @return List<SysUserRoleBase>
-	 */
-	List<SysUserRoleBase> findList(Map<String,Object> params);
-	/**
 	* 通过实体查询
 	* @param record
 	* @return List<SysUserRoleBase>
 	*/
 	List<SysUserRoleBase> findListBy(SysUserRoleBase record);
-	/**
-	 * 通过map参数获取 总数
-	 * @param params
-	 * @return int
-	 */
-	int findListCount(Map<String,Object> params);
 	/**
 	* 通过主键id 删除
 	* @param id

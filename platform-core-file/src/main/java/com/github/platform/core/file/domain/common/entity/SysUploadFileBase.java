@@ -2,7 +2,7 @@ package com.github.platform.core.file.domain.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.platform.core.standard.constant.SymbolConstant;
-import com.github.platform.core.standard.entity.BaseAdminEntity;
+import com.github.platform.core.common.entity.BaseAdminEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -58,6 +58,7 @@ public class SysUploadFileBase extends BaseAdminEntity   {
     public String getObjectName(){
         return this.filePath+ File.separator + this.fileId +SymbolConstant.period + this.fileType;
     }
+    @JsonIgnore
     public boolean isImage(){
         return "jpg".equalsIgnoreCase(this.fileType) || "png".equalsIgnoreCase(this.fileType) || "jpeg".equalsIgnoreCase(this.fileType);
     }

@@ -1,5 +1,4 @@
 /Users/yxk/work/git/yxkong/platform-core/platform-core-db/src/main/java/com/github/platform/core/common/plugin/mybatis/SplitSql.java
-/Users/yxk/work/git/yxkong/platform-core/platform-core-db/src/main/java/com/github/platform/core/common/plugin/mybatis/SelectParamInterceptor.java
 /Users/yxk/work/git/yxkong/platform-core/platform-core-db/src/main/java/com/github/platform/core/common/aspect/DBExceptionHandler.java
 /Users/yxk/work/git/yxkong/platform-core/platform-core-db/src/main/java/com/github/platform/core/common/plugin/mybatis/ShardingResultInterceptor.java
 /Users/yxk/work/git/yxkong/platform-core/platform-core-db/src/main/java/com/github/platform/core/common/plugin/mybatis/PaginationInterceptor.java
@@ -9,4 +8,3 @@
 /Users/yxk/work/git/yxkong/platform-core/platform-core-db/src/main/java/com/github/platform/core/common/plugin/mybatis/MergeResultHandler.java
 /Users/yxk/work/git/yxkong/platform-core/platform-core-db/src/main/java/com/github/platform/core/common/plugin/mybatis/dialect/BaseDialect.java
 /Users/yxk/work/git/yxkong/platform-core/platform-core-db/src/main/java/com/github/platform/core/common/plugin/mybatis/dialect/MySQLDialect.java
-/Users/yxk/work/git/yxkong/platform-core/platform-core-db/src/main/java/com/github/platform/core/common/plugin/mybatis/DataScopeInterceptor.java

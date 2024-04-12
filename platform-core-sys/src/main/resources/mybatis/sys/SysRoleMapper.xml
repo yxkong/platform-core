@@ -17,7 +17,7 @@
 		  <id column="remark" property="remark" /> 
   
     </resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
     	 t.id as id ,
  		 t.name as `name` ,
  		 t.key as `key` ,
@@ -152,10 +152,10 @@
      where id = #{id}
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_role t where t.id=#{id}
+		select <include refid="BaseColumnList" /> from t_sys_role t where t.id=#{id}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_role t
+		select <include refid="BaseColumnList" /> from t_sys_role t
 		<where>
 			<foreach item="id"  collection="ids" open="t.id  in (" separator="," close=")" >
 				#{id}
@@ -163,9 +163,33 @@
 		</where>
 		limit 200
 	</select>
+	<select id="findByKeys" resultMap="BaseResultMap" >
+		select <include refid="BaseColumnList" /> from t_sys_role t
+		<where>
+			<if test="tenantId != null">
+				t.tenant_id = #{tenantId}
+			</if>
+			<foreach item="key"  collection="roleKeys" open="and t.key  in (" separator="," close=")" >
+				#{key}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findByKey" resultMap="BaseResultMap" >
+		select <include refid="BaseColumnList" /> from t_sys_role t
+		<where>
+			<if test="tenantId != null">
+				t.tenant_id = #{tenantId}
+			</if>
+			<if test="roleKey != null">
+				t.key = #{roleKey}
+			</if>
+		</where>
+		limit 200
+	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysRoleBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_role t
 		<where>
 			<if test="id != null">
@@ -198,12 +222,12 @@
 		</where>
 	</select>
 	<select id="findByNameOrKeyAndTenant" resultMap="BaseResultMap">
-		select <include refid="Base_Column_List"/>
+		select <include refid="BaseColumnList"/>
 		    from t_sys_role t
 			where (t.name = #{name} or t.key=#{key}) and t.tenant_id = #{tenantId} ;
 	</select>
 	<select id="findByExist" resultMap="BaseResultMap">
-		select <include refid="Base_Column_List"/>
+		select <include refid="BaseColumnList"/>
 		from t_sys_role t
 		where t.id != #{id} and  (t.name = #{name} or t.key=#{key}) and t.tenant_id = #{tenantId} ;
 	</select>

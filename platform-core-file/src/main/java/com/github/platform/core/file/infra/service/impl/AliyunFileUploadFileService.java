@@ -55,14 +55,20 @@ public class AliyunFileUploadFileService extends AbstractUploadFileService{
     public String getUrl(SysUploadFileDto dto) {
         return getUrlStr(dto,null);
     }
+
+    /**
+     *
+     * @param dto
+     * @param style style = "image/resize,m_fixed,w_100,h_100/rotate,90";
+     *  可以实时处理图片 将图片缩放为固定宽高100 px后，再旋转90°。
+     * @return
+     */
     private String getUrlStr(SysUploadFileDto dto,String style) {
-        // 失效时间如果没有配置，则默认30分钟
-        int activeMinutes = Objects.isNull(getAliyun().getLinkExpireMinutes()) ? 30 : getAliyun().getLinkExpireMinutes();
         GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(getAliyun().getBucketName(), dto.getObjectName());
+        // 设置失效时间
+        int activeMinutes = Objects.equals(dto.getPermanent() ,Boolean.TRUE) ? Integer.MAX_VALUE :
+                Objects.isNull(getAliyun().getLinkExpireMinutes()) ? 30 : getAliyun().getLinkExpireMinutes();
         req.setExpiration(DateUtils.addMinutes(new Date(), activeMinutes));
-        // 可以实时处理图片 将图片缩放为固定宽高100 px后，再旋转90°。
-//        String style = "image/resize,m_fixed,w_100,h_100/rotate,90";
-//        req.setProcess(style);
         if (StringUtils.isNotEmpty(style)){
             req.setProcess(style);
         }

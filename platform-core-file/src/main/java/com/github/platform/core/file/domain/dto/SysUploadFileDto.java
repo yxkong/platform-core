@@ -22,4 +22,5 @@ public class SysUploadFileDto extends SysUploadFileBase{
 
     private String url;
     private String thumbUrl;
+    private Boolean permanent;
 }

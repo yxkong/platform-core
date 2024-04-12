@@ -4,7 +4,7 @@ import com.github.platform.core.common.configuration.property.PlatformProperties
 import com.github.platform.core.common.constant.SpringBeanNameConstant;
 import com.github.platform.core.common.constant.SpringBeanOrderConstant;
 import com.github.platform.core.common.service.IDomainEventService;
-import com.github.platform.core.kafka.service.impl.KafkaDomainEventService;
+import com.github.platform.core.kafka.service.impl.KafkaDomainEventServiceImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -28,6 +28,6 @@ public class KafkaDomainEventConfiguration {
     @Order(SpringBeanOrderConstant.DOMAIN_SERVICE_KAFKA)
     @ConditionalOnMissingBean(IDomainEventService.class)
     public IDomainEventService kafkaDomainEventService(@Qualifier("bizKafkaTemplate") KafkaTemplate<Object, Object> kafkaTemplate, PlatformProperties properties, ApplicationContext applicationContext){
-        return new KafkaDomainEventService(kafkaTemplate,properties.getSystem().getServiceName(),applicationContext);
+        return new KafkaDomainEventServiceImpl(kafkaTemplate,properties.getSystem().getServiceName(),applicationContext);
     }
 }

@@ -30,12 +30,13 @@ public enum SysInfraResultEnum implements BaseResult {
     NOT_FOUND_LOGIN_WAY("2313", "未找到对应登录方式的实现！"),
     LDAP_LOGIN_FAIL("2314", "未找到对应的账户，或密码错误，请重新尝试！"),
 
+
     MENU_RELOAD_PERMISSION_FAIL("2320", "重新加载菜单权限失败！"),
     MENU_EXIST_SUB_MENU("2321", "存在子菜单,不允许删除！"),
     MENU_ASSIGNED("2322", "菜单已分配,不允许删除！"),
     CONFIG_ADD_EXIST("2323","数据库中已经存在对应的配置key，请核查" ),
     CONFIG_NOT_UPDATE_KEY("2324","更新配置时，不允许修改配置key" ),
-
+    MENU_RELOAD_PERMISSION_EMPTY("2325", "重新加载租户管理员菜单权限数据为空！"),
 
     ROLE_ALREADY_EXIST("2330","该角色名或角色标识在该租户中已存在,请核验"),
     FORBID_DELETE_ROLE("2331","该角色下存在用户，无法删除，请核验"),

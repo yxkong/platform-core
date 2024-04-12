@@ -88,11 +88,11 @@ public interface ISysUserGateway {
      * 生成token,并将token放入缓存
      *
      * @param entity
-     * @param roleIds 指定角色id
+     * @param roleKeys 指定角色
      * @param loginWay
      * @return
      */
-    String generatorToken(UserEntity entity, Set<Long> roleIds, LoginWayEnum loginWay);
+    String generatorToken(UserEntity entity, Set<String> roleKeys, LoginWayEnum loginWay);
 
     /**
      * 基础校验 密码+账户状态
@@ -156,10 +156,11 @@ public interface ISysUserGateway {
 
     /**
      * 根据角色名称查询用户
-     * @param roleIds
+     * @param roleKeys
      * @return
      */
-    List<SysUserDto> findByRoleIds(List<String> roleIds);
+    List<SysUserDto> findByRoleKeys(List<String> roleKeys,Integer tenantId);
+
 
     /**
      * 查询用户，不分页

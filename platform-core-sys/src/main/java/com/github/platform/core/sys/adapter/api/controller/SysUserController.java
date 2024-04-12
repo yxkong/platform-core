@@ -2,6 +2,7 @@ package com.github.platform.core.sys.adapter.api.controller;
 
 import com.github.platform.core.auth.annotation.RequiredLogin;
 import com.github.platform.core.auth.util.AuthUtil;
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.cache.infra.annotation.RepeatSubmit;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;
@@ -96,16 +97,16 @@ public class SysUserController extends BaseController {
     /**
      * 新增用户
      *
-     * @param register
+     * @param cmd
      * @return
      */
     @RepeatSubmit
     @OptLog(module="user",title="新增用户",optType = LogOptTypeEnum.add)
     @Operation(summary = "新增用户",tags = {"user"})
     @PostMapping(value = "/add")
-    public ResultBean<Void> add(@RequestBody @Validated AddUserCmd register) {
-        register.setLoginName(register.getLoginName().toLowerCase());
-        RegisterContext registerContext = convert.toRegister(register);
+    public ResultBean<Void> add(@RequestBody @Validated AddUserCmd cmd) {
+        cmd.setLoginName(cmd.getLoginName().toLowerCase());
+        RegisterContext registerContext = convert.toRegister(cmd);
         registerContext.setChannel(UserChannelEnum.add);
         userExecutor.insert(registerContext);
         return buildSucResp();
@@ -113,37 +114,37 @@ public class SysUserController extends BaseController {
     /**
      * 修改用户
      *
-     * @param register
+     * @param cmd
      * @return
      */
     @RepeatSubmit
     @OptLog(module="user",title="修改用户",optType = LogOptTypeEnum.modify)
     @Operation(summary = "修改用户",tags = {"user"})
     @PostMapping(value = "/modify")
-    public ResultBean<Void> modify(@RequestBody @Validated AddUserCmd register) {
-        register.setLoginName(register.getLoginName().toLowerCase());
-        if (UserConstant.SUPER_ADMIN.equals(register.getLoginName())){
+    public ResultBean<Void> modify(@RequestBody @Validated AddUserCmd cmd) {
+        // 只有管理员自己能修改自己
+        if (UserConstant.SUPER_ADMIN.equals(cmd.getLoginName()) && !LoginUserInfoUtil.getLoginName().equals(cmd.getLoginName())){
             exception(SysAdapterResultEnum.dont_allow_opt);
         }
-        RegisterContext registerContext = convert.toRegister(register);
+        RegisterContext registerContext = convert.toRegister(cmd);
         userExecutor.update(registerContext);
         return buildSucResp();
     }
 
     /**
      * 重置密码
-     * @param resetPwdCmd
+     * @param cmd
      * @return
      */
     @OptLog(module="user",title="重置密码",optType = LogOptTypeEnum.modify)
     @Operation(summary = "重置密码",tags = {"user"})
     @PostMapping(value = "/reset")
-    public ResultBean<PwdResult> reset(@RequestBody @Validated ResetPwdCmd resetPwdCmd) {
-        resetPwdCmd.setLoginName(resetPwdCmd.getLoginName().toLowerCase());
-        if (UserConstant.SUPER_ADMIN.equals(resetPwdCmd.getLoginName()) && AuthUtil.isSuperAdmin()){
+    public ResultBean<PwdResult> reset(@RequestBody @Validated ResetPwdCmd cmd) {
+        // 只有管理员自己能修改自己
+        if (UserConstant.SUPER_ADMIN.equals(cmd.getLoginName()) &&  !LoginUserInfoUtil.getLoginName().equals(cmd.getLoginName())){
             return ResultBeanUtil.noAuth("您无重置内置超级管理员的权限！");
         }
-        ResetPwdContext resetPwdContext = convert.toRestPwd(resetPwdCmd);
+        ResetPwdContext resetPwdContext = convert.toRestPwd(cmd);
         PwdResult pwdResult = userExecutor.resetPwd(resetPwdContext);
         return buildSucResp(pwdResult);
     }

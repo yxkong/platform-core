@@ -11,6 +11,7 @@ import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 import org.apache.ibatis.mapping.SqlCommandType;
+import org.apache.ibatis.plugin.Interceptor;
 import org.springframework.beans.BeanUtils;
 
 import java.beans.PropertyDescriptor;
@@ -28,13 +29,19 @@ import java.util.Objects;
  * @version: 1.0
  */
 @Slf4j
-public class InterceptorBase {
+public abstract class InterceptorBase implements Interceptor {
     protected static final String CREATE_TIME = "createTime";
+    protected static final String DB_CREATE_TIME = "create_time";
     protected static final String UPDATE_TIME = "updateTime";
+    protected static final String DB_UPDATE_TIME = "update_time";
     protected static final String CREATE_BY = "createBy";
+    protected static final String DB_CREATE_BY = "create_by";
     protected static final String UPDATE_BY = "updateBy";
-    private static final String TENANT_ID = "tenantId";
-    private static final String DEPT_ID = "deptId";
+    protected static final String DB_UPDATE_BY = "update_by";
+    protected static final String TENANT_ID = "";
+    protected static final String DB_TENANT_ID = "";
+    protected static final String DEPT_ID = "deptId";
+    protected static final String DB_DEPT_ID = "dept_id";
     protected void put(Map map,String key,Object val){
         if (!map.containsKey(key)){
             map.put(key,val);

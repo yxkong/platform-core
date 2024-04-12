@@ -20,6 +20,6 @@ public class ThirdApproveContext {
     /** 绑定用户id */
     private Long userId;
     private Long deptId;
-    private Long[] roleIds;
+    private String[] roleKeys;
     private Integer status;
 }

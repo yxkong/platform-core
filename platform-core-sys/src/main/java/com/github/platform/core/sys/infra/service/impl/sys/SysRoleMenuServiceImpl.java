@@ -2,13 +2,19 @@ package com.github.platform.core.sys.infra.service.impl.sys;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
+import com.github.platform.core.persistence.mapper.sys.SysRoleMapper;
 import com.github.platform.core.persistence.mapper.sys.SysRoleMenuMapper;
+import com.github.platform.core.standard.util.LocalDateTimeUtil;
+import com.github.platform.core.sys.domain.common.entity.SysRoleBase;
 import com.github.platform.core.sys.domain.common.entity.SysRoleMenuBase;
+import com.github.platform.core.sys.domain.dto.SysRoleDto;
 import com.github.platform.core.sys.infra.service.sys.ISysRoleMenuService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 自定义代码生成器
@@ -21,6 +27,8 @@ public class SysRoleMenuServiceImpl  implements ISysRoleMenuService {
 
 	@Resource
 	private SysRoleMenuMapper sysRoleMenuMapper;
+	@Resource
+	private SysRoleMapper sysRoleMapper;
 
 	@Override
 	public int insert(SysRoleMenuBase record){
@@ -70,12 +78,21 @@ public class SysRoleMenuServiceImpl  implements ISysRoleMenuService {
 	}
 
 	@Override
-	public int insertList(Collection<Long> menuIds, Long roleId, Integer tenantId){
+	public int deleteByRoleKey(String roleKey) {
+		return sysRoleMenuMapper.deleteByRoleKey(roleKey);
+	}
+
+	@Override
+	public int insertList(Collection<Long> menuIds, SysRoleDto dto, Integer tenantId){
 		List<SysRoleMenuBase> list = new ArrayList<>(menuIds.size());
 		for (Long menuId : menuIds) {
 			SysRoleMenuBase roleMenuDO = SysRoleMenuBase.builder()
 					.menuId(menuId)
-					.roleId(roleId)
+					.roleId(dto.getId())
+					.roleKey(dto.getKey())
+					.tenantId(tenantId)
+					.createBy(LoginUserInfoUtil.getLoginName())
+					.createTime(LocalDateTimeUtil.dateTime())
 					.build();
 			list.add(roleMenuDO);
 		}
@@ -89,8 +106,9 @@ public class SysRoleMenuServiceImpl  implements ISysRoleMenuService {
 	}
 
 	@Override
-	public int deleteByRolesAndMenuId(Long[] roleIds, Long menuId) {
-		return sysRoleMenuMapper.deleteByRolesAndMenuId(roleIds,menuId);
+	public int deleteByRolesAndMenuId(String[] roleKeys, Long menuId) {
+		// 根据角色key，删除所有的
+		return sysRoleMenuMapper.deleteByRolesAndMenuId(roleKeys,menuId);
 	}
 
 }

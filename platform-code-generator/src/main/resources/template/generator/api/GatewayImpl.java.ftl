@@ -10,6 +10,7 @@ import com.github.platform.core.common.gateway.BaseGatewayImpl;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 /**
  * ${apiAlias}网关层实现
  * @website <a href="https://www.5ycode.com/">5ycode</a>
@@ -27,9 +28,9 @@ public class ${entityName}GatewayImpl extends BaseGatewayImpl implements I${enti
 
     @Override
     public ${entityName}Dto insert(${entityName}Context context) {
-        ${entityName}Base ${lowerEntityName}Base = ${lowerEntityName}Convert.to${entityName}Base(context);
+        ${entityName}Base record = ${lowerEntityName}Convert.to${entityName}Base(context);
         ${lowerEntityName}Mapper.insert(${lowerEntityName}Base);
-        return ${lowerEntityName}Convert.toDto(${lowerEntityName}Base);
+        return ${lowerEntityName}Convert.toDto(record);
     }
 
     @Override

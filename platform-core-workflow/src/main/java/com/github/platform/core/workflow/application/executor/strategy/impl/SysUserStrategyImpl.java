@@ -1,5 +1,6 @@
 package com.github.platform.core.workflow.application.executor.strategy.impl;
 
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.sys.domain.dto.SysUserDto;
@@ -25,7 +26,7 @@ public class SysUserStrategyImpl implements UserStrategy {
     @Override
     public List<OptionsDto> users(UserQueryContext userQuery) {
         List<OptionsDto> rst = new ArrayList<>();
-        List<SysUserDto> userList = userGateway.findByRoleIds(userQuery.getRoles());
+        List<SysUserDto> userList = userGateway.findByRoleKeys(userQuery.getRoles(), LoginUserInfoUtil.getTenantId());
         if (CollectionUtil.isEmpty(userList)){
             return rst;
         }

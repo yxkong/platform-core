@@ -2,6 +2,8 @@ package com.github.platform.core.auth.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.platform.core.auth.constant.DataScopeEnum;
+import com.github.platform.core.auth.constant.RoleConstant;
+import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.entity.common.LoginInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -61,14 +63,36 @@ public class LoginUserInfo extends LoginInfo {
     private Set<DataScopeEnum> dataScopes = new HashSet<>();
 
     /**
-     * 多个部门数据权限
+     * 所在部门以及子部门
      */
-    @Schema(description ="多个部门数据权限")
+    @Schema(description ="所在部门以及子部门")
     private Set<Long> deptIds = new HashSet<>();
 
     @JsonIgnore
     public String getWebSocketKey(){
         return this.loginName + SymbolConstant.colon + this.token;
+    }
+
+    /**
+     * 是否超级管理员
+     * @return
+     */
+    public boolean isSuperAdmin(){
+        if (CollectionUtil.isEmpty(roleKeys)){
+            return false;
+        }
+        return roleKeys.contains(RoleConstant.SUPER_ROLE_KEY);
+    }
+
+    /**
+     * 是否租户管理员
+     * @return
+     */
+    public boolean isTenantAdmin(){
+        if (CollectionUtil.isEmpty(roleKeys)){
+            return false;
+        }
+        return roleKeys.contains(RoleConstant.TENANT_ADMIN_ROLE_KEY);
     }
 
 }

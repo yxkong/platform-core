@@ -26,13 +26,13 @@
 		  <id column="remark" property="remark" /> 
   
     </resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
     	 t.id as id ,
  		 t.table_name as tableName ,
  		 t.column_name as columnName ,
  		 t.column_type as columnType ,
  		 t.dict_name as dictName ,
- 		 t.extra as extra ,
+ 		 t.extra,
  		 t.query_show as queryShow ,
  		 t.form_show as formShow ,
  		 t.form_type as formType ,
@@ -41,13 +41,13 @@
  		 t.not_null as notNull ,
  		 t.query_type as queryType ,
  		 t.tenant_id as tenantId ,
- 		 t.status as status ,
- 		 t.sort as sort ,
+ 		 t.status,
+ 		 t.sort,
  		 t.create_by as createBy ,
  		 t.create_time as createTime ,
  		 t.update_by as updateBy ,
  		 t.update_time as updateTime ,
- 		 t.remark as remark
+ 		 t.remark
     </sql>
 
 	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.code.domain.common.entity.CodeColumnConfigBase">
@@ -232,12 +232,6 @@
 			 <if test="sort != null">
 				 sort = #{sort},
  			 </if>
- 			 <if test="createBy != null">
- 				create_by = #{createBy},
- 			 </if>
- 			 <if test="createTime != null">
- 				create_time = #{createTime},
- 			 </if>
  			 <if test="updateBy != null">
  				update_by = #{updateBy},
  			 </if>
@@ -292,10 +286,10 @@
 		</foreach>
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_code_column_config t where t.id=#{id}
+		select <include refid="BaseColumnList" /> from t_code_column_config t where t.id=#{id}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_code_column_config
+		select <include refid="BaseColumnList" /> from t_code_column_config
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
 				#{id}
@@ -303,64 +297,14 @@
 		</where>
 		limit 200
 	</select>
-	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select 
- 		<include refid="Base_Column_List" />
- 		from t_code_column_config t
- 		<where>
- 			<if test="tableName != null">
- 				and t.table_name = #{tableName}
- 			</if>
- 			<if test="columnName != null">
- 				and t.column_name = #{columnName}
- 			</if>
- 			<if test="columnType != null">
- 				and t.column_type = #{columnType}
- 			</if>
- 			<if test="dictName != null">
- 				and t.dict_name = #{dictName}
- 			</if>
- 			<if test="extra != null">
- 				and t.extra = #{extra}
- 			</if>
-			<if test="queryShow != null">
-				and t.query_show = #{queryShow},
-			</if>
- 			<if test="formShow != null">
- 				and t.form_show = #{formShow}
- 			</if>
- 			<if test="formType != null">
- 				and t.form_type = #{formType}
- 			</if>
- 			<if test="columnKey != null">
- 				and t.column_key = #{columnKey}
- 			</if>
- 			<if test="listShow != null">
- 				and t.list_show = #{listShow}
- 			</if>
- 			<if test="notNull != null">
- 				and t.not_null = #{notNull}
- 			</if>
- 			<if test="queryType != null">
- 				and t.query_type = #{queryType}
- 			</if>
-			<if test="tenantId != null">
-				and t.tenant_id = #{tenantId}
-			</if>
- 			<if test="status != null">
- 				and t.status = #{status}
- 			</if>
-		</where>
-		order by t.sort
-	</select>
 	<select id="findListByTableName" resultMap="BaseResultMap" parameterType="java.lang.String">
 	select
-	<include refid="Base_Column_List" />
+	<include refid="BaseColumnList" />
 	from t_code_column_config t where  t.table_name = #{tableName}  order by t.sort
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.code.domain.common.entity.CodeColumnConfigBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_code_column_config t
  		<where>
  			<if test="tableName != null">
@@ -408,57 +352,7 @@
 		</where>
 		order by t.sort
 	</select>
-	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
-		select  count(t.id) from t_code_column_config t
-		<where>
- 			<if test="tableName != null">
- 				and t.table_name = #{tableName}
- 			</if>
- 			<if test="columnName != null">
- 				and t.column_name = #{columnName}
- 			</if>
- 			<if test="columnType != null">
- 				and t.column_type = #{columnType}
- 			</if>
- 			<if test="dictName != null">
- 				and t.dict_name = #{dictName}
- 			</if>
- 			<if test="extra != null">
- 				and t.extra = #{extra}
- 			</if>
-			<if test="queryShow != null">
-				and t.query_show = #{queryShow},
-			</if>
- 			<if test="formShow != null">
- 				and t.form_show = #{formShow}
- 			</if>
- 			<if test="formType != null">
- 				and t.form_type = #{formType}
- 			</if>
- 			<if test="columnKey != null">
- 				and t.column_key = #{columnKey}
- 			</if>
- 			<if test="listShow != null">
- 				and t.list_show = #{listShow}
- 			</if>
- 			<if test="notNull != null">
- 				and t.not_null = #{notNull}
- 			</if>
- 			<if test="queryType != null">
- 				and t.query_type = #{queryType}
- 			</if>
-			<if test="tenantId != null">
-				and t.tenant_id = #{tenantId}
-			</if>
- 			<if test="status != null">
- 				and t.status = #{status}
- 			</if>
- 			<if test="remark != null">
- 				and t.remark = #{remark}
- 			</if>
-		</where>
-	</select>
-	<select id="findListByCount" resultType="java.lang.Integer"  parameterType="com.github.platform.core.code.domain.common.entity.CodeColumnConfigBase">
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.code.domain.common.entity.CodeColumnConfigBase">
 		select  count(t.id) from t_code_column_config t
 		<where>
  			<if test="tableName != null">

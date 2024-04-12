@@ -1,10 +1,13 @@
 package com.github.platform.core.sys.application.executor.impl;
 
 import com.github.platform.core.common.service.BaseExecutor;
+import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.standard.constant.ResultStatusEnum;
+import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.sys.application.executor.IRoleExecutor;
+import com.github.platform.core.sys.domain.common.entity.SysRoleBase;
 import com.github.platform.core.sys.domain.context.SysRoleContext;
 import com.github.platform.core.sys.domain.context.SysRoleQueryContext;
 import com.github.platform.core.sys.domain.dto.SysRoleDto;
@@ -14,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -30,7 +34,8 @@ public class SysRoleExecutorImpl extends BaseExecutor implements IRoleExecutor {
         return roleGateway.query(context);
     }
     @Override
-    public List<OptionsDto> roles(SysRoleQueryContext context) {
+    public List<OptionsDto> select(SysRoleQueryContext context) {
+        context = SysRoleQueryContext.builder().status(StatusEnum.ON.getStatus()).build();
         return roleGateway.roles(context);
     }
 

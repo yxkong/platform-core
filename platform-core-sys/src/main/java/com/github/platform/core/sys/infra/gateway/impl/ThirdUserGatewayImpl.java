@@ -86,12 +86,12 @@ public class ThirdUserGatewayImpl implements ThirdUserGateway {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void approve(ThirdApproveContext context) {
-        SysThirdUserBase thirdUserDO = SysThirdUserBase.builder().id(context.getId()).status(context.getStatus()).build();
-        thirdUserMapper.updateById(thirdUserDO);
+        SysThirdUserBase thirdUser = SysThirdUserBase.builder().id(context.getId()).status(context.getStatus()).build();
+        thirdUserMapper.updateById(thirdUser);
 
         SysUserBase sysUser = SysUserBase.builder().id(context.getUserId()).deptId(context.getDeptId()).status(context.getStatus()).build();
         sysUserMapper.updateById(sysUser);
-        roleGateway.addUserRole(context.getUserId(), Arrays.stream(context.getRoleIds()).collect(Collectors.toSet()));
+        roleGateway.addUserRole(context.getUserId(),thirdUser.getTenantId(), Arrays.stream(context.getRoleKeys()).collect(Collectors.toSet()));
     }
 
     @Override

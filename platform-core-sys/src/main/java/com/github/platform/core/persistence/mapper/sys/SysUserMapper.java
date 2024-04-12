@@ -50,10 +50,10 @@ public interface SysUserMapper  {
 	/**
 	 * 指定角色查询用户,关联角色表查询
 	 * @param sysUser
-	 * @param roleId 角色id不能为空
+	 * @param roleKey 角色不能为空
 	 * @return
 	 */
-	List<SysUserDto> findListByRole(@Param("user") SysUserBase sysUser,@NotNull @Param("roleId") Long roleId);
+	List<SysUserDto> findListByRole(@Param("user") SysUserBase sysUser,@NotNull @Param("roleKey") String roleKey);
 	/**
 	 *  查询多个部门下的用户(用于查询部门下的所有用户)
 	 * @param deptIds
@@ -110,9 +110,9 @@ public interface SysUserMapper  {
     List<SysUserDto> queryByUsers(@Param("users")List<String> loginNames);
 
 	/**
-	 * 根据多个角色id查用户
-	 * @param roleIds
+	 * 根据多个角色key查用户
+	 * @param roleKeys
 	 * @return
 	 */
-    List<SysUserDto> queryByRoleIds(@Param("roleIds")List<String> roleIds);
+    List<SysUserDto> queryByRoleKeys(@Param("roleKeys")List<String> roleKeys,@Param("tenantId")Integer tenantId);
 }

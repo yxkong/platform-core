@@ -75,7 +75,7 @@ public class RegisterContext extends TenantContext {
     /**
      * 角色列表
      */
-    private Set<Long> roleIds;
+    private Set<String> roleKeys;
 
     private String createBy;
     private LocalDateTime createTime;

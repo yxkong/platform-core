@@ -24,7 +24,7 @@
 		<id column="remark" property="remark" />
 
     </resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
 		t.id ,
  		t.user_id as userId ,
  		t.open_id as openId ,
@@ -230,10 +230,10 @@
      where id = #{id}
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_third_user t where t.id=#{id}
+		select <include refid="BaseColumnList" /> from t_sys_third_user t where t.id=#{id}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_third_user
+		select <include refid="BaseColumnList" /> from t_sys_third_user
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
 				#{id}
@@ -259,7 +259,7 @@
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysThirdUserBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_third_user t
  		<where>
  			<if test="id!= null">
@@ -306,7 +306,7 @@
 	</select>
 	<select id="findByChannel" resultType="com.github.platform.core.sys.domain.common.entity.SysThirdUserBase">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="BaseColumnList" />
 		from t_sys_third_user t where  t.open_id = #{openId} and t.channel =  #{channel}
 	</select>
 	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.sys.domain.common.entity.SysThirdUserBase">

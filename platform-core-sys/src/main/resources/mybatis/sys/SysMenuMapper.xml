@@ -26,7 +26,7 @@
 		  <id column="remark" property="remark" /> 
   
     </resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
     	 t.id as id ,
  		 t.name as name ,
  		 t.parent_id as parentId ,
@@ -251,10 +251,10 @@
      where id = #{id}
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_menu t where t.id=#{id}
+		select <include refid="BaseColumnList" /> from t_sys_menu t where t.id=#{id}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_menu
+		select <include refid="BaseColumnList" /> from t_sys_menu
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
 				#{id}
@@ -264,7 +264,7 @@
 	</select>
 	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_menu t
  		<where>
  			<if test="id != null">
@@ -335,7 +335,7 @@
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysMenuBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_menu t
  		<where>
  			<if test="id != null">
@@ -481,13 +481,13 @@
 	</delete>
 	<select id="findMenuAll" resultMap="BaseResultMap" >
 		select
-		<include refid="Base_Column_List" />
+		<include refid="BaseColumnList" />
 		from t_sys_menu t where t.type in ('A','D', 'M') and t.status = 1
 		order by t.parent_id, t.sort
 	</select>
 	<select id="findMenuByUserId" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysMenuBase">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="BaseColumnList" />
 		from t_sys_menu t where t.id in(
 		  select rm.menu_id from t_sys_role_menu rm where rm.role_id in(
 			select ur.role_id from t_sys_user_role ur where  ur.user_id = #{userId}
@@ -509,7 +509,7 @@
 	</select>
 	<select id="findMenuByRoleIds" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysMenuBase">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="BaseColumnList" />
 		from t_sys_menu t where t.id in(
 		  select rm.menu_id from t_sys_role_menu rm where
 			<foreach item="roleId"  collection="roleIds" open="rm.role_id  in (" separator="," close=")" >

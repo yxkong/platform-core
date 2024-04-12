@@ -19,7 +19,7 @@
 		<id column="remark" property="remark" />
 
 	</resultMap>
-	<sql id="Base_Column_List">
+	<sql id="BaseColumnList">
 		t.id as id ,
 		t.pro_no as proNo ,
 		t.mobile as mobile ,
@@ -174,10 +174,10 @@
 		where id = #{id}
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_sms_log t where t.id=#{id}
+		select <include refid="BaseColumnList" /> from t_sys_sms_log t where t.id=#{id}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_sms_log
+		select <include refid="BaseColumnList" /> from t_sys_sms_log
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
 				#{id}
@@ -187,7 +187,7 @@
 	</select>
 	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="BaseColumnList" />
 		from t_sys_sms_log t
 		<where>
 			<if test="id!= null">
@@ -239,7 +239,7 @@
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sms.domain.common.entity.SysSmsLogBase">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="BaseColumnList" />
 		from t_sys_sms_log t
 		<where>
 			<if test="id!= null">
@@ -381,7 +381,7 @@
 		</where>
 	</select>
 	<select id="findByMsgId" resultType="com.github.platform.core.sms.domain.common.entity.SysSmsLogBase">
-		select <include refid="Base_Column_List" /> from t_sys_sms_log t where t.msg_id = #{msgId}
+		select <include refid="BaseColumnList" /> from t_sys_sms_log t where t.msg_id = #{msgId}
 	</select>
 	<delete id="deleteById" parameterType="java.lang.Long">
 		delete from t_sys_sms_log where id = #{id}

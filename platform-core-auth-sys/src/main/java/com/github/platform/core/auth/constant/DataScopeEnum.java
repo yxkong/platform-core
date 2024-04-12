@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 public enum DataScopeEnum {
 
+    ALL(-1, "所有数据", "-1"),
     TENANT(0, "租户数据权限", "0"),
 
     DEPT(1, "本部门数据权限", "1"),

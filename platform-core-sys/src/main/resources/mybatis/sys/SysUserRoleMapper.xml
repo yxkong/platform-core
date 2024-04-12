@@ -4,14 +4,20 @@
 
 	 <resultMap type="com.github.platform.core.sys.domain.common.entity.SysUserRoleBase" id="BaseResultMap">
     	 <id column="userId" property="userId" /> 
-		  <id column="roleId" property="roleId" /> 
-		  <id column="tenantId" property="tenantId" />
+		 <id column="roleId" property="roleId" />
+		 <id column="roleKey" property="roleKey" />
+		 <id column="tenantId" property="tenantId" />
+		 <id column="createBy" property="createBy" />
+		 <id column="createTime" property="createTime" />
   
     </resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
     	 t.user_id as userId ,
  		 t.role_id as roleId ,
- 		 t.tenant_id as tenantId
+    	 t.role_key as roleKey,
+ 		 t.tenant_id as tenantId,
+    	 t.create_by as createBy,
+    	 t.create_time as createTime
     </sql>
 
 	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysUserRoleBase">
@@ -23,9 +29,18 @@
  			<if test="roleId != null">
  				role_id,
  			</if>
+			<if test="roleKey != null and roleKey != ''">
+				role_key,
+			</if>
  			<if test="tenantId != null">
  				tenant_id,
  			</if>
+			<if test="createBy != null and createBy != ''">
+				create_by,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides="," >
  			<if test="userId != null">
@@ -34,17 +49,26 @@
  			<if test="roleId != null">
  				#{roleId},
  			</if>
+			<if test="roleKey != null and roleKey != ''">
+				#{roleKey},
+			</if>
  			<if test="tenantId != null">
  				#{tenantId},
  			</if>
+			<if test="createBy != null and createBy != ''">
+				#{createBy},
+			</if>
+			<if test="createTime != null">
+				#{createTime},
+			</if>
 		</trim>
 	</insert>
 	<insert id="insertList"  parameterType="java.util.List">
 		insert into  t_sys_user_role
-		(user_id,role_id,tenant_id)
+		(user_id,role_id,role_key,tenant_id,create_by,create_time)
 		values
 		<foreach item="item"  collection="list"  separator=","  >
-		(#{item.userId},#{item.roleId},#{item.tenantId})
+		(#{item.userId},#{item.roleId},#{item.roleKey},#{item.tenantId},#{item.createBy},#{item.createTime})
 		</foreach>
 	</insert>
 
@@ -61,10 +85,10 @@
      where user_id = #{userId}
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_user_role t where t.user_id=#{userId}
+		select <include refid="BaseColumnList" /> from t_sys_user_role t where t.user_id=#{userId}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_user_role t
+		select <include refid="BaseColumnList" /> from t_sys_user_role t
 		<where>
 			<foreach item="id"  collection="ids" open="t.user_id  in (" separator="," close=")" >
 				#{id}
@@ -72,25 +96,9 @@
 		</where>
 		limit 200
 	</select>
-	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select 
- 		<include refid="Base_Column_List" />
- 		from t_sys_user_role t
- 		<where>
- 			<if test="userId != null">
- 				and t.user_id = #{userId}
- 			</if>
- 			<if test="roleId != null">
- 				and t.role_id = #{roleId}
- 			</if>
- 			<if test="tenantId != null">
- 				and t.tenant_id = #{tenantId}
- 			</if>
-		</where>
-	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysUserRoleBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_user_role t
  		<where>
  			<if test="userId != null">
@@ -99,20 +107,9 @@
  			<if test="roleId != null">
  				and t.role_id = #{roleId}
  			</if>
-			<if test="tenantId != null">
-				and t.tenant_id = #{tenantId}
-			</if>
-		</where>
-	</select>
-	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
-		select  count(t.user_id) from t_sys_user_role t
-		<where> 
- 			<if test="userId != null">
- 				and t.user_id = #{userId}
- 			</if>
- 			<if test="roleId != null">
- 				and t.role_id = #{roleId}
- 			</if>
+		    <if test="roleKey != null">
+			    and t.role_key = #{roleKey}
+		    </if>
 			<if test="tenantId != null">
 				and t.tenant_id = #{tenantId}
 			</if>

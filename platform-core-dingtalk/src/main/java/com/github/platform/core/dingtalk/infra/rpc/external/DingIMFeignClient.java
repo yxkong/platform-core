@@ -1,6 +1,7 @@
 package com.github.platform.core.dingtalk.infra.rpc.external;
 
 import com.github.platform.core.dingtalk.infra.rpc.external.command.DingCreateGroupCmd;
+import com.github.platform.core.dingtalk.infra.rpc.external.command.DingGroupUserCmd;
 import com.github.platform.core.dingtalk.infra.rpc.external.command.DingSendMessageCmd;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingCreateGroupDto;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingResultBean;
@@ -36,6 +37,26 @@ public interface DingIMFeignClient {
 	 */
 	@PostMapping(value="/topapi/im/chat/scencegroup/message/send_v2")
 	DingSendMessageDto sendMessage(@RequestParam("access_token") String accessToken, @RequestBody DingSendMessageCmd cmd);
+
+	/**
+	 * 新增群成员
+	 * @param accessToken
+	 * @param cmd
+	 * @return
+	 */
+	@PostMapping(value="/topapi/im/chat/scenegroup/member/add")
+	DingResultBean groupAddUser(@RequestParam("access_token") String accessToken, @RequestBody DingGroupUserCmd cmd);
+
+	/**
+	 * 删除群成员
+	 * @param accessToken
+	 * @param cmd
+	 * @return
+	 */
+	@PostMapping(value="/topapi/im/chat/scenegroup/member/delete")
+	DingResultBean groupDeleteUser(@RequestParam("access_token") String accessToken, @RequestBody DingGroupUserCmd cmd);
+
+
 
 
 }

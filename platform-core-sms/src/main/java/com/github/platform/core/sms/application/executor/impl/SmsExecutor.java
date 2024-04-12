@@ -108,7 +108,7 @@ public class SmsExecutor implements ISmsExecutor {
         if (log.isDebugEnabled()){
             log.debug("短信发送实体SendSmsEntity："+JsonUtils.toJson(smsSend));
         }
-        SendSmsResultEntity send;
+        SendSmsResultEntity send = null;
 
         //非生产环境只能发送白名单中的
         if (ApplicationContextHolder.isProd() || isWhiteList(smsSend.getMobile())){

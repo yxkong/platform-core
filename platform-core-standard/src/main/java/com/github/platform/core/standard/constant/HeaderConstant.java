@@ -35,6 +35,7 @@ public interface HeaderConstant {
     /**网关来源关键字*/
     String REQUEST_FROM = "gateway";
     String REQUEST_FROM_SOURCE = "gateway";
+    String TRACE_ID = "traceId";
     String IP_UNKNOWN = "unknown";
     String IPV4_DEFAULT_LOCAL = "127.0.0.1";
     String IPV6_DEFAULT_LOCAL = "0:0:0:0:0:0:0:1";

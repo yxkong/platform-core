@@ -2,6 +2,7 @@ package com.github.platform.core.sys.infra.service.sys;
 
 import com.github.pagehelper.PageInfo;
 import com.github.platform.core.sys.domain.common.entity.SysRoleMenuBase;
+import com.github.platform.core.sys.domain.dto.SysRoleDto;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,6 +34,7 @@ public interface ISysRoleMenuService  {
 	 * @return
 	 */
 	SysRoleMenuBase findById(Long id);
+
 	/**
 	* 通过主键ids 获取多个实体对象(最多200条)
 	* @param ids
@@ -74,13 +76,20 @@ public interface ISysRoleMenuService  {
 	int deleteByRoleIds(Long[] roleIds);
 
 	/**
+	 * 批量删除
+	 * @param roleKey
+	 * @return
+	 */
+	int deleteByRoleKey(String roleKey);
+
+	/**
 	 * 批量插入
 	 * @param menuIds 菜单id
-	 * @param roleId 角色id
+	 * @param dto 角色实体
 	 * @param tenantId 租户
 	 * @return
 	 */
-	int insertList(Collection<Long> menuIds, Long roleId, Integer tenantId);
+	int insertList(Collection<Long> menuIds, SysRoleDto dto, Integer tenantId);
 
 	/**
 	 * 查询菜单是否有对应角色关系
@@ -91,10 +100,10 @@ public interface ISysRoleMenuService  {
 
 	/**
 	 * 根据角色和菜单删除对应关系
-	 * @param roleIds
-	 * @param menuId
+	 * @param roleKeys
+	 * @param menuId 指定某个菜单，为空则全部
 	 * @return
 	 */
-	int deleteByRolesAndMenuId(Long[] roleIds, Long menuId);
+	int deleteByRolesAndMenuId(String[] roleKeys, Long menuId);
 
 }

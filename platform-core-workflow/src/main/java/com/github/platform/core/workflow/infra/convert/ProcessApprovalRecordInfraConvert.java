@@ -30,7 +30,7 @@ public interface ProcessApprovalRecordInfraConvert {
     */
     @Mappings({
             @Mapping(target = "duration", expression = "java(com.github.platform.core.standard.util.LocalDateTimeUtil.formatDurationAsString(entity.getStartTime(),entity.getCreateTime()))"),
-            @Mapping(target = "id", expression = "java(null)"),
+            
             @Mapping(target = "nodeType", constant = "userTask")
     })
     ProcessApprovalRecordDto toDto(ProcessApprovalRecordBase entity);

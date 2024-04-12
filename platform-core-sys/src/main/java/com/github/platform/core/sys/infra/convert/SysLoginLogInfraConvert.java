@@ -36,7 +36,7 @@ public interface SysLoginLogInfraConvert {
     */
     @Mappings({
             @Mapping(target = "strId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getId()))"),
-            @Mapping(target = "id", expression = "java(null)"),
+            
     })
     SysLoginLogDto toDto(SysLoginLogBase entity);
     /**

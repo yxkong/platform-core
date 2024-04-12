@@ -34,7 +34,7 @@ public class ThirdApproveCmd {
     @Schema(description ="部门ID")
     private Long deptId;
     @Schema(description ="用户角色")
-    private Long[] roleIds;
+    private String[] roleKeys;
     @Schema(description ="用户状态")
     private Integer status;
 }

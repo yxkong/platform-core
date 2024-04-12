@@ -11,15 +11,23 @@ public interface  RoleConstant {
      * 内置超级管理员角色id
      */
     Long SUPER_ROLE_ID = 1L;
-    String SUPER_ROLE = "1";
+    String SUPER_ROLE_KEY = "admin";
+
     /**
      * 内置租户管理员角色id
      */
-    Long TENANT_ROLE_ID = 2L;
-    String TENANT_ROLE = "2";
+    Long TENANT_ADMIN_ROLE_ID = 2L;
+    /**
+     * 内置租户管理员角色key
+     */
+    String TENANT_ADMIN_ROLE_KEY = "tenantAdmin";
     /**三方角色*/
     Long THIRD_ROLE_ID = 3L;
     String THIRD_ROLE = "3";
+    /**
+     * 内置三方默认角色
+     */
+    String THIRD_DEFAULT_ROLE = "thirdDefault";
     /**
      * 所有权限
      */
@@ -28,18 +36,18 @@ public interface  RoleConstant {
     /**
      * 所有内置角色
      */
-    List<Long> innerRoles = Lists.newArrayList(SUPER_ROLE_ID, TENANT_ROLE_ID,THIRD_ROLE_ID);
+    List<String> innerRoles = Lists.newArrayList(SUPER_ROLE_KEY, TENANT_ADMIN_ROLE_KEY,THIRD_DEFAULT_ROLE);
     /**
      * 三方角色
      */
-    Set<Long> thirdRole = Sets.newHashSet(THIRD_ROLE_ID);
+    Set<String> thirdRole = Sets.newHashSet(THIRD_DEFAULT_ROLE);
     /**
      * 超级管理员角色
      */
-    List<Long> superRole = Lists.newArrayList(SUPER_ROLE_ID);
+    List<String> superRole = Lists.newArrayList(SUPER_ROLE_KEY);
     /**
      * 租户角色
      */
-    List<Long> tenantRole = Lists.newArrayList(TENANT_ROLE_ID);
+    List<String> tenantAdminRole = Lists.newArrayList(TENANT_ADMIN_ROLE_KEY);
 
 }

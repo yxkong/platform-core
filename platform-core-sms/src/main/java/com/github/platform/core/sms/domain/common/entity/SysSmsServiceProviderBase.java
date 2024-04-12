@@ -1,7 +1,6 @@
 package com.github.platform.core.sms.domain.common.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.platform.core.standard.entity.BaseAdminEntity;
+import com.github.platform.core.common.entity.BaseAdminEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;

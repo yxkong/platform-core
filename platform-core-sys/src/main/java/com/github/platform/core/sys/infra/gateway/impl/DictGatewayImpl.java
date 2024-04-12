@@ -15,7 +15,6 @@ import com.github.platform.core.sys.domain.dto.SysDictDto;
 import com.github.platform.core.sys.domain.gateway.ISysDictGateway;
 import com.github.platform.core.sys.infra.constant.SysInfraResultEnum;
 import com.github.platform.core.sys.infra.convert.SysDictInfraConvert;
-import com.github.platform.core.sys.infra.service.sys.ISysCommonCacheService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +35,6 @@ public class DictGatewayImpl extends BaseGatewayImpl implements ISysDictGateway 
 
     @Resource
     private SysDictMapper sysDictMapper;
-    @Resource
-    private ISysCommonCacheService sysCommonCacheService;
 
     @Override
     public PageBean<SysDictDto> query(SysDictQueryContext context) {

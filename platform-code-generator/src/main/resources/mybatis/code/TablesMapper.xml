@@ -9,7 +9,7 @@
 		  <id column="tableComment" property="tableComment" />
 		  <id column="createTime" property="createTime" />
 	 </resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
  		 t.table_schema as tableSchema ,
  		 t.table_name as tableName ,
  		 t.engine as engine ,
@@ -18,7 +18,7 @@
     </sql>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.persistence.entity.code.TablesBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from information_schema.tables t
 		<where>
 			<if test="tableSchema != null  and tableSchema != ''">
@@ -34,7 +34,7 @@
 	</select>
 	<select id="findByTableName" resultType="com.github.platform.core.persistence.entity.code.TablesBase">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="BaseColumnList" />
 		from information_schema.tables  t
 		where
 		<if test="tableSchema != null  and tableSchema != ''">

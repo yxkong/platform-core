@@ -4,6 +4,7 @@ import com.github.platform.core.dingtalk.domain.constant.DingMessageTemplateType
 import com.github.platform.core.dingtalk.domain.constant.DingUserTypeEnum;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingDeptDto;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingUserDto;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Map;
@@ -65,5 +66,15 @@ public interface IDingTalkService {
      * @return
      */
     boolean sendMessage(String groupId, String robotCode, List<String> users, DingUserTypeEnum userType, boolean atAll, DingMessageTemplateTypeEnum templateType, Map<String,String> map);
+
+    /**
+     * 群人员操作
+     * @param groupId
+     * @param users
+     * @param isAdd  是否添加
+     * @return
+     */
+    Pair<Boolean,String> groupUserOpt(String groupId, List<String> users, Boolean isAdd);
+
 
 }

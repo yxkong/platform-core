@@ -30,6 +30,7 @@ public interface SysRoleMenuMapper  {
 	 * @return
 	 */
 	SysRoleMenuBase findById(Long id);
+
 	/**
 	* 通过主键ids 获取多个实体对象(最多200条)
 	* @param ids
@@ -73,11 +74,18 @@ public interface SysRoleMenuMapper  {
 
 	/**
 	 * 删除指定菜单对应角色的数据
-	 * @param roleIds
+	 * @param roleKeys
 	 * @param menuId
 	 * @return
 	 */
-    int deleteByRolesAndMenuId(@Param("roleIds")Long[] roleIds, @Param("menuId")Long menuId);
+    int deleteByRolesAndMenuId(@Param("roleKeys")String[] roleKeys, @Param("menuId")Long menuId);
 
+
+	/**
+	 * 根据角色删除权限
+	 * @param roleKey
+	 * @return
+	 */
+    int deleteByRoleKey(@Param("roleKey")String roleKey);
 
 }

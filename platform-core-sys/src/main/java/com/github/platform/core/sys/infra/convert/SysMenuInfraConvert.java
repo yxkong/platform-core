@@ -34,7 +34,7 @@ public interface SysMenuInfraConvert {
     */
     @Mappings({
             @Mapping(target = "strId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getId()))"),
-            @Mapping(target = "id", expression = "java(null)"),
+            
     })
     SysMenuDto toDto(SysMenuBase entity);
     /**

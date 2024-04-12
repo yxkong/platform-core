@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -60,9 +59,6 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
         }
         data.getData().stream().forEach(
                 s -> {
-                    if (StringUtils.isNotBlank(s.getRoleIdStr())) {
-                        s.setRoleIds(Arrays.stream(s.getRoleIdStr().split(",")).map(Long::valueOf).collect(Collectors.toList()));
-                    }
                     s.setMobile(StringUtils.getMobileVague(s.getMobile()));
                     s.setStrId(SignUtil.getStrId(s.getId()));
                     s.setId(null);
@@ -111,7 +107,7 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
      */
     @Override
     public PwdResult resetPwd(ResetPwdContext context) {
-        if (!AuthUtil.isSuperAdmin() && !AuthUtil.isAdminTenant()){
+        if (!AuthUtil.isSuperAdmin() && !AuthUtil.isTenantAdmin()){
             if (!LoginUserInfoUtil.getLoginName().equals(context.getLoginName())){
                 exception(ResultStatusEnum.NO_AUTH);
             }
@@ -120,7 +116,7 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
         if (Objects.isNull(userEntity)){
             exception(SysAppResultEnum.USER_NOT_FOUND);
         }
-        if(AuthUtil.isAdminTenant()){
+        if(AuthUtil.isTenantAdmin()){
             //租户管理员只能重置自己租户的密码
             if (LoginUserInfoUtil.getTenantId().equals(userEntity.getTenantId())){
                 exception(SysAppResultEnum.ADMIN_TENANT_NO_AUTH);
@@ -133,13 +129,9 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
     @Override
     public SysUserDto detail(Long id) {
         SysUserDto userResult = userGateway.findByUserId(id);
-        if (userResult!= null && StringUtils.isNotBlank(userResult.getRoleIdStr())) {
-            userResult.setRoleIds(Arrays.stream(userResult.getRoleIdStr().split(",")).map(Long::valueOf).collect(Collectors.toList()));
-        } else{
-            List<SysRoleDto> roles = roleGateway.findRoleByUserId(id);
-            if (CollectionUtil.isNotEmpty(roles)){
-                userResult.setRoleIds(roles.stream().map(SysRoleDto::getId).collect(Collectors.toList()));
-            }
+        List<SysRoleDto> roles = roleGateway.findRoleByUserId(id);
+        if (CollectionUtil.isNotEmpty(roles)){
+            userResult.setRoleKeys(roles.stream().map(SysRoleDto::getKey).collect(Collectors.toList()));
         }
         return userResult;
     }
@@ -160,17 +152,11 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
     @Override
     public List<OptionsDto> queryUsers(SysUserQueryContext query) {
         List<OptionsDto> rst = new ArrayList<>();
-        if (StringUtils.isNotEmpty(query.getRoleKey())){
-            SysRoleDto roleDto = roleGateway.findByRoleKey(query.getRoleKey());
-            if (Objects.nonNull(roleDto)){
-                query.setRoleId(roleDto.getId());
-            }
-        }
         List<SysUserDto> users = null;
-        if (Objects.nonNull(query.getRoleId())){
+        if (StringUtils.isNotEmpty(query.getRoleKey())){
             List<String> roles = new ArrayList<>();
-            roles.add(query.getRoleId()+"");
-            users = userGateway.findByRoleIds(roles);
+            roles.add(query.getRoleKey());
+            users = userGateway.findByRoleKeys(roles,LoginUserInfoUtil.getTenantId());
         }else if (Objects.nonNull(query.getDeptId())){
             users = userGateway.findListBy(query);
         }

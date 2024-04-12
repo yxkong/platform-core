@@ -26,7 +26,7 @@
         <spring.cloud.version>2021.0.8</spring.cloud.version>
         <spring.cloud.loadbalancer.version>3.1.4</spring.cloud.loadbalancer.version>
         <spring.cloud.openfeign.version>3.1.4</spring.cloud.openfeign.version>
-        <spring.cloud.alibaba.version>2021.0.4.0</spring.cloud.alibaba.version>
+        <spring.cloud.alibaba.version>2021.0.5.0</spring.cloud.alibaba.version>
         <spring.cloud.zipkin.version>2.2.8.RELEASE</spring.cloud.zipkin.version>
         <spring.boot.admin.version>2.6.9</spring.boot.admin.version>
         <spring.security.version>2.6.6</spring.security.version>

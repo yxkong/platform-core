@@ -23,9 +23,8 @@
     </resultMap>
 	<resultMap  id="DTOResultMap"  type="com.github.platform.core.sys.domain.dto.SysUserDto" extends="BaseResultMap">
 		<id column="deptName" property="deptName" />
-		<id column="roleIdStr" property="roleIdStr" />
 	</resultMap>
-    <sql id="Base_Column_List">
+    <sql id="BaseColumnList">
     	 t.id,
  		 t.dept_id as deptId ,
  		 t.login_name as loginName ,
@@ -219,21 +218,21 @@
 		where id = #{id}
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_user t where t.id=#{id}
+		select <include refid="BaseColumnList" /> from t_sys_user t where t.id=#{id}
 	</select>
 
 	<select id="findByLoginName" resultMap="BaseResultMap" >
-		select <include refid="Base_Column_List" /> from t_sys_user t
+		select <include refid="BaseColumnList" /> from t_sys_user t
 		where t.login_name = #{loginName}
 	</select>
 
 	<select id="findByMobile" resultMap="BaseResultMap">
-		select <include refid="Base_Column_List" /> from t_sys_user t
+		select <include refid="BaseColumnList" /> from t_sys_user t
 		where t.mobile = #{mobile}
 	</select>
 
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="Base_Column_List" /> from t_sys_user
+		select <include refid="BaseColumnList" /> from t_sys_user
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
 				#{id}
@@ -243,7 +242,7 @@
 	</select>
 	<select id="findListBy" resultMap="DTOResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysUserBase">
 		select 
- 		<include refid="Base_Column_List" />
+ 		<include refid="BaseColumnList" />
  		from t_sys_user t
  		<where>
 			<if test="deptId != null">
@@ -281,10 +280,10 @@
 	</select>
 	<select id="findListByRole" resultMap="DTOResultMap">
 		select
-		<include refid="Base_Column_List" />
+		<include refid="BaseColumnList" />
 		from t_sys_user t,t_sys_user_role ur
 		where t.id = ur.user_id
-		and ur.role_id = #{roleId}
+		and ur.role_key = #{roleKey}
 		<if test="user.deptId != null">
 			and t.dept_id = #{user.deptId},
 		</if>
@@ -316,7 +315,7 @@
 	</select>
 	<select id="findListByDept" resultMap="DTOResultMap" >
 		select
-		<include refid="Base_Column_List" />, d.dept_name as deptName
+		<include refid="BaseColumnList" />, d.dept_name as deptName
 		from t_sys_user t
 		inner join t_sys_dept d on t.dept_id = d.id
 		where t.dept_id  in
@@ -390,18 +389,21 @@
 			</foreach>
 		</if>
 	</select>
-	<select id="queryByRoleIds" resultType="com.github.platform.core.sys.domain.dto.SysUserDto">
-		<if test="roleIds != null and roleIds.size() > 0">
+	<select id="queryByRoleKeys" resultType="com.github.platform.core.sys.domain.dto.SysUserDto">
+		<if test="roleKeys != null and roleKeys.size() > 0">
 			select  t.id,
 			t.login_name as loginName ,
 			t.user_name as userName
 			from t_sys_user t
 			JOIN t_sys_user_role r ON t.id = r.user_id
 			WHERE
-			r.role_id in
-			<foreach item="roleId" collection="roleIds" open="(" separator="," close=")">
-				CAST(#{roleId} AS UNSIGNED)
+			r.role_key in
+			<foreach item="roleKey" collection="roleKeys" open="(" separator="," close=")">
+				#{roleKey}
 			</foreach>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
 		</if>
 	</select>
 

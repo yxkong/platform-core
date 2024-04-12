@@ -1,10 +1,13 @@
 package com.github.platform.core.sys.domain.common.entity;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+
 import com.github.platform.core.standard.entity.BaseEntity;
-import javax.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * 用户配置模型实体

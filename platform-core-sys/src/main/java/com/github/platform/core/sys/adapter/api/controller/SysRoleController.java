@@ -6,6 +6,7 @@ import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.entity.dto.ResultBean;
+import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.standard.validate.Modify;
 import com.github.platform.core.sys.adapter.api.command.role.SysRoleCmd;
 import com.github.platform.core.sys.adapter.api.command.role.SysRoleQuery;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.groups.Default;
+import java.util.List;
 
 /**
  * 角色相关接口
@@ -107,17 +109,17 @@ public class SysRoleController extends BaseController {
         return buildSucResp();
 
     }
-    //
-    // /**
-    //  * 查询角色详情
-    //  *
-    //  * @param id
-    //  * @return
-    //  */
-    // @PostMapping("/queryById")
-    // public ResultBean<RoleDetailDto> queryById(@RequestParam Long id) {
-    //     // 如果非管理员，只能删除本租户的角色
-    //     return roleExecutor.queryDetail(id);
-    //
-    // }
+    /**
+     * 角色下拉框查询列表查询
+     *
+     * @return
+     */
+    @RequiredLogin
+    @OptLog(module="role",title="角色下拉框",persistent = false)
+    @Operation(summary = "角色下拉框",tags = {"role"})
+    @PostMapping("/select")
+    public ResultBean<List<OptionsDto>> select() {
+        List<OptionsDto> list = roleExecutor.select(null);
+        return buildSucResp(list);
+    }
 }
