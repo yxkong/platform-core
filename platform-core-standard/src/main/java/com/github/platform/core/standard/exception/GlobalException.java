@@ -2,6 +2,7 @@ package com.github.platform.core.standard.exception;
 
 
 import com.github.platform.core.standard.constant.ResultStatusEnum;
+
 import java.util.Objects;
 
 /**
@@ -24,5 +25,8 @@ public class GlobalException extends CommonException {
 
     public GlobalException(String message){
         super(ResultStatusEnum.ERROR.getStatus(), Objects.isNull(message) ? ResultStatusEnum.ERROR.getMessage() : message);
+    }
+    public GlobalException(){
+        super(ResultStatusEnum.ERROR);
     }
 }

@@ -1,9 +1,7 @@
 package com.github.platform.core.dingtalk.infra.rpc.external;
 
-import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingDeptDto;
-import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingDeptUserDto;
-import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingResultBean;
-import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingUserDto;
+import com.github.platform.core.dingtalk.infra.rpc.external.command.DingMobileQuery;
+import com.github.platform.core.dingtalk.infra.rpc.external.dto.*;
 import com.github.platform.core.dingtalk.infra.rpc.external.query.DingDeptQuery;
 import com.github.platform.core.dingtalk.infra.rpc.external.query.DingDeptUserQuery;
 import com.github.platform.core.dingtalk.infra.rpc.external.query.DingUserQuery;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 钉钉通讯录
@@ -49,4 +46,14 @@ public interface DingContactFeignClient {
      */
     @PostMapping(value="/topapi/v2/user/get")
     DingResultBean<DingUserDto> getUserInfo(@RequestParam("access_token") String accessToken, @RequestBody DingUserQuery query);
+    /**
+     * 根据手机号码获取用户的userid,只返回userId
+     * @param accessToken
+     * @param query
+     * @return
+     */
+    @PostMapping(value="/topapi/v2/user/getbymobile")
+    DingResultBean<DingAccessUserDto> getUserIdByMobile(@RequestParam("access_token") String accessToken, @RequestBody DingMobileQuery query);
+
+
 }

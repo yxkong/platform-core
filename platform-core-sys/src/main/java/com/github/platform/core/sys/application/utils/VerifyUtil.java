@@ -1,7 +1,6 @@
 package com.github.platform.core.sys.application.utils;
 
 import com.github.platform.core.standard.exception.BaseResult;
-import com.github.platform.core.sys.domain.constant.VerifyResultEnum;
 import com.github.platform.core.sys.domain.dto.resp.VerifyResult;
 
 /**

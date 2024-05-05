@@ -5,6 +5,8 @@ import com.github.platform.core.workflow.domain.constant.ProcessTypeEnum;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 
+import java.util.Objects;
+
 /**
  * 流程完成事件
  * @Author: yxkong
@@ -50,8 +52,8 @@ public class WorkflowProcessEvent extends ApplicationEvent {
     public String getProcessUsers() {
         return processUsers;
     }
-    public Boolean getCreateGroup() {
-        return createGroup;
+    public Boolean isCreateGroup() {
+        return Objects.nonNull(this.createGroup) && this.createGroup == Boolean.TRUE;
     }
     public String getCreateUser() {
         return createUser;

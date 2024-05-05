@@ -103,6 +103,9 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
 
     @Override
     public List<SysMenuDto> findMenuByRoleIds(List<Long> roleIds) {
+        if (CollectionUtil.isEmpty(roleIds)){
+            return null;
+        }
         SysMenuBase sysMenuBase = SysMenuBase.builder().status( StatusEnum.ON.getStatus()).build();
         return infraConvert.toDtos(sysMenuMapper.findMenuByRoleIds(roleIds, sysMenuBase));
     }

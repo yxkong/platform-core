@@ -14,5 +14,5 @@ public interface I${entityName}Executor{
     * @param id 主键
     * @return 单条记录
     */
-    public ${entityName}Dto findById(Long id);
+    ${entityName}Dto findById(Long id);
 }

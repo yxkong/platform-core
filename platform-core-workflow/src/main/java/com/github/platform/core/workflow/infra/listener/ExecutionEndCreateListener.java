@@ -6,8 +6,6 @@ import com.github.platform.core.workflow.domain.constant.InstanceStatusEnum;
 import com.github.platform.core.workflow.domain.gateway.IProcessInstanceGateway;
 import com.github.platform.core.workflow.infra.event.WorkflowProcessEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.flowable.bpmn.model.FlowElement;
-import org.flowable.bpmn.model.UserTask;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.ExecutionListener;
 import org.springframework.context.ApplicationContext;

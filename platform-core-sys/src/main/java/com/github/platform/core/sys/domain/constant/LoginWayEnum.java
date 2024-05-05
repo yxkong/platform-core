@@ -10,20 +10,19 @@ import lombok.Getter;
  */
 @Getter
 public enum LoginWayEnum {
-    normal("normal","normalLoginGateway","普通登录"),
-    ldap("ldap","ldapLoginGateway","ldap登录"),
-    sms("sms","smsLoginGateway","短信登录"),
-    thirdWx("wx","wxLoginGateway","三方微信登录"),
-    thirdAlipay("alipay","alipayLoginGateway","三方支付宝登录"),
-    thirdQQ("qq","","三方qq登录"),
+    normal("normal","普通登录"),
+    ldap("ldap","ldap登录"),
+    sms("sms","短信登录"),
+    thirdWx("wx","三方微信登录"),
+    thirdDingTalk("dingTalk","三方钉钉登录"),
+    thirdAlipay("alipay","三方支付宝登录"),
+    thirdQQ("qq","三方qq登录"),
     ;
     private String type;
-    private String bean;
     private String desc;
 
-    LoginWayEnum(String type,String bean, String desc) {
+    LoginWayEnum(String type, String desc) {
         this.type = type;
-        this.bean = bean;
         this.desc = desc;
     }
 
@@ -43,5 +42,13 @@ public enum LoginWayEnum {
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
+    }
+
+    /**
+     * bean的规则是类型+LoginGateway
+     * @return
+     */
+    public String getBeanName(){
+        return this.type+"LoginGateway";
     }
 }

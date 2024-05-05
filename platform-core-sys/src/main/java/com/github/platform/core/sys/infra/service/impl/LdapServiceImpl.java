@@ -69,6 +69,10 @@ public class LdapServiceImpl implements ILdapService {
         return true;
     }
 
+    /**
+     * TODO  这里也需要根据租户路由到不同的配置,需要按租户缓存
+     * @throws NamingException
+     */
     private void ldapConnect() throws NamingException {
         Hashtable<String, String> env = new Hashtable<>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, LdapProperties.facotry);

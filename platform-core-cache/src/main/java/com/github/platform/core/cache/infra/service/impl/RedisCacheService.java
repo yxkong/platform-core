@@ -1,14 +1,14 @@
 package com.github.platform.core.cache.infra.service.impl;
 
 import com.github.platform.core.cache.infra.service.ICacheService;
-import com.github.platform.core.log.infra.annotation.CacheResolve;
+import com.github.platform.core.common.utils.CollectionUtil;
+import com.github.platform.core.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Service;
-import com.github.platform.core.common.utils.CollectionUtil;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -49,6 +49,26 @@ public class RedisCacheService implements ICacheService {
             log.error("尝试获取分布式锁-key[{}]异常", lockKey,e);
         }
         return false;
+    }
+
+    @Override
+    public String getLock(String lockKey, long expireTime) {
+        // 当前时间
+        try {
+            String lockId = StringUtils.uuidRmLine();
+            String lockLuaScript = getLockLuaScript();
+            if (log.isDebugEnabled()){
+                log.debug("开始获取分布式锁-key[{}]", lockKey);
+            }
+            int count = 0;
+            List<String> lockKeyList = Collections.singletonList(lockKey);
+            if (redisLuaScriptExecute(lockKey, lockId, expireTime, lockLuaScript, count, lockKeyList)){
+                return lockId;
+            }
+        } catch (Exception e) {
+            log.error("尝试获取分布式锁-key[{}]异常", lockKey,e);
+        }
+        return null;
     }
 
     private String getLockLuaScript(){
@@ -104,6 +124,9 @@ public class RedisCacheService implements ICacheService {
 
     @Override
     public boolean releaseLock(String lockKey, String lockId) {
+        if (StringUtils.isEmpty(lockId)){
+            return false;
+        }
         StringBuffer luaScript = new StringBuffer();
         luaScript.append("if redis.call('get',KEYS[1]) == ARGV[1] then ")
                 .append("   return redis.call('del',KEYS[1])  ")

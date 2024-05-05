@@ -1,5 +1,7 @@
 package com.github.platform.core.standard.entity.common;
 
+import com.github.platform.core.standard.constant.ResultStatusEnum;
+import com.github.platform.core.standard.entity.dto.ResultBean;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -89,4 +91,7 @@ public class LoginInfo implements Serializable {
     protected String status;
     /**登录失败的原因，兼容登录失败以后发送事件*/
     protected String message;
+    public boolean isSuc(){
+        return ResultStatusEnum.SUCCESS.getStatus().equals(this.status);
+    }
 }

@@ -1,5 +1,6 @@
 package com.github.platform.core.sys.application.executor.impl;
 
+import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.service.BaseExecutor;
@@ -88,7 +89,7 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
     }
 
     /**
-     * 修改用户信息
+     * 修改用户信息(只有自己修改的时候才会刷新)
      *
      * @param context
      * @return
@@ -97,6 +98,12 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
     public void update(RegisterContext context) {
         SysUserService userService = new SysUserService(userGateway);
         userService.editUser(context);
+        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        userInfo.setUserName(context.getUserName());
+        userInfo.setEmail(context.getEmail());
+        userInfo.setMobile(context.getMobile());
+        userInfo.setSecretKey(context.getSecretKey());
+        userGateway.reloadToken(userInfo.getToken(),userInfo);
     }
 
     /**
@@ -124,6 +131,11 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
         }
         context.setId(userEntity.getId());
         return userGateway.resetPwd(context);
+    }
+
+    @Override
+    public void reloadToken(String token, LoginUserInfo loginUserInfo) {
+        userGateway.reloadToken(token,loginUserInfo);
     }
 
     @Override

@@ -44,7 +44,7 @@ public enum WorkflowApplicationEnum implements BaseResult {
     PROCESS_DEFINITION_EMPTY("16020","流程模板为空，请联系管理员核查" ),
     PROCESS_INSTANCE_EXIST("16021", "流程实例已存在。"),
     PROCESS_INSTANCE_NOT_EXIST("1000", "流程实例不存在"),
-    PROCESS_INSTANCE_ADD_FAIL("16022","添加流程失败失败！" ),
+    PROCESS_INSTANCE_ADD_FAIL("16022","添加流程失败！" ),
     PROCESS_DEFINITION_NOT_ACTIVE("16023","流程未启用，请联系管理员核查" ),
     PROCESS_DEFINITION_EXIST_PROCESS_TYPE("16024","已经存在同类型的流程实例！" ),
     PROCESS_TASK_NOT_EXIST("16025","流程任务不存在！" ),

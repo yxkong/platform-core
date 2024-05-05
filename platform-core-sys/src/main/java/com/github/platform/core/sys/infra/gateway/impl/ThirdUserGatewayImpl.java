@@ -15,7 +15,7 @@ import com.github.platform.core.sys.domain.context.SysThirdUserQueryContext;
 import com.github.platform.core.sys.domain.context.ThirdApproveContext;
 import com.github.platform.core.sys.domain.dto.SysThirdUserDto;
 import com.github.platform.core.sys.domain.gateway.ISysRoleGateway;
-import com.github.platform.core.sys.domain.gateway.ThirdUserGateway;
+import com.github.platform.core.sys.domain.gateway.IThirdUserGateway;
 import com.github.platform.core.sys.domain.model.user.ThirdUserEntity;
 import com.github.platform.core.sys.infra.convert.SysThirdUserInfraConvert;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 * @version 1.0
 */
 @Service
-public class ThirdUserGatewayImpl implements ThirdUserGateway {
+public class ThirdUserGatewayImpl implements IThirdUserGateway {
 
     @Resource
     private SysUserMapper sysUserMapper;
@@ -53,11 +53,11 @@ public class ThirdUserGatewayImpl implements ThirdUserGateway {
         return convert.ofPageBean(new PageInfo<>(list));
     }
     @Override
-    public SysThirdUserDto insert(ThirdUserEntity ldapUser, Long userId) {
-        SysThirdUserBase thirdUser = convert.toSysThirdUserBase(ldapUser,userId);
+    public SysThirdUserDto insert(ThirdUserEntity thirdUserEntity, Long userId) {
+        SysThirdUserBase thirdUser = convert.toSysThirdUserBase(thirdUserEntity,userId);
         thirdUser.setCreateTime(LocalDateTimeUtil.dateTime());
         thirdUser.setStatus(StatusEnum.OFF.getStatus());
-        thirdUser.setChannel(ldapUser.getChannel().getType());
+        thirdUser.setChannel(thirdUserEntity.getChannel().getType());
         thirdUserMapper.insert(thirdUser);
         return convert.toDto(thirdUser);
     }

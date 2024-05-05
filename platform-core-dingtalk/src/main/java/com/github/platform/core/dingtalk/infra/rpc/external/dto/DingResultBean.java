@@ -22,9 +22,15 @@ public class DingResultBean<T> {
     /**返回码描述*/
     @JsonProperty("errmsg")
     private String msg;
-    private T result; 
+    private T result;
+
+    /**
+     * 这里做了兼容
+     * 有的是code 为0为成功，还有的是success 为true
+     * @return
+     */
     public boolean isSuc(){
-    	return code == 0 ;
+    	return code == 0 || this.success ;
     }
     
 }

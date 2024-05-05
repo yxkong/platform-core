@@ -1,8 +1,7 @@
 package com.github.platform.core.auth.aspect;
 
-import com.github.platform.core.auth.util.LoginInfoUtil;
-import com.github.platform.core.auth.constants.AuthTypeEnum;
 import com.github.platform.core.auth.service.ITokenService;
+import com.github.platform.core.auth.util.LoginInfoUtil;
 import com.github.platform.core.common.constant.SpringBeanOrderConstant;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
@@ -50,7 +49,7 @@ public class LoginInfoConvertAspect {
             String token = getToken();
             LoginInfoUtil.clearContext();
             if (StringUtils.isBlank(loginStr) && Objects.nonNull(token) && !HeaderConstant.DEFAULT_TOKEN.equals(token)) {
-                loginStr = tokenService.getLoginInfoStr(AuthTypeEnum.API,token);
+                loginStr = tokenService.getLoginInfoStr(token);
             }
             if (StringUtils.isEmpty(loginStr)){
                 //无需登陆请求

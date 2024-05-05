@@ -54,7 +54,7 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
         }
         // token校验
         String token = tokens.get(0);
-        String loginStr = tokenService.getLoginInfoStr(AuthTypeEnum.SYS,token);
+        String loginStr = tokenService.getLoginInfoStr(token);
         //已经退出了
         if (StringUtils.isEmpty(loginStr)){
             if (log.isDebugEnabled()){

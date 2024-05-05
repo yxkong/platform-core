@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sys.SysTokenCacheMapper">
+
+	<resultMap type="com.github.platform.core.sys.domain.common.entity.SysTokenCacheBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="token" property="token" />
+		<id column="loginName" property="loginName" />
+		<id column="expireTime" property="expireTime" />
+		<id column="lastLoginTime" property="lastLoginTime" />
+		<id column="loginInfo" property="loginInfo" />
+		<id column="tenantId" property="tenantId" />
+		<id column="status" property="status" />
+		<id column="createTime" property="createTime" />
+		<id column="updateBy" property="updateBy" />
+		<id column="updateTime" property="updateTime" />
+		<id column="remark" property="remark" />
+    </resultMap>
+    <sql id="BaseColumnList">
+		t.id,
+		t.token,
+		t.login_name as loginName,
+		t.expire_time as expireTime,
+		t.last_login_time as lastLoginTime,
+		t.login_info as loginInfo,
+		t.tenant_id as tenantId,
+		t.status,
+		t.create_time as createTime,
+		t.update_by as updateBy,
+		t.update_time as updateTime,
+		t.remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysTokenCacheBase">
+		insert into t_sys_token_cache
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null ">
+				id,
+			</if>
+			<if test="token != null  and token != ''">
+				token,
+			</if>
+			<if test="loginName != null  and loginName != ''">
+				login_name,
+			</if>
+			<if test="expireTime != null ">
+				expire_time,
+			</if>
+			<if test="lastLoginTime != null ">
+				last_login_time,
+			</if>
+			<if test="loginInfo != null  and loginInfo != ''">
+				login_info,
+			</if>
+			<if test="tenantId != null ">
+				tenant_id,
+			</if>
+			<if test="status != null ">
+				status,
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				create_by,
+			</if>
+			<if test="createTime != null ">
+				create_time,
+			</if>
+			<if test="remark != null  and remark != ''">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null ">
+				#{id},
+			</if>
+			<if test="token != null  and token != ''">
+				#{token},
+			</if>
+			<if test="loginName != null  and loginName != ''">
+				#{loginName},
+			</if>
+			<if test="expireTime != null ">
+				#{expireTime},
+			</if>
+			<if test="lastLoginTime != null ">
+				#{lastLoginTime},
+			</if>
+			<if test="loginInfo != null  and loginInfo != ''">
+				#{loginInfo},
+			</if>
+			<if test="tenantId != null ">
+				#{tenantId},
+			</if>
+			<if test="status != null ">
+				#{status},
+			</if>
+			<if test="createBy != null  and createBy != ''">
+				#{createBy},
+			</if>
+			<if test="createTime != null ">
+				#{createTime},
+			</if>
+			<if test="remark != null  and remark != ''">
+				#{remark},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sys.domain.common.entity.SysTokenCacheBase">
+		update t_sys_token_cache
+		<set>
+			<if test="token != null  and token != ''">
+				token = #{token},
+			</if>
+			<if test="loginName != null  and loginName != ''">
+				login_name = #{loginName},
+			</if>
+			<if test="expireTime != null ">
+				expire_time = #{expireTime},
+			</if>
+			<if test="lastLoginTime != null ">
+				last_login_time = #{lastLoginTime},
+			</if>
+			<if test="loginInfo != null  and loginInfo != ''">
+				login_info = #{loginInfo},
+			</if>
+			<if test="status != null ">
+				status = #{status},
+			</if>
+			<if test="updateBy != null  and updateBy != ''">
+				update_by = #{updateBy},
+			</if>
+			<if test="updateTime != null ">
+				update_time = #{updateTime},
+			</if>
+			<if test="remark != null  and remark != ''">
+				remark = #{remark},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_sys_token_cache t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_sys_token_cache t
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysTokenCacheBase">
+		select 
+		<include refid="BaseColumnList" />
+		from t_sys_token_cache t
+		<where>
+			<if test="token != null  and token != ''">
+				and t.token = #{token}
+			</if>
+			<if test="loginName != null  and loginName != ''">
+				and t.login_name = #{loginName}
+			</if>
+			<if test="lastLoginTime != null ">
+				and t.last_login_time = #{lastLoginTime}
+			</if>
+			<if test="tenantId != null ">
+				and t.tenant_id = #{tenantId}
+			</if>
+			<if test="searchStartTime != null">
+				and t.expire_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.expire_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.sys.domain.common.entity.SysTokenCacheBase">
+		select count(t.id) from t_sys_token_cache t
+		<where>
+			<if test="token != null  and token != ''">
+				and t.token = #{token}
+			</if>
+			<if test="loginName != null  and loginName != ''">
+				and t.login_name = #{loginName}
+			</if>
+			<if test="expireTime != null ">
+				and t.expire_time = #{expireTime}
+			</if>
+			<if test="lastLoginTime != null ">
+				and t.last_login_time = #{lastLoginTime}
+			</if>
+			<if test="tenantId != null ">
+				and t.tenant_id = #{tenantId}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_token_cache where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_token_cache
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

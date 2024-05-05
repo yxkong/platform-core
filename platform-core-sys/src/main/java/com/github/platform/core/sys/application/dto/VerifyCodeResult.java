@@ -15,7 +15,7 @@ import lombok.Data;
 public class VerifyCodeResult {
     @Schema(description ="验证码类型")
     @Builder.Default
-    private VerifyTypeEnum verifyType = VerifyTypeEnum.captcha;
+    private VerifyTypeEnum verifyType = VerifyTypeEnum.CAPTCHA;
     @Schema(description ="验证流水号")
     private String verifySeq;
     @Schema(description ="图片base64数据")

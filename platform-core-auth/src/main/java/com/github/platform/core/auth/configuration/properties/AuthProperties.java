@@ -3,9 +3,8 @@ package com.github.platform.core.auth.configuration.properties;
 import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.constant.PropertyConstant;
 import com.github.platform.core.common.utils.CollectionUtil;
-import lombok.AllArgsConstructor;
+import com.github.platform.core.standard.constant.SymbolConstant;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 权限解析
@@ -31,12 +31,38 @@ public class AuthProperties {
     /**后端管理项目*/
     private Sys sys = new Sys();
 
+
     @Data
     @SuperBuilder
     @NoArgsConstructor
     public static class Api extends BaseProperties {
         /**登录相关配置*/
         private Login login = new Login(CacheConstant.apiToken, CacheConstant.apiUserTokenMapping);
+
+        /**
+         * 根据token获取缓存key
+         * @param token
+         * @return
+         */
+        public String getTokenKey(String token){
+            return  CacheConstant.apiToken+SymbolConstant.colon+token;
+        }
+
+        /**
+         * 根据租户和登录名获取缓存key
+         * @param tenantId
+         * @param loginName
+         * @return
+         */
+        public String getLoginNameKey(Integer tenantId,String loginName){
+            return CacheConstant.apiUserTokenMapping+tenantId+SymbolConstant.colon+loginName;
+        }
+        public Long getExpire(){
+            if (Objects.isNull(this.login) || Objects.isNull(this.login.getExpire())){
+                return CacheConstant.defaultExpire;
+            }
+            return login.getExpire();
+        }
     }
     @Data
     @SuperBuilder
@@ -54,7 +80,30 @@ public class AuthProperties {
             }
             return this.innerUsers;
         }
+        /**
+         * 根据token获取缓存key
+         * @param token
+         * @return
+         */
+        public String getTokenKey(String token){
+            return CacheConstant.sysToken+ SymbolConstant.colon+token;
+        }
 
+        /**
+         * 根据租户和登录名获取缓存信息
+         * @param tenantId
+         * @param loginName
+         * @return
+         */
+        public String getLoginNameKey(Integer tenantId,String loginName){
+            return CacheConstant.sysUserTokenMapping+tenantId+SymbolConstant.colon+loginName;
+        }
+        public Long getExpire(){
+            if (Objects.isNull(this.login) || Objects.isNull(this.login.getExpire())){
+                return CacheConstant.defaultExpire;
+            }
+            return login.getExpire();
+        }
     }
     @Data
     @SuperBuilder
@@ -84,5 +133,6 @@ public class AuthProperties {
          * 用户token映射缓存前缀
          */
         private String userTokenMapping ;
+
     }
 }

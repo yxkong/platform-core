@@ -5,10 +5,7 @@ import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.sys.domain.constant.UserChannelEnum;
 import com.github.platform.core.sys.domain.context.SysUserConfigContext;
-import com.github.platform.core.sys.domain.dto.SysDictDto;
-import com.github.platform.core.sys.domain.dto.SysThirdUserDto;
-import com.github.platform.core.sys.domain.dto.SysUserConfigDto;
-import com.github.platform.core.sys.domain.dto.SysUserDto;
+import com.github.platform.core.sys.domain.dto.*;
 import com.github.platform.core.sys.domain.gateway.*;
 import com.github.platform.core.sys.domain.model.user.UserEntity;
 import org.springframework.stereotype.Service;
@@ -28,9 +25,11 @@ public class SysCommonGatewayImpl implements ISysCommonGateway {
     @Resource
     private ISysDictGateway sysDictGateway;
     @Resource
+    private ISysConfigGateway sysConfigGateway;
+    @Resource
     private ISysUserGateway sysUserGateway;
     @Resource
-    private ThirdUserGateway thirdUserGateway;
+    private IThirdUserGateway thirdUserGateway;
     @Resource
     private ISysUserConfigGateway userConfigGateway;
     @Override
@@ -66,6 +65,11 @@ public class SysCommonGatewayImpl implements ISysCommonGateway {
             rst.add(new OptionsDto(s.getKey(),s.getLabel()));
         });
         return rst;
+    }
+
+    @Override
+    public SysConfigDto getSysConfigByKey(Integer tenantId,String configKey) {
+        return sysConfigGateway.getConfig(tenantId,configKey);
     }
 
     @Override

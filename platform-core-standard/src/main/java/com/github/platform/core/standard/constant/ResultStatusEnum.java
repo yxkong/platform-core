@@ -29,7 +29,7 @@ public enum ResultStatusEnum implements BaseResult {
     SOURCE_ERROR("1003", "来源错误"),
     NO_AUTH("1004","您没有操作权限"),
 
-    NO_DATA_AUTH("1004", "无数据操作权限"),
+    NO_DATA_AUTH("1004", "您无数据操作权限"),
     SIGN("1005", "验签失败"),
     SIGN_FAIL("1005", "验签失败"),
     REPEAT("1006", "重复提交，请稍后再试！"),

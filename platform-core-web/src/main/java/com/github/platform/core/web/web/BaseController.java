@@ -4,7 +4,6 @@ import com.github.platform.core.common.service.BaseBizCommon;
 import com.github.platform.core.standard.constant.HeaderConstant;
 import com.github.platform.core.standard.constant.ResultStatusEnum;
 import com.github.platform.core.standard.exception.AdapterException;
-import com.github.platform.core.standard.exception.ApplicationException;
 import com.github.platform.core.standard.exception.BaseResult;
 import com.github.platform.core.web.util.RequestHolder;
 import org.slf4j.Logger;

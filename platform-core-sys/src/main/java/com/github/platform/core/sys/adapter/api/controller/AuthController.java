@@ -4,7 +4,8 @@ import com.github.platform.core.auth.annotation.NoLogin;
 import com.github.platform.core.auth.annotation.RequiredLogin;
 import com.github.platform.core.auth.constants.AuthTypeEnum;
 import com.github.platform.core.auth.entity.LoginUserInfo;
-import com.github.platform.core.auth.service.ILoginTokenService;
+import com.github.platform.core.auth.service.ITokenService;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.cache.infra.annotation.RepeatSubmit;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
@@ -57,8 +58,8 @@ public class AuthController extends BaseController {
     private SysUserAdapterConvert convert;
     @Resource
     private IAuthExecutor authExecutor;
-    @Resource
-    private ILoginTokenService loginTokenService;
+    @Resource(name = CacheConstant.sysTokenService)
+    private ITokenService tokenService;
 
 
     /**
@@ -113,7 +114,7 @@ public class AuthController extends BaseController {
         cmd.setLoginName(cmd.getLoginName().toLowerCase());
         LoginContext context = convert.toLogin(cmd);
         context.setLoginWay(LoginWayEnum.ldap);
-//        context.setVerifyType(VerifyTypeEnum.captcha);
+        context.setVerifyType(VerifyTypeEnum.CAPTCHA);
         LoginResult login = authExecutor.login(context);
         return buildSucResp("登录成功！",login);
     }
@@ -131,7 +132,7 @@ public class AuthController extends BaseController {
         cmd.setLoginName(cmd.getLoginName().toLowerCase());
         LoginContext context = convert.toLogin(cmd);
         context.setLoginWay(LoginWayEnum.normal);
-//        context.setVerifyType(VerifyTypeEnum.captcha);
+        context.setVerifyType(VerifyTypeEnum.CAPTCHA);
         LoginResult login = authExecutor.login(context);
         return buildSucResp(login);
     }
@@ -148,7 +149,7 @@ public class AuthController extends BaseController {
     @ApiResponse
     public ResultBean<LoginResult> smsLogin(@RequestBody @Validated SmsLoginCmd cmd) {
         LoginContext context = convert.toLogin(cmd);
-        context.setVerifyType(VerifyTypeEnum.sms);
+        context.setVerifyType(VerifyTypeEnum.SMS);
         context.setLoginWay(LoginWayEnum.sms);
         LoginResult login = authExecutor.login(context);
         return buildSucResp(login);
@@ -164,7 +165,7 @@ public class AuthController extends BaseController {
     @PostMapping("/info")
     @ApiResponse
     public ResultBean<LoginUserInfo> info() {
-        String loginInfoStr = loginTokenService.getLoginInfoStr(AuthTypeEnum.SYS, getToken());
+        String loginInfoStr = tokenService.getLoginInfoStr(getToken());
         LoginUserInfo userInfo = JsonUtils.fromJson(loginInfoStr,LoginUserInfo.class);
         return buildSucResp(userInfo);
     }

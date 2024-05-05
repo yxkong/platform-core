@@ -3,7 +3,7 @@ package com.github.platform.core.dingtalk.domain.constant;
 import lombok.Getter;
 /**
  * 表单审批类型
- * @author: hdy
+ * @author: yxkong
  * @date: 2023/6/29 1:32 PM
  * @version: 1.0
  */

@@ -6,6 +6,7 @@ import com.github.platform.core.auth.util.LoginInfoUtil;
 import com.github.platform.core.common.constant.SpringBeanOrderConstant;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.exception.NoAuthForDataOptException;
+import com.github.platform.core.standard.exception.NoLoginException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -85,6 +86,6 @@ public class AuthorizeAspect {
         if (LoginInfoUtil.isLogin()){
             return true;
         }
-        throw new NoAuthForDataOptException("用户没有权限");
+         throw new NoLoginException();
     }
 }

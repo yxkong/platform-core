@@ -57,6 +57,7 @@ public interface SpringBeanOrderConstant extends Ordered {
     int CACHE_REDIS = 0;
     int TOKEN_SERVICE = 99 ;
     int LOGIN_TOKEN_SERVICE = 100 ;
+    int LOGIN_TOKEN_DB_SERVICE = 99 ;
     int LOGIN_INFO_ASPECT = -101;
     int AUTHORIZE_ASPECT = -100;
 

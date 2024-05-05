@@ -1,6 +1,7 @@
 package com.github.platform.core.standard.exception;
 
 import com.github.platform.core.standard.constant.ResultStatusEnum;
+
 import java.util.Objects;
 
 /**
@@ -23,5 +24,8 @@ public class NoLoginException extends CommonException{
 
     public NoLoginException(String message){
         super(ResultStatusEnum.TOKEN_INVALID.getStatus(), Objects.isNull(message) ? ResultStatusEnum.TOKEN_INVALID.getMessage() : message);
+    }
+    public NoLoginException(){
+        super(ResultStatusEnum.TOKEN_INVALID);
     }
 }

@@ -1,6 +1,5 @@
 package com.github.platform.core.sys.domain.constant;
 
-import lombok.Data;
 import lombok.Getter;
 
 /**

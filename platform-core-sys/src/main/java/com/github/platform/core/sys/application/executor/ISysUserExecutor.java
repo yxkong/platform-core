@@ -1,5 +1,6 @@
 package com.github.platform.core.sys.application.executor;
 
+import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.sys.domain.context.RegisterContext;
@@ -53,7 +54,13 @@ public interface ISysUserExecutor {
      */
     PwdResult resetPwd(ResetPwdContext context);
 
-
+    /**
+     * 刷新token
+     * @param token
+     * @param loginUserInfo
+     * @return
+     */
+    void reloadToken(String  token, LoginUserInfo loginUserInfo);
 
     /**
      * 查询用户详情

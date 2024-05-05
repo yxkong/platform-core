@@ -1,6 +1,6 @@
 package com.github.platform.core.sys.domain.common.entity;
 
-import com.github.platform.core.standard.entity.BaseEntity;
+import com.github.platform.core.common.entity.BaseAdminEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-public class SysUserConfigBase extends BaseEntity   {
+public class SysUserConfigBase extends BaseAdminEntity {
     @NotEmpty(message="登录名称（loginName）不能为空")
     /** 登录名称 */
     @Schema(description = "登录名称")

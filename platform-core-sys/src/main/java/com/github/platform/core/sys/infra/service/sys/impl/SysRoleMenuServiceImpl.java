@@ -1,4 +1,4 @@
-package com.github.platform.core.sys.infra.service.impl.sys;
+package com.github.platform.core.sys.infra.service.sys.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

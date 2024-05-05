@@ -1,6 +1,7 @@
 package com.github.platform.core.sys.adapter.api.controller;
 
 import com.github.platform.core.auth.annotation.RequiredLogin;
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.cache.domain.entity.ConfigEntity;
 import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
@@ -56,7 +57,7 @@ public class SysConfigController extends BaseController {
     @OptLog(module = "config",title = "根据配置key查询",persistent = false)
     @Operation(summary = "根据配置key查询",tags = {"config"})
     public ResultBean<ConfigEntity> getConfig(@Validated({Query.class}) @RequestBody SysConfigQuery query) {
-        SysConfigDto config = executor.getConfig(query.getKey());
+        SysConfigDto config = executor.getConfig(LoginUserInfoUtil.getTenantId(),query.getKey());
         return buildSucResp(convert.toEntity(config));
     }
 

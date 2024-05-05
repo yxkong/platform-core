@@ -9,10 +9,10 @@ import lombok.Getter;
  */
 @Getter
 public enum VerifyTypeEnum {
-    //0，图形，1短信，2滑块，默认图形
-    captcha("captcha","图形验证"),
-    sms("sms","短信验证"),
-    sliding("sliding","滑块验证");
+    DEFAULT("default","默认策略，直接通过"),
+    CAPTCHA("captcha","图形验证"),
+    SMS("sms","短信验证"),
+    SLIDING("sliding","滑块验证");
     private String type;
     private String desc;
     VerifyTypeEnum(String type, String desc) {
@@ -20,15 +20,12 @@ public enum VerifyTypeEnum {
         this.desc = desc;
     }
 
-    public static VerifyTypeEnum getDefault(){
-        return VerifyTypeEnum.captcha;
-    }
     public static VerifyTypeEnum of(String type){
         for (VerifyTypeEnum typeEnum:VerifyTypeEnum.values()){
             if (typeEnum.getType().equalsIgnoreCase(type)){
                 return typeEnum;
             }
         }
-        return null;
+        return VerifyTypeEnum.DEFAULT;
     }
 }

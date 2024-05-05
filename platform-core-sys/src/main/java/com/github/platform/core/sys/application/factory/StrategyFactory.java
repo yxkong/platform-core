@@ -1,9 +1,9 @@
 package com.github.platform.core.sys.application.factory;
 
 import com.github.platform.core.common.utils.ApplicationContextHolder;
-import com.github.platform.core.sys.infra.service.impl.verify.CaptchaVerifyStrategyImpl;
 import com.github.platform.core.sys.domain.constant.VerifyTypeEnum;
 import com.github.platform.core.sys.domain.service.VerifyStrategy;
+import com.github.platform.core.sys.infra.service.impl.verify.DefaultVerifyStrategyImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -24,7 +24,7 @@ public class StrategyFactory {
      * @return
      */
     public static VerifyStrategy getOrDefault(Map<String,VerifyStrategy> maps, VerifyTypeEnum verifyType){
-        CaptchaVerifyStrategyImpl defaultVerifyStrategy = ApplicationContextHolder.getBean(CaptchaVerifyStrategyImpl.class);
+        VerifyStrategy defaultVerifyStrategy = ApplicationContextHolder.getBean(DefaultVerifyStrategyImpl.class);
         String strategyName = verifyType.getType()+"VerifyStrategy";
         VerifyStrategy verifyStrategy = maps.get(strategyName);
         if (Objects.isNull(verifyStrategy)){

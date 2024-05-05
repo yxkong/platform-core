@@ -10,6 +10,12 @@ package com.github.platform.core.standard.constant;
 public interface HeaderConstant {
     /**header中的token，如果不需要登录，默认值为token*/
     String TOKEN = "token";
+    /**授权信息*/
+    String AUTHORIZATION = "authorization";
+    /**令牌认证*/
+    String AUTH_BEARER = "bearer";
+    /**基本认证*/
+    String AUTH_BASIC = "basic";
     String ACCESS_TOKEN = "accessToken";
     /**header中的默认token*/
     String DEFAULT_TOKEN = "token";

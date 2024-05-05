@@ -1,8 +1,8 @@
 package com.github.platform.core.standard.exception;
 
 
-
 import com.github.platform.core.standard.constant.ResultStatusEnum;
+
 import java.util.Objects;
 
 /**
@@ -13,6 +13,9 @@ import java.util.Objects;
  */
 public class ParamsRuntimeException extends CommonException {
 
+    public ParamsRuntimeException(){
+        super(ResultStatusEnum.PARAM_ERROR);
+    }
     public ParamsRuntimeException(String message){
         super(ResultStatusEnum.PARAM_ERROR.getStatus(), Objects.isNull(message) ? ResultStatusEnum.PARAM_ERROR.getMessage() : message);
     }

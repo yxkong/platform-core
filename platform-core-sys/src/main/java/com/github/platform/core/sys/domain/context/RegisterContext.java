@@ -48,6 +48,10 @@ public class RegisterContext extends TenantContext {
      * 用户邮箱
      */
     private String email;
+    /**
+     * 接口密钥
+     */
+    private String secretKey;
 
     /**
      * 用户登录名

@@ -6,7 +6,7 @@ import com.github.platform.core.sys.domain.context.SysThirdUserContext;
 import com.github.platform.core.sys.domain.context.SysThirdUserQueryContext;
 import com.github.platform.core.sys.domain.context.ThirdApproveContext;
 import com.github.platform.core.sys.domain.dto.SysThirdUserDto;
-import com.github.platform.core.sys.domain.gateway.ThirdUserGateway;
+import com.github.platform.core.sys.domain.gateway.IThirdUserGateway;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import javax.annotation.Resource;
 @Slf4j
 public class SysThirdUserExecutorImpl extends BaseExecutor implements ISysThirdUserExecutor {
     @Resource
-    private ThirdUserGateway gateway;
+    private IThirdUserGateway gateway;
     /**
     * 查询三方用户列表
     * @param context

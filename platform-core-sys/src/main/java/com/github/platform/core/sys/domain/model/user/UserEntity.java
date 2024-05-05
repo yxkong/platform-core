@@ -59,6 +59,18 @@ public class UserEntity implements Serializable {
      * 部门名称
      */
     private String deptName;
+    /**
+     * 邮箱
+     */
+    private String email;
+    /**
+     * 头像
+     */
+    private String avatar;
+    /**
+     * 接口密钥
+     */
+    private String secretKey;
 
     /**
      * 盐值

@@ -82,7 +82,7 @@ public class SmsVerifyStrategyImpl extends BaseServiceImpl implements VerifyStra
 //            CacheUtils.incr(sendKeyByHour);
 //        }
 
-        return VerifyCodeResult.builder().verifyType(VerifyTypeEnum.sms).verifySeq("").build();
+        return VerifyCodeResult.builder().verifyType(VerifyTypeEnum.SMS).verifySeq("").build();
     }
 
     @Override

@@ -1,13 +1,14 @@
 package com.github.platform.core.monitor.infra.websocket.handler;
 
-import com.github.platform.core.auth.constants.AuthTypeEnum;
 import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.auth.service.ITokenService;
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
+import com.github.platform.core.monitor.domain.dto.ChatDto;
 import com.github.platform.core.monitor.domain.ws.InMessage;
 import com.github.platform.core.monitor.domain.ws.OutMessage;
-import com.github.platform.core.monitor.domain.dto.ChatDto;
 import com.github.platform.core.monitor.infra.websocket.WebSocketSessionManager;
 import com.github.platform.core.monitor.infra.websocket.WsMessageUtil;
 import com.github.platform.core.monitor.infra.websocket.constant.WsConstant;
@@ -38,7 +39,7 @@ import java.util.Map;
 public class OnLineUserHandler extends TextWebSocketHandler {
     @Resource
     private WebSocketSessionManager sessionManager;
-    @Resource
+    @Resource(name = CacheConstant.sysTokenService)
     private ITokenService tokenService;
     @Autowired
     private Map<String, IWsMessageService> wsMessageServiceMap;
@@ -72,7 +73,7 @@ public class OnLineUserHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String token = (String) session.getAttributes().get("token");
-        String loginStr = tokenService.getLoginInfoStr(AuthTypeEnum.SYS,token);
+        String loginStr = tokenService.getLoginInfoStr(token);
         //已经退出了,就不让发送信息
         if (StringUtils.isEmpty(loginStr)){
             if (log.isDebugEnabled()){
@@ -90,11 +91,12 @@ public class OnLineUserHandler extends TextWebSocketHandler {
         if (log.isDebugEnabled()){
             log.debug("接收消息内容：",message.getPayload());
         }
+        LoginUserInfo loginUserInfo = JsonUtils.fromJson(loginStr, LoginUserInfo.class);
 
         InMessage wsMessage = JsonUtils.fromJson(message.getPayload(), InMessage.class);
         if (null != wsMessage && wsMessage.isValidBizType()){
             /**获取接收用户的登录信息*/
-            String loginInfo = tokenService.getLoginInfoStrByLoginName(AuthTypeEnum.SYS, wsMessage.getToUser());
+            String loginInfo = tokenService.getLoginInfoStr(wsMessage.getLoginInfo().getTenantId(),wsMessage.getToUser());
             wsMessage.setLoginInfoStr(loginInfo);
             String mapKey = wsMessage.getBizType()+"WsMessageService";
             boolean executor = wsMessageServiceMap.get(mapKey).executor(wsMessage,true);

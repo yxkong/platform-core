@@ -50,7 +50,7 @@ public class LoginInfoConvertAspect {
             String token = getToken();
             LoginUserInfoUtil.clearContext();
             if (StringUtils.isBlank(loginStr) && Objects.nonNull(token) && !HeaderConstant.DEFAULT_TOKEN.equals(token)) {
-                loginStr = tokenService.getLoginInfoStr(AuthTypeEnum.SYS,token);
+                loginStr = tokenService.getLoginInfoStr(token);
                 if (log.isTraceEnabled()){
                     log.trace("请求的,uri:{},loginInfoStr:{}", httpRequest.getRequestURI(),loginStr);
                 }

@@ -46,7 +46,7 @@ public interface ISysConfigExecutor {
      * @param key
      * @return
      */
-    SysConfigDto getConfig(String key);
+    SysConfigDto getConfig(Integer tenantId,String key);
 
     /**
      * 重载配置，为空重载全部

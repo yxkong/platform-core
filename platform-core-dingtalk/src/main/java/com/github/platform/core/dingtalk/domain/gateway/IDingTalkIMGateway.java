@@ -12,6 +12,22 @@ import java.util.List;
  */
 public interface IDingTalkIMGateway {
     /**
+     * 工作通知：文本消息
+     * @param userList
+     * @param text 消息内容
+     * @return
+     */
+    boolean workNoticeText(List<String> userList,String text);
+
+    /**
+     * 工作通知，markdown消息
+     * @param userList
+     * @param title 消息标题
+     * @param text 消息内容
+     * @return
+     */
+    boolean workNoticeMarkDown(List<String> userList,String title,String text);
+    /**
      * 创建群
      * @param userList 群成员
      * @param ownerUserId（创建者）

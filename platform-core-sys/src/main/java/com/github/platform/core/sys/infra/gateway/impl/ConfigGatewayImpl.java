@@ -85,7 +85,7 @@ public class ConfigGatewayImpl extends BaseGatewayImpl implements ISysConfigGate
 
     }
     @Override
-    public void delete(Long id,String key) {
+    public void delete(Long id,Integer tenantId,String key) {
         SysConfigBase record = sysConfigMapper.findById(id);
         if (Objects.isNull(record)){
             exception(ResultStatusEnum.NO_DATA);
@@ -104,13 +104,13 @@ public class ConfigGatewayImpl extends BaseGatewayImpl implements ISysConfigGate
     }
 
     @Override
-    public SysConfigDto getConfig(String key) {
+    public SysConfigDto getConfig(Integer tenantId,String key) {
         SysConfigBase sysConfig = this.findByKey(null, key);
         return convert.toDto(sysConfig);
     }
 
     @Override
-    public void deleteCache(String key) {
+    public void deleteCache(Integer tenantId,String key) {
 
     }
 }

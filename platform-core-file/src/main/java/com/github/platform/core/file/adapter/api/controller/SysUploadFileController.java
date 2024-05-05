@@ -41,7 +41,7 @@ import java.util.List;
 */
 @RestController
 @Tag(name = "uploadFile",description = "上传文件表管理")
-@RequestMapping("sys/file/uploud")
+@RequestMapping("sys/file/upload")
 @Slf4j
 public class SysUploadFileController extends BaseController{
     @Resource

@@ -1,6 +1,7 @@
 package com.github.platform.core.standard.exception;
 
 import com.github.platform.core.standard.constant.ResultStatusEnum;
+
 import java.util.Objects;
 
 /**
@@ -23,5 +24,8 @@ public class NoAuthForDataOptException extends CommonException {
 
     public NoAuthForDataOptException(String message){
         super(ResultStatusEnum.NO_DATA_AUTH.getStatus(), Objects.isNull(message) ? ResultStatusEnum.NO_DATA_AUTH.getMessage() : message);
+    }
+    public NoAuthForDataOptException(){
+        super(ResultStatusEnum.NO_DATA_AUTH);
     }
 }

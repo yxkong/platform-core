@@ -4,11 +4,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.platform.core.auth.constant.DataScopeEnum;
 import com.github.platform.core.auth.constant.RoleConstant;
-import com.github.platform.core.auth.constants.AuthTypeEnum;
 import com.github.platform.core.auth.entity.LoginUserInfo;
-import com.github.platform.core.auth.service.ILoginTokenService;
+import com.github.platform.core.auth.service.ITokenService;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.gateway.BaseGatewayImpl;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.EncryptUtil;
@@ -65,8 +65,8 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     private SysUserLogMapper sysUserLogMapper;
     @Resource
     private SysUserInfraConvert userInfraConvert;
-    @Resource
-    private ILoginTokenService loginTokenService;
+    @Resource(name = CacheConstant.sysTokenService)
+    private ITokenService tokenService;
     @Resource
     private ISysRoleGateway roleGateway;
     @Resource
@@ -104,7 +104,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         return ResultPageBeanUtil.pageBean(new PageInfo<>(list));
     }
     private String getDefaultPwd(){
-        SysConfigDto config = configGateway.getConfig(ConfigKeyConstant.SYS_DEFAULT_PASSWORD);
+        SysConfigDto config = configGateway.getConfig(LoginUserInfoUtil.getTenantId(),ConfigKeyConstant.SYS_DEFAULT_PASSWORD);
         if (Objects.isNull(config) || StringUtils.isEmpty(config.getValue())){
             return "000000";
         }
@@ -167,10 +167,10 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         roleGateway.addUserRole(sysUser.getId(), sysUser.getTenantId(), context.getRoleKeys());
         //禁用以后，清除用户登录信息
         if (StatusEnum.OFF.getStatus().equals(context.getStatus())) {
-            //清除上次token的登陆信息
-            loginTokenService.delUserInfoCache(AuthTypeEnum.SYS,context.getLoginName(), null);
+            tokenService.expireByLoginName(context.getTenantId(),context.getLoginName());
         }
     }
+
 
     /**
      * 管理员重置密码
@@ -185,8 +185,8 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         String md5Pwd = MD5Utils.md5Salt(defaultPwd, salt);
         SysUserBase sysUser = userInfraConvert.of(context, salt, md5Pwd);
         int rows = sysUserMapper.modifyPwd(sysUser);
-        //清除上次token的登陆信息
-        loginTokenService.delUserInfoCache(AuthTypeEnum.SYS,context.getLoginName(), null);
+        //清除
+        tokenService.expireByLoginName(context.getTenantId(),context.getLoginName());
         return new PwdResult(context.getLoginName(), defaultPwd,md5Pwd);
     }
 
@@ -196,7 +196,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     @Override
     public void logout() {
         //清除上次token的登陆信息
-        loginTokenService.delUserInfoCache(AuthTypeEnum.SYS,LoginUserInfoUtil.getLoginName(), LoginUserInfoUtil.getToken());
+        tokenService.expireByToken(LoginUserInfoUtil.getToken());
     }
 
 
@@ -213,7 +213,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         SysUserBase sysUser = userInfraConvert.of(context, salt, md5Pwd);
         int rows = sysUserMapper.modifyPwd(sysUser);
         //清除上次token的登陆信息
-        loginTokenService.delUserInfoCache(AuthTypeEnum.SYS,LoginUserInfoUtil.getLoginName(), null);
+        tokenService.expireByLoginName(LoginUserInfoUtil.getTenantId(),LoginUserInfoUtil.getLoginName());
     }
 
     @Override
@@ -230,8 +230,11 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         if (Objects.isNull(sysUser)) {
             return null;
         }
-        SysDeptDto deptDO = deptGateway.findById(sysUser.getDeptId());
-        return userInfraConvert.target(sysUser, deptDO.getDeptName());
+        SysDeptDto deptDto = deptGateway.findById(sysUser.getDeptId());
+        if (Objects.isNull(deptDto)){
+            return null;
+        }
+        return userInfraConvert.target(sysUser, deptDto.getDeptName());
     }
 
     @Override
@@ -262,12 +265,14 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
 
     @Override
     public String generatorToken(UserEntity entity, Set<String> roleKeys, LoginWayEnum loginWay) {
-        //清除上次token的登陆信息
-        loginTokenService.delUserInfoCache(AuthTypeEnum.SYS,entity.getLoginName(), null);
+        //清除上次token的登陆信息(多次登录不删除) TODO 添加开关配置
+        tokenService.expireByLoginName(entity.getTenantId(),entity.getLoginName());
 
         String token = StringUtils.uuidRmLine();
         LoginUserInfo loginUserInfo = userInfraConvert.target(entity);
         loginUserInfo.setToken(token);
+        loginUserInfo.setEmail(entity.getEmail());
+        loginUserInfo.setSecretKey(entity.getSecretKey());
         loginUserInfo.setLoginWay(loginWay.getType());
         loginUserInfo.setLoginTime(LocalDateTimeUtil.dateTimeDefaultShort());
         loginUserInfo.setRegisterTime(LocalDateTimeUtil.dateTimeDefault(entity.getRegisterTime()));
@@ -280,8 +285,14 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         loginUserInfo.setStatus(StatusEnum.ON.getVal());
         LoginUserInfoUtil.setLoginUserInfo(loginUserInfo);
         //缓存token的登陆信息
-        loginTokenService.cacheUserInfo(AuthTypeEnum.SYS,token,entity.getLoginName(), JsonUtils.toJson(loginUserInfo));
+        tokenService.saveOrUpdate(entity.getTenantId(), token,entity.getLoginName(), JsonUtils.toJson(loginUserInfo),true);
         return token;
+    }
+
+    @Override
+    public void reloadToken(String token,LoginUserInfo loginUserInfo) {
+        LoginUserInfoUtil.setLoginUserInfo(loginUserInfo);
+        tokenService.saveOrUpdate(loginUserInfo.getTenantId(),token,loginUserInfo.getLoginName(), JsonUtils.toJson(loginUserInfo),false);
     }
 
     /**
@@ -303,6 +314,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         }
         if (CollectionUtil.isNotEmpty(roleEntities)){
             loginUserInfo.setRoleKeys(roleEntities.stream().map(SysRoleDto::getKey).filter(Objects::nonNull).collect(Collectors.toList()));
+            loginUserInfo.setRoleNames(roleEntities.stream().map(SysRoleDto::getName).filter(Objects::nonNull).collect(Collectors.toList()));
             loginUserInfo.setRoleIds(roleEntities.stream().map(SysRoleDto::getId).collect(Collectors.toList()));
         }
         if (loginUserInfo.isSuperAdmin()){

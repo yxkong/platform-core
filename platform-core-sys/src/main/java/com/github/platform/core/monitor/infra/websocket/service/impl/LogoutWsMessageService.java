@@ -1,8 +1,8 @@
 package com.github.platform.core.monitor.infra.websocket.service.impl;
 
-import com.github.platform.core.auth.constants.AuthTypeEnum;
 import com.github.platform.core.auth.entity.LoginUserInfo;
-import com.github.platform.core.auth.service.ILoginTokenService;
+import com.github.platform.core.auth.service.ITokenService;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.monitor.domain.ws.InMessage;
 import com.github.platform.core.monitor.domain.ws.OutMessage;
@@ -32,8 +32,8 @@ public class LogoutWsMessageService implements IWsMessageService {
     private StringRedisTemplate stringRedisTemplate;
     @Resource
     private WebSocketSessionManager sessionManager;
-    @Resource
-    private ILoginTokenService loginTokenService;
+    @Resource(name = CacheConstant.sysTokenService)
+    private ITokenService tokenService;
     @Resource(name = "wsChatWsMessageService")
     private IWsMessageService messageService;
 
@@ -54,8 +54,8 @@ public class LogoutWsMessageService implements IWsMessageService {
             session.sendMessage(new TextMessage(JsonUtils.toJson(outMessage)));
             /**在本机，直接执行*/
             session.close();
-            //清除上次token的登陆信息
-            loginTokenService.delUserInfoCache(AuthTypeEnum.SYS, loginInfo.getLoginName(), loginInfo.getToken());
+            //清除上次token的登陆信息,TODO 判断只清理当前还是对应用户
+            tokenService.expireByToken(loginInfo.getToken());
             if (wsMessage.getFromUser().equals(wsMessage.getToUser())){
                 if (log.isDebugEnabled()){
                     log.debug("用户：{} 退出,断开socket成功",wsMessage.getFromUser(),wsMessage.getToUser());
@@ -65,7 +65,7 @@ public class LogoutWsMessageService implements IWsMessageService {
                     log.debug("用户：{} 踢出：{} 成功",wsMessage.getFromUser(),wsMessage.getToUser());
                 }
                 //踢出用户以后需要给踢出者回复消息
-                String loginInfoStr = loginTokenService.getLoginInfoStrByLoginName(AuthTypeEnum.SYS, wsMessage.getFromUser());
+                String loginInfoStr = tokenService.getLoginInfoStr(wsMessage.getLoginInfo().getTenantId(), wsMessage.getFromUser());
                 if (log.isDebugEnabled()){
                     log.debug("踢出者用户信息：{}",loginInfoStr);
                 }

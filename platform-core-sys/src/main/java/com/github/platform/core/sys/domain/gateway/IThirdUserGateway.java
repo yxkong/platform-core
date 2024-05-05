@@ -17,7 +17,7 @@ import java.util.List;
 * @time 2023-05-31 16:04:49.640
 * @version 1.0
 */
-public interface ThirdUserGateway {
+public interface IThirdUserGateway {
     /**
     * 查询三方用户列表
     * @param context
@@ -26,10 +26,10 @@ public interface ThirdUserGateway {
     PageBean<SysThirdUserDto> query(SysThirdUserQueryContext context);
     /**
     * 新增三方用户
-    * @param ldapUser
+    * @param thirdUserEntity
     * @return
     */
-    SysThirdUserDto insert(ThirdUserEntity ldapUser,Long userId);
+    SysThirdUserDto insert(ThirdUserEntity thirdUserEntity,Long userId);
     /**
     * 修改三方用户
     * @param context

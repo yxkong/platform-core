@@ -3,6 +3,7 @@ package com.github.platform.core.dingtalk.infra.rpc.external;
 import com.github.platform.core.dingtalk.infra.rpc.external.command.DingCreateGroupCmd;
 import com.github.platform.core.dingtalk.infra.rpc.external.command.DingGroupUserCmd;
 import com.github.platform.core.dingtalk.infra.rpc.external.command.DingSendMessageCmd;
+import com.github.platform.core.dingtalk.infra.rpc.external.command.DingWorkNoticeCmd;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingCreateGroupDto;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingResultBean;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingSendMessageDto;
@@ -19,6 +20,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(url="${platform.feign.url.ding-oapi}",name = "dingIMFeignClient")
 public interface DingIMFeignClient {
 
+	/**
+	 * 发送工作通知
+	 * @param accessToken
+	 * @param cmd
+	 * @return
+	 */
+	@PostMapping(value="/topapi/message/corpconversation/asyncsend_v2")
+	DingResultBean<String> workNotice(@RequestParam("access_token") String accessToken, @RequestBody DingWorkNoticeCmd cmd);
 
 	/**
 	 * 钉钉建群

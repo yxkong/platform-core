@@ -2,6 +2,7 @@ package com.github.platform.core.dingtalk.infra.service;
 
 import com.github.platform.core.dingtalk.domain.constant.DingMessageTemplateTypeEnum;
 import com.github.platform.core.dingtalk.domain.constant.DingUserTypeEnum;
+import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingAccessUserDto;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingDeptDto;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.DingUserDto;
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,10 +19,23 @@ import java.util.Map;
 public interface IDingTalkService {
 
     /**
-     * 获取访问token
+     * 获取应用访问token
      * @return
      */
-    String getAccessToken();
+    String getAppAccessToken();
+
+    /**
+     * 获取访问用户信息
+     * @return
+     */
+    DingAccessUserDto getUserAccessUserInfo(String authCode);
+
+    /**
+     * 根据手机号获取用户的userId
+     * @param mobile
+     * @return
+     */
+    String getUserIdByMobile(String mobile);
 
     /**
      * 查询指定部门下所有部门
@@ -42,6 +56,23 @@ public interface IDingTalkService {
      * @return
      */
     DingUserDto getUserInfo(String dingUserId);
+
+    /**
+     * 工作通知：文本消息
+     * @param userList
+     * @param text
+     * @return
+     */
+
+    boolean workNoticeText(List<String> userList, String text);
+
+    /**
+     * 工作通知：markdown
+     * @param userList
+     * @param text
+     * @return
+     */
+    boolean workNoticeMarkDown(List<String> userList,String title, String text);
 
     /**
      * 创建群
@@ -75,6 +106,7 @@ public interface IDingTalkService {
      * @return
      */
     Pair<Boolean,String> groupUserOpt(String groupId, List<String> users, Boolean isAdd);
+
 
 
 }

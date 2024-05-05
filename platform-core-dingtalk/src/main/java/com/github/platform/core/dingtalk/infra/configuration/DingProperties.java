@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = PropertyConstant.DATA_DING_TALK)
 public class DingProperties {
+    /**应用id*/
+    private Long agentId;
     /** 钉钉企业的 appKey*/
     private String appKey ;
     /** 钉钉的 密钥*/
@@ -36,5 +38,6 @@ public class DingProperties {
     private String groupTemplateId;
     /**机器人编码*/
     private String robotCode;
+
     private String tokenKey = "p:dt:accessToken";
 }

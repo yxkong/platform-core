@@ -45,7 +45,7 @@ public interface ISysConfigGateway {
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:cfg:'+#context.id",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:cfg:'+#context.key",cacheManager = CacheConstant.cacheManager)
+                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:cfg:'+#context.tenantId+':'+#context.key",cacheManager = CacheConstant.cacheManager)
             }
     )
     void update(SysConfigContext context);
@@ -58,10 +58,10 @@ public interface ISysConfigGateway {
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:cfg:'+#id",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:cfg:'+#key",cacheManager = CacheConstant.cacheManager)
+                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:cfg:'+#tenantId+':'+#key",cacheManager = CacheConstant.cacheManager)
             }
     )
-    void delete(Long id,String key);
+    void delete(Long id,Integer tenantId,String key);
 
     /**
      * 根据id查询
@@ -75,14 +75,14 @@ public interface ISysConfigGateway {
      * @param key
      * @return
      */
-    @Cacheable(cacheNames = CacheConstant.c12h, key = "'sys:cfg:' + #key", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
-    SysConfigDto getConfig(String key);
+    @Cacheable(cacheNames = CacheConstant.c12h, key = "'sys:cfg:' +#tenantId+':'+ #key", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    SysConfigDto getConfig(Integer tenantId,String key);
 
 
     /**
      * 删除缓存
      * @param key
      */
-    @Cacheable(cacheNames = CacheConstant.c12h, key = "'sys:cfg:' + #key", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
-    void deleteCache(String key);
+    @Cacheable(cacheNames = CacheConstant.c12h, key = "'sys:cfg:' +#tenantId+':'+ #key", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    void deleteCache(Integer tenantId,String key);
 }

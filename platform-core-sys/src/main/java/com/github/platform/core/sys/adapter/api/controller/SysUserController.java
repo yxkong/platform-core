@@ -1,25 +1,24 @@
 package com.github.platform.core.sys.adapter.api.controller;
 
 import com.github.platform.core.auth.annotation.RequiredLogin;
-import com.github.platform.core.auth.util.AuthUtil;
+import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.cache.infra.annotation.RepeatSubmit;
+import com.github.platform.core.common.entity.StrIdReq;
+import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;
-import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.entity.dto.ResultBean;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.standard.util.ResultBeanUtil;
-import com.github.platform.core.sys.adapter.api.command.account.KeyQuery;
-import com.github.platform.core.sys.adapter.api.command.account.AddUserCmd;
-import com.github.platform.core.sys.adapter.api.command.account.ResetPwdCmd;
-import com.github.platform.core.sys.adapter.api.command.account.SysUserQuery;
+import com.github.platform.core.sys.adapter.api.command.account.*;
 import com.github.platform.core.sys.adapter.api.constant.SysAdapterResultEnum;
 import com.github.platform.core.sys.adapter.api.convert.SysUserAdapterConvert;
 import com.github.platform.core.sys.application.executor.ISysUserExecutor;
 import com.github.platform.core.sys.domain.constant.UserChannelEnum;
 import com.github.platform.core.sys.domain.constant.UserConstant;
+import com.github.platform.core.sys.domain.constant.UserLogBizTypeEnum;
 import com.github.platform.core.sys.domain.context.RegisterContext;
 import com.github.platform.core.sys.domain.context.ResetPwdContext;
 import com.github.platform.core.sys.domain.context.SysUserQueryContext;
@@ -49,6 +48,7 @@ public class SysUserController extends BaseController {
 
     @Resource
     private ISysUserExecutor userExecutor;
+
 
     @Resource
     private SysUserAdapterConvert convert;
@@ -108,6 +108,7 @@ public class SysUserController extends BaseController {
         cmd.setLoginName(cmd.getLoginName().toLowerCase());
         RegisterContext registerContext = convert.toRegister(cmd);
         registerContext.setChannel(UserChannelEnum.add);
+        registerContext.setLogBizTypeEnum(UserLogBizTypeEnum.add_user);
         userExecutor.insert(registerContext);
         return buildSucResp();
     }
@@ -130,6 +131,22 @@ public class SysUserController extends BaseController {
         userExecutor.update(registerContext);
         return buildSucResp();
     }
+    @RepeatSubmit
+    @OptLog(module="user",title="修改个人信息",optType = LogOptTypeEnum.modify)
+    @Operation(summary = "修改个人信息",tags = {"user"})
+    @PostMapping(value = "/updateUserProfile")
+    public ResultBean<Void> updateUserProfile(@RequestBody @Validated UserProfileCmd cmd) {
+        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        RegisterContext context = convert.profileToRegister(cmd);
+        context.setLoginName(userInfo.getLoginName());
+        if (StringUtils.isEmpty(context.getMobile())){
+            context.setMobile(cmd.getMobile());
+        }
+        context.setLogBizTypeEnum(UserLogBizTypeEnum.profile);
+        userExecutor.update(context);
+        return buildSucResp();
+    }
+
 
     /**
      * 重置密码

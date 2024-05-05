@@ -73,7 +73,7 @@ public class SysAuthFilter extends GatewayFilterBase implements GatewayFilter, O
             return authFail(exchange, Boolean.TRUE);
         }
 
-        String loginInfoStr = tokenService.getLoginInfoStr(AuthTypeEnum.SYS,token);
+        String loginInfoStr = tokenService.getLoginInfoStr(token);
         if (Objects.isNull(loginInfoStr)) {
             log.error("path:{} token {} 已过期",path,token);
             return authFail(exchange, Boolean.TRUE);

@@ -53,4 +53,5 @@ public interface SysUserAdapterConvert {
     ResetPwdContext toRestPwd(ResetPwdCmd cmd);
 
     RegisterContext toRegister(AddUserCmd cmd);
+    RegisterContext profileToRegister(UserProfileCmd cmd);
 }

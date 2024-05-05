@@ -13,7 +13,7 @@ public enum AuthTypeEnum {
     API("api", "api模块"),
     SYS("sys", "后台管理模块");
 
-    AuthTypeEnum(String type, String desc) {
+    AuthTypeEnum(String type,String desc) {
         this.type = type;
         this.desc = desc;
     }

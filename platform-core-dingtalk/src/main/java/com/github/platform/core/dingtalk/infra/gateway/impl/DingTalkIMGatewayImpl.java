@@ -30,6 +30,17 @@ public class DingTalkIMGatewayImpl implements IDingTalkIMGateway {
     private IDingTalkService dingTalkService;
     @Resource
     private DingProperties dingProperties;
+
+    @Override
+    public boolean workNoticeText(List<String> userList, String text) {
+        return dingTalkService.workNoticeText(userList,text);
+    }
+
+    @Override
+    public boolean workNoticeMarkDown(List<String> userList, String title, String text) {
+        return dingTalkService.workNoticeMarkDown(userList,title,text);
+    }
+
     @Override
     public String createGroup(List<String> userList, String ownerUserId, String title, List<String> subAdminList) {
         if (Objects.isNull(ownerUserId)){

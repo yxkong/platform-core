@@ -1,5 +1,6 @@
 package com.github.platform.core.sys.domain.gateway;
 
+import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.sys.domain.constant.LoginWayEnum;
@@ -93,6 +94,14 @@ public interface ISysUserGateway {
      * @return
      */
     String generatorToken(UserEntity entity, Set<String> roleKeys, LoginWayEnum loginWay);
+
+    /**
+     * 刷新token
+     * @param token
+     * @param loginUserInfo
+     * @return
+     */
+    void reloadToken(String  token, LoginUserInfo loginUserInfo);
 
     /**
      * 基础校验 密码+账户状态

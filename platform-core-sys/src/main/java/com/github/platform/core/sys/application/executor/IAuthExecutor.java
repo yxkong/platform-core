@@ -13,7 +13,7 @@ import com.github.platform.core.sys.domain.dto.resp.LoginResult;
  */
 public interface IAuthExecutor {
     /**
-     * 获取短信验证码
+     * 获取验证码
      * @param context
      * @return
      */

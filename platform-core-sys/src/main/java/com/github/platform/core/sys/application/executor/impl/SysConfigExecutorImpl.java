@@ -1,5 +1,6 @@
 package com.github.platform.core.sys.application.executor.impl;
 
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
@@ -45,27 +46,28 @@ public class SysConfigExecutorImpl extends BaseExecutor implements ISysConfigExe
         if (Objects.isNull(dto)){
             return;
         }
-        gateway.delete(id, dto.getKey());
+        gateway.delete(id, dto.getTenantId(),dto.getKey());
     }
 
     @Override
-    public SysConfigDto getConfig(String key) {
-        return gateway.getConfig(key);
+    public SysConfigDto getConfig( Integer tenantId,String key) {
+        return gateway.getConfig(tenantId,key);
     }
 
     @Override
     public void reload(String key) {
+        Integer tenantId = LoginUserInfoUtil.getTenantId();
         if (StringUtils.isNotEmpty(key)){
-            gateway.deleteCache(key);
-            gateway.getConfig(key);
+            gateway.deleteCache(tenantId,key);
+            gateway.getConfig(tenantId,key);
         }
         List<SysConfigDto> list = gateway.findListBy(null);
         if (CollectionUtil.isEmpty(list)){
             return;
         }
         list.forEach(s->{
-            gateway.deleteCache(s.getKey());
-            gateway.getConfig(s.getKey());
+            gateway.deleteCache(s.getTenantId(),s.getKey());
+            gateway.getConfig(s.getTenantId(),s.getKey());
         });
     }
 }

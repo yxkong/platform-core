@@ -14,5 +14,5 @@ public interface IDingDeptExecutor{
     * @param id 主键
     * @return 单条记录
     */
-    public DingDeptDto findById(Long id);
+    DingDeptDto findById(Long id);
 }

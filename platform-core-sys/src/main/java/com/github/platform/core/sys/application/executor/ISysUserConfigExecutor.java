@@ -1,6 +1,10 @@
 package com.github.platform.core.sys.application.executor;
 
+import com.github.platform.core.sys.domain.context.SysUserConfigContext;
 import com.github.platform.core.sys.domain.dto.SysUserConfigDto;
+
+import java.util.List;
+
 /**
  * 用户配置执行器接口
  * @website <a href="https://www.5ycode.com/">5ycode</a>
@@ -10,9 +14,16 @@ import com.github.platform.core.sys.domain.dto.SysUserConfigDto;
  */
 public interface ISysUserConfigExecutor{
     /**
-    * 根据id查询用户配置明细
-    * @param id 主键
+    * 更新用户配置化
+    * @param context 用户配置
     * @return 单条记录
     */
-    public SysUserConfigDto findById(Long id);
+    void update(SysUserConfigContext context);
+
+    /**
+     * 根据登录名称获取用户配置信息
+     * @param loginName
+     * @return
+     */
+    List<SysUserConfigDto> findByLoginName(String loginName);
 }

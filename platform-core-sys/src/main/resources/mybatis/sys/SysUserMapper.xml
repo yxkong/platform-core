@@ -4,26 +4,29 @@
 
 	 <resultMap id="BaseResultMap" type="com.github.platform.core.sys.domain.common.entity.SysUserBase">
     	 <id column="id" property="id" /> 
-		  <id column="deptId" property="deptId" /> 
-		  <id column="loginName" property="loginName" /> 
-		  <id column="userName" property="userName" /> 
-		  <id column="email" property="email" />
-		  <id column="mobile" property="mobile" />
-		  <id column="pwd" property="pwd" />
-		  <id column="salt" property="salt" />
-		  <id column="channel" property="channel" />
-		  <id column="tenantId" property="tenantId" />
-		  <id column="status" property="status" /> 
-		  <id column="createBy" property="createBy" />
-		  <id column="createTime" property="createTime" /> 
-		  <id column="updateBy" property="updateBy" /> 
-		  <id column="updateTime" property="updateTime" /> 
-		  <id column="remark" property="remark" /> 
-  
+		 <id column="deptId" property="deptId" />
+		 <id column="loginName" property="loginName" />
+		 <id column="userName" property="userName" />
+		 <id column="email" property="email" />
+		 <id column="mobile" property="mobile" />
+		 <id column="pwd" property="pwd" />
+		 <id column="salt" property="salt" />
+		 <id column="channel" property="channel" />
+		 <id column="tenantId" property="tenantId" />
+		 <id column="status" property="status" />
+		 <id column="createBy" property="createBy" />
+		 <id column="createTime" property="createTime" />
+		 <id column="updateBy" property="updateBy" />
+		 <id column="updateTime" property="updateTime" />
+		 <id column="remark" property="remark" />
     </resultMap>
+	<resultMap  id="AllResultMap"  type="com.github.platform.core.sys.domain.common.entity.SysUserBase" extends="BaseResultMap">
+		<id column="secretKey" property="secretKey" />
+	</resultMap>
 	<resultMap  id="DTOResultMap"  type="com.github.platform.core.sys.domain.dto.SysUserDto" extends="BaseResultMap">
 		<id column="deptName" property="deptName" />
 	</resultMap>
+
     <sql id="BaseColumnList">
     	 t.id,
  		 t.dept_id as deptId ,
@@ -34,6 +37,7 @@
  		 t.pwd,
  		 t.salt,
 		 t.channel ,
+    	 t.secret_key as secretKey ,
  		 t.tenant_id as tenantId ,
  		 t.status  ,
  		 t.create_by as createBy ,
@@ -177,6 +181,9 @@
 		     <if test="avatar != null and avatar != ''">
 			     avatar = #{avatar},
 		     </if>
+		     <if test="secretKey != null and secretKey != ''">
+			     secret_key = #{secretKey},
+		     </if>
  			 <if test="tenantId != null">
  				tenant_id = #{tenantId},
  			 </if>
@@ -217,16 +224,16 @@
 		</set>
 		where id = #{id}
 	</update>
-	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	<select id="findById" resultMap="AllResultMap" parameterType="java.lang.Long">
 		select <include refid="BaseColumnList" /> from t_sys_user t where t.id=#{id}
 	</select>
 
-	<select id="findByLoginName" resultMap="BaseResultMap" >
+	<select id="findByLoginName" resultMap="AllResultMap" >
 		select <include refid="BaseColumnList" /> from t_sys_user t
 		where t.login_name = #{loginName}
 	</select>
 
-	<select id="findByMobile" resultMap="BaseResultMap">
+	<select id="findByMobile" resultMap="AllResultMap">
 		select <include refid="BaseColumnList" /> from t_sys_user t
 		where t.mobile = #{mobile}
 	</select>
@@ -341,7 +348,7 @@
 			and t.status = #{user.status}
 		</if>
 	</select>
-	<select id="findListByCount" resultType="java.lang.Long"  parameterType="java.util.Map">
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.sys.domain.common.entity.SysUserBase">
 		select  count(t.id)
 		from t_sys_user t
 		<where>

@@ -1,8 +1,7 @@
 package com.github.platform.core.gateway.infra.filter;
 
-import com.github.platform.core.auth.util.LoginInfoUtil;
-import com.github.platform.core.auth.constants.AuthTypeEnum;
 import com.github.platform.core.auth.service.ITokenService;
+import com.github.platform.core.auth.util.LoginInfoUtil;
 import com.github.platform.core.common.constant.SpringBeanOrderConstant;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
@@ -63,7 +62,7 @@ public class ApiAuthFilter extends GatewayFilterBase implements GatewayFilter, O
             return authFail(exchange, Boolean.TRUE);
         }
         String requestIp = WebUtil.getIpAddr(exchange.getRequest());
-        String loginInfoStr = tokenService.getLoginInfoStr(AuthTypeEnum.API,token);
+        String loginInfoStr = tokenService.getLoginInfoStr(token);
         if (Objects.isNull(loginInfoStr)) {
             log.error("path:{} token {} 已过期",path,token);
             return authFail(exchange, Boolean.TRUE);

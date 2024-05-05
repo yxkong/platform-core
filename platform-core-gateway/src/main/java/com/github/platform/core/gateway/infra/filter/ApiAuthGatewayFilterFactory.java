@@ -22,7 +22,7 @@ import java.util.List;
 public class ApiAuthGatewayFilterFactory extends AbstractGatewayFilterFactory<SysAuthGatewayFilterFactory.Config> {
     @Resource(name = "apiConfigGateway")
     private ConfigGateway configGateway;
-    @Resource
+    @Resource(name = "apiTokenService")
     private ITokenService tokenService;
     public ApiAuthGatewayFilterFactory() {
         super(SysAuthGatewayFilterFactory.Config.class);

@@ -16,6 +16,8 @@ public interface CacheConstant {
      */
     Long defaultExpire = 60L;
     String cacheManager = "redisCacheManager";
+    String apiTokenService = "apiTokenService";
+    String sysTokenService = "sysTokenService";
     /**
      * 默认有效期1分钟
      */

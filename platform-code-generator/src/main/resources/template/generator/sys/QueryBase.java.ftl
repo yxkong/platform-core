@@ -22,7 +22,7 @@ import lombok.experimental.SuperBuilder;
 public class ${entityName}QueryBase extends PageQueryBaseEntity {
 <#if queryColumns??>
 <#list queryColumns as column>
-<#if column.lowerColumnName != 'status' && column.lowerColumnName != 'tenantId'>
+<#if column.lowerColumnName?? &&  column.lowerColumnName != 'status' && column.lowerColumnName != 'tenantId'>
     <#if column.remark != ''>
     /** ${column.remark} */
     @Schema(description = "${column.remark}")

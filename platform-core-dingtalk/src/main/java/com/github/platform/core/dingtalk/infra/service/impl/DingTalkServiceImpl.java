@@ -1,19 +1,16 @@
 package com.github.platform.core.dingtalk.infra.service.impl;
 
-import com.alibaba.cloud.commons.lang.StringUtils;
 import com.github.platform.core.common.service.BaseServiceImpl;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.JsonUtils;
+import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.dingtalk.domain.constant.DingMessageTemplateTypeEnum;
 import com.github.platform.core.dingtalk.domain.constant.DingUserTypeEnum;
 import com.github.platform.core.dingtalk.infra.configuration.DingProperties;
 import com.github.platform.core.dingtalk.infra.rpc.external.DingBaseFeignClient;
 import com.github.platform.core.dingtalk.infra.rpc.external.DingContactFeignClient;
 import com.github.platform.core.dingtalk.infra.rpc.external.DingIMFeignClient;
-import com.github.platform.core.dingtalk.infra.rpc.external.command.DingAppAccessTokenCmd;
-import com.github.platform.core.dingtalk.infra.rpc.external.command.DingCreateGroupCmd;
-import com.github.platform.core.dingtalk.infra.rpc.external.command.DingGroupUserCmd;
-import com.github.platform.core.dingtalk.infra.rpc.external.command.DingSendMessageCmd;
+import com.github.platform.core.dingtalk.infra.rpc.external.command.*;
 import com.github.platform.core.dingtalk.infra.rpc.external.dto.*;
 import com.github.platform.core.dingtalk.infra.rpc.external.query.DingDeptQuery;
 import com.github.platform.core.dingtalk.infra.rpc.external.query.DingDeptUserQuery;
@@ -53,7 +50,7 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
     @Resource(name="stringRedisTemplate")
     private RedisTemplate redisTemplate;
     @Override
-    public String getAccessToken() {
+    public String getAppAccessToken() {
         String token = (String) redisTemplate.opsForValue().get(dingProperties.getTokenKey());
         if(StringUtils.isNotEmpty(token)){
             return token;
@@ -77,10 +74,36 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
         return token;
     }
 
+
+    @Override
+    public DingAccessUserDto getUserAccessUserInfo(String authCode) {
+        DingUserAccessTokenCmd cmd  = new DingUserAccessTokenCmd(dingProperties.getAppKey(),dingProperties.getAppSecret(),authCode);
+        DingUserAccessTokenDto result = baseFeignClient.getUserAccessToken(cmd);
+        if (Objects.isNull(result)){
+            exception("1000","获取用户accessToken异常！");
+        }
+        DingAccessUserDto userDto = baseFeignClient.getUserInfo(result.getAccessToken(), "me");
+        if (Objects.isNull(userDto)){
+            exception("1000","根据token获取用户信息异常！");
+        }
+        userDto.setRefreshToken(result.getRefreshToken());
+        return userDto;
+    }
+
+    @Override
+    public String getUserIdByMobile(String mobile) {
+        String token = getAppAccessToken();
+        DingResultBean<DingAccessUserDto> resultBean = contactFeignClient.getUserIdByMobile(token, new DingMobileQuery(mobile));
+        if (resultBean.isSuc()){
+            return resultBean.getResult().getUserId();
+        }
+        return null;
+    }
+
     @Override
     public List<DingDeptDto> getALLDept(Long deptId) {
         List<DingDeptDto> rst = new ArrayList<>();
-        String token = getAccessToken();
+        String token = getAppAccessToken();
         getDept(token, deptId,rst);
         return rst;
     }
@@ -101,7 +124,7 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
     }
     @Override
     public List<DingUserDto> getDeptUsers(Long deptId) {
-        String token = getAccessToken();
+        String token = getAppAccessToken();
         List<DingUserDto> rst = new ArrayList<>();
         DingDeptUserDto dto = new DingDeptUserDto();
         dto.setHasMore(true);
@@ -124,7 +147,7 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
 
     @Override
     public DingUserDto getUserInfo(String dingUserId) {
-        String token = getAccessToken();
+        String token = getAppAccessToken();
         DingUserQuery query = DingUserQuery.builder().userId(dingUserId).build();
         DingResultBean<DingUserDto> result = contactFeignClient.getUserInfo(token, query);
         if(!result.isSuc()){
@@ -134,8 +157,49 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
     }
 
     @Override
+    public boolean workNoticeText(List<String> userList, String text) {
+        if (validate(userList, text)) return false;
+        String token = getAppAccessToken();
+        DingWorkNoticeCmd cmd = new DingWorkNoticeCmd();
+        if (CollectionUtil.isNotEmpty(userList)){
+            cmd.setUserIdList(String.join(SymbolConstant.comma,userList));
+        }
+        cmd.addText(text);
+        DingResultBean<String> response = imFeignClient.workNotice(token, cmd);
+        if (response.isSuc() && StringUtils.isNotEmpty(response.getResult())){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean workNoticeMarkDown(List<String> userList,String title, String text) {
+        if (validate(userList, title)) return false;
+        DingWorkNoticeCmd cmd = new DingWorkNoticeCmd();
+        cmd.setAgentId(dingProperties.getAgentId());
+        if (CollectionUtil.isNotEmpty(userList)){
+            cmd.setUserIdList(String.join(SymbolConstant.comma,userList));
+        }
+        log.warn("工作通知：用户{} 标题：{} 内容：{}",cmd.getUserIdList(),title,text);
+        String token = getAppAccessToken();
+        cmd.addMarkdown(title,text);
+        DingResultBean<String> response = imFeignClient.workNotice(token, cmd);
+        if (response.isSuc() && StringUtils.isNotEmpty(response.getResult())){
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean validate(List<String> userList, String  title) {
+        if (CollectionUtil.isEmpty(userList) || StringUtils.isEmpty(title)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public String createGroup(String templateId,List<String> userList, String ownerUserId, String title,List<String> subAdminList) {
-        String token = getAccessToken();
+        String token = getAppAccessToken();
         DingCreateGroupCmd cmd = DingCreateGroupCmd.builder().title(title)
                 .ownerUserId(ownerUserId)
                 .templateId(templateId)
@@ -156,7 +220,7 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
 
     @Override
     public boolean sendMessage(String groupId, String robotCode, List<String> users, DingUserTypeEnum userType, boolean atAll, DingMessageTemplateTypeEnum templateType, Map<String,String> map) {
-        String token = getAccessToken();
+        String token = getAppAccessToken();
         String message = JsonUtils.toJson(map);
         DingSendMessageCmd cmd = DingSendMessageCmd.builder()
                 .isAtAll(atAll)
@@ -193,7 +257,7 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
         if (StringUtils.isEmpty(groupId) || CollectionUtil.isEmpty(users)){
             return Pair.of(false,"groupId或users 为空");
         }
-        String token = getAccessToken();
+        String token = getAppAccessToken();
         DingGroupUserCmd cmd = DingGroupUserCmd.builder().openConversationId(groupId).userIds(String.join(SymbolConstant.comma, users)).build();
         DingResultBean dingResultBean = null;
         if (isAdd){

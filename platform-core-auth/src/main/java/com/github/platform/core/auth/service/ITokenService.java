@@ -1,10 +1,5 @@
 package com.github.platform.core.auth.service;
 
-import com.github.platform.core.auth.configuration.properties.AuthProperties;
-import com.github.platform.core.auth.constants.AuthTypeEnum;
-
-import java.util.List;
-
 /**
  * token服务，由各个服务实现
  *
@@ -13,63 +8,44 @@ import java.util.List;
  * @version: 1.0
  */
 public interface ITokenService {
-    AuthProperties getAuthProperties();
-    default AuthProperties.Login getLogin(AuthTypeEnum authType){
-        if (AuthTypeEnum.API.equals(authType)){
-            return getAuthProperties().getApi().getLogin();
-        } else if (AuthTypeEnum.SYS.equals(authType)){
-            return getAuthProperties().getSys().getLogin();
-        }
-        return null;
-    }
+
     /**
-     * 获取token缓存的key
+     * 获取登录信息
      * @param token
      * @return
      */
-    default String getTokenKey(AuthTypeEnum authType, String token) {
-        return getLogin(authType).getToken() + token;
-    }
+    String getLoginInfoStr(String token);
+
     /**
-     * 获取登录名和token映射的缓存key
-     * @param authType
+     * 根据租户和用户名获取用户信息
+     * <br> ps 只有单端登录的时候才有意义
+     * @param tenantId
      * @param loginName
      * @return
      */
-    default String getMappingKey(AuthTypeEnum authType, String loginName) {
-        return getLogin(authType).getUserTokenMapping() + loginName;
-    }
+    String getLoginInfoStr(Integer tenantId,String loginName);
+
     /**
-     * 根据loginName获取token
-     * @param authType
-     * @param loginName
-     * @return
+     * 缓存用户登陆信息
+     * @param tenantId 租户信息
+     * @param token 用户token
+     * @param loginName 登录账户
+     * @param loginInfo
+     * @param isLogin 是否登录
+     * @return 返回结果放入缓存
      */
-    String getTokenByLoginName(AuthTypeEnum authType,String loginName);
+    String saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo,boolean isLogin);
+
     /**
-     * 获取登录信息,会续租
-     *
+     * 过期用户登陆信息, 对应用户的所有登录信息
+     * @param tenantId 租户信息
+     * @param loginName
+     */
+    void expireByLoginName(Integer tenantId, String loginName);
+
+    /**
+     * 过期用户登陆信息,只是当前
      * @param token
-     * @return
      */
-    String getLoginInfoStr(AuthTypeEnum authType, String token);
-
-    /**
-     * 根据loginName获取登录信息
-     * @param authType
-     * @param loginName
-     * @return
-     */
-    String getLoginInfoStrByLoginName(AuthTypeEnum authType, String loginName);
-
-    /**
-     * 批量获取用户
-     * @param authType
-     * @param tokens
-     * @return
-     */
-    List<String> getList(AuthTypeEnum authType, List<String> tokens);
-
-
-
+    void expireByToken(String token);
 }

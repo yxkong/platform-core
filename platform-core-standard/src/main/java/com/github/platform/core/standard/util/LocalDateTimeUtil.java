@@ -265,6 +265,18 @@ public class LocalDateTimeUtil {
     }
 
 
+    /**
+     * 获取指定时间，24小时制
+     * @param hour
+     * @param minute
+     * @return
+     */
+    public static LocalDateTime getAppointTime(int hour,int minute){
+        // 获取当前日期
+        LocalDate currentDate = LocalDate.now(ZoneId.systemDefault());
+        LocalTime localTime = LocalTime.of(hour, minute);
+        return LocalDateTime.of(currentDate, localTime);
+    }
     public static LocalDateTime parseCompact(String dateTimeStr) {
         return parseDateTime(dateTimeStr,  COMPACT_DATETIME_FORMATTER);
     }

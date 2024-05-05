@@ -7,7 +7,10 @@ import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.entity.common.LoginInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -19,7 +22,7 @@ import java.util.Set;
  * 基础用户信息<br>
  * 如果是通过网关调用服务的，此文件更新以后，需要重新部署网关，否则字段在网关里没有，设置到header中的属性缺失
  *
- * @author wangxiaozhou
+ * @author yxkong
  * @create 2023/2/9 下午2:15
  * @desc UserInfo
  */
@@ -30,6 +33,16 @@ import java.util.Set;
 @AllArgsConstructor
 public class LoginUserInfo extends LoginInfo {
 
+    /**邮箱*/
+    private String email;
+    /**
+     * 头像
+     */
+    private String avatar;
+    /**
+     * 接口密钥
+     */
+    private String secretKey;
     /**
      * 部门名称
      */
@@ -49,6 +62,8 @@ public class LoginUserInfo extends LoginInfo {
     private List<Long> roleIds = new ArrayList<>();
     @Schema(description ="角色列表key")
     private List<String> roleKeys = new ArrayList<>();
+    @Schema(description ="角色名称列表")
+    private List<String> roleNames = new ArrayList<>();
 
     /**
      * 菜单权限列表
@@ -72,7 +87,6 @@ public class LoginUserInfo extends LoginInfo {
     public String getWebSocketKey(){
         return this.loginName + SymbolConstant.colon + this.token;
     }
-
     /**
      * 是否超级管理员
      * @return

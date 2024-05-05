@@ -13,8 +13,10 @@ public enum UserLogBizTypeEnum {
     register(0,"注册"),
     login(1,"登录"),
     modify_pwd(2,"修改密码"),
+    add_user(3,"添加用户"),
     bind(4,"绑定账户"),
-    third(5,"三方登录")
+    third(5,"三方登录"),
+    profile(6,"用户修改")
     ;
 
     private Integer type;

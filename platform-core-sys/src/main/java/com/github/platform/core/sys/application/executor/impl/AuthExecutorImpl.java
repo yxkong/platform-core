@@ -60,11 +60,11 @@ public class AuthExecutorImpl extends BaseExecutor implements IAuthExecutor {
      */
     @Override
     public VerifyCodeResult getVerifyCode(LoginContext context) {
-        VerifyStrategy strategy = StrategyFactory.getOrDefault(verifyStrategyMap, VerifyTypeEnum.captcha);
+        VerifyStrategy strategy = StrategyFactory.getOrDefault(verifyStrategyMap, VerifyTypeEnum.CAPTCHA);
         VerifyEntity verifyEntity = userConvert.verify(context);
         strategy.verify(verifyEntity);
         UserEntity userEntity = UserEntity.builder().loginName(context.getLoginName()).mobile(context.getMobile()).build();
-        strategy = StrategyFactory.getOrDefault(verifyStrategyMap, VerifyTypeEnum.sms);
+        strategy = StrategyFactory.getOrDefault(verifyStrategyMap, VerifyTypeEnum.SMS);
         return strategy.getCode(userEntity);
     }
 
@@ -72,11 +72,11 @@ public class AuthExecutorImpl extends BaseExecutor implements IAuthExecutor {
     public LoginResult login(LoginContext context) {
         LoginWayEnum loginWay = context.getLoginWay();
         VerifyEntity verifyEntity = userConvert.verify(context);
-        VerifyStrategy strategy = StrategyFactory.getOrDefault(verifyStrategyMap, VerifyTypeEnum.captcha);
+        VerifyStrategy strategy = StrategyFactory.getOrDefault(verifyStrategyMap, context.getVerifyType());
         LoginUserInfo loginUserInfo = null;
         try {
             strategy.verify(verifyEntity);
-            ISysLoginGateway loginGateway = loginGatewayMap.get(loginWay.getBean());
+            ISysLoginGateway loginGateway = loginGatewayMap.get(loginWay.getBeanName());
             UserEntity userEntity = loginGateway.login(context);
             String token = userGateway.generatorToken(userEntity,userEntity.getDefaultRoles(), loginWay);
             loginUserInfo = LoginUserInfoUtil.getLoginUserInfo();

@@ -2,6 +2,7 @@ package com.github.platform.core.sys.domain.gateway;
 
 import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.sys.domain.constant.UserChannelEnum;
+import com.github.platform.core.sys.domain.dto.SysConfigDto;
 import com.github.platform.core.sys.domain.dto.SysDictDto;
 import com.github.platform.core.sys.domain.dto.SysThirdUserDto;
 import com.github.platform.core.sys.domain.dto.SysUserConfigDto;
@@ -44,6 +45,13 @@ public interface ISysCommonGateway {
      */
 
     List<OptionsDto> getOptionsByType(String dictType);
+
+    /**
+     * 根据配置key获取配置
+     * @param configKey
+     * @return
+     */
+    SysConfigDto getSysConfigByKey(Integer tenantId,String configKey);
 
     /**
      * 根据用户名获取三方用户信息

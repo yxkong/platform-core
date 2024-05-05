@@ -54,4 +54,7 @@ public class SysUserBase extends BaseAdminEntity   {
     @Schema(description = "头像")
     @NotEmpty(message="头像（avatar）不能为空")
     protected String avatar;
+    /** 接口密钥 */
+    @Schema(description = "接口密钥")
+    protected String secretKey;
 }

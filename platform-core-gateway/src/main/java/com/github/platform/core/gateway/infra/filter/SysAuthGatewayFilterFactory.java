@@ -23,7 +23,7 @@ import java.util.List;
 public class SysAuthGatewayFilterFactory extends AbstractGatewayFilterFactory<SysAuthGatewayFilterFactory.Config> {
     @Resource(name = "sysConfigGateway")
     private ConfigGateway configGateway;
-    @Resource
+    @Resource(name = "sysTokenService")
     private ITokenService tokenService;
     @Resource
     private AuthProperties authProperties;
