@@ -37,4 +37,8 @@ public class SysTokenCacheBase extends BaseAdminEntity   {
     @Schema(description = "登录信息")
     @NotEmpty(message="登录信息（loginInfo）不能为空")
     protected String loginInfo;
+    /** 登录方式 */
+    @Schema(description = "登录方式")
+    @NotEmpty(message="登录方式（loginWay）不能为空")
+    protected String loginWay;
 }

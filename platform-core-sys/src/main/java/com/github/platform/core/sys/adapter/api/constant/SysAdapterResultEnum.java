@@ -14,6 +14,7 @@ public enum SysAdapterResultEnum implements BaseResult {
      * 业务
      */
     dont_allow_opt("2101", "内置超级管理员不能修改！"),
+    token_is_empty("2102", "用户token不能为空！"),
 
     ;
 

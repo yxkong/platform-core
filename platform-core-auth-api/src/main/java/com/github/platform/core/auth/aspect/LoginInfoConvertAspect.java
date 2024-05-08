@@ -2,6 +2,7 @@ package com.github.platform.core.auth.aspect;
 
 import com.github.platform.core.auth.service.ITokenService;
 import com.github.platform.core.auth.util.LoginInfoUtil;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.constant.SpringBeanOrderConstant;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
@@ -35,7 +36,7 @@ public class LoginInfoConvertAspect {
 
     @Resource
     private HttpServletRequest httpRequest;
-    @Resource
+    @Resource(name = CacheConstant.apiTokenService)
     private ITokenService tokenService;
 
     @Around("execution(* *..controller..*.*(..))")

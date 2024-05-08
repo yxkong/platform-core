@@ -64,6 +64,8 @@ public interface ISysUserGateway {
      */
     @Cacheable(cacheNames = CacheConstant.c30m, key = "'sys:u:m:' + #mobile", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     UserEntity findByMobile(String mobile);
+    @Cacheable(cacheNames = CacheConstant.c30m, key = "'sys:u:s:' + #secretKey", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    UserEntity findBySecretKey(String secretKey);
 
     /**
      * 根据手机号查询数量
@@ -93,7 +95,7 @@ public interface ISysUserGateway {
      * @param loginWay
      * @return
      */
-    String generatorToken(UserEntity entity, Set<String> roleKeys, LoginWayEnum loginWay);
+    LoginUserInfo generatorToken(UserEntity entity, Set<String> roleKeys, LoginWayEnum loginWay);
 
     /**
      * 刷新token
@@ -128,7 +130,8 @@ public interface ISysUserGateway {
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = CacheConstant.c30m,key = "'sys:u:l:'+#context.loginName",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'sys:u:m:'+#context.mobile",cacheManager = CacheConstant.cacheManager)
+                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'sys:u:m:'+#context.mobile",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'sys:u:s:'+#context.secretKey",cacheManager = CacheConstant.cacheManager)
             }
     )
     void editUser(RegisterContext context);

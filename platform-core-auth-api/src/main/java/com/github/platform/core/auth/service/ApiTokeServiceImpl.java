@@ -26,7 +26,7 @@ public class ApiTokeServiceImpl implements ITokenService {
     @Autowired(required = false)
     private ITokenCacheGateway tokenCacheGateway;
     @Override
-    @Cacheable(cacheNames = CacheConstant.apiToken, key = "#token", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    @Cacheable(cacheNames = CacheConstant.apiToken, key = "''+#token", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public String getLoginInfoStr(String token) {
         if (Objects.nonNull(tokenCacheGateway)){
             TokenCacheEntity tokenCacheEntity = tokenCacheGateway.findByToken(token);
@@ -50,7 +50,7 @@ public class ApiTokeServiceImpl implements ITokenService {
 
 
     @Override
-    @CachePut(cacheNames = CacheConstant.apiToken, key = "#token", cacheManager = CacheConstant.cacheManager)
+    @CachePut(cacheNames = CacheConstant.apiToken, key = "''+#token", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public String saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo, boolean isLogin) {
         if (!isLogin){
             return loginInfo;

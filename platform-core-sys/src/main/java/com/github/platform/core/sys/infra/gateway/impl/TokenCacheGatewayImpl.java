@@ -4,13 +4,16 @@ import com.github.platform.core.auth.configuration.properties.AuthProperties;
 import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.auth.entity.TokenCacheEntity;
 import com.github.platform.core.auth.gateway.ITokenCacheGateway;
+import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.utils.CollectionUtil;
+import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import com.github.platform.core.sys.domain.context.SysTokenCacheContext;
 import com.github.platform.core.sys.domain.dto.SysTokenCacheDto;
 import com.github.platform.core.sys.domain.gateway.ISysTokenCacheGateway;
 import com.github.platform.core.sys.infra.convert.SysTokenCacheInfraConvert;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.TimeoutUtils;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,7 @@ import java.util.concurrent.TimeUnit;
  * @version: 1.0
  */
 @Service
+@Slf4j
 public class TokenCacheGatewayImpl implements ITokenCacheGateway {
     @Resource
     private ISysTokenCacheGateway sysTokenCacheGateway;
@@ -33,9 +37,25 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
     private SysTokenCacheInfraConvert sysTokenCacheConvert;
     @Resource
     private AuthProperties authProperties;
+    private  long getSeconds(){
+        return TimeoutUtils.toSeconds(authProperties.getSys().getExpire(), TimeUnit.MINUTES);
+    }
     @Override
     public TokenCacheEntity findByToken(String token) {
+        //查询缓存或数据库
         SysTokenCacheDto tokenCacheDto = sysTokenCacheGateway.findByToken(token);
+        if (Objects.isNull(tokenCacheDto)){
+            return null;
+        }
+        //续期一次（只有外层过期才会续期）
+        SysTokenCacheContext context = SysTokenCacheContext.builder()
+                .id(tokenCacheDto.getId())
+                .token(token)
+                .loginName(tokenCacheDto.getLoginName())
+                .loginInfo(tokenCacheDto.getLoginInfo())
+                .expireTime(LocalDateTimeUtil.plusSecond(getSeconds()))
+                .build();
+        sysTokenCacheGateway.update(context);
         return sysTokenCacheConvert.toEntity(tokenCacheDto);
     }
 
@@ -49,23 +69,28 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
     public TokenCacheEntity saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo ,boolean isLogin) {
         long seconds = TimeoutUtils.toSeconds(authProperties.getSys().getExpire(), TimeUnit.MINUTES);
         LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        if (!AuthUtil.checkLogin()){
+            log.warn("未检测到登录信息，不做缓存，token:{} loginName:{} loginInfo:{}",token,loginName,loginInfo);
+        }
         SysTokenCacheDto cacheDto =  sysTokenCacheGateway.findByToken(token);
         SysTokenCacheContext context = SysTokenCacheContext.builder()
                 .token(token)
-                .loginName(loginName)
+                .loginName(userInfo.getLoginName())
                 .loginInfo(loginInfo)
                 .expireTime(LocalDateTimeUtil.plusSecond(seconds))
                 .build();
         if (Objects.nonNull(userInfo)){
             if (isLogin){
-                context.setLastLoginTime(LocalDateTimeUtil.parseDefaultShort(userInfo.getLoginTime()));
+                context.setLastLoginTime(LocalDateTimeUtil.parseDefault(userInfo.getLoginTime()));
             }
             context.setUpdateTime(LocalDateTimeUtil.dateTime());
         }
         SysTokenCacheDto tokenCacheDto =  null;
         if (Objects.isNull(cacheDto)){
-            context.setCreateBy(loginName);
+            context.setCreateBy(userInfo.getLoginName());
             context.setCreateTime(LocalDateTimeUtil.dateTime());
+            context.setLoginWay(userInfo.getLoginWay());
+            context.setTenantId(userInfo.getTenantId());
             tokenCacheDto = sysTokenCacheGateway.insert(context);
         } else {
             context.setId(cacheDto.getId());
@@ -77,15 +102,29 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
     @Override
     public void expireByToken( String token) {
         SysTokenCacheDto cacheDto =  sysTokenCacheGateway.findByToken(token);
+        if (Objects.isNull(cacheDto)){
+            return;
+        }
         sysTokenCacheGateway.expire(toExpireContext(cacheDto));
     }
+
+    @Override
+    public void expireById(Long id){
+        SysTokenCacheDto cacheDto = sysTokenCacheGateway.findById(id);
+        if (Objects.isNull(cacheDto)){
+            return;
+        }
+        sysTokenCacheGateway.expire(toExpireContext(cacheDto));
+
+    }
+
     private SysTokenCacheContext toExpireContext(SysTokenCacheDto dto){
         return SysTokenCacheContext.builder()
                 .id(dto.getId())
                 .token(dto.getToken())
                 .loginName(dto.getLoginName())
                 .tenantId(dto.getTenantId())
-                .expireTime(LocalDateTimeUtil.dateTime())
+                .status(StatusEnum.OFF.getStatus())
                 .build();
     }
 

@@ -62,6 +62,11 @@ public interface SysLoginLogInfraConvert {
     * @return 数据库实体
     */
     SysLoginLogBase toSysLoginLogBase(SysLoginLogContext context);
+    @Mappings({
+            @Mapping(target = "createTime", expression = "java(com.github.platform.core.standard.util.LocalDateTimeUtil.parseDefault(context.getLoginTime()))"),
+            @Mapping(target = "loginLocation", source = "requestIp"),
+            @Mapping(target = "createBy", source = "loginName"),
+    })
     SysLoginLogBase toSysLoginLogBase(LoginUserInfo context);
     @Mappings({
             @Mapping(target = "createTime", source = "loginTime"),

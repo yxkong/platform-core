@@ -60,6 +60,6 @@ public class LdapLoginGatewayImpl extends BaseGatewayImpl implements ISysLoginGa
 
         /**获取或添加用户*/
         SysUserService userService = new SysUserService(userGateway,thirdUserGateway);
-        return   userService.quietAddUserWithLoginName(thirdUserEntity);
+        return userService.quietAddUserWithLoginName(thirdUserEntity);
     }
 }

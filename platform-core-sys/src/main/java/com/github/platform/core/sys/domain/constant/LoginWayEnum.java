@@ -17,6 +17,7 @@ public enum LoginWayEnum {
     thirdDingTalk("dingTalk","三方钉钉登录"),
     thirdAlipay("alipay","三方支付宝登录"),
     thirdQQ("qq","三方qq登录"),
+    bearer("bearer","密钥登录"),
     ;
     private String type;
     private String desc;

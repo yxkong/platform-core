@@ -78,6 +78,7 @@ public interface SysUserMapper  {
 	 */
 	SysUserBase findByLoginName(@Param("loginName") String loginName);
 
+
 	/**
 	 * 根据用户名查询
 	 *
@@ -85,6 +86,13 @@ public interface SysUserMapper  {
 	 * @return
 	 */
 	SysUserBase findByMobile(@Param("mobile") String mobile);
+
+	/**
+	 * 根据密钥查询
+	 * @param secretKey
+	 * @return
+	 */
+	SysUserBase findBySecretKey(String secretKey);
 
     /**
      * 修改密码
@@ -115,4 +123,6 @@ public interface SysUserMapper  {
 	 * @return
 	 */
     List<SysUserDto> queryByRoleKeys(@Param("roleKeys")List<String> roleKeys,@Param("tenantId")Integer tenantId);
+
+
 }

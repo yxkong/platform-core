@@ -74,6 +74,11 @@ public class AuthProperties {
         private List<String> defaultPerms = new ArrayList<>();
         /**内置用户名称（ldap的时候，有用）*/
         private List<String> innerUsers = new ArrayList<>();
+        /**应用模式*/
+        private String mode;
+        public boolean isDemoMode(){
+            return "demo".equals(this.mode);
+        }
         public List<String> getInnerUsers(){
             if (CollectionUtil.isEmpty(this.innerUsers)){
                 this.innerUsers.add("admin");

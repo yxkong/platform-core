@@ -10,6 +10,7 @@ import com.github.platform.core.auth.service.IAuthorizationService;
 import com.github.platform.core.auth.service.ITokenService;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.constant.SpringBeanOrderConstant;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
@@ -49,7 +50,7 @@ import static org.springframework.boot.autoconfigure.condition.ConditionalOnWebA
 @ConditionalOnWebApplication(type = SERVLET)
 @Order(SpringBeanOrderConstant.AUTHORIZE_ASPECT)
 public class AuthorizeAspect {
-    @Autowired
+    @Resource(name = CacheConstant.sysTokenService)
     private ITokenService tokenService;
 
     @Autowired(required = false)
@@ -92,7 +93,7 @@ public class AuthorizeAspect {
         // 注解鉴权
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         try{
-            authHandler();
+            authHandler(httpRequest.getRequestURI());
             checkMethodAnnotation(signature.getMethod());
             // 执行原有逻辑
             return joinPoint.proceed(joinPoint.getArgs());
@@ -107,7 +108,7 @@ public class AuthorizeAspect {
     /**
      * 授权处理
      */
-    private void authHandler(){
+    private void authHandler(String uri){
         String authorization = getAuthorization();
         if (StringUtils.isNotEmpty(authorization)){
             String loginStr = null;
@@ -115,21 +116,23 @@ public class AuthorizeAspect {
             if (authorization.startsWith(HeaderConstant.AUTH_BEARER)) {
                 // 令牌认证，直接使用
                 String secretKey = authorization.substring(HeaderConstant.AUTH_BEARER.length()).trim();
-                loginStr = authorizationService.bearer(secretKey);
+                authorizationService.bearer(secretKey);
             } else if (authorization.startsWith(HeaderConstant.AUTH_BASIC)){
                 // 基本认证，用户名 密码  base64加密
                 String basic = authorization.substring(HeaderConstant.AUTH_BASIC.length()).trim();
                 // base64解码
-                byte[] decode = Base64.decode(basic);
-                String loginName = "";
-                String pwd = "";
-                loginStr = authorizationService.basic(loginName,pwd);
+                String s = new String(Base64.decode(basic));
+                String[] split = s.split(SymbolConstant.space);
+                Integer tenantId = Integer.parseInt(split[0]);
+                String loginName = split[1];
+                String pwd = split[2];
+                authorizationService.basic(tenantId,loginName,pwd);
             }
         } else {
-            getLoginUserInfo();
+            getLoginUserInfo(uri);
         }
     }
-    private void getLoginUserInfo(){
+    private void getLoginUserInfo(String uri){
         LoginUserInfo loginInfo = new LoginUserInfo();
         /**  将loginToken 放入到本地线程里  **/
         String loginStr = getLoginInfoString();
@@ -149,6 +152,11 @@ public class AuthorizeAspect {
         }
         MDC.put(HeaderConstant.TRACE_ID,getTraceId());
         LoginUserInfoUtil.setLoginUserInfo(loginInfo);
+        if (!uri.contains("api/sys/token/expire")){
+            //续租
+            tokenService.saveOrUpdate(null, token,null,loginStr,false);
+        }
+
         if (log.isTraceEnabled()){
             log.trace(" 用户登陆信息为:{}", loginStr);
         }
@@ -209,6 +217,10 @@ public class AuthorizeAspect {
         if (Objects.nonNull(noLogin)){
             return true;
         }
+        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+        if (!AuthUtil.checkLogin()){
+            throw new NoLoginException();
+        }
         // 校验 @RequiredLogin 注解
         RequiredLogin requiredLogin = method.getAnnotation(RequiredLogin.class);
         if (Objects.nonNull(requiredLogin) ) {
@@ -226,7 +238,7 @@ public class AuthorizeAspect {
                 throw new NoAuthForDataOptException();
             }
         }
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
+
         userInfo.getPerms().addAll(sys.getDefaultPerms());
         //兜底校验
         if (!AuthUtil.isSuperAdmin() && !AuthUtil.hasPerms(userInfo.getPerms(), path)) {

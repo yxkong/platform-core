@@ -27,7 +27,7 @@ public class AuthUtil {
            "sys/auth/logout","sys/auth/info","sys/dict/findByType","sys/menu/getRouters","sys/dept/deptTree",
             "sys/auth/modifyPwd","sys/menu/menuTree","/sys/websocket").collect(Collectors.toSet());
     /**
-     * 检验用户是否已经登录，如未登录，则抛出异常
+     * 检验用户是否已经登录
      */
     public static boolean checkLogin() {
         return LoginUserInfoUtil.isLogin();

@@ -33,11 +33,11 @@ public interface CacheConstant {
     /**灰度缓存默认key,  p:gr 表示：platform:grayrule*/
     String grayRule = "p:gr";
     /**token缓存默认前缀,p:a:t 表示：platform:api:token:*/
-    String apiToken = "p:a:t:";
+    String apiToken = "p:a:t";
     /**用户与token的映射默认前缀,p:a:u 表示，platform:api:user*/
     String apiUserTokenMapping = "p:a:u:";
     /**token缓存默认前缀,p:s:t 表示，platform:sys:token:*/
-    String sysToken = "p:s:t:";
+    String sysToken = "p:s:t";
     /**用户与token的映射默认前缀,p:s:u 表示，platform:sys:user*/
     String sysUserTokenMapping = "p:s:u:";
     /**验证码缓存key前缀，p:c 表示：platform:captcha:*/

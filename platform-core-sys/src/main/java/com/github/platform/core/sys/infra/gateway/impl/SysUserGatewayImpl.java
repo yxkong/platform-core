@@ -2,6 +2,7 @@ package com.github.platform.core.sys.infra.gateway.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.platform.core.auth.configuration.properties.AuthProperties;
 import com.github.platform.core.auth.constant.DataScopeEnum;
 import com.github.platform.core.auth.constant.RoleConstant;
 import com.github.platform.core.auth.entity.LoginUserInfo;
@@ -76,6 +77,8 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     private ISysConfigGateway configGateway;
     @Resource
     private ISysDeptGateway deptGateway;
+    @Resource
+    private AuthProperties authProperties;
 
     @Override
     public PageBean<SysUserDto> query(SysUserQueryContext context) {
@@ -245,11 +248,20 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         SysUserBase sysUser = sysUserMapper.findByMobile(mobile);
         return getUserEntity(sysUser);
     }
-
+    @Override
+    public UserEntity findBySecretKey(String secretKey) {
+        if (StringUtils.isEmpty(secretKey)){
+            return null;
+        }
+        SysUserBase sysUser = sysUserMapper.findBySecretKey(secretKey);
+        return getUserEntity(sysUser);
+    }
     @Override
     public Long findCountByMobile(String mobile) {
         return sysUserMapper.findListByCount(SysUserBase.builder().mobile(mobile).build());
     }
+
+
 
     @Override
     public UserEntity findById(Long id) {
@@ -264,17 +276,18 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     }
 
     @Override
-    public String generatorToken(UserEntity entity, Set<String> roleKeys, LoginWayEnum loginWay) {
-        //清除上次token的登陆信息(多次登录不删除) TODO 添加开关配置
-        tokenService.expireByLoginName(entity.getTenantId(),entity.getLoginName());
-
+    public LoginUserInfo generatorToken(UserEntity entity, Set<String> roleKeys, LoginWayEnum loginWay) {
+        //清除上次token的登陆信息(多次登录不删除)
+        if (!authProperties.getSys().isDemoMode()){
+            tokenService.expireByLoginName(entity.getTenantId(),entity.getLoginName());
+        }
         String token = StringUtils.uuidRmLine();
         LoginUserInfo loginUserInfo = userInfraConvert.target(entity);
         loginUserInfo.setToken(token);
         loginUserInfo.setEmail(entity.getEmail());
         loginUserInfo.setSecretKey(entity.getSecretKey());
         loginUserInfo.setLoginWay(loginWay.getType());
-        loginUserInfo.setLoginTime(LocalDateTimeUtil.dateTimeDefaultShort());
+        loginUserInfo.setLoginTime(LocalDateTimeUtil.dateTimeDefault());
         loginUserInfo.setRegisterTime(LocalDateTimeUtil.dateTimeDefault(entity.getRegisterTime()));
 
         permsDeal(entity, roleKeys, loginUserInfo);
@@ -286,7 +299,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         LoginUserInfoUtil.setLoginUserInfo(loginUserInfo);
         //缓存token的登陆信息
         tokenService.saveOrUpdate(entity.getTenantId(), token,entity.getLoginName(), JsonUtils.toJson(loginUserInfo),true);
-        return token;
+        return loginUserInfo;
     }
 
     @Override

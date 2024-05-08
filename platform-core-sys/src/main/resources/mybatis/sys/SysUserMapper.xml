@@ -237,7 +237,10 @@
 		select <include refid="BaseColumnList" /> from t_sys_user t
 		where t.mobile = #{mobile}
 	</select>
-
+	<select id="findBySecretKey" resultType="com.github.platform.core.sys.domain.common.entity.SysUserBase">
+		select <include refid="BaseColumnList" /> from t_sys_user t
+		where t.secret_key = #{secretKey}
+	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select <include refid="BaseColumnList" /> from t_sys_user
 		<where>

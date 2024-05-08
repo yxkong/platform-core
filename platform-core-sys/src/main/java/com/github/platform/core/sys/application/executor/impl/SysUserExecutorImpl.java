@@ -62,7 +62,7 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
                 s -> {
                     s.setMobile(StringUtils.getMobileVague(s.getMobile()));
                     s.setStrId(SignUtil.getStrId(s.getId()));
-                    s.setId(null);
+                    s.setSecretKey(null);
                     SysDeptDto deptDto = deptGateway.findById(s.getDeptId());
                     if (Objects.nonNull(deptDto)){
                         s.setDeptName(deptDto.getDeptName());
@@ -97,6 +97,7 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
     @Override
     public void update(RegisterContext context) {
         SysUserService userService = new SysUserService(userGateway);
+
         userService.editUser(context);
         LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
         userInfo.setUserName(context.getUserName());

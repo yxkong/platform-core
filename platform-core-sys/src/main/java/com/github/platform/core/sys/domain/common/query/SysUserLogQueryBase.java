@@ -17,7 +17,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Schema(description = "用户日志表查询")
 public class SysUserLogQueryBase extends PageQueryBaseEntity {
-    /** 主键id */
-    @Schema(description = "主键id")
-    private Long id;
+
 }

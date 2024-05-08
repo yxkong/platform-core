@@ -1,5 +1,8 @@
 package com.github.platform.core.auth.service;
 
+import com.github.platform.core.cache.domain.constant.CacheConstant;
+import org.springframework.cache.annotation.Cacheable;
+
 /**
  * 认证
  * @author: yxkong
@@ -13,7 +16,8 @@ public interface IAuthorizationService {
      * @param secretKey
      * @return
      */
-    String bearer(String secretKey);
+    @Cacheable(cacheNames = CacheConstant.c30m, key = "'s:s'+#secretKey", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    void bearer(String secretKey);
 
     /**
      * 基本认证
@@ -21,5 +25,5 @@ public interface IAuthorizationService {
      * @param pwd
      * @return
      */
-    String basic(String user,String pwd);
+    void basic(Integer tenantId,String user,String pwd);
 }

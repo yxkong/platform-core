@@ -44,7 +44,13 @@ public interface ITokenCacheGateway {
     void expireByToken(String token);
 
     /**
-     * 过期用户
+     * 根据id过期登录信息
+     * @param id
+     */
+    void expireById(Long id);
+
+    /**
+     * 过期指定用户登录信息
      * @param tenantId
      * @param loginName
      */

@@ -6,6 +6,7 @@ import com.github.platform.core.common.gateway.BaseGatewayImpl;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.persistence.mapper.sys.SysTokenCacheMapper;
 import com.github.platform.core.standard.entity.dto.PageBean;
+import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import com.github.platform.core.sys.domain.common.entity.SysTokenCacheBase;
 import com.github.platform.core.sys.domain.context.SysTokenCacheContext;
 import com.github.platform.core.sys.domain.context.SysTokenCacheQueryContext;
@@ -57,7 +58,8 @@ public class SysTokenCacheGatewayImpl extends BaseGatewayImpl implements ISysTok
 
     @Override
     public SysTokenCacheDto findByToken(String token) {
-        List<SysTokenCacheBase> list = sysTokenCacheMapper.findListBy(SysTokenCacheBase.builder().token(token).build());
+        //查找token，只能查比当前时间大的
+        List<SysTokenCacheBase> list = sysTokenCacheMapper.findListBy(SysTokenCacheBase.builder().token(token).searchStartTime(LocalDateTimeUtil.dateTimeDefaultShort()).build());
         if (CollectionUtil.isEmpty(list)){
             return null;
         }
@@ -82,6 +84,8 @@ public class SysTokenCacheGatewayImpl extends BaseGatewayImpl implements ISysTok
 
     @Override
     public int expire(SysTokenCacheContext context) {
+        //过期只是把expire_time改为当前时间减去1分钟
+        context.setExpireTime(LocalDateTimeUtil.dateTime().minusMinutes(1));
         return sysTokenCacheMapper.updateById(context);
     }
 }

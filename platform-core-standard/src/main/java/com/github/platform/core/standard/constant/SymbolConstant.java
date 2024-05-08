@@ -9,9 +9,14 @@ package com.github.platform.core.standard.constant;
 public interface SymbolConstant {
 
     /**
+     * 空格
+     */
+    String space = " ";
+    /**
      * 句号
      */
     String period = ".";
+
     /**
      * 冒号:
      */

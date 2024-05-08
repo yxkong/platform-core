@@ -2,6 +2,7 @@ package com.github.platform.core.sys.domain.service;
 
 import com.github.platform.core.auth.constant.RoleConstant;
 import com.github.platform.core.common.domain.DomainBaseService;
+import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.annotation.DomainService;
 import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
@@ -138,6 +139,14 @@ public class SysUserService extends DomainBaseService {
         UserEntity userEntityByMobile = userGateway.findByMobile(context.getMobile());
         if (Objects.nonNull(userEntityByMobile) && !userEntityByMobile.getLoginName().equals(context.getLoginName())) {
             exception(SysInfraResultEnum.MOBILE_REGISTERED);
+        }
+        if (StringUtils.isNotEmpty(context.getSecretKey()) && !context.getSecretKey().equals(userEntity.getSecretKey())){
+            //修改的时候，需要保持唯一性
+            UserEntity secretKeyUser = userGateway.findBySecretKey(context.getSecretKey());
+            // 查到以后 如果和修改的用户名不一样，则终止
+            if (Objects.nonNull(secretKeyUser) && !secretKeyUser.getLoginName().equals(context.getLoginName())){
+                exception(SysInfraResultEnum.SECRET_KEY_NOT_UNIQ);
+            }
         }
         context.setId(userEntity.getId());
         userGateway.editUser(context);

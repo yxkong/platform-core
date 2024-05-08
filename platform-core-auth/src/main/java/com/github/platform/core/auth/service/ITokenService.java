@@ -10,7 +10,8 @@ package com.github.platform.core.auth.service;
 public interface ITokenService {
 
     /**
-     * 获取登录信息
+     * 获取登录信息，优先从缓存中获取，
+     * <br> 缓存中没有则从数据库获取，然后缓存,实现自动续期
      * @param token
      * @return
      */
@@ -26,7 +27,7 @@ public interface ITokenService {
     String getLoginInfoStr(Integer tenantId,String loginName);
 
     /**
-     * 缓存用户登陆信息
+     * 缓存用户登陆信息,非登录情况属于续租
      * @param tenantId 租户信息
      * @param token 用户token
      * @param loginName 登录账户

@@ -78,10 +78,9 @@ public class AuthExecutorImpl extends BaseExecutor implements IAuthExecutor {
             strategy.verify(verifyEntity);
             ISysLoginGateway loginGateway = loginGatewayMap.get(loginWay.getBeanName());
             UserEntity userEntity = loginGateway.login(context);
-            String token = userGateway.generatorToken(userEntity,userEntity.getDefaultRoles(), loginWay);
-            loginUserInfo = LoginUserInfoUtil.getLoginUserInfo();
+            loginUserInfo = userGateway.generatorToken(userEntity,userEntity.getDefaultRoles(), loginWay);
             loginUserInfo.setMessage("登录成功！");
-            return new LoginResult(token,userEntity);
+            return new LoginResult(loginUserInfo.getToken(),userEntity);
         }catch (Exception e) {
             if (e instanceof CommonException){
                 CommonException ce = (CommonException)e;

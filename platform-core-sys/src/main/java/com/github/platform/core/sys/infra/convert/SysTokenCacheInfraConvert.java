@@ -30,7 +30,8 @@ public interface SysTokenCacheInfraConvert {
     * @return dto
     */
     @Mappings({
-        @Mapping(target = "strId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getId()))"),
+            @Mapping(target = "strId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getId()))"),
+            @Mapping(target = "loginInfo", expression = "java(null)"),
     })
     SysTokenCacheDto toDto(SysTokenCacheBase entity);
 

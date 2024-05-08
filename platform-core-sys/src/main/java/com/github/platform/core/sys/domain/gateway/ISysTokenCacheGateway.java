@@ -43,7 +43,7 @@ public interface ISysTokenCacheGateway {
      * @param token
      * @return
      */
-    @Cacheable(cacheNames = CacheConstant.c8h, key = "'sys:token:' +#token", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    @Cacheable(cacheNames = CacheConstant.c30m, key = "'s:t:' +#token", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     SysTokenCacheDto findByToken(String token);
     /**
      * 根据token查询缓存信息
@@ -58,8 +58,8 @@ public interface ISysTokenCacheGateway {
     */
     @Caching(
             evict = {
-                    @CacheEvict(cacheNames = CacheConstant.c8h,key = "'sys:token:'+#context.token",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c8h,key = "'sys:token:'+#context.tenantId+':'+#context.loginName",cacheManager = CacheConstant.cacheManager)
+                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'s:t:'+#context.token",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'s:t:'+#context.tenantId+':'+#context.loginName",cacheManager = CacheConstant.cacheManager)
             }
     )
     SysTokenCacheDto update(SysTokenCacheContext context);
@@ -70,8 +70,8 @@ public interface ISysTokenCacheGateway {
     */
     @Caching(
             evict = {
-                    @CacheEvict(cacheNames = CacheConstant.c8h,key = "'sys:token:'+#context.token",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c8h,key = "'sys:token:'+#context.tenantId+':'+#context.loginName",cacheManager = CacheConstant.cacheManager)
+                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'s:t:'+#context.token",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'s:t:'+#context.tenantId+':'+#context.loginName",cacheManager = CacheConstant.cacheManager)
             }
     )
     int expire(SysTokenCacheContext context);

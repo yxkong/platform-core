@@ -69,9 +69,7 @@ public class ProcessController extends BaseController {
         ProcessRunContext processRunContext = instanceAdapterConvert.toProcessRunContext(cmd);
         processRunContext.setInitiator(LoginUserInfoUtil.getLoginName());
         processRunContext.setTenantId(LoginUserInfoUtil.getTenantId());
-        if (StringUtils.isEmpty(processRunContext.getInstanceName())){
-            processRunContext.setInstanceName("");
-        }
+        processRunContext.setInstanceName(LoginUserInfoUtil.getLoginName()+"的"+ processRunContext.getInstanceName());
         List<FormInfoDto> formInfos = formInfoExecutor.findByFromNo(cmd.getFormNo());
         instanceExecutor.createProcessInstanceWithFormData(processRunContext,formAdapterConvert.toDatas(formInfos,cmd.getFormData()));
         return buildSucResp();

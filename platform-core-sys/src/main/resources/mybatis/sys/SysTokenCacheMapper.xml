@@ -9,6 +9,7 @@
 		<id column="expireTime" property="expireTime" />
 		<id column="lastLoginTime" property="lastLoginTime" />
 		<id column="loginInfo" property="loginInfo" />
+		<id column="loginWay" property="loginWay" />
 		<id column="tenantId" property="tenantId" />
 		<id column="status" property="status" />
 		<id column="createTime" property="createTime" />
@@ -24,6 +25,7 @@
 		t.last_login_time as lastLoginTime,
 		t.login_info as loginInfo,
 		t.tenant_id as tenantId,
+		t.login_way as loginWay,
 		t.status,
 		t.create_time as createTime,
 		t.update_by as updateBy,
@@ -51,6 +53,9 @@
 			</if>
 			<if test="loginInfo != null  and loginInfo != ''">
 				login_info,
+			</if>
+			<if test="loginWay != null  and loginWay != ''">
+				login_way,
 			</if>
 			<if test="tenantId != null ">
 				tenant_id,
@@ -86,6 +91,9 @@
 			</if>
 			<if test="loginInfo != null  and loginInfo != ''">
 				#{loginInfo},
+			</if>
+			<if test="loginWay != null  and loginWay != ''">
+				#{loginWay},
 			</if>
 			<if test="tenantId != null ">
 				#{tenantId},

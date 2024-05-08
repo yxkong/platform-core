@@ -29,7 +29,7 @@ public enum SysInfraResultEnum implements BaseResult {
     USER_DISABLED("2312", "该账户已禁用！"),
     NOT_FOUND_LOGIN_WAY("2313", "未找到对应登录方式的实现！"),
     LDAP_LOGIN_FAIL("2314", "未找到对应的账户，或密码错误，请重新尝试！"),
-
+    SECRET_KEY_NOT_UNIQ("2315", "密钥不唯一，请重新生成！"),
 
     MENU_RELOAD_PERMISSION_FAIL("2320", "重新加载菜单权限失败！"),
     MENU_EXIST_SUB_MENU("2321", "存在子菜单,不允许删除！"),
