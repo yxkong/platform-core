@@ -45,7 +45,7 @@ public class GeneratorExecutorImpl extends BaseExecutor implements IGeneratorExe
         List<TablesBase>  tablesBases =generatorGateway.getAllTables(dbName,tableName);
         for (TablesBase s : tablesBases) {
             generatorGateway.syncGenConfig(s);
-            List<ColumnDto> sysColumns = columnsGateway.findSysColumnsBy(s.getTableName());
+            List<ColumnDto> sysColumns = columnsGateway.findSysColumnsBy(dbName,s.getTableName());
             List<ColumnDto> codeColumns = columnsGateway.findCodeColumnsBy(s.getTableName());
             generatorGateway.sync(codeColumns,sysColumns);
         }

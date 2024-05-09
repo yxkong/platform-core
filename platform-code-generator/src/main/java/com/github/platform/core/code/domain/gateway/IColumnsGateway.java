@@ -16,7 +16,7 @@ public interface IColumnsGateway {
      * @param tableName
      * @return
      */
-    List<ColumnDto> findSysColumnsBy(String tableName);
+    List<ColumnDto> findSysColumnsBy(String tableSchema,String tableName);
     /**
      * 根据表名查询所有的字段
      *   会给一些字段设置默认值

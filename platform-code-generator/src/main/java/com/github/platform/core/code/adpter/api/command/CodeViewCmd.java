@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * 下载代码
+ * 代码视图
  * @author: yxkong
  * @date: 2023/5/8 12:12 PM
  * @version: 1.0
@@ -18,7 +18,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DownloadCmd {
+public class CodeViewdCmd {
+    @Schema(description = "库名称")
+    private String dbName;
     @Schema(description = "表名称")
     private String tableName;
     @Schema(description = "多表名称")

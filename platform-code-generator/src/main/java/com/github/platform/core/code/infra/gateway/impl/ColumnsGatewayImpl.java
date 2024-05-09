@@ -38,8 +38,8 @@ public class ColumnsGatewayImpl implements IColumnsGateway {
     @Resource
     private ColumnInfraConvert convert;
     @Override
-    public List<ColumnDto> findSysColumnsBy(String tableName) {
-        List<ColumnsBase> columns = columnsMapper.findListBy(ColumnsBase.builder().tableName(tableName).build());
+    public List<ColumnDto> findSysColumnsBy(String tableSchema,String tableName) {
+        List<ColumnsBase> columns = columnsMapper.findListBy(ColumnsBase.builder().tableSchema(tableSchema).tableName(tableName).build());
         return convert.sysToEntity(columns);
     }
 
