@@ -36,7 +36,7 @@ public interface CacheConstant {
     String apiToken = "p:a:t";
     /**用户与token的映射默认前缀,p:a:u 表示，platform:api:user*/
     String apiUserTokenMapping = "p:a:u:";
-    /**token缓存默认前缀,p:s:t 表示，platform:sys:token:*/
+    /**token缓存默认前缀, 表示，platform:sys:token:*/
     String sysToken = "p:s:t";
     /**用户与token的映射默认前缀,p:s:u 表示，platform:sys:user*/
     String sysUserTokenMapping = "p:s:u:";

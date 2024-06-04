@@ -32,7 +32,7 @@ public interface SysThirdUserAdapterConvert {
     * @return 操作上下文
     */
     @Mappings({
-            @Mapping(target = "userId", expression = "java(com.github.platform.core.common.utils.SignUtil.getLongId(cmd.getUserIdStr()))"),
+            @Mapping(target = "userId", expression = "java(com.github.platform.core.common.utils.SignUtil.getLongId(cmd.getStrUserId()))"),
     })
     SysThirdUserContext toContext(SysThirdUserCmd cmd);
     @Mappings({

@@ -4,6 +4,7 @@ import com.github.platform.core.common.constant.RequestTypeEnum;
 import com.github.platform.core.standard.entity.dto.ResultBean;
 import com.github.platform.core.standard.util.ResultBeanUtil;
 import feign.Feign;
+import feign.Logger;
 import feign.Response;
 import feign.Target;
 import feign.codec.Decoder;
@@ -15,10 +16,8 @@ import org.springframework.cloud.openfeign.FeignLoggerFactory;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -133,7 +132,7 @@ public class FeignService {
             case RESTFUL:
                 return feignClient.restful(getUri(), this.header, this.params);
             default:
-               throw new RuntimeException("");
+                throw new RuntimeException("");
         }
     }
     private URI getUri(){

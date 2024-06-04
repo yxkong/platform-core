@@ -22,6 +22,6 @@ import javax.validation.constraints.NotNull;
 public class SysThirdUserCmd extends SysThirdUserBase{
     /** 加密用户id */
     @Schema(description = "加密用户id")
-    @NotNull(message="加密用户id（userIdStr）不能为空")
-    protected String userIdStr;
+    @NotNull(message="加密用户id（strUserId）不能为空")
+    protected String strUserId;
 }

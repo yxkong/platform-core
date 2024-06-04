@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.support.LoggingProducerListener;
 import org.springframework.kafka.support.ProducerListener;
 import org.springframework.kafka.support.converter.RecordMessageConverter;
@@ -74,8 +75,9 @@ public class BizKafkaAutoConfiguration {
     public ConcurrentKafkaListenerContainerFactory<?, ?> bizKafkaListenerContainerFactory(
             ConcurrentKafkaListenerContainerFactoryConfigurer bizKafkaListenerContainerFactoryConfigurer,
             ConsumerFactory<Object, Object> bizKafkaConsumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<Object, Object> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<Object, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        // 启用批量监听
+        factory.setBatchListener(true);
         bizKafkaListenerContainerFactoryConfigurer.configure(factory, bizKafkaConsumerFactory);
         return factory;
     }

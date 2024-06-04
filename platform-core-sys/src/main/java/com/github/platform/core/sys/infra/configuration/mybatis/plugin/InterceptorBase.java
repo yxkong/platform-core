@@ -6,6 +6,7 @@ import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.insert.Insert;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * 通用更新处理
@@ -136,14 +138,14 @@ public abstract class InterceptorBase implements Interceptor {
         Select select = (Select) CCJSqlParserUtil.parse(sql);
 
         TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
-        List<String> tableList = tablesNamesFinder.getTableList(select);
+        Set<String> tableList = tablesNamesFinder.getTables((Statement) select);
         return tableList.size() == 1;
     }
     protected boolean isSingleUpdateTable(String sql) throws JSQLParserException {
         Update update = (Update) CCJSqlParserUtil.parse(sql);
 
         TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
-        List<String> tableList = tablesNamesFinder.getTableList(update);
+        Set<String> tableList = tablesNamesFinder.getTables(update);
         return tableList.size() == 1;
     }
 

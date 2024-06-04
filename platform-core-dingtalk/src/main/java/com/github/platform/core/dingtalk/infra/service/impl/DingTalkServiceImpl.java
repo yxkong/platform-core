@@ -1,5 +1,6 @@
 package com.github.platform.core.dingtalk.infra.service.impl;
 
+import com.github.platform.core.cache.infra.service.ICacheService;
 import com.github.platform.core.common.service.BaseServiceImpl;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.JsonUtils;
@@ -19,7 +20,6 @@ import com.github.platform.core.dingtalk.infra.service.IDingTalkService;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 钉钉服务实现
@@ -47,11 +46,12 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
     private DingContactFeignClient contactFeignClient;
     @Resource
     private DingIMFeignClient imFeignClient;
-    @Resource(name="stringRedisTemplate")
-    private RedisTemplate redisTemplate;
+    @Resource
+    private ICacheService cacheService;
     @Override
     public String getAppAccessToken() {
-        String token = (String) redisTemplate.opsForValue().get(dingProperties.getTokenKey());
+
+        String token = (String)cacheService.get(dingProperties.getTokenKey());
         if(StringUtils.isNotEmpty(token)){
             return token;
         }
@@ -69,7 +69,7 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
         //钉钉有效时间为2小时，防止有问题，提前10分钟失效
         long expireTime = expireIn - 10*60;
         if (expireTime >0 ){
-            redisTemplate.opsForValue().set(dingProperties.getTokenKey(), token, expireTime, TimeUnit.SECONDS);
+            cacheService.set(dingProperties.getTokenKey(), token, expireTime);
         }
         return token;
     }

@@ -8,7 +8,6 @@
 		<id column="loginName" property="loginName" />
 		<id column="expireTime" property="expireTime" />
 		<id column="lastLoginTime" property="lastLoginTime" />
-		<id column="loginInfo" property="loginInfo" />
 		<id column="loginWay" property="loginWay" />
 		<id column="tenantId" property="tenantId" />
 		<id column="status" property="status" />
@@ -23,7 +22,6 @@
 		t.login_name as loginName,
 		t.expire_time as expireTime,
 		t.last_login_time as lastLoginTime,
-		t.login_info as loginInfo,
 		t.tenant_id as tenantId,
 		t.login_way as loginWay,
 		t.status,
@@ -147,10 +145,13 @@
 		where id = #{id}
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="BaseColumnList" /> from t_sys_token_cache t where t.id=#{id}
+		select <include refid="BaseColumnList" />,t.login_info as loginInfo from t_sys_token_cache t where t.id=#{id}
+	</select>
+	<select id="findByToken" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select <include refid="BaseColumnList" />,t.login_info as loginInfo from t_sys_token_cache t where t.token = #{token} and t.expire_time >= now()
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select <include refid="BaseColumnList" /> from t_sys_token_cache t
+		select <include refid="BaseColumnList" />,t.login_info as loginInfo from t_sys_token_cache t
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
 				#{id}

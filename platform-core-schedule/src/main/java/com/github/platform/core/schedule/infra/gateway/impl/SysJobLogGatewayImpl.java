@@ -54,10 +54,15 @@ public class SysJobLogGatewayImpl implements ISysJobLogGateway {
         SysJobLogBase sysJobLogBase = sysJobLogMapper.findById(id);
         return convert.toDto(sysJobLogBase);
     }
+
+    /**
+     * 异步处理不能有返回值
+     * @param context 上下文
+     */
     @Override
     @Async("asyncEventExecutor")
-    public int updateAsync(SysJobLogContext context) {
-        return sysJobLogMapper.updateById(context);
+    public void updateAsync(SysJobLogContext context) {
+        sysJobLogMapper.updateById(context);
     }
 
     @Override

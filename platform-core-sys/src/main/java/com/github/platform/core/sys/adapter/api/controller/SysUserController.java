@@ -132,6 +132,7 @@ public class SysUserController extends BaseController {
         return buildSucResp();
     }
     @RepeatSubmit
+    @RequiredLogin
     @OptLog(module="user",title="修改个人信息",optType = LogOptTypeEnum.modify)
     @Operation(summary = "修改个人信息",tags = {"user"})
     @PostMapping(value = "/updateUserProfile")
@@ -153,6 +154,7 @@ public class SysUserController extends BaseController {
      * @param cmd
      * @return
      */
+    @RequiredLogin
     @OptLog(module="user",title="重置密码",optType = LogOptTypeEnum.modify)
     @Operation(summary = "重置密码",tags = {"user"})
     @PostMapping(value = "/reset")

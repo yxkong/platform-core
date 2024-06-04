@@ -2,12 +2,16 @@ package com.github.platform.core.sys.infra.convert;
 
 import com.github.pagehelper.PageInfo;
 import com.github.platform.core.auth.entity.TokenCacheEntity;
+import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.sys.domain.common.entity.SysTokenCacheBase;
 import com.github.platform.core.sys.domain.context.SysTokenCacheContext;
 import com.github.platform.core.sys.domain.context.SysTokenCacheQueryContext;
 import com.github.platform.core.sys.domain.dto.SysTokenCacheDto;
-import com.github.platform.core.standard.entity.dto.PageBean;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.Mappings;
+
 import java.util.List;
 /**
  * token缓存基础设施层转换器
@@ -31,7 +35,6 @@ public interface SysTokenCacheInfraConvert {
     */
     @Mappings({
             @Mapping(target = "strId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getId()))"),
-            @Mapping(target = "loginInfo", expression = "java(null)"),
     })
     SysTokenCacheDto toDto(SysTokenCacheBase entity);
 

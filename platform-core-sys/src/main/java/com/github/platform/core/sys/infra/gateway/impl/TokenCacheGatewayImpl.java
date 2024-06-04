@@ -7,6 +7,7 @@ import com.github.platform.core.auth.gateway.ITokenCacheGateway;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.utils.CollectionUtil;
+import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import com.github.platform.core.sys.domain.context.SysTokenCacheContext;
@@ -18,6 +19,7 @@ import org.springframework.data.redis.core.TimeoutUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -47,15 +49,16 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
         if (Objects.isNull(tokenCacheDto)){
             return null;
         }
-        //续期一次（只有外层过期才会续期）
-        SysTokenCacheContext context = SysTokenCacheContext.builder()
-                .id(tokenCacheDto.getId())
-                .token(token)
-                .loginName(tokenCacheDto.getLoginName())
-                .loginInfo(tokenCacheDto.getLoginInfo())
-                .expireTime(LocalDateTimeUtil.plusSecond(getSeconds()))
-                .build();
-        sysTokenCacheGateway.update(context);
+//        //续期一次（只有外层过期才会续期）
+//        SysTokenCacheContext context = SysTokenCacheContext.builder()
+//                .id(tokenCacheDto.getId())
+//                .token(token)
+//                .loginName(tokenCacheDto.getLoginName())
+//                .loginInfo(tokenCacheDto.getLoginInfo())
+//                .expireTime(LocalDateTimeUtil.plusSecond(getSeconds()))
+//                .remark(tokenCacheDto.getExpireTime()+"")
+//                .build();
+//        sysTokenCacheGateway.update(context);
         return sysTokenCacheConvert.toEntity(tokenCacheDto);
     }
 
@@ -67,34 +70,39 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
 
     @Override
     public TokenCacheEntity saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo ,boolean isLogin) {
-        long seconds = TimeoutUtils.toSeconds(authProperties.getSys().getExpire(), TimeUnit.MINUTES);
+        long seconds = getSeconds();
         LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
         if (!AuthUtil.checkLogin()){
             log.warn("未检测到登录信息，不做缓存，token:{} loginName:{} loginInfo:{}",token,loginName,loginInfo);
         }
+        if (StringUtils.isEmpty(loginName)){
+            loginName = userInfo.getLoginName();
+        }
         SysTokenCacheDto cacheDto =  sysTokenCacheGateway.findByToken(token);
+        LocalDateTime localDateTime = LocalDateTimeUtil.dateTime();
         SysTokenCacheContext context = SysTokenCacheContext.builder()
                 .token(token)
-                .loginName(userInfo.getLoginName())
+                .loginName(loginName)
                 .loginInfo(loginInfo)
-                .expireTime(LocalDateTimeUtil.plusSecond(seconds))
+                .expireTime(localDateTime.plusSeconds(seconds))
                 .build();
         if (Objects.nonNull(userInfo)){
             if (isLogin){
                 context.setLastLoginTime(LocalDateTimeUtil.parseDefault(userInfo.getLoginTime()));
             }
-            context.setUpdateTime(LocalDateTimeUtil.dateTime());
+            context.setUpdateTime(localDateTime);
         }
         SysTokenCacheDto tokenCacheDto =  null;
         if (Objects.isNull(cacheDto)){
-            context.setCreateBy(userInfo.getLoginName());
-            context.setCreateTime(LocalDateTimeUtil.dateTime());
+            context.setCreateBy(loginName);
+            context.setCreateTime(localDateTime);
             context.setLoginWay(userInfo.getLoginWay());
             context.setTenantId(userInfo.getTenantId());
             tokenCacheDto = sysTokenCacheGateway.insert(context);
         } else {
             context.setId(cacheDto.getId());
-            tokenCacheDto = sysTokenCacheGateway.update(context);
+            context.setRemark("last:"+cacheDto.getExpireTime());
+            tokenCacheDto  = sysTokenCacheGateway.update(context);
         }
         return sysTokenCacheConvert.toEntity(tokenCacheDto);
     }

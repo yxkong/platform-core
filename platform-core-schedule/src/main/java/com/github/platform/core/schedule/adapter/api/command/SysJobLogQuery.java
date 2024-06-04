@@ -25,11 +25,11 @@ public class SysJobLogQuery extends SysJobLogQueryBase {
     @Getter
     @Schema(description = "任务id")
     @NotEmpty(message = "任务id不能为空！")
-    private String jobIdStr;
+    private String strJobId;
     @Override
     public Long getJobId() {
-        if (StringUtils.isNotEmpty(this.jobIdStr)){
-            return SignUtil.getLongId(this.jobIdStr);
+        if (StringUtils.isNotEmpty(this.strJobId)){
+            return SignUtil.getLongId(this.strJobId);
         }
         return this.jobId;
     }

@@ -30,6 +30,13 @@ public interface SysTokenCacheMapper  {
     * @return 返回结果
     */
     SysTokenCacheBase findById(Long id);
+
+    /**
+     * 根据token查询对象
+     * @param token
+     * @return
+     */
+    SysTokenCacheBase findByToken(String token);
     /**
     * 通过主键ids 获取多个实体对象(最多200条)
     * @param ids 主键id

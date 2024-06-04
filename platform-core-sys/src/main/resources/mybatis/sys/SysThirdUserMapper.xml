@@ -133,7 +133,7 @@
  				#{email},
  			</if>
 		    <if test="mobile != null and mobile != ''">
- 				#{email},
+ 				#{mobile},
  			</if>
  			<if test="joinDate != null">
  				#{joinDate},

@@ -103,7 +103,7 @@ public class SysUserService extends DomainBaseService {
             /**初始化thirduser*/
             thirdUser = thirdUserGateway.insert(thirdUserEntity, sysUserId);
         } else if (Objects.isNull(thirdUser.getUserId())){
-            SysThirdUserContext context = SysThirdUserContext.builder().id(thirdUser.getId()).userId(sysUserId).build();
+            SysThirdUserContext context = SysThirdUserContext.builder().id(thirdUser.getId()).mobile(thirdUserEntity.getMobile()).userId(sysUserId).build();
             thirdUserGateway.update(context);
         }
         return thirdUser;

@@ -34,6 +34,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -65,10 +66,16 @@ public class CustomRedisCacheManagerConfiguration {
     @Bean
     @ConditionalOnMissingBean(name = CacheConstant.cacheManager)
     public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
+        //默认1小时
+        long defaultExpireTime = CacheNameEnum.C1H.getExpireTime();
+        //注意ttl为毫秒级
+//        if (Objects.nonNull(cacheProperties.getRedis().getTimeToLive())){
+//            defaultExpireTime = cacheProperties.getRedis().getTimeToLive().getSeconds();
+//        }
 
         Map<String, RedisCacheConfiguration> redisCacheConfigurations = getRedisCacheConfigurationMap();
         return RedisCacheManager.builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
-                .cacheDefaults(determineConfiguration(CacheNameEnum.C30M.getExpireTime()))
+                .cacheDefaults(determineConfiguration(defaultExpireTime))
                 .withInitialCacheConfigurations(redisCacheConfigurations)
                 .build();
     }

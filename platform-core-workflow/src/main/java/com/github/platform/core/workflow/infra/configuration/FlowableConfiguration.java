@@ -6,14 +6,11 @@ import com.github.platform.core.workflow.infra.listener.GlobalEventListener;
 import org.flowable.common.engine.api.delegate.event.FlowableEngineEventType;
 import org.flowable.common.engine.api.delegate.event.FlowableEventDispatcher;
 import org.flowable.common.engine.impl.event.FlowableEventDispatcherImpl;
-import org.flowable.engine.RuntimeService;
 import org.flowable.spring.SpringProcessEngineConfiguration;
 import org.flowable.spring.boot.EngineConfigurationConfigurer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.AsyncListenableTaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.annotation.Resource;
 
@@ -26,23 +23,7 @@ import javax.annotation.Resource;
 @Configuration
 public class FlowableConfiguration implements EngineConfigurationConfigurer<SpringProcessEngineConfiguration> {
     @Resource
-    private WorkflowProperties properties;
-    @Resource
     private GlobalEventListener globalEventListener;
-    @Bean
-    public AsyncListenableTaskExecutor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        WorkflowProperties.ExecutorProperties p = properties.getExecutor();
-        executor.setCorePoolSize(p.getCoreSize());
-        executor.setMaxPoolSize(p.getMaxSize());
-        executor.setQueueCapacity(p.getQueueSize());
-        executor.setThreadNamePrefix(p.getThreadNamePrefix());
-        executor.setAwaitTerminationSeconds(p.getAwaitTerminationMillis());
-        executor.setWaitForTasksToCompleteOnShutdown(p.getWaitForTasksToCompleteOnShutdown());
-        executor.setAllowCoreThreadTimeOut(p.getAllowCoreThreadTimeOut());
-        executor.initialize();
-        return executor;
-    }
     @Bean
     public FilterRegistrationBean<FlowableWebFilter> flowableWebFilter() {
         FilterRegistrationBean<FlowableWebFilter> registrationBean = new FilterRegistrationBean<>();

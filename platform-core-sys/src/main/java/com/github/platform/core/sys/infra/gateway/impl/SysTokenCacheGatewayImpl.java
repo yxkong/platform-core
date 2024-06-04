@@ -58,12 +58,8 @@ public class SysTokenCacheGatewayImpl extends BaseGatewayImpl implements ISysTok
 
     @Override
     public SysTokenCacheDto findByToken(String token) {
-        //查找token，只能查比当前时间大的
-        List<SysTokenCacheBase> list = sysTokenCacheMapper.findListBy(SysTokenCacheBase.builder().token(token).searchStartTime(LocalDateTimeUtil.dateTimeDefaultShort()).build());
-        if (CollectionUtil.isEmpty(list)){
-            return null;
-        }
-        return sysTokenCacheConvert.toDto(list.get(0));
+        SysTokenCacheBase record = sysTokenCacheMapper.findByToken(token);
+        return sysTokenCacheConvert.toDto(record);
     }
 
     @Override

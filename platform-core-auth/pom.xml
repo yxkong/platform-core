@@ -7,7 +7,7 @@
     <parent>
         <artifactId>platform-core</artifactId>
         <groupId>com.github.platform</groupId>
-        <version>0.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
   <artifactId>platform-core-auth</artifactId>

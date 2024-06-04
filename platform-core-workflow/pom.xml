@@ -4,7 +4,7 @@
     <parent>
         <artifactId>platform-core</artifactId>
         <groupId>com.github.platform</groupId>
-        <version>0.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -39,46 +39,6 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-<!--        <pluginManagement>-->
-<!--            <plugins>-->
-<!--                <plugin>-->
-<!--                    <groupId>org.apache.maven.plugins</groupId>-->
-<!--                    <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                    <version>${maven.compiler.plugin.version}</version>-->
-<!--                    <configuration>-->
-<!--                        <source>${maven.compiler.source}</source>-->
-<!--                        <target>${maven.compiler.target}</target>-->
-<!--                        <encoding>${maven.compiler.encoding}</encoding>-->
-<!--                        &lt;!&ndash;屏蔽test&ndash;&gt;-->
-<!--                        <skip>true</skip>-->
-<!--                        &lt;!&ndash;传递额外的编译参数&ndash;&gt;-->
-<!--                        <compilerArgs>-->
-<!--                            <arg>-Amapstruct.verbose=true</arg>-->
-<!--                            <arg>-verbose</arg>-->
-<!--                            &lt;!&ndash;<arg>-Xlint:all,-options,-path</arg>&ndash;&gt;-->
-<!--                            <arg>-Xlint:unchecked</arg>-->
-<!--                            <arg>-Xlint:deprecation</arg>-->
-<!--                            &lt;!&ndash;添加一些jar，让bootstrap ClassLoader加载&ndash;&gt;-->
-<!--                            &lt;!&ndash;<arg>-Xbootclasspath:${java.home}/lib/rt.jar${path.separator}${java.home}/lib/jce.jar</arg>&ndash;&gt;-->
-<!--                            &lt;!&ndash;解决本地jar包依赖问题&ndash;&gt;-->
-<!--                            &lt;!&ndash;<arg>-Xextdirs:${basedir}\lib</arg>&ndash;&gt;-->
-<!--                        </compilerArgs>-->
-<!--                        <annotationProcessorPaths>-->
-<!--                            <path>-->
-<!--                                <groupId>org.projectlombok</groupId>-->
-<!--                                <artifactId>lombok</artifactId>-->
-<!--                                <version>${lombok.version}</version>-->
-<!--                            </path>-->
-<!--                            <path>-->
-<!--                                <groupId>org.mapstruct</groupId>-->
-<!--                                <artifactId>mapstruct-processor</artifactId>-->
-<!--                                <version>${mapstruct.version}</version>-->
-<!--                            </path>-->
-<!--                        </annotationProcessorPaths>-->
-<!--                    </configuration>-->
-<!--                </plugin>-->
-<!--            </plugins>-->
-<!--        </pluginManagement>-->
     </build>
 
 

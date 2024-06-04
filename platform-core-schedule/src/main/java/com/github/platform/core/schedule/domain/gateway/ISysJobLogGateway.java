@@ -41,7 +41,7 @@ public interface ISysJobLogGateway {
      * @param context 上下文
      * @return
      */
-    int updateAsync(SysJobLogContext context);
+    void updateAsync(SysJobLogContext context);
     /**
     * 根据id删除任务执行日志记录
     * @param id 主键id

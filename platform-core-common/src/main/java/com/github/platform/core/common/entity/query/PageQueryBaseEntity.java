@@ -37,7 +37,7 @@ public class PageQueryBaseEntity extends BaseAdminEntity {
     @Schema(description = "每页条数",example = "10")
     protected  Integer pageSize;
     /**
-     * 获取其实的偏移量
+     * 获取起始的偏移量
      * @return
      */
     @JsonIgnore

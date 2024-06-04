@@ -135,9 +135,9 @@ public class AuthorizeAspect {
     private void getLoginUserInfo(String uri){
         LoginUserInfo loginInfo = new LoginUserInfo();
         /**  将loginToken 放入到本地线程里  **/
+        LoginUserInfoUtil.clearContext();
         String loginStr = getLoginInfoString();
         String token = getTokenKey();
-        LoginUserInfoUtil.clearContext();
         if (StringUtils.isBlank(loginStr) && Objects.nonNull(token) && !HeaderConstant.DEFAULT_TOKEN.equals(token)) {
             loginStr = tokenService.getLoginInfoStr(token);
             if (log.isTraceEnabled()){
@@ -152,7 +152,8 @@ public class AuthorizeAspect {
         }
         MDC.put(HeaderConstant.TRACE_ID,getTraceId());
         LoginUserInfoUtil.setLoginUserInfo(loginInfo);
-        if (!uri.contains("api/sys/token/expire")){
+        //不包含登出的时候
+        if (!uri.contains("api/sys/token/expire") && StringUtils.isNotEmpty(token)){
             //续租
             tokenService.saveOrUpdate(null, token,null,loginStr,false);
         }

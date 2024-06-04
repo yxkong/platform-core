@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 缓存统一操作
@@ -149,6 +150,7 @@ public interface ICacheService {
      */
     @CacheResolve(command = "set",key = "#key",expire = "#time")
     boolean set(String key, String value, long time);
+    boolean set(String key, String value, long time, TimeUnit timeUnit);
 
     /**
      * 递增 1
@@ -192,7 +194,7 @@ public interface ICacheService {
      * @param item 项 不能为null
      * @return 值
      */
-    Object hget(String key, String item);
+    Object hGet(String key, String item);
 
     /**
      * 获取hashKey对应的所有键值
@@ -200,14 +202,14 @@ public interface ICacheService {
      * @param key 键
      * @return 对应的多个键值
      */
-    Map<Object, Object> hmget(String key);
+    Map<Object, Object> hGetEntries(String key);
 
     /**
      * 根据key获取hash所有的value
      * @param key
      * @return
      */
-    List<Object> hValues(String key);
+    List<Object> hGetValues(String key);
 
     /**
      * HashSet
@@ -481,6 +483,13 @@ public interface ICacheService {
      * @return
      */
     long zRem(String key, String... values);
+    /**
+     * 删除1个或多个value
+     * @param key
+     * @param values
+     * @return
+     */
+    long zRem(String key, Collection<String> values);
 
     /**
      * 根据score删除数据

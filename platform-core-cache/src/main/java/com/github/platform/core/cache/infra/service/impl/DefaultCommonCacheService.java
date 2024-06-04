@@ -7,7 +7,6 @@ import com.github.platform.core.cache.infra.service.ICacheService;
 import com.github.platform.core.cache.infra.service.ICommonCacheService;
 import com.github.platform.core.common.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -34,7 +33,7 @@ public class DefaultCommonCacheService implements ICommonCacheService {
 
     @Override
     public ConfigEntity getConfig(Integer tenantId,String key) {
-        String  val = (String) cacheService.hget(getConfigKey(tenantId), key);
+        String  val = (String) cacheService.hGet(getConfigKey(tenantId), key);
         return JsonUtils.fromJson(val, ConfigEntity.class);
     }
 
@@ -50,7 +49,7 @@ public class DefaultCommonCacheService implements ICommonCacheService {
     @Override
     public List<DictEntity> getDictList(Integer tenantId,String type) {
 
-        List<Object> values = cacheService.hValues(getDictKey(tenantId,type));
+        List<Object> values = cacheService.hGetValues(getDictKey(tenantId,type));
         if (Objects.isNull(values)){
             return null;
         }
@@ -68,7 +67,7 @@ public class DefaultCommonCacheService implements ICommonCacheService {
 
     @Override
     public DictEntity getDict(Integer tenantId,String type, String key) {
-        Object o = cacheService.hget(getDictKey(tenantId,type), key);
+        Object o = cacheService.hGet(getDictKey(tenantId,type), key);
         if(o==null){
             return null;
         }

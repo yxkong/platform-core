@@ -154,6 +154,10 @@
 - redis
     - redis 最好是5.0以上，可以用其中的stream消息
 - kafka 可选
+  - 设置服务器上单条消息的最大字节数 message.max.bytes=10485760  # 10MB
+  - 设置生产者可以发送的最大消息大小 max.request.size=10485760  # 10MB
+  - 设置消费者每次拉取消息的最大字节数 fetch.max.bytes=10485760  # 10MB
+
 ### 使用
 - 先对platform-core进行 mvn clean install
 - 对demo进行 mvn clean install

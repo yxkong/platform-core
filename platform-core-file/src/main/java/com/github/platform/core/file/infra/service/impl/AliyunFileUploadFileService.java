@@ -68,7 +68,7 @@ public class AliyunFileUploadFileService extends AbstractUploadFileService{
         // 设置失效时间
         int activeMinutes = Objects.equals(dto.getPermanent() ,Boolean.TRUE) ? Integer.MAX_VALUE :
                 Objects.isNull(getAliyun().getLinkExpireMinutes()) ? 30 : getAliyun().getLinkExpireMinutes();
-        req.setExpiration(DateUtils.addMinutes(new Date(), activeMinutes));
+        req.setExpiration(DateUtils.addDays(new Date(), activeMinutes));
         if (StringUtils.isNotEmpty(style)){
             req.setProcess(style);
         }

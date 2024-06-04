@@ -20,7 +20,7 @@ import lombok.experimental.SuperBuilder;
 @Schema(description = "三方用户传输实体")
 public class SysThirdUserDto extends SysThirdUserBase{
     /** 加密用户id */
-    protected String userIdStr;
+    protected String strUserId;
     @JsonIgnore
     public boolean isDisabled(){
         if(null == this.status || StatusEnum.OFF.getStatus().equals(this.status)){

@@ -43,7 +43,7 @@ public class SysTokenServiceImpl implements ITokenService {
     public String getLoginInfoStr(String token) {
         if (Objects.nonNull(tokenCacheGateway)){
             TokenCacheEntity tokenCacheEntity = tokenCacheGateway.findByToken(token);
-            if (Objects.nonNull(tokenCacheEntity) && LocalDateTimeUtil.dateTime().isBefore(tokenCacheEntity.getExpireTime())){
+            if (Objects.nonNull(tokenCacheEntity)){
                 return tokenCacheEntity.getLoginInfo();
             }
         }

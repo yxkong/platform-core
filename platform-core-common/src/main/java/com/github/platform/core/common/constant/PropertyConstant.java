@@ -17,6 +17,8 @@ public interface PropertyConstant {
     String CON_SNOWFLAKE_ENABLED = "platform.snowflake.enabled";
     String DATA_ASYNC = "platform.async";
     String DATA_DING_TALK = "platform.ding-talk";
+    /**延迟队列配置*/
+    String DATA_DELAY = "platform.delay";
 
     /**文件配置*/
     String DATA_FILE = "platform.file";

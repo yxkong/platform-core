@@ -34,9 +34,8 @@ public interface SysThirdUserInfraConvert {
     * @return dto
     */
     @Mappings({
-            @Mapping(target = "userIdStr", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getUserId()))"),
+            @Mapping(target = "strUserId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getUserId()))"),
             @Mapping(target = "strId", expression = "java(com.github.platform.core.common.utils.SignUtil.getStrId(entity.getId()))"),
-            
             @Mapping(target = "userId", expression = "java(null)")
     })
     SysThirdUserDto toDto(SysThirdUserBase entity);
@@ -64,7 +63,8 @@ public interface SysThirdUserInfraConvert {
     */
     SysThirdUserBase toSysThirdUserBase(SysThirdUserContext context);
     @Mappings({
-            @Mapping(target = "createBy", source = "ldapUser.loginName"),
+            @Mapping(target = "mobile", source = "thirdUser.mobile"),
+            @Mapping(target = "createBy", source = "thirdUser.loginName"),
     })
-    SysThirdUserBase toSysThirdUserBase(ThirdUserEntity ldapUser,Long userId);
+    SysThirdUserBase toSysThirdUserBase(ThirdUserEntity thirdUser,Long userId);
 }

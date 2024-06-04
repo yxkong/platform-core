@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.concurrent.*;
 
@@ -19,6 +20,8 @@ import java.util.concurrent.*;
  */
 @Configuration
 @Slf4j
+//启用异步执行
+@EnableAsync
 @ConfigurationProperties(prefix =  PropertyConstant.DATA_ASYNC)
 public class ThreadPoolConfiguration {
     private int coreSize;
@@ -31,11 +34,19 @@ public class ThreadPoolConfiguration {
     @Bean(name = "asyncEventExecutor")
     public Executor asyncEventExecutor() {
         log.info("start asyncEventExecutor --->");
-        int maxPoolSize = Math.max(1,Runtime.getRuntime().availableProcessors()/2);
         return new ThreadPoolExecutor(this.getCoreSize(), this.getMaxPoolSize(), this.getKeepAliveTime(), TimeUnit.SECONDS
                 , new LinkedBlockingQueue<>(this.getQueueSize()), getThreadFactory(this.getName()), new ThreadPoolExecutor.CallerRunsPolicy());
     }
-    private ThreadFactory getThreadFactory(String name){
+
+    /**
+     * 设置自定义线程池
+     * @param name
+     * @return
+     */
+    public static ThreadFactory getThreadFactory(String name){
+        if (StringUtils.isEmpty(name)){
+            name = "platform-executor-%d";
+        }
         return  new ThreadFactoryBuilder().setNameFormat(name).build();
     }
 

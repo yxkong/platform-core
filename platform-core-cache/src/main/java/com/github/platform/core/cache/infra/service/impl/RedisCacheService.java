@@ -37,8 +37,8 @@ public class RedisCacheService implements ICacheService {
         // 当前时间
         try {
             String lockLuaScript = getLockLuaScript();
-            if (log.isDebugEnabled()){
-                log.debug("开始获取分布式锁-key[{}]", lockKey);
+            if (log.isTraceEnabled()){
+                log.trace("开始获取分布式锁-key[{}]", lockKey);
             }
             int count = 0;
             List<String> lockKeyList = Collections.singletonList(lockKey);
@@ -57,8 +57,8 @@ public class RedisCacheService implements ICacheService {
         try {
             String lockId = StringUtils.uuidRmLine();
             String lockLuaScript = getLockLuaScript();
-            if (log.isDebugEnabled()){
-                log.debug("开始获取分布式锁-key[{}]", lockKey);
+            if (log.isTraceEnabled()){
+                log.trace("开始获取分布式锁-key[{}]", lockKey);
             }
             int count = 0;
             List<String> lockKeyList = Collections.singletonList(lockKey);
@@ -87,8 +87,8 @@ public class RedisCacheService implements ICacheService {
         long nanoTime = System.nanoTime();
         try {
             String lockLuaScript = getLockLuaScript();
-            if (log.isDebugEnabled()){
-                log.debug("开始获取分布式锁-key[{}]", lockKey);
+            if (log.isTraceEnabled()){
+                log.trace("开始获取分布式锁-key[{}]", lockKey);
             }
             int count = 0;
             List<String> lockKeyList = Collections.singletonList(lockKey);
@@ -96,7 +96,7 @@ public class RedisCacheService implements ICacheService {
                 if (redisLuaScriptExecute(lockKey, lockId, expireTime, lockLuaScript, count, lockKeyList)){
                     return true;
                 }
-                //休眠1毫秒
+                //休眠5毫秒
                 Thread.sleep(5L);
                 count++;
             } while ((System.nanoTime() - nanoTime) < TimeUnit.MILLISECONDS.toNanos(waitTimeout));
@@ -108,12 +108,12 @@ public class RedisCacheService implements ICacheService {
 
     private boolean redisLuaScriptExecute(String lockKey, String lockId, long expireTime, String lockLuaScript, int count, List<String> lockKeyList) {
         RedisScript<Long> redisScript = new DefaultRedisScript<>(lockLuaScript, Long.class);
-        if (log.isDebugEnabled()) {
-            log.debug("尝试获取分布式锁-key[{}]requestId[{}]count[{}]", lockKey, lockId, count);
+        if (log.isTraceEnabled()) {
+            log.trace("尝试获取分布式锁-key[{}]requestId[{}]count[{}]", lockKey, lockId, count);
         }
         Object result = redisTemplate.execute(redisScript, lockKeyList, lockId, String.valueOf(expireTime));
-        if (log.isDebugEnabled()){
-            log.debug("获取分布式锁结果-key[{}],result[{}]", lockKey,result);
+        if (log.isTraceEnabled()){
+            log.trace("获取分布式锁结果-key[{}],result[{}]", lockKey,result);
         }
         if (LOCK_SUC.equals(result)) {
 
@@ -137,8 +137,8 @@ public class RedisCacheService implements ICacheService {
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>(luaScript.toString(), Long.class);
         Object result = redisTemplate.execute(redisScript, Collections.singletonList(lockKey), lockId);
         if (LOCK_SUC.equals(result)) {
-            if (log.isDebugEnabled()){
-                log.debug("释放锁成功key[{}]value[{}]", lockKey, lockId);
+            if (log.isTraceEnabled()){
+                log.trace("释放锁成功key[{}]value[{}]", lockKey, lockId);
             }
             return true;
         }
@@ -168,7 +168,7 @@ public class RedisCacheService implements ICacheService {
             }
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("expire key:{} is error:",key, e);
             return false;
         }
     }
@@ -228,7 +228,7 @@ public class RedisCacheService implements ICacheService {
             redisTemplate.opsForValue().set(key, value);
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("set key:{} is error:",key, e);
             return false;
         }
     }
@@ -243,7 +243,18 @@ public class RedisCacheService implements ICacheService {
             }
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("set key:{} is error:",key, e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean set(String key, String value, long time, TimeUnit timeUnit) {
+        try {
+            redisTemplate.opsForValue().set(key, value, time, timeUnit);
+            return true;
+        } catch (Exception e) {
+            log.error("set key:{} is error:",key, e);
             return false;
         }
     }
@@ -273,19 +284,17 @@ public class RedisCacheService implements ICacheService {
         }
         return redisTemplate.opsForValue().increment(key, -delta);
     }
-
     @Override
-    public Object hget(String key, String item) {
+    public Object hGet(String key, String item) {
         return redisTemplate.opsForHash().get(key, item);
     }
-
     @Override
-    public Map<Object, Object> hmget(String key) {
+    public Map<Object, Object> hGetEntries(String key) {
         return redisTemplate.opsForHash().entries(key);
     }
 
     @Override
-    public List<Object> hValues(String key) {
+    public List<Object> hGetValues(String key) {
         return redisTemplate.opsForHash().values(key);
     }
 
@@ -295,7 +304,7 @@ public class RedisCacheService implements ICacheService {
             redisTemplate.opsForHash().putAll(key, map);
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("hmSet key:{} is error:",key, e);
             return false;
         }
     }
@@ -309,7 +318,7 @@ public class RedisCacheService implements ICacheService {
             }
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("hmSet key:{} is error:",key, e);
             return false;
         }
     }
@@ -320,7 +329,7 @@ public class RedisCacheService implements ICacheService {
             redisTemplate.opsForHash().put(key, item, value);
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("hSet key:{} is error:",key, e);
             return false;
         }
     }
@@ -334,7 +343,7 @@ public class RedisCacheService implements ICacheService {
             }
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("hSet key:{} is error:",key, e);
             return false;
         }
     }
@@ -369,7 +378,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForSet().members(key);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("sGet key:{} is error:",key, e);
             return null;
         }
     }
@@ -379,7 +388,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForSet().isMember(key, value);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("sHasKey key:{} is error:",key, e);
             return false;
         }
     }
@@ -389,7 +398,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForSet().add(key, values);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("sGet key:{} is error:",key, e);
             return 0;
         }
     }
@@ -403,7 +412,7 @@ public class RedisCacheService implements ICacheService {
             }
             return count;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("sSetAndTime key:{} is error:",key, e);
             return 0;
         }
     }
@@ -413,7 +422,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForSet().size(key);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("sGetSetSize key:{} is error:",key, e);
             return 0;
         }
     }
@@ -424,7 +433,7 @@ public class RedisCacheService implements ICacheService {
             Long count = redisTemplate.opsForSet().remove(key, values);
             return count;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("setRemove key:{} is error:",key, e);
             return 0;
         }
     }
@@ -434,7 +443,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForList().range(key, start, end);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("lGet key:{} is error:",key, e);
             return null;
         }
     }
@@ -444,7 +453,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForList().size(key);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("lGetListSize key:{} is error:",key, e);
             return 0;
         }
     }
@@ -454,7 +463,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForList().index(key, index);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("lGetIndex key:{} is error:",key, e);
             return null;
         }
     }
@@ -465,7 +474,7 @@ public class RedisCacheService implements ICacheService {
             redisTemplate.opsForList().rightPush(key, value);
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("lSet key:{} is error:",key, e);
             return false;
         }
     }
@@ -479,7 +488,7 @@ public class RedisCacheService implements ICacheService {
             }
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("lSet key:{} is error:",key, e);
             return false;
         }
     }
@@ -490,7 +499,7 @@ public class RedisCacheService implements ICacheService {
             redisTemplate.opsForList().rightPushAll(key, value);
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("lSet key:{} is error:",key, e);
             return false;
         }
     }
@@ -504,7 +513,7 @@ public class RedisCacheService implements ICacheService {
             }
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("lSet key:{} is error:",key, e);
             return false;
         }
     }
@@ -515,7 +524,7 @@ public class RedisCacheService implements ICacheService {
             redisTemplate.opsForList().set(key, index, value);
             return true;
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("lUpdateIndex key:{} is error:",key, e);
             return false;
         }
     }
@@ -525,7 +534,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForList().remove(key, count, value);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("lRemove key:{} is error:",key, e);
             return 0;
         }
     }
@@ -535,7 +544,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForZSet().add(key,value,score);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("zAdd key:{} is error:",key, e);
             return false;
         }
     }
@@ -544,7 +553,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForZSet().zCard(key);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("zCard key:{} is error:",key, e);
             return 0;
         }
     }
@@ -554,7 +563,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForZSet().count(key,min,max);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("zCount key:{} is error:",key, e);
             return 0;
         }
     }
@@ -564,7 +573,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForZSet().score(key,value);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("zScore key:{} is error:",key, e);
             return null;
         }
     }
@@ -574,7 +583,21 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForZSet().remove(key,values);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("zRem key:{} is error:",key, e);
+            return 0;
+        }
+    }
+
+    @Override
+    public long zRem(String key, Collection<String> values) {
+        try {
+            if (CollectionUtil.isEmpty(values)){
+                return 0;
+            }
+            String[] tasksArray = values.toArray(new String[0]);
+            return redisTemplate.opsForZSet().remove(key,tasksArray);
+        } catch (Exception e) {
+            log.error("zRem key:{} is error:",key, e);
             return 0;
         }
     }
@@ -584,7 +607,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForZSet().removeRangeByScore(key,min,max);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("zRemRangeByScore key:{} min:{} max:{} is error:",min,max,key, e);
             return 0;
         }
     }
@@ -594,7 +617,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForZSet().rangeByScore(key,min,max);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("zRangeByScore key:{} min:{} max:{} is error:",key,min,max, e);
             return null;
         }
     }
@@ -604,7 +627,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForZSet().rangeByScore(key,min,max,offset,count);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("zRangeByScore key:{} min:{} max:{} is error:",key,min,max, e);
             return null;
         }
     }
@@ -614,7 +637,7 @@ public class RedisCacheService implements ICacheService {
         try {
             return redisTemplate.opsForZSet().rangeByScoreWithScores(key,min,max,offset,count);
         } catch (Exception e) {
-            log.error("is error:", e);
+            log.error("zRangeByScore key:{} min:{} max:{} is error:",key,min,max, e);
             return null;
         }
     }

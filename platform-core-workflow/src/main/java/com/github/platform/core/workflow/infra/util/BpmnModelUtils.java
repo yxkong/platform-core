@@ -395,6 +395,9 @@ public class BpmnModelUtils {
      */
     public static  Map<String,String> getElementExtendAttribute(FlowElement flowElement){
         Map<String,String> rst = new HashMap<>();
+        if (Objects.isNull(flowElement)){
+            return rst;
+        }
         List<ExtensionElement> list1 = flowElement.getExtensionElements().get("properties");
         if (CollectionUtil.isEmpty(list1)){
             return rst;

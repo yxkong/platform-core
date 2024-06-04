@@ -5,21 +5,23 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>platform-core</artifactId>
     <groupId>com.github.platform</groupId>
-    <version>0.1-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
     <name>platform-core</name>
     <description>后台管理开发平台- 基于Spring Cloud，使用DDD实现的微服务架构</description>
     <properties>
-        <platform.core.version>0.1-SNAPSHOT</platform.core.version>
+        <revision>0.1-release</revision>
+<!--        <revision>0.1-SNAPSHOT</revision>-->
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <lombok.version>1.18.26</lombok.version>
         <mapstruct.version>1.5.1.Final</mapstruct.version>
+        <apache.commons.lang3.version>3.10</apache.commons.lang3.version>
         <!--maven plugin相关-->
         <maven.archetype.plugin.version>3.2.1</maven.archetype.plugin.version>
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
-        <maven.install.plugin.version>3.11.0</maven.install.plugin.version>
+        <maven.install.plugin.version>3.1.2</maven.install.plugin.version>
         <maven.deploy.plugin.version>3.1.1</maven.deploy.plugin.version>
         <maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
         <maven.jar.plugin.version>3.3.0</maven.jar.plugin.version>
@@ -28,7 +30,19 @@
         <maven.source.plugin.version>3.2.1</maven.source.plugin.version>
         <maven.clean.plugin.version>3.3.1</maven.clean.plugin.version>
         <maven.javadoc.plugin.version>3.5.0</maven.javadoc.plugin.version>
+        <flatten.maven.plugin.version>1.6.0</flatten.maven.plugin.version>
     </properties>
+    <profiles>
+        <profile>
+            <id>deploy-platform-dependencies</id>
+            <modules>
+                <module>platform-dependencies</module>
+            </modules>
+            <build>
+                <defaultGoal>deploy</defaultGoal>
+            </build>
+        </profile>
+    </profiles>
     <modules>
         <module>platform-dependencies</module>
         <module>platform-code-generator</module>
@@ -61,20 +75,24 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+            <version>${apache.commons.lang3.version}</version>
         </dependency>
     </dependencies>
     <dependencyManagement>
@@ -82,7 +100,7 @@
             <dependency>
                 <groupId>com.github.platform</groupId>
                 <artifactId>platform-dependencies</artifactId>
-                <version>${platform.core.version}</version>
+                <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -102,91 +120,150 @@
                 </includes>
             </resource>
         </resources>
+        <!--这里只是版本管理-->
         <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven.compiler.plugin.version}</version>
-                    <configuration>
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                        <encoding>${maven.compiler.encoding}</encoding>
-                        <!--屏蔽test-->
-                        <skip>true</skip>
-                        <!--传递额外的编译参数-->
-                        <compilerArgs>
-                            <arg>-Amapstruct.verbose=true</arg>
-                            <arg>-verbose</arg>
-                            <!--<arg>-Xlint:all,-options,-path</arg>-->
-                            <arg>-Xlint:unchecked</arg>
-                            <arg>-Xlint:deprecation</arg>
-                            <!--添加一些jar，让bootstrap ClassLoader加载-->
-                            <!--<arg>-Xbootclasspath:${java.home}/lib/rt.jar${path.separator}${java.home}/lib/jce.jar</arg>-->
-                            <!--解决本地jar包依赖问题-->
-                            <!--<arg>-Xextdirs:${basedir}\lib</arg>-->
-                        </compilerArgs>
-                        <annotationProcessorPaths>
-                            <path>
-                                <groupId>org.projectlombok</groupId>
-                                <artifactId>lombok</artifactId>
-                                <version>${lombok.version}</version>
-                            </path>
-                            <path>
-                                <groupId>org.mapstruct</groupId>
-                                <artifactId>mapstruct-processor</artifactId>
-                                <version>${mapstruct.version}</version>
-                            </path>
-                        </annotationProcessorPaths>
-                    </configuration>
-                </plugin>
-                <!-- 跳过单元测试-->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven.surefire.plugin.version}</version>
-                    <configuration>
-                        <skipTests>true</skipTests>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>${maven.jar.plugin.version}</version>
-                </plugin>
-                <!-- Source -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>${maven.source.plugin.version}</version>
-                    <configuration>
-                        <attach>true</attach>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <!--编译阶段打源码包-->
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>jar-no-fork</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <!-- 配置 maven-clean-plugin -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>${maven.clean.plugin.version}</version>
-                    <configuration>
-                        <!-- 配置需要清理的目录 -->
-                        <filesets>
-                            <fileset>
-                                <directory>target/generated-sources</directory>
-                            </fileset>
-                        </filesets>
-                    </configuration>
-                </plugin>
-            </plugins>
+             <plugins>
+                 <plugin>
+                     <groupId>org.codehaus.mojo</groupId>
+                     <artifactId>flatten-maven-plugin</artifactId>
+                     <version>${flatten.maven.plugin.version}</version>
+                 </plugin>
+                 <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-install-plugin</artifactId>
+                     <version>${maven.install.plugin.version}</version>
+                 </plugin>
+                 <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-compiler-plugin</artifactId>
+                     <version>${maven.compiler.plugin.version}</version>
+                 </plugin>
+                 <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-surefire-plugin</artifactId>
+                     <version>${maven.surefire.plugin.version}</version>
+                 </plugin>
+                 <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-jar-plugin</artifactId>
+                     <version>${maven.jar.plugin.version}</version>
+                 </plugin>
+                 <!-- Source -->
+                 <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-source-plugin</artifactId>
+                     <version>${maven.source.plugin.version}</version>
+                 </plugin>
+                 <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-clean-plugin</artifactId>
+                     <version>${maven.clean.plugin.version}</version>
+                 </plugin>
+             </plugins>
+
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${maven.compiler.encoding}</encoding>
+                    <!--屏蔽test-->
+                    <skip>true</skip>
+                    <!--传递额外的编译参数-->
+                    <compilerArgs>
+                        <arg>-Amapstruct.verbose=true</arg>
+                        <arg>-verbose</arg>
+                        <!--<arg>-Xlint:all,-options,-path</arg>-->
+                        <arg>-Xlint:unchecked</arg>
+                        <arg>-Xlint:deprecation</arg>
+                        <!--添加一些jar，让bootstrap ClassLoader加载-->
+                        <!--<arg>-Xbootclasspath:${java.home}/lib/rt.jar${path.separator}${java.home}/lib/jce.jar</arg>-->
+                        <!--解决本地jar包依赖问题-->
+                        <!--<arg>-Xextdirs:${basedir}\lib</arg>-->
+                    </compilerArgs>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <!-- 跳过单元测试-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <!-- Source -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!--编译阶段打源码包-->
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 配置 maven-clean-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <!-- 配置需要清理的目录 -->
+                    <filesets>
+                        <fileset>
+                            <directory>target/generated-sources</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>

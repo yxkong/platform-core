@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * 租户操作base（无登录）
@@ -21,4 +22,11 @@ import java.io.Serializable;
 public class TenantBase implements Serializable {
     @Schema(description ="租户", required = true)
     Integer tenantId;
+
+    public Integer getTenantId() {
+        if (Objects.isNull(tenantId)){
+            return 1001;
+        }
+        return tenantId;
+    }
 }
