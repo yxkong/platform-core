@@ -17,6 +17,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Schema(description = "代码生成字段信息存储查询")
 public class CodeColumnConfigQueryBase extends PageQueryBaseEntity {
+    @Schema(description = "库名")
+    private String dbName;
     @Schema(description = "表名")
     private String tableName;
 }

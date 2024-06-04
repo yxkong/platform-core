@@ -24,16 +24,14 @@ public class SqlGenUtil {
         for (Map<String, Object> column : columns) {
             String lowerColumnName = (String) column.get("lowerColumnName");
             testWhere(sbBuffer, lowerColumnName,column);
-            sbBuffer.append("\r\n\t\t\t\t").append(column.get("columnName")).append(",");
-            sbBuffer.append("\r\n\t\t\t</if>");
+            sbBuffer.append(column.get("columnName")).append(",</if>");
         }
         sbBuffer.append("\r\n\t\t</trim>");
         sbBuffer.append("\r\n\t\t<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\" >");
         for (Map<String, Object> column : columns) {
             String lowerColumnName = (String) column.get("lowerColumnName");
             testWhere(sbBuffer, lowerColumnName,column);
-            sbBuffer.append("\r\n\t\t\t\t#{").append(lowerColumnName).append("},");
-            sbBuffer.append("\r\n\t\t\t</if>");
+            sbBuffer.append("#{").append(lowerColumnName).append("},</if>");
         }
         sbBuffer.append("\r\n\t\t</trim>");
         return sbBuffer.toString();
@@ -60,8 +58,7 @@ public class SqlGenUtil {
 
             if (!columnName.equals(pkColumnName)) {
                 testWhere(sbBuffer, lowerColumnName,column);
-                sbBuffer.append("\r\n\t\t\t\t").append(columnName).append(" = ").append("#{").append(lowerColumnName).append("},");
-                sbBuffer.append("\r\n\t\t\t</if>");
+                sbBuffer.append(columnName).append(" = ").append("#{").append(lowerColumnName).append("},</if>");
             }
         }
         sbBuffer.append("\r\n\t\t</set>");
@@ -74,6 +71,12 @@ public class SqlGenUtil {
         sb.append("select ");
         sb.append("\r\n\t\t<include refid=\"BaseColumnList\" />");
         sb.append("\r\n\t\tfrom ").append(tableName).append(" t");
+        getWhere(columns, codeType, sb);
+
+        return sb.toString();
+    }
+
+    private static void getWhere(List<Map<String, Object>> columns, Integer codeType, StringBuilder sb) {
         sb.append("\r\n\t\t<where>");
 
         for (Map<String, Object> column : columns) {
@@ -89,7 +92,7 @@ public class SqlGenUtil {
                 continue;
             }
             testWhere(sb, lowerColumnName,column);
-            sb.append("\r\n\t\t\t\tand t.").append(columnName);
+            sb.append(" and t.").append(columnName);
 
             if (QueryTypeEnum.eq.getType().equals(queryType)) {
                 sb.append(" = #{").append(lowerColumnName).append("}");
@@ -111,8 +114,7 @@ public class SqlGenUtil {
                 String upperColumnName = column.get("upperColumnName").toString();
                 sb.append(" between #{").append(lowerColumnName).append("} and #{").append(upperColumnName).append("}");
             }
-
-            sb.append("\r\n\t\t\t</if>");
+            sb.append("</if>");
         }
 
         if (CodeTypeEnum.isSys(codeType)) {
@@ -125,9 +127,8 @@ public class SqlGenUtil {
         }
 
         sb.append("\r\n\t\t</where>");
-
-        return sb.toString();
     }
+
     private static boolean exclude(String column){
         if ("remark".equals(column) || "updateTime".equals(column) || "createTime".equals(column)){
             return true;
@@ -135,25 +136,18 @@ public class SqlGenUtil {
         return false;
     }
 
-    public static String buildListCountSql(List<Map<String, Object>> columns, String tableName, String pkColumnName) {
+    public static String buildListCountSql(List<Map<String, Object>> columns, String tableName, String pkColumnName,Integer codeType) {
         StringBuilder sb = new StringBuilder();
         sb.append("select count(t.").append(pkColumnName).append(") from ").append(tableName).append(" t");
-        sb.append("\r\n\t\t<where>");
-        for (Map<String, Object> column : columns) {
-            String lowerColumnName = (String) column.get("lowerColumnName");
-            String columnName = (String) column.get("columnName");
-            testWhere(sb, lowerColumnName,column);
-            sb.append("\r\n\t\t\t\tand t.").append(columnName).append(" = #{").append(lowerColumnName).append("}");
-            sb.append("\r\n\t\t\t</if>");
-        }
-        sb.append("\r\n\t\t</where>");
+        getWhere(columns, codeType, sb);
         return sb.toString();
     }
     public static String createResultStr(List<Map<String, Object>> columns) {
         StringJoiner joiner = new StringJoiner("\r\n\t\t");
         for (Map<String, Object> column : columns) {
             String lowerColumnName = (String) column.get("lowerColumnName");
-            String idTag = String.format("<id column=\"%s\" property=\"%s\" />", lowerColumnName, lowerColumnName);
+            String columnName = (String)column.get("columnName");
+            String idTag = String.format("<id column=\"%s\" property=\"%s\" />", columnName, lowerColumnName);
             joiner.add(idTag);
         }
         return joiner.toString();
@@ -163,12 +157,7 @@ public class SqlGenUtil {
         StringJoiner selectJoiner = new StringJoiner(",\n\t\t");
         for (Map<String, Object> column : columns) {
             String columnName = (String)column.get("columnName");
-            String lowerColumnName = (String)column.get("lowerColumnName");
-            if (columnName.equals(lowerColumnName)){
-                selectJoiner.add( "t." +columnName);
-            }else {
-                selectJoiner.add("t." +columnName + " as " + lowerColumnName);
-            }
+            selectJoiner.add( "t." +columnName);
         }
         return selectJoiner.toString();
     }

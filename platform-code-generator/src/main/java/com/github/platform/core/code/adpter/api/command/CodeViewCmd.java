@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CodeViewdCmd {
+public class CodeViewCmd {
     @Schema(description = "库名称")
     private String dbName;
     @Schema(description = "表名称")

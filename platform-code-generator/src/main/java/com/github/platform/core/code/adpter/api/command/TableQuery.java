@@ -21,9 +21,9 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TableQuery extends PageQueryBaseEntity {
+    @Schema(description = "库名",example = "platform")
+    private String dbName;
     @NotEmpty(message = "表名不能为空")
     @Schema(description = "表名",example = "t_sms_log")
     private String tableName;
-    @Schema(description = "代码类型",example = "0，后端管理，1，api项目")
-    private Integer codeType;
 }

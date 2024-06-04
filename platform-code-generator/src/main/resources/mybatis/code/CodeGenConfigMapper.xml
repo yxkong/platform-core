@@ -4,7 +4,8 @@
 
 	 <resultMap type="com.github.platform.core.code.domain.common.entity.CodeGenConfigBase" id="BaseResultMap">
     	 <id column="id" property="id" /> 
-		  <id column="tableName" property="tableName" /> 
+		  <id column="dbName" property="dbName" />
+		  <id column="tableName" property="tableName" />
 		  <id column="tableComment" property="tableComment" />
 		  <id column="author" property="author" />
 		  <id column="cover" property="cover" /> 
@@ -27,6 +28,7 @@
     </resultMap>
     <sql id="BaseColumnList">
     	 t.id ,
+    	 t.db_name as dbName,
  		 t.table_name as tableName ,
  		 t.table_comment as tableComment ,
  		 t.author as author ,
@@ -54,10 +56,13 @@
  			<if test="id != null">
  				id,
  			</if>
- 			<if test="tableName != null">
+			<if test="dbName != null and dbName != ''">
+				db_name,
+			</if>
+ 			<if test="tableName != null and tableName!= ''">
  				table_name,
  			</if>
-			<if test="tableComment != null">
+			<if test="tableComment != null and tableComment != ''">
 				table_comment,
  			</if>
  			<if test="author != null">
@@ -116,10 +121,13 @@
  			<if test="id != null">
  				#{id},
  			</if>
- 			<if test="tableName != null">
+			<if test="dbName != null and dbName != ''">
+				#{dbName},
+			</if>
+ 			<if test="tableName != null and tableName != ''">
  				#{tableName},
  			</if>
-			<if test="tableComment != null">
+			<if test="tableComment != null and tableComment != ''">
  				#{tableComment},
  			</if>
  			<if test="author != null">
@@ -253,41 +261,11 @@
  			<if test="id != null">
  				and t.id = #{id}
  			</if>
+		    <if test="dbName != null and dbName != ''">
+			    and t.db_name =  #{dbName}
+		    </if>
  			<if test="tableName != null">
  				and t.table_name  like concat('%', #{tableName}, '%')
- 			</if>
-			<if test="tableComment != null">
-				t.table_comment= #{tableComment},
-			</if>
- 			<if test="author != null">
- 				and t.author = #{author}
- 			</if>
- 			<if test="cover != null">
- 				and t.cover = #{cover}
- 			</if>
-			<if test="urlPrefix != null">
-				and t.url_prefix = #{urlPrefix},
-			</if>
-			<if test="entityName != null">
-				and t.entity_name = #{entityName},
-			</if>
- 			<if test="moduleName != null">
- 				and t.module_name = #{moduleName}
- 			</if>
- 			<if test="packageName != null">
- 				and t.package_name = #{packageName}
- 			</if>
- 			<if test="path != null">
- 				and t.path = #{path}
- 			</if>
- 			<if test="apiPath != null">
- 				and t.api_path = #{apiPath}
- 			</if>
- 			<if test="prefix != null">
- 				and t.prefix = #{prefix}
- 			</if>
- 			<if test="apiAlias != null">
- 				and t.api_alias = #{apiAlias}
  			</if>
 			<if test="tenantId != null">
 				and t.tenant_id = #{tenantId}
@@ -303,42 +281,15 @@
  			<if test="id != null">
  				and t.id = #{id}
  			</if>
+			<if test="dbName != null and dbName != ''">
+				and t.db_name =  #{dbName}
+			</if>
  			<if test="tableName != null">
  				and t.table_name = #{tableName}
  			</if>
 			<if test="tableComment != null">
 				t.table_comment= #{tableComment},
 			</if>
- 			<if test="author != null">
- 				and t.author = #{author}
- 			</if>
- 			<if test="cover != null">
- 				and t.cover = #{cover}
- 			</if>
-			<if test="urlPrefix != null">
-				and t.url_prefix = #{urlPrefix},
-			</if>
-			<if test="entityName != null">
-				and t.entity_name = #{entityName},
-			</if>
- 			<if test="moduleName != null">
- 				and t.module_name = #{moduleName}
- 			</if>
-			<if test="packageName != null">
-				and t.package_name = #{packageName}
-			</if>
- 			<if test="path != null">
- 				and t.path = #{path}
- 			</if>
- 			<if test="apiPath != null">
- 				and t.api_path = #{apiPath}
- 			</if>
- 			<if test="prefix != null">
- 				and t.prefix = #{prefix}
- 			</if>
- 			<if test="apiAlias != null">
- 				and t.api_alias = #{apiAlias}
- 			</if>
 			<if test="tenantId != null">
 				and t.tenant_id = #{tenantId}
 			</if>

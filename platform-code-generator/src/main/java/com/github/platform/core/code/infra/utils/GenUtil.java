@@ -311,7 +311,7 @@ public class GenUtil {
         genMap.put("updateSql",SqlGenUtil.buildUpdateSql(columns,tableName,pkColumnName,pkLowerColumnName));
 
         genMap.put("listSql",SqlGenUtil.buildListSql(queryColumns,tableName,codeType));
-        genMap.put("listCountSql",SqlGenUtil.buildListCountSql(queryColumns,tableName,pkColumnName));
+        genMap.put("listCountSql",SqlGenUtil.buildListCountSql(queryColumns,tableName,pkColumnName,codeType));
         return genMap;
     }
     private static   Map<String, Object> getStrId(String pkName){

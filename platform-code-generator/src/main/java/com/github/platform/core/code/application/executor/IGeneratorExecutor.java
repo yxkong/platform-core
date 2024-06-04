@@ -42,16 +42,16 @@ public interface IGeneratorExecutor {
      */
     PageBean<GenConfigDto> query(TableQueryContext context);
 
-    List<Map<String, Object>> preview(String tableName, Integer codeType) throws Exception;
+    List<Map<String, Object>> preview(String dbName,String tableName, Integer codeType) throws Exception;
 
-    void generatorCode(String tableName, Integer codeType) throws Exception;
+    void generatorCode(String dbName,String tableName, Integer codeType) throws Exception;
 
     GenDto findById(Long id);
 
     @Transactional(rollbackFor = Exception.class)
     void update(GenContext context);
 
-    byte[] downloadCode(String tableName, Integer codeType) throws Exception;
+    byte[] downloadCode(String dbName,String tableName, Integer codeType) throws Exception;
 
     void delete(Long id);
 }

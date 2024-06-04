@@ -100,19 +100,17 @@ public class GeneratorGatewayImpl extends BaseGatewayImpl implements IGeneratorG
 
     @Override
     public PageBean<GenConfigDto> findGenTables(TableQueryContext context) {
-        CodeGenConfigBase genConfigDO = null;
-        if (Objects.nonNull(context.getTableName())){
-            genConfigDO = CodeGenConfigBase.builder().tableName(context.getTableName()).build();
-        }
+        CodeGenConfigBase record = CodeGenConfigBase.builder().dbName(context.getDbName()).tableName(context.getTableName()).build();
+
         PageHelper.startPage(context.getPageNum(),context.getPageSize());
-        List<CodeGenConfigBase> list = genConfigMapper.findListBy(genConfigDO);
+        List<CodeGenConfigBase> list = genConfigMapper.findListBy(record);
         return genInfraConvert.ofPageGen(new PageInfo<>(list));
     }
 
     @Override
-    public GenConfigDto findGen(String tableName) {
-        CodeGenConfigBase genConfigDO = CodeGenConfigBase.builder().tableName(tableName).build();
-        List<CodeGenConfigBase> listBy = genConfigMapper.findListBy(genConfigDO);
+    public GenConfigDto findGen(String dbName,String tableName) {
+        CodeGenConfigBase record = CodeGenConfigBase.builder().dbName(dbName).tableName(tableName).build();
+        List<CodeGenConfigBase> listBy = genConfigMapper.findListBy(record);
         if (CollectionUtil.isNotEmpty(listBy)){
             return genInfraConvert.toDto(listBy.get(0)) ;
         }
@@ -143,11 +141,11 @@ public class GeneratorGatewayImpl extends BaseGatewayImpl implements IGeneratorG
 
     @Override
     public void syncGenConfig(TablesBase s) {
-        CodeGenConfigBase record = CodeGenConfigBase.builder().tableName(s.getTableName()).build();
+        CodeGenConfigBase record = CodeGenConfigBase.builder().dbName(s.getTableSchema()).tableName(s.getTableName()).build();
         List<CodeGenConfigBase> list = genConfigMapper.findListBy(record);
         if (CollectionUtil.isEmpty(list)){
-            CodeGenConfigBase configDO = convert.toGen(s);
-            genConfigMapper.insert(configDO);
+            CodeGenConfigBase genConfigBase = convert.toGen(s);
+            genConfigMapper.insert(genConfigBase);
         }
     }
 

@@ -57,6 +57,9 @@ public interface ColumnInfraConvert {
 
     TableDto toDto(TablesBase table);
 
+    @Mappings({
+            @Mapping(target = "dbName", source = "tableSchema"),
+    })
     CodeGenConfigBase toGen(TablesBase tablesBase);
 
     List<CodeColumnConfigBase> toListDo(List<ColumnContext> columns);

@@ -6,9 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
 /**
 * 代码生成器配置模型实体
 * @website <a href="https://www.5ycode.com/">5ycode</a>
@@ -20,19 +17,18 @@ import javax.validation.constraints.NotNull;
 @SuperBuilder
 @NoArgsConstructor
 public class CodeGenConfigBase extends BaseAdminEntity   {
-    @NotEmpty(message="表名（tableName）不能为空")
+    /** 数据库 */
+    @Schema(description = "表名")
+    protected String dbName;
     /** 表名 */
     @Schema(description = "表名")
     protected String tableName;
-    @NotEmpty(message="表描述（tableComment）不能为空")
     /** 表描述 */
     @Schema(description = "表描述")
     protected String tableComment;
-    @NotEmpty(message="作者（author）不能为空")
     /** 作者 */
     @Schema(description = "作者")
     protected String author;
-    @NotNull(message="是否覆盖（cover）不能为空")
     /** 是否覆盖 */
     @Schema(description = "是否覆盖")
     protected Integer cover;
@@ -45,7 +41,6 @@ public class CodeGenConfigBase extends BaseAdminEntity   {
     /** 模块名称 */
     @Schema(description = "模块名称")
     protected String moduleName;
-    @NotEmpty(message="生成包路径（packageName）不能为空")
     /** 生成包路径 */
     @Schema(description = "生成包路径")
     protected String packageName;

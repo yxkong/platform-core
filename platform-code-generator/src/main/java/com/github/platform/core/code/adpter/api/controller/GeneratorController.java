@@ -1,6 +1,6 @@
 package com.github.platform.core.code.adpter.api.controller;
 
-import com.github.platform.core.code.adpter.api.command.DownloadCmd;
+import com.github.platform.core.code.adpter.api.command.CodeViewCmd;
 import com.github.platform.core.code.adpter.api.command.GenCmd;
 import com.github.platform.core.code.adpter.api.command.SyncCommand;
 import com.github.platform.core.code.adpter.api.command.TableQuery;
@@ -72,11 +72,11 @@ public class GeneratorController extends BaseController {
     @Operation(summary = "代码生成预览",tags = {"gen"})
     @OptLog(module = "generator",title = "preview",persistent = false)
     @PostMapping("preview")
-    public ResultBean<List<Map<String, Object>>> preview(@RequestBody TableQuery query) throws Exception {
-        if (Objects.isNull(query) || Objects.isNull(query.getTableName())){
+    public ResultBean<List<Map<String, Object>>> preview(@RequestBody CodeViewCmd cmd) throws Exception {
+        if (Objects.isNull(cmd) || Objects.isNull(cmd.getTableName())){
             return ResultBeanUtil.fail("tableName不能为空",null);
         }
-        List<Map<String, Object>> preview = IGeneratorExecutor.preview(query.getTableName(),query.getCodeType());
+        List<Map<String, Object>> preview = IGeneratorExecutor.preview(cmd.getDbName(),cmd.getTableName(),cmd.getCodeType());
         if (preview == null){
             return ResultBeanUtil.fail("请检查配置必填项！",null);
         }
@@ -102,8 +102,8 @@ public class GeneratorController extends BaseController {
     @OptLog(module = "generator",title = "download")
     @Operation(summary = "代码下载",tags = {"gen"})
     @PostMapping("/download")
-    public void download(HttpServletResponse response,@RequestBody DownloadCmd cmd) throws Exception {
-        byte[] data = IGeneratorExecutor.downloadCode(cmd.getTableName(),cmd.getCodeType());
+    public void download(HttpServletResponse response,@RequestBody CodeViewCmd cmd) throws Exception {
+        byte[] data = IGeneratorExecutor.downloadCode(cmd.getDbName(),cmd.getTableName(),cmd.getCodeType());
         genCode(response, data);
     }
     /**

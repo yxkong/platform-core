@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="${mapperPackage}.${entityName}Mapper">
-
+	<!--数据库字段与属性映射-->
 	<resultMap type="${domainPackage}.common.entity.${entityName}Base" id="BaseResultMap">
 		${resultMap}
     </resultMap>
+	<!--通用查询字段封装-->
     <sql id="BaseColumnList">
 		${baseColumnList}
     </sql>

@@ -52,7 +52,7 @@ public interface IGeneratorGateway {
      * @param tableName
      * @return
      */
-    GenConfigDto findGen(String tableName);
+    GenConfigDto findGen(String dbName,String tableName);
 
     /**
      * 根据id查询配置信息
