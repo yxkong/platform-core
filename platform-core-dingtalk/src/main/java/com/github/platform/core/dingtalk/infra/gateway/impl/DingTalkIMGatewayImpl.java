@@ -1,7 +1,9 @@
 package com.github.platform.core.dingtalk.infra.gateway.impl;
 
+import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.dingtalk.domain.constant.DingMessageTemplateTypeEnum;
+import com.github.platform.core.dingtalk.domain.constant.DingUserTypeEnum;
 import com.github.platform.core.dingtalk.domain.gateway.IDingTalkIMGateway;
 import com.github.platform.core.dingtalk.infra.configuration.DingProperties;
 import com.github.platform.core.dingtalk.infra.service.IDingTalkService;
@@ -59,20 +61,14 @@ public class DingTalkIMGatewayImpl implements IDingTalkIMGateway {
     }
 
     @Override
-    public boolean sendProcessMessage(String groupId, String title, String nodeKey, String desc) {
+    public boolean sendMarkdownMessage(String groupId, String title, String markdown, List<String> users, DingUserTypeEnum type) {
         if (StringUtils.isEmpty(groupId)){
             return false;
         }
-        String markdown =  String.format(
-                "**【节点:】**  %s  \n  " +
-                        "**【描述:】**  %s  \n  " +
-                        "**【时间:】**  %s  \n  ",
-                nodeKey, desc, LocalDateTimeUtil.dateTimeDefault()
-        );
         Map<String, String> markdownMap = getMarkdownMap(title, markdown);
-        return dingTalkService.sendMessage(groupId,dingProperties.getRobotCode(),null,null,true,DingMessageTemplateTypeEnum.markdown,markdownMap);
+        boolean atAll = CollectionUtil.isEmpty(users) ? true :false;
+        return dingTalkService.sendMessage(groupId,dingProperties.getRobotCode(),users,type,atAll, DingMessageTemplateTypeEnum.markdown,markdownMap);
     }
-
     @Override
     public Pair<Boolean, String> groupUserOpt(String groupId, List<String> users, Boolean isAdd) {
         return dingTalkService.groupUserOpt(groupId,users,isAdd);

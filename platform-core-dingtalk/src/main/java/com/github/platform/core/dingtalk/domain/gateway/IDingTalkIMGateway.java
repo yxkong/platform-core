@@ -1,5 +1,6 @@
 package com.github.platform.core.dingtalk.domain.gateway;
 
+import com.github.platform.core.dingtalk.domain.constant.DingUserTypeEnum;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -38,25 +39,24 @@ public interface IDingTalkIMGateway {
     String createGroup(List<String> userList, String ownerUserId, String title, List<String> subAdminList);
 
     /**
-     * 发送markdown消息
-     * @param groupId
-     * @param title
-     * @param markdown
+     * 发送markdown消息，@所有人
+     * @param groupId  群id
+     * @param title 消息标题
+     * @param markdown markdown 文本
      * @return
      */
     boolean sendMarkdownMessage(String groupId, String title, String markdown);
 
-
     /**
-     * 发送流程流转消息
-     * @param groupId
-     * @param title
-     * @param nodeKey
-     * @param desc
+     * 指定用户类型，发送 markdown消息
+     * @param groupId  群id
+     * @param title 消息标题
+     * @param markdown markdown 文本
+     * @param users  @用户
+     * @param type 用户类型
      * @return
      */
-    boolean sendProcessMessage(String groupId,String title, String nodeKey,String desc);
-
+    boolean sendMarkdownMessage(String groupId, String title, String markdown, List<String> users, DingUserTypeEnum type);
 
     /**
      * 群人员操作

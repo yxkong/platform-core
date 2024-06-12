@@ -75,7 +75,7 @@ public class MultiInstanceHandler{
 
         }
         if (log.isDebugEnabled()){
-            log.debug("当前ROLE节点用户：{}",JsonUtils.toJson(candidateUsers));
+            log.debug("当前ROLE节点:{} 对应用户：{}",userTask.getCandidateGroups(),JsonUtils.toJson(candidateUsers));
         }
         delegate.setVariableLocal(FlwConstant.CANDIDATE,candidateUsers);
         return candidateUsers;

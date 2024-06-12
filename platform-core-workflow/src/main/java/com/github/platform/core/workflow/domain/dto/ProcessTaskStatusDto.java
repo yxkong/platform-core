@@ -37,4 +37,15 @@ public class ProcessTaskStatusDto {
      * 已拒绝
      */
     private Set<String> rejectedTasks;
+    /**
+     * 跳过任务，冗余字段，需要定制业务自己填充
+     */
+    private Set<String> skipTasks;
+
+    public ProcessTaskStatusDto(Set<String> finishedTasks, Set<String> finishedSequenceFlow, Set<String> activeTasks, Set<String> rejectedTasks) {
+        this.finishedTasks = finishedTasks;
+        this.finishedSequenceFlow = finishedSequenceFlow;
+        this.activeTasks = activeTasks;
+        this.rejectedTasks = rejectedTasks;
+    }
 }
