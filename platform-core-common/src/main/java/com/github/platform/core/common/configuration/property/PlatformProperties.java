@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -29,6 +30,8 @@ public class PlatformProperties {
     private List<String> includeHeaders;
     /**是否演示模式*/
     private boolean demoMode;
+    /**日志级别*/
+    private String logLevel;
 
     public Set<String> getIncludeHeaders() {
         if (CollectionUtil.isNotEmpty(includeHeaders)){
@@ -41,5 +44,29 @@ public class PlatformProperties {
             return "Asia/Shanghai";
         }
         return this.defaultZone;
+    }
+    public boolean isDebug(){
+        if (isClose()){
+            return false;
+        }
+        return Objects.equals(this.logLevel,"debug");
+    }
+    private boolean isClose(){
+        if (StringUtils.isEmpty(logLevel) || Objects.equals(this.logLevel,"close")){
+            return true;
+        }
+        return false;
+    }
+    public boolean isInfo(){
+        if (isClose()){
+            return false;
+        }
+        return Objects.equals(this.logLevel,"info");
+    }
+    public boolean isWarn(){
+        if (isClose()){
+            return false;
+        }
+        return Objects.equals(this.logLevel,"warn");
     }
 }

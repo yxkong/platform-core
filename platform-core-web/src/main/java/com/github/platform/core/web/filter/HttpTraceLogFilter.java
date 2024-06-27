@@ -1,5 +1,6 @@
 package com.github.platform.core.web.filter;
 
+import com.github.platform.core.common.configuration.property.PlatformProperties;
 import com.github.platform.core.common.constant.SpringBeanOrderConstant;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.web.constant.WebConstant;
@@ -28,6 +29,10 @@ import java.util.Map;
  */
 @Slf4j
 public class HttpTraceLogFilter extends PlatformOncePerRequestFilter {
+    private PlatformProperties platformProperties;
+    public HttpTraceLogFilter(PlatformProperties platformProperties) {
+        this.platformProperties = platformProperties;
+    }
 
     @Override
     public int getOrder() {
@@ -51,28 +56,35 @@ public class HttpTraceLogFilter extends PlatformOncePerRequestFilter {
             filterChain.doFilter(requestWrapper, responseWrapper);
             stopWatch.stop();
         } finally {
+            HttpTraceLog traceLog = getHttpTraceLog(request, response, stopWatch, requestWrapper, responseWrapper);
             // 记录日志
-            if(log.isInfoEnabled()){
-                int  status = response.getStatus();
-                HttpTraceLog traceLog = HttpTraceLog.builder()
-                        .ip(WebUtil.getIpHost(request))
-                        .path(request.getRequestURI())
-                        .method(request.getMethod())
-                        .timeTaken(stopWatch.getTotalTimeMillis())
-                        .time(LocalDateTime.now().toString())
-                        .headersMap(RequestHolder.getIncludeHeaders(requestWrapper,WebConstant.INCLUDE_HEADERS))
-                        .parameterMap(requestWrapper.getParameterMap())
-                        .status(status)
-                        .requestBody(RequestHolder.getRequestBody(requestWrapper))
-                        .responseBody(RequestHolder.getResponseBody(responseWrapper))
-                        .build();
+            if (log.isWarnEnabled() && platformProperties.isWarn()){
+                log.warn("Http trace log: {}", JsonUtils.toJson(traceLog));
+            } else if (platformProperties.isInfo() && log.isInfoEnabled()){
                 log.info("Http trace log: {}", JsonUtils.toJson(traceLog));
+            } else {
+                log.debug("Http trace log: {}", JsonUtils.toJson(traceLog));
             }
             if (p2.getLeft()){
                 responseWrapper.copyBodyToResponse();
             }
         }
 
+    }
+
+    private static HttpTraceLog getHttpTraceLog(HttpServletRequest request, HttpServletResponse response, StopWatch stopWatch, ContentCachingRequestWrapper requestWrapper, ContentCachingResponseWrapper responseWrapper) {
+       return HttpTraceLog.builder()
+                .ip(WebUtil.getIpHost(request))
+                .path(request.getRequestURI())
+                .method(request.getMethod())
+                .timeTaken(stopWatch.getTotalTimeMillis())
+                .time(LocalDateTime.now().toString())
+                .headersMap(RequestHolder.getIncludeHeaders(requestWrapper,WebConstant.INCLUDE_HEADERS))
+                .parameterMap(requestWrapper.getParameterMap())
+                .status(response.getStatus())
+                .requestBody(RequestHolder.getRequestBody(requestWrapper))
+                .responseBody(RequestHolder.getResponseBody(responseWrapper))
+                .build();
     }
 
     @Data

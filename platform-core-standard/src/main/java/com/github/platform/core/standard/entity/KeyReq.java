@@ -1,4 +1,4 @@
-package com.github.platform.core.sys.adapter.api.command.account;
+package com.github.platform.core.standard.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -16,8 +16,7 @@ import java.io.Serializable;
 @Schema(name = "KeyReq",title = "key查询")
 @Data
 @NoArgsConstructor
-@Deprecated
-public class KeyQuery implements Serializable {
+public class KeyReq implements Serializable {
     /**
      * 关键词
      */

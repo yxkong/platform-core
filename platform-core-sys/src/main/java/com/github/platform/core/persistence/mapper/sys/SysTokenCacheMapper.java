@@ -67,4 +67,12 @@ public interface SysTokenCacheMapper  {
     * @return 删除的条数
     */
     int deleteByIds(@Param("ids")Long[] ids);
+
+    /**
+     *
+     * @param tenantId
+     * @param loginName
+     * @return
+     */
+    SysTokenCacheBase findByLoginName(@Param("tenantId")Integer tenantId, @Param("loginName")String loginName);
 }

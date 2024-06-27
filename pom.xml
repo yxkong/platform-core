@@ -10,8 +10,8 @@
     <name>platform-core</name>
     <description>后台管理开发平台- 基于Spring Cloud，使用DDD实现的微服务架构</description>
     <properties>
-        <revision>0.1.3-release</revision>
-<!--        <revision>0.1-SNAPSHOT</revision>-->
+        <revision>0.1.6-release</revision>
+<!--        <revision>0.1.5-SNAPSHOT</revision>-->
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
@@ -32,17 +32,17 @@
         <maven.javadoc.plugin.version>3.5.0</maven.javadoc.plugin.version>
         <flatten.maven.plugin.version>1.6.0</flatten.maven.plugin.version>
     </properties>
-    <profiles>
-        <profile>
-            <id>deploy-platform-dependencies</id>
-            <modules>
-                <module>platform-dependencies</module>
-            </modules>
-            <build>
-                <defaultGoal>deploy</defaultGoal>
-            </build>
-        </profile>
-    </profiles>
+<!--    <profiles>-->
+<!--        <profile>-->
+<!--            <id>deploy-platform-dependencies</id>-->
+<!--            <modules>-->
+<!--                <module>platform-dependencies</module>-->
+<!--            </modules>-->
+<!--            <build>-->
+<!--                <defaultGoal>deploy</defaultGoal>-->
+<!--            </build>-->
+<!--        </profile>-->
+<!--    </profiles>-->
     <modules>
         <module>platform-dependencies</module>
         <module>platform-code-generator</module>

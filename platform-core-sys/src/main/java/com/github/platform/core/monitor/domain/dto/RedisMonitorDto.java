@@ -42,8 +42,11 @@ public class RedisMonitorDto {
         @Schema(description = "调用次数")
         private Long calls;
 
-        @Schema(description = "消耗 CPU 秒数")
+        @Schema(description = "消耗 CPU 微秒数")
         private Long usec;
+
+        @Schema(description = "命令平均执行所消耗的微秒数")
+        private Double usecPerCall;
 
     }
 }

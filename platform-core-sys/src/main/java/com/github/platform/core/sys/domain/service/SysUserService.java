@@ -6,7 +6,6 @@ import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.annotation.DomainService;
 import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
-import com.github.platform.core.sys.application.executor.ISysThirdUserExecutor;
 import com.github.platform.core.sys.domain.constant.DeptConstant;
 import com.github.platform.core.sys.domain.constant.UserLogBizTypeEnum;
 import com.github.platform.core.sys.domain.context.RegisterContext;

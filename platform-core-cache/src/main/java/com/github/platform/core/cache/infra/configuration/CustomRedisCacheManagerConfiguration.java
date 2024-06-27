@@ -5,8 +5,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.cache.domain.constant.CacheNameEnum;
 import com.github.platform.core.cache.infra.configuration.properties.RedisCacheExpiresProperties;
@@ -26,12 +31,16 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -57,6 +66,15 @@ public class CustomRedisCacheManagerConfiguration {
         this.cacheProperties = cacheProperties;
         this.redisCacheExpiresProperties = redisCacheExpiresProperties;
     }
+
+    /**
+     * 使用lettuce的连接工厂，需要手动绑定redis
+     * @return
+     */
+//    @Bean
+//    public RedisConnectionFactory redisConnectionFactory() {
+//        return new LettuceConnectionFactory();
+//    }
     /**
      * 如果引入了redisson
      *    @Qualifier("redissonConnectionFactory") RedisConnectionFactory redisConnectionFactory,
@@ -103,8 +121,18 @@ public class CustomRedisCacheManagerConfiguration {
     }
 
     public static RedisSerializer<Object> buildRedisSerializer() {
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addDeserializer(LocalDate.class,
+                new LocalDateDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        javaTimeModule.addDeserializer(LocalDateTime.class,
+                new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        javaTimeModule.addSerializer(LocalDate.class,
+                new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        javaTimeModule.addSerializer(LocalDateTime.class,
+                new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         ObjectMapper objectMapper = new ObjectMapper()
-                .registerModule(new JavaTimeModule())
+                .registerModule(javaTimeModule)
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY)
                 .activateDefaultTyping(

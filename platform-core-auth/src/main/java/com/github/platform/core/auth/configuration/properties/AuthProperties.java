@@ -77,7 +77,7 @@ public class AuthProperties {
         /**应用模式*/
         private String mode;
         public boolean isDemoMode(){
-            return "demo".equals(this.mode);
+            return Objects.equals("demo",this.mode);
         }
         public List<String> getInnerUsers(){
             if (CollectionUtil.isEmpty(this.innerUsers)){

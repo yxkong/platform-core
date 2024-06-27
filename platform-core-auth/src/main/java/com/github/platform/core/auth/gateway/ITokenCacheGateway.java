@@ -24,7 +24,7 @@ public interface ITokenCacheGateway {
      * @param loginName
      * @return
      */
-    List<TokenCacheEntity> findByLoginName(Integer tenantId, String loginName);
+    TokenCacheEntity findByLoginName(Integer tenantId, String loginName);
 
     /**
      * 保存或更新token

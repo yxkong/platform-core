@@ -1,6 +1,7 @@
 package com.github.platform.core.sys.domain.common.entity;
 
 import com.github.platform.core.common.entity.BaseAdminEntity;
+import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 /**
 * 用户信息模型实体
@@ -57,4 +59,11 @@ public class SysUserBase extends BaseAdminEntity   {
     /** 接口密钥 */
     @Schema(description = "接口密钥")
     protected String secretKey;
+    @Schema(description = "岗位编码")
+    protected String postCode;
+    @Schema(description = "上次修改密码时间")
+    protected LocalDateTime lastModifyPwdTime;
+    /** 删除状态 */
+    @Schema(description = "删除状态")
+    protected Integer deleted;
 }

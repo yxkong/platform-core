@@ -1,6 +1,7 @@
 package com.github.platform.core.sys.adapter.api.controller;
 
 import com.github.platform.core.auth.annotation.RequiredLogin;
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.groups.Default;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 角色相关接口
@@ -75,6 +77,9 @@ public class SysRoleController extends BaseController {
     @PostMapping("/add")
     public ResultBean<Void> add(@Validated @RequestBody SysRoleCmd cmd) {
         SysRoleContext context = convert.toContext(cmd);
+        if (Objects.isNull(context.getTenantId())){
+            context.setTenantId(LoginUserInfoUtil.getTenantId());
+        }
         roleExecutor.addRole(context);
         return buildSucResp();
     }

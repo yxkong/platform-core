@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.platform</groupId>
-            <artifactId>platform-core-auth-sys</artifactId>
+            <artifactId>platform-core-schedule</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.bitwalker</groupId>

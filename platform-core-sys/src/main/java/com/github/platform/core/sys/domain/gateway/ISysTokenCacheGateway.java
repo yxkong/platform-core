@@ -25,6 +25,13 @@ public interface ISysTokenCacheGateway {
     * @return 分页结果
     */
     PageBean<SysTokenCacheDto> query(SysTokenCacheQueryContext context);
+
+    /**
+     * 列表查询
+     * @param context
+     * @return
+     */
+    List<SysTokenCacheDto> findListBy(SysTokenCacheQueryContext context);
     /**
     * 新增token缓存
     * @param context 新增上下文
@@ -50,7 +57,7 @@ public interface ISysTokenCacheGateway {
      * @param tenantId
      * @return
      */
-    List<SysTokenCacheDto> findByLoginName(Integer tenantId, String loginName);
+    SysTokenCacheDto findByLoginName(Integer tenantId, String loginName);
     /**
     * 修改token缓存
     * @param context 修改上下文

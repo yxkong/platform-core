@@ -62,8 +62,13 @@ public class TrackChangeManager {
         }
         initChanges(clazz.getSuperclass());
     }
-    public String getChangeResult(){
-        log.info("result:{}",JsonUtils.toJson(this.changes));
+
+    /**
+     * 获取改变结果
+     * @param prefixSplit
+     * @return
+     */
+    public String getChangeResult(String prefixSplit){
         if (this.changes.isEmpty()){
             return null;
         }
@@ -72,6 +77,7 @@ public class TrackChangeManager {
                 .filter(s-> !Objects.equals(s.getMerge(),"ignore"))
                 .sorted((a,b)->Integer.compare(a.getSort(),b.getSort()))
                 .forEach(s->{
+                    sb.append(prefixSplit);
                     if (StringUtils.isNotEmpty(s.getMerge())){
                         sb.append(s.getRemark()).append("由【");
                         TrackChangeRecord merge = changes.stream().filter(x -> x.getFieldName().equals(s.getMerge())).findAny().get();

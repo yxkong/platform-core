@@ -41,6 +41,13 @@ public class SysTokenCacheGatewayImpl extends BaseGatewayImpl implements ISysTok
     }
 
     @Override
+    public List<SysTokenCacheDto> findListBy(SysTokenCacheQueryContext context) {
+        SysTokenCacheBase record = sysTokenCacheConvert.toSysTokenCacheBase(context);
+        List<SysTokenCacheBase> list = sysTokenCacheMapper.findListBy(record);
+        return sysTokenCacheConvert.toDtos(list);
+    }
+
+    @Override
     public SysTokenCacheDto insert(SysTokenCacheContext context) {
         SysTokenCacheBase record = sysTokenCacheConvert.toSysTokenCacheBase(context);
         sysTokenCacheMapper.insert(record);
@@ -63,12 +70,9 @@ public class SysTokenCacheGatewayImpl extends BaseGatewayImpl implements ISysTok
     }
 
     @Override
-    public List<SysTokenCacheDto> findByLoginName(Integer tenantId, String loginName) {
-        List<SysTokenCacheBase> list = sysTokenCacheMapper.findListBy(SysTokenCacheBase.builder().tenantId(tenantId).loginName(loginName).build());
-        if (CollectionUtil.isEmpty(list)){
-            return null;
-        }
-        return sysTokenCacheConvert.toDtos(list);
+    public SysTokenCacheDto findByLoginName(Integer tenantId, String loginName) {
+        SysTokenCacheBase record = sysTokenCacheMapper.findByLoginName(tenantId,loginName);
+        return sysTokenCacheConvert.toDto(record);
     }
 
     @Override

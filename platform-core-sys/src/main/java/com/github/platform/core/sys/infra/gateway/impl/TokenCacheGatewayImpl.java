@@ -11,6 +11,7 @@ import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import com.github.platform.core.sys.domain.context.SysTokenCacheContext;
+import com.github.platform.core.sys.domain.context.SysTokenCacheQueryContext;
 import com.github.platform.core.sys.domain.dto.SysTokenCacheDto;
 import com.github.platform.core.sys.domain.gateway.ISysTokenCacheGateway;
 import com.github.platform.core.sys.infra.convert.SysTokenCacheInfraConvert;
@@ -49,28 +50,18 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
         if (Objects.isNull(tokenCacheDto)){
             return null;
         }
-//        //续期一次（只有外层过期才会续期）
-//        SysTokenCacheContext context = SysTokenCacheContext.builder()
-//                .id(tokenCacheDto.getId())
-//                .token(token)
-//                .loginName(tokenCacheDto.getLoginName())
-//                .loginInfo(tokenCacheDto.getLoginInfo())
-//                .expireTime(LocalDateTimeUtil.plusSecond(getSeconds()))
-//                .remark(tokenCacheDto.getExpireTime()+"")
-//                .build();
-//        sysTokenCacheGateway.update(context);
         return sysTokenCacheConvert.toEntity(tokenCacheDto);
     }
 
     @Override
-    public List<TokenCacheEntity> findByLoginName(Integer tenantId, String loginName) {
-        List<SysTokenCacheDto> list = sysTokenCacheGateway.findByLoginName(tenantId, loginName);
-        return sysTokenCacheConvert.toEntityList(list);
+    public TokenCacheEntity findByLoginName(Integer tenantId, String loginName) {
+
+        SysTokenCacheDto record = sysTokenCacheGateway.findByLoginName(tenantId, loginName);
+        return sysTokenCacheConvert.toEntity(record);
     }
 
     @Override
     public TokenCacheEntity saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo ,boolean isLogin) {
-        long seconds = getSeconds();
         LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
         if (!AuthUtil.checkLogin()){
             log.warn("未检测到登录信息，不做缓存，token:{} loginName:{} loginInfo:{}",token,loginName,loginInfo);
@@ -84,7 +75,7 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
                 .token(token)
                 .loginName(loginName)
                 .loginInfo(loginInfo)
-                .expireTime(localDateTime.plusSeconds(seconds))
+                .expireTime(localDateTime.plusSeconds( getSeconds()))
                 .build();
         if (Objects.nonNull(userInfo)){
             if (isLogin){
@@ -138,13 +129,15 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
 
     @Override
     public void expireByLoginName(Integer tenantId, String loginName) {
-        List<SysTokenCacheDto> list = sysTokenCacheGateway.findByLoginName(tenantId, loginName);
+        //查询所有有效的token，并过期，这里不能使用批量更新，因为要操作缓存
+        SysTokenCacheQueryContext queryContext = SysTokenCacheQueryContext.builder().tenantId(tenantId).loginName(loginName).searchStartTime(LocalDateTimeUtil.dateTimeDefaultShort()).build();
+        List<SysTokenCacheDto> list = sysTokenCacheGateway.findListBy(queryContext);
+
         if (CollectionUtil.isEmpty(list)){
             return;
         }
         list.forEach(s->{
             sysTokenCacheGateway.expire(toExpireContext(s));
         });
-
     }
 }

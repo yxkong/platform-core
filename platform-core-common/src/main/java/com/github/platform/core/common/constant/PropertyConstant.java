@@ -17,6 +17,8 @@ public interface PropertyConstant {
     String CON_SNOWFLAKE_ENABLED = "platform.snowflake.enabled";
     String DATA_ASYNC = "platform.async";
     String DATA_DING_TALK = "platform.ding-talk";
+    /**redisson 配置*/
+    String DATA_REDISSON = "platform.redisson";
     /**延迟队列配置*/
     String DATA_DELAY = "platform.delay";
 
@@ -28,6 +30,10 @@ public interface PropertyConstant {
      * 从nacos拉取配置到env
      */
     String CON_ClOUD_NACOS_ENABLED = "platform.cloud.nacos.enabled";
+    /**
+     * redisson 是否开启配置
+     * */
+    String CON_REDISSON_ENABLED = "platform.redisson.enabled";
     /***
      * flowable配置
      */

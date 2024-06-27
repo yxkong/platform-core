@@ -38,7 +38,7 @@ public interface ITokenService {
     String saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo,boolean isLogin);
 
     /**
-     * 过期用户登陆信息, 对应用户的所有登录信息
+     * 演示环境下不过期历史登录，非演示环境，新的登录会过期历史登录
      * @param tenantId 租户信息
      * @param loginName
      */

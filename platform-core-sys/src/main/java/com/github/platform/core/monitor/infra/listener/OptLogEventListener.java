@@ -1,5 +1,6 @@
 package com.github.platform.core.monitor.infra.listener;
 
+import com.github.platform.core.common.configuration.property.PlatformProperties;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.log.domain.constants.LogOutTypeEnum;
@@ -35,6 +36,8 @@ public class OptLogEventListener implements ApplicationListener<OptLogEvent> {
     private ISysOptLogService optLogService;
     @Resource
     private SysOptLogInfraConvert convert;
+    @Resource
+    private PlatformProperties platformProperties;
     @Override
     public void onApplicationEvent(OptLogEvent event) {
         try {
@@ -46,28 +49,39 @@ public class OptLogEventListener implements ApplicationListener<OptLogEvent> {
                 entity.setResponseBody(null);
             }
             if (LogOutTypeEnum.local.getType().equals(logProperties.getType())){
-                log.warn("opt log:{}", JsonUtils.toJson(entity));
+                log(entity);
             } else if (LogOutTypeEnum.db.getType().equals(logProperties.getType())){
                 // 入库
                 if (entity.getPersistent()) {
-                    optLogService.insert(getOptLogDO(entity));
+                    optLogService.insert(getOptLogBase(entity));
                 }
             } else if (LogOutTypeEnum.kafka.getType().equals(logProperties.getType())){
                 // 发送kafka
             } else if (LogOutTypeEnum.mixDb.getType().equals(logProperties.getType())){
-                log.warn("opt log:{}", JsonUtils.toJson(entity));
+                log(entity);
                 //入库
                 if (entity.getPersistent()){
-                    optLogService.insert(getOptLogDO(entity));
+                    optLogService.insert(getOptLogBase(entity));
                 }
             } else if (LogOutTypeEnum.mixKafka.getType().equals(logProperties.getType())){
-                log.warn("opt log:{}", JsonUtils.toJson(entity));
+                log(entity);
                 // 发送kafka
             }
         } catch (Exception e) {
             log.error("监听opt log",e);
         }
     }
+
+    private void log(OptLogEntity entity) {
+        if (logProperties.isDebug() && log.isDebugEnabled()){
+            log.debug("opt log:{}", JsonUtils.toJson(entity));
+        } else if(logProperties.isInfo() && log.isInfoEnabled()){
+            log.info("opt log:{}", JsonUtils.toJson(entity));
+        } else if(logProperties.isWarn() && log.isWarnEnabled()){
+            log.warn("opt log:{}", JsonUtils.toJson(entity));
+        }
+    }
+
     private boolean isRequest(){
         if (LogScopeEnum.all.getScope().equals(logProperties.getScope()) ||
                 LogScopeEnum.request.getScope().equals(logProperties.getScope())){
@@ -82,7 +96,7 @@ public class OptLogEventListener implements ApplicationListener<OptLogEvent> {
         }
         return false;
     }
-    private SysOptLogBase getOptLogDO(OptLogEntity entity ){
+    private SysOptLogBase getOptLogBase(OptLogEntity entity ){
         SysOptLogBase optLogBase = convert.toSysOptLogBase(entity);
         if (StringUtils.isNotEmpty(entity.getRequestBody()) && entity.getRequestBody().length()> MAX_LENGTH){
             optLogBase.setRequestBody(entity.getRequestBody().substring(0,MAX_LENGTH));

@@ -76,7 +76,7 @@ public interface SysUserMapper  {
 	 * @param loginName
 	 * @return
 	 */
-	SysUserBase findByLoginName(@Param("loginName") String loginName);
+	SysUserBase findByLoginName(@Param("loginName") String loginName,@Param("tenantId") Integer tenantId);
 
 
 	/**
@@ -85,7 +85,7 @@ public interface SysUserMapper  {
 	 * @param mobile
 	 * @return
 	 */
-	SysUserBase findByMobile(@Param("mobile") String mobile);
+	SysUserBase findByMobile(@Param("mobile") String mobile,@Param("tenantId") Integer tenantId);
 
 	/**
 	 * 根据密钥查询
@@ -96,7 +96,8 @@ public interface SysUserMapper  {
 
     /**
      * 修改密码
-     *
+	 * 1) 重置的时候，需要将last_modify_pwd_time清空
+     * 2) 修改的时候，将last_modify_pwd_time 赋值为当前时间
      * @param record
      * @return
      */

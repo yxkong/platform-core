@@ -159,6 +159,14 @@
 		</where>
 		limit 200
 	</select>
+	<select id="findByLoginName"  resultMap="BaseResultMap">
+		select
+		<include refid="BaseColumnList" />,t.login_info as loginInfo
+		from t_sys_token_cache t
+		where t.login_name = #{loginName} and t.tenant_id = #{tenantId}
+		and t.expire_time > now()
+		order by id desc limit 1
+	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysTokenCacheBase">
 		select 
 		<include refid="BaseColumnList" />
@@ -204,6 +212,7 @@
 			</if>
 		</where>
 	</select>
+
 	<delete id="deleteById" parameterType="java.lang.Long">
 		delete from t_sys_token_cache where id = #{id}
 	</delete>

@@ -3,33 +3,23 @@ package com.github.platform.core.dingtalk.adapter.api.controller;
 import com.github.platform.core.auth.annotation.NoLogin;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
-import com.github.platform.core.common.utils.SignUtil;
-import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.dingtalk.adapter.api.command.DingAuthCmd;
 import com.github.platform.core.dingtalk.adapter.api.command.DingInitCmd;
 import com.github.platform.core.dingtalk.application.executor.IDingLoginExecutor;
-import com.github.platform.core.dingtalk.domain.constant.DingTalkConstant;
 import com.github.platform.core.dingtalk.domain.gateway.IDingTalkGateway;
-import com.github.platform.core.dingtalk.infra.configuration.DingProperties;
-import com.github.platform.core.dingtalk.infra.service.IDingTalkService;
 import com.github.platform.core.log.infra.annotation.OptLog;
-import com.github.platform.core.standard.constant.ResultStatusEnum;
-import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.entity.dto.ResultBean;
-import com.github.platform.core.sys.domain.dto.SysConfigDto;
 import com.github.platform.core.sys.domain.dto.resp.LoginResult;
-import com.github.platform.core.sys.domain.gateway.ISysCommonGateway;
-import com.github.platform.core.sys.domain.model.user.UserEntity;
 import com.github.platform.core.web.web.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Objects;
 
 /**
  * 钉钉接口

@@ -2,6 +2,7 @@ package com.github.platform.core.sys.domain.context;
 
 import com.github.platform.core.sys.domain.constant.UserChannelEnum;
 import com.github.platform.core.sys.domain.constant.UserLogBizTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -75,6 +76,7 @@ public class RegisterContext extends TenantContext {
      * 用户状态
      */
     private Integer status;
+    protected String postCode;
 
     /**
      * 角色列表

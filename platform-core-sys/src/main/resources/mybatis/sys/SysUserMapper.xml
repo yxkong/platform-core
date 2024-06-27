@@ -13,6 +13,7 @@
 		 <id column="salt" property="salt" />
 		 <id column="channel" property="channel" />
 		 <id column="tenantId" property="tenantId" />
+		 <id column="deleted" property="deleted" />
 		 <id column="status" property="status" />
 		 <id column="createBy" property="createBy" />
 		 <id column="createTime" property="createTime" />
@@ -38,7 +39,10 @@
  		 t.salt,
 		 t.channel ,
     	 t.secret_key as secretKey ,
+    	 t.post_code as postCode ,
+    	 t.last_modify_pwd_time as lastModifyPwdTime ,
  		 t.tenant_id as tenantId ,
+ 		 t.deleted  ,
  		 t.status  ,
  		 t.create_by as createBy ,
  		 t.create_time as createTime ,
@@ -74,6 +78,9 @@
  			<if test="salt != null">
  				salt,
  			</if>
+			<if test="postCode != null and postCode != ''">
+				post_code,
+			</if>
 			<if test="channel != null">
 				channel,
  			</if>
@@ -123,6 +130,9 @@
  			</if>
  			<if test="salt != null">
  				#{salt},
+ 			</if>
+			<if test="postCode != null and postCode != ''">
+ 				#{postCode},
  			</if>
 			<if test="channel != null">
  				#{channel},
@@ -184,12 +194,18 @@
 		     <if test="secretKey != null and secretKey != ''">
 			     secret_key = #{secretKey},
 		     </if>
+		     <if test="postCode != null and postCode != ''">
+			    post_code =  #{postCode},
+		     </if>
  			 <if test="tenantId != null">
  				tenant_id = #{tenantId},
  			 </if>
  			 <if test="status != null">
  				status = #{status},
  			 </if>
+		     <if test="deleted != null">
+			     deleted = #{deleted},
+		     </if>
  			 <if test="createBy != null and createBy != ''">
  				create_by = #{createBy},
  			 </if>
@@ -221,6 +237,7 @@
 			<if test="updateBy != null">
 				update_by = #{updateBy},
 			</if>
+			last_modify_pwd_time = #{lastModifyPwdTime},
 		</set>
 		where id = #{id}
 	</update>
@@ -231,17 +248,23 @@
 	<select id="findByLoginName" resultMap="AllResultMap" >
 		select <include refid="BaseColumnList" /> from t_sys_user t
 		where t.login_name = #{loginName}
+		<if test="tenantId != null">
+			and t.tenant_id = #{tenantId}
+		</if>
 	</select>
 
 	<select id="findByMobile" resultMap="AllResultMap">
 		select <include refid="BaseColumnList" /> from t_sys_user t
 		where t.mobile = #{mobile}
+		<if test="tenantId != null">
+			and t.tenant_id = #{tenantId}
+		</if>
 	</select>
-	<select id="findBySecretKey" resultType="com.github.platform.core.sys.domain.common.entity.SysUserBase">
+	<select id="findBySecretKey" resultMap="AllResultMap">
 		select <include refid="BaseColumnList" /> from t_sys_user t
 		where t.secret_key = #{secretKey}
 	</select>
-	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	<select id="findByIds" resultMap="AllResultMap" parameterType="java.lang.Long">
 		select <include refid="BaseColumnList" /> from t_sys_user
 		<where>
 			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >

@@ -1,5 +1,6 @@
 package com.github.platform.core.web.configuration;
 
+import com.github.platform.core.common.configuration.property.PlatformProperties;
 import com.github.platform.core.common.constant.PropertyConstant;
 import com.github.platform.core.web.filter.HttpTraceLogFilter;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.Resource;
 
 /**
  * http trace日志
@@ -19,6 +22,8 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @Slf4j
 public class HttpFilterConfiguration {
+    @Resource
+    private PlatformProperties platformProperties;
     /**
      * 注册HttpTraceLogFilter
      * @return
@@ -30,7 +35,7 @@ public class HttpFilterConfiguration {
             log.debug("添加 HttpTraceLogFilter");
         }
         FilterRegistrationBean<HttpTraceLogFilter> filterRegistrationBean = new FilterRegistrationBean<HttpTraceLogFilter>();
-        filterRegistrationBean.setFilter(new HttpTraceLogFilter());
+        filterRegistrationBean.setFilter(new HttpTraceLogFilter(platformProperties));
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.setName("httpTraceLogFilter");
         return filterRegistrationBean;

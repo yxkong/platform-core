@@ -42,7 +42,7 @@ public class SysDictExecutorImpl extends BaseExecutor implements ISysDictExecuto
         if (Objects.isNull(dictType)){
             exception(SysInfraResultEnum.DICT_TYPE_NOT_FOUND);
         }
-
+        context.setTenantId(dictType.getTenantId());
         dictGateway.insert(context);
     }
 

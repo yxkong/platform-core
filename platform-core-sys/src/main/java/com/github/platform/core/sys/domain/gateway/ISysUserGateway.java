@@ -67,12 +67,7 @@ public interface ISysUserGateway {
     @Cacheable(cacheNames = CacheConstant.c30m, key = "'sys:u:s:' + #secretKey", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     UserEntity findBySecretKey(String secretKey);
 
-    /**
-     * 根据手机号查询数量
-     * @param mobile
-     * @return
-     */
-    Long findCountByMobile(String mobile);
+
     /**
      * 根据id查询
      *

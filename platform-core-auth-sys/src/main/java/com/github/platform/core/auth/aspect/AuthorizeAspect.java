@@ -93,6 +93,7 @@ public class AuthorizeAspect {
         // 注解鉴权
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         try{
+            LoginUserInfoUtil.clearContext();
             authHandler(httpRequest.getRequestURI());
             checkMethodAnnotation(signature.getMethod());
             // 执行原有逻辑
@@ -100,7 +101,7 @@ public class AuthorizeAspect {
         }catch (Exception e){
             throw e;
         }finally {
-            MDC.clear();
+//            MDC.clear();
             LoginUserInfoUtil.clearContext();
         }
     }
@@ -135,7 +136,6 @@ public class AuthorizeAspect {
     private void getLoginUserInfo(String uri){
         LoginUserInfo loginInfo = new LoginUserInfo();
         /**  将loginToken 放入到本地线程里  **/
-        LoginUserInfoUtil.clearContext();
         String loginStr = getLoginInfoString();
         String token = getTokenKey();
         if (StringUtils.isBlank(loginStr) && Objects.nonNull(token) && !HeaderConstant.DEFAULT_TOKEN.equals(token)) {
@@ -150,7 +150,7 @@ public class AuthorizeAspect {
         } else {
             loginInfo = JsonUtils.fromJson(loginStr, LoginUserInfo.class);
         }
-        MDC.put(HeaderConstant.TRACE_ID,getTraceId());
+//        MDC.put(HeaderConstant.TRACE_ID,getTraceId());
         LoginUserInfoUtil.setLoginUserInfo(loginInfo);
         //不包含登出的时候
         if (!uri.contains("api/sys/token/expire") && StringUtils.isNotEmpty(token)){

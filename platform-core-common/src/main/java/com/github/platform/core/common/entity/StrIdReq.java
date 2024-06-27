@@ -3,6 +3,7 @@ package com.github.platform.core.common.entity;
 import com.github.platform.core.common.utils.SignUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,13 +14,13 @@ import javax.validation.constraints.NotNull;
  */
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class StrIdReq {
     @NotNull(message = "主键id不能为空")
     @Schema(description = "加密后的主键id")
-    private String id;
+    protected String id;
 
     public Long getId() {
         return SignUtil.getLongId(this.id);

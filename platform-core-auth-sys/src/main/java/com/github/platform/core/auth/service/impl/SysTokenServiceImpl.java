@@ -54,9 +54,9 @@ public class SysTokenServiceImpl implements ITokenService {
     @Cacheable(cacheNames = CacheConstant.sysToken, key = "#tenantId+':'+#loginName", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public String getLoginInfoStr(Integer tenantId, String loginName) {
         if (Objects.nonNull(tokenCacheGateway)){
-            List<TokenCacheEntity> list = tokenCacheGateway.findByLoginName(tenantId, loginName);
-            if (CollectionUtil.isNotEmpty(list)){
-                return list.get(0).getLoginInfo();
+            TokenCacheEntity tokenCacheEntity = tokenCacheGateway.findByLoginName(tenantId, loginName);
+            if (Objects.nonNull(tokenCacheEntity)){
+                return tokenCacheEntity.getLoginInfo();
             }
         }
         return null;

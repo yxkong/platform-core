@@ -1,6 +1,7 @@
 package com.github.platform.core.sys.adapter.api.controller;
 
 
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * 字典类型信息
@@ -72,6 +74,9 @@ public class SysDictTypeController extends BaseController {
     @PostMapping("/add")
     public ResultBean<Void> add(@RequestBody @Validated SysDictTypeCmd cmd) {
         SysDictTypeContext context = convert.toContext(cmd);
+        if (Objects.isNull(context.getTenantId())){
+            context.setTenantId(LoginUserInfoUtil.getTenantId());
+        }
         dictTypeExecutor.insert(context);
         return buildSucResp();
     }

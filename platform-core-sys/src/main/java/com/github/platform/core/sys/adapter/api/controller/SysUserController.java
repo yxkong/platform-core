@@ -10,6 +10,7 @@ import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.entity.dto.ResultBean;
+import com.github.platform.core.standard.entity.KeyReq;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.standard.util.ResultBeanUtil;
 import com.github.platform.core.sys.adapter.api.command.account.*;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 用户接口
@@ -104,9 +106,12 @@ public class SysUserController extends BaseController {
     @OptLog(module="user",title="新增用户",optType = LogOptTypeEnum.add)
     @Operation(summary = "新增用户",tags = {"user"})
     @PostMapping(value = "/add")
-    public ResultBean<Void> add(@RequestBody @Validated AddUserCmd cmd) {
+    public ResultBean<Void> add(@RequestBody @Validated SysUserCmd cmd) {
         cmd.setLoginName(cmd.getLoginName().toLowerCase());
         RegisterContext registerContext = convert.toRegister(cmd);
+        if (Objects.isNull(registerContext.getTenantId())){
+            registerContext.setTenantId(LoginUserInfoUtil.getTenantId());
+        }
         registerContext.setChannel(UserChannelEnum.add);
         registerContext.setLogBizTypeEnum(UserLogBizTypeEnum.add_user);
         userExecutor.insert(registerContext);
@@ -122,7 +127,7 @@ public class SysUserController extends BaseController {
     @OptLog(module="user",title="修改用户",optType = LogOptTypeEnum.modify)
     @Operation(summary = "修改用户",tags = {"user"})
     @PostMapping(value = "/modify")
-    public ResultBean<Void> modify(@RequestBody @Validated AddUserCmd cmd) {
+    public ResultBean<Void> modify(@RequestBody @Validated SysUserCmd cmd) {
         // 只有管理员自己能修改自己
         if (UserConstant.SUPER_ADMIN.equals(cmd.getLoginName()) && !LoginUserInfoUtil.getLoginName().equals(cmd.getLoginName())){
             exception(SysAdapterResultEnum.dont_allow_opt);
@@ -178,7 +183,7 @@ public class SysUserController extends BaseController {
     @OptLog(module="user",title="用户下拉框",persistent = false)
     @Operation(summary = "获取用户",tags = {"user"})
     @PostMapping(value = "/fuzzySearch")
-    public ResultBean<List<OptionsDto>> fuzzySearch(@RequestBody @Validated KeyQuery query){
+    public ResultBean<List<OptionsDto>> fuzzySearch(@RequestBody @Validated KeyReq query){
         List<OptionsDto> list  = userExecutor.fuzzySearch(query.getKey());
         return buildSucResp(list);
     }

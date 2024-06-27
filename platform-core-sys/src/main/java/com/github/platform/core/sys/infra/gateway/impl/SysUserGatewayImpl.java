@@ -187,6 +187,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         String defaultPwd = getDefaultPwd();
         String md5Pwd = MD5Utils.md5Salt(defaultPwd, salt);
         SysUserBase sysUser = userInfraConvert.of(context, salt, md5Pwd);
+        sysUser.setLastModifyPwdTime(null);
         int rows = sysUserMapper.modifyPwd(sysUser);
         //清除
         tokenService.expireByLoginName(context.getTenantId(),context.getLoginName());
@@ -214,6 +215,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         String salt = RandomStringUtils.randomAlphabetic(6);
         String md5Pwd = MD5Utils.md5Salt(context.getNewPwd(), salt);
         SysUserBase sysUser = userInfraConvert.of(context, salt, md5Pwd);
+        sysUser.setLastModifyPwdTime(LocalDateTimeUtil.dateTime());
         int rows = sysUserMapper.modifyPwd(sysUser);
         //清除上次token的登陆信息
         tokenService.expireByLoginName(LoginUserInfoUtil.getTenantId(),LoginUserInfoUtil.getLoginName());
@@ -224,7 +226,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         if (StringUtils.isEmpty(loginName)) {
             return null;
         }
-        SysUserBase sysUser = sysUserMapper.findByLoginName(loginName);
+        SysUserBase sysUser = sysUserMapper.findByLoginName(loginName,null);
 
         return getUserEntity(sysUser);
     }
@@ -245,7 +247,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         if (StringUtils.isEmpty(mobile)){
             return null;
         }
-        SysUserBase sysUser = sysUserMapper.findByMobile(mobile);
+        SysUserBase sysUser = sysUserMapper.findByMobile(mobile,null);
         return getUserEntity(sysUser);
     }
     @Override
@@ -256,12 +258,6 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         SysUserBase sysUser = sysUserMapper.findBySecretKey(secretKey);
         return getUserEntity(sysUser);
     }
-    @Override
-    public Long findCountByMobile(String mobile) {
-        return sysUserMapper.findListByCount(SysUserBase.builder().mobile(mobile).build());
-    }
-
-
 
     @Override
     public UserEntity findById(Long id) {
@@ -277,8 +273,9 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
 
     @Override
     public LoginUserInfo generatorToken(UserEntity entity, Set<String> roleKeys, LoginWayEnum loginWay) {
-        //清除上次token的登陆信息(多次登录不删除)
+        //演示环境下不过期历史登录，非演示环境，新的登录会过期历史登录
         if (!authProperties.getSys().isDemoMode()){
+            log.info("非演示环境，踢出用户{}之前登录",entity.getLoginName());
             tokenService.expireByLoginName(entity.getTenantId(),entity.getLoginName());
         }
         String token = StringUtils.uuidRmLine();

@@ -1,7 +1,6 @@
 package com.github.platform.core.web.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.platform.core.web.interceptor.GrayHandlerInterceptor;
 import com.github.platform.core.web.plugin.spring.mvc.ApiVersionRequestMappingHandlerMapping;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +10,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -106,8 +104,5 @@ public class WebConfiguration implements WebMvcConfigurer, WebMvcRegistrations {
         return new ApiVersionRequestMappingHandlerMapping();
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new GrayHandlerInterceptor());
-    }
+
 }

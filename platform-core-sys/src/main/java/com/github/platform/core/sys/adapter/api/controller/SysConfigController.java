@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * 配置管理
@@ -66,6 +67,9 @@ public class SysConfigController extends BaseController {
     @PostMapping("/add")
     public ResultBean add(@RequestBody SysConfigCmd cmd) {
         SysConfigContext context = convert.toContext(cmd);
+        if (Objects.isNull(context.getTenantId())){
+            context.setTenantId(LoginUserInfoUtil.getTenantId());
+        }
         executor.insert(context);
         return buildSucResp();
     }
