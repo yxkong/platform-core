@@ -32,7 +32,7 @@ public class ThreadPoolConfiguration {
     private int defaultSize = Math.max(1,Runtime.getRuntime().availableProcessors()/2);
 
     @Bean(name = "asyncEventExecutor")
-    public Executor asyncEventExecutor() {
+    public ExecutorService asyncEventExecutor() {
         log.info("start asyncEventExecutor --->");
         return new ThreadPoolExecutor(this.getCoreSize(), this.getMaxPoolSize(), this.getKeepAliveTime(), TimeUnit.SECONDS
                 , new LinkedBlockingQueue<>(this.getQueueSize()), getThreadFactory(this.getName()), new ThreadPoolExecutor.CallerRunsPolicy());
