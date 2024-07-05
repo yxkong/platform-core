@@ -50,6 +50,10 @@ public class TrackChangeManager {
                 field.setAccessible(true);
                 Object originalValue = field.get(this.original);
                 Object modifiedValue = field.get(this.modified);
+                // 如果目标值为null，不处理
+                if (Objects.isNull(modifiedValue) || "".equals(modifiedValue.toString())){
+                    continue;
+                }
                 if (!Objects.equals(originalValue,modifiedValue) || StringUtils.isNotEmpty(trackChange.merge())) {
                     TrackChangeRecord trackChangeRecord = new TrackChangeRecord(field.getName(),trackChange.compare(),trackChange.merge(), originalValue, modifiedValue, trackChange.remark(), trackChange.dateFormat(), trackChange.sort());
                     changes.add(trackChangeRecord) ;
@@ -77,14 +81,17 @@ public class TrackChangeManager {
                 .filter(s-> !Objects.equals(s.getMerge(),"ignore"))
                 .sorted((a,b)->Integer.compare(a.getSort(),b.getSort()))
                 .forEach(s->{
-                    sb.append(prefixSplit);
                     if (StringUtils.isNotEmpty(s.getMerge())){
-                        sb.append(s.getRemark()).append("由【");
                         TrackChangeRecord merge = changes.stream().filter(x -> x.getFieldName().equals(s.getMerge())).findAny().get();
-                        sb.append(s.getOriginalValue()).append(SymbolConstant.colon).append(merge.getOriginalValue()).append("】变为：【")
-                                .append(s.getModifiedValue()).append(SymbolConstant.colon).append(merge.getModifiedValue()).append("】");
+                        if (!Objects.equals(s.getOriginalValue(),s.getModifiedValue()) || !Objects.equals(merge.getOriginalValue(),merge.getModifiedValue())){
+
+                            sb.append(s.getRemark()).append("由【");
+                            sb.append(s.getOriginalValue()).append(SymbolConstant.colon).append(merge.getOriginalValue()).append("】变为：【")
+                                    .append(s.getModifiedValue()).append(SymbolConstant.colon).append(merge.getModifiedValue()).append("】");
+                        }
                     } else{
                         if (s.isCompare()) {
+                            sb.append(prefixSplit);
                             sb.append(s.getRemark()).append("由【");
                             if (StringUtils.isNotEmpty(s.getDateFormat())){
                                 LocalDateTime originalDate = LocalDateTimeUtil.parseDateTime(s.getOriginalValue().toString(), s.getDateFormat());
@@ -94,12 +101,15 @@ public class TrackChangeManager {
                                 sb.append(s.getOriginalValue()).append("】变为：【").append(s.getModifiedValue());
                             }
                             sb.append("】");
-                        } else if(Objects.nonNull(s.getModifiedValue())){
-                            sb.append(s.getRemark()).append(SymbolConstant.colon).append(s.getModifiedValue());
+                        } else{
+                            if(Objects.nonNull(s.getModifiedValue())){
+                                sb.append(prefixSplit);
+                                sb.append(s.getRemark()).append(SymbolConstant.colon).append(s.getModifiedValue());
+                            }
                         }
                     }
 
                 });
-        return sb.toString();
+        return sb.length()>0 ? sb.substring(prefixSplit.length()-1) : sb.toString();
     }
 }

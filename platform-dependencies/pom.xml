@@ -11,8 +11,8 @@
     </parent>
     <groupId>com.github.platform</groupId>
     <artifactId>platform-dependencies</artifactId>
-<!--    <version>0.1.5-SNAPSHOT</version>-->
-    <version>0.1.6-release</version>
+    <version>0.1.8-SNAPSHOT</version>
+<!--    <version>0.1.-release</version>-->
     <packaging>pom</packaging>
     <properties>
 
@@ -21,8 +21,8 @@
         <java.version>8</java.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <platform.core.version>0.1.6-release</platform.core.version>
-<!--        <platform.core.version>0.1.5-SNAPSHOT</platform.core.version>-->
+<!--        <platform.core.version>0.1.7-release</platform.core.version>-->
+        <platform.core.version>0.1.8-SNAPSHOT</platform.core.version>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <spring.boot.version>2.7.18</spring.boot.version>
         <spring.cloud.version>2021.0.9</spring.cloud.version>

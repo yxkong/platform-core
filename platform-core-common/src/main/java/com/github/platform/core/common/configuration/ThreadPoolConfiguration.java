@@ -29,7 +29,7 @@ public class ThreadPoolConfiguration {
     private long keepAliveTime;
     private int queueSize;
     private String name;
-    private int defaultSize = Math.max(1,Runtime.getRuntime().availableProcessors()/2);
+    private int defaultSize = Math.max(2,Runtime.getRuntime().availableProcessors());
 
     @Bean(name = "asyncEventExecutor")
     public ExecutorService asyncEventExecutor() {
