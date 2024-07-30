@@ -3,17 +3,22 @@ package com.github.platform.core.sys.domain.gateway;
 import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
+import com.github.platform.core.sys.domain.constant.SysCacheKeyPrefix;
 import com.github.platform.core.sys.domain.context.SysRoleContext;
 import com.github.platform.core.sys.domain.context.SysRoleQueryContext;
 import com.github.platform.core.sys.domain.dto.SysRoleDto;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 
 import java.util.List;
 import java.util.Set;
 
 public interface ISysRoleGateway {
+    /**缓存前缀*/
+    String PREFIX =  SysCacheKeyPrefix.ROLE.getPrefix();
+    /**缓存前缀加冒号*/
+    String PREFIX_COLON = SysCacheKeyPrefix.ROLE.getWithColon();
+    String ROLE_MENU_COLON = PREFIX_COLON + "m:";
+    /**缓存名称*/
+    String CACHE_NAME = CacheConstant.c12h;
     /**
      * 查询角色
      * @param context
@@ -72,12 +77,6 @@ public interface ISysRoleGateway {
      * 更新角色
      * @param context
      */
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:r:'+#context.id",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames =CacheConstant.c1h, key = "'sys:rm:' + #context.id",cacheManager = CacheConstant.cacheManager)
-            }
-    )
     void update(SysRoleContext context);
 
 
@@ -90,7 +89,7 @@ public interface ISysRoleGateway {
 
     /**
      * 删除用户角色
-     * @param userId
+     * @param userId 用户id
      */
     void deleteUserRoleByUserId(Long userId);
 
@@ -102,18 +101,17 @@ public interface ISysRoleGateway {
      */
     void addUserRole(Long userId,Integer tenantId, Set<String> roleKeys);
 
-    @Cacheable(cacheNames =CacheConstant.c1h, key = "'sys:rm:' + #roleId",cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
+    /**
+     * 根据角色id查询菜单id
+     * @param roleId 角色id
+     * @return
+     */
     Set<Long> queryMenuIds(Long roleId);
 
-    /**
-     * 删除缓存
-     */
-    @CacheEvict(cacheNames =CacheConstant.c1h, key = "'sys:ru:*'",cacheManager = CacheConstant.cacheManager)
-    void evictCacheUsers();
 
     /**
      * 查询角色
-     * @param context
+     * @param context  查询上下文
      * @return
      */
     List<OptionsDto> roles(SysRoleQueryContext context);

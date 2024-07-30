@@ -2,12 +2,10 @@ package com.github.platform.core.sys.domain.gateway;
 
 import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
+import com.github.platform.core.sys.domain.constant.SysCacheKeyPrefix;
 import com.github.platform.core.sys.domain.context.SysConfigContext;
 import com.github.platform.core.sys.domain.context.SysConfigQueryContext;
 import com.github.platform.core.sys.domain.dto.SysConfigDto;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 
 import java.util.List;
 
@@ -18,6 +16,12 @@ import java.util.List;
  * @version: 1.0
  */
 public interface ISysConfigGateway {
+    /**缓存前缀*/
+    String PREFIX =  SysCacheKeyPrefix.DEPT.getPrefix();
+    /**缓存前缀加冒号*/
+    String PREFIX_COLON = SysCacheKeyPrefix.DEPT.getWithColon();
+    /**缓存名称*/
+    String CACHE_NAME = CacheConstant.c12h;
     /**
      * 分页查询
      * @param context
@@ -42,12 +46,6 @@ public interface ISysConfigGateway {
      * 更新配置
      * @param context
      */
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:cfg:'+#context.id",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:cfg:'+#context.tenantId+':'+#context.key",cacheManager = CacheConstant.cacheManager)
-            }
-    )
     void update(SysConfigContext context);
 
     /**
@@ -55,12 +53,6 @@ public interface ISysConfigGateway {
      * @param id
      * @param key
      */
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:cfg:'+#id",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:cfg:'+#tenantId+':'+#key",cacheManager = CacheConstant.cacheManager)
-            }
-    )
     void delete(Long id,Integer tenantId,String key);
 
     /**
@@ -75,7 +67,6 @@ public interface ISysConfigGateway {
      * @param key
      * @return
      */
-    @Cacheable(cacheNames = CacheConstant.c12h, key = "'sys:cfg:' +#tenantId+':'+ #key", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     SysConfigDto getConfig(Integer tenantId,String key);
 
 
@@ -83,6 +74,5 @@ public interface ISysConfigGateway {
      * 删除缓存
      * @param key
      */
-    @Cacheable(cacheNames = CacheConstant.c12h, key = "'sys:cfg:' +#tenantId+':'+ #key", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     void deleteCache(Integer tenantId,String key);
 }

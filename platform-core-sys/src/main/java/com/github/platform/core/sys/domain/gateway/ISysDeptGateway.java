@@ -1,13 +1,11 @@
 package com.github.platform.core.sys.domain.gateway;
 
 import com.github.platform.core.cache.domain.constant.CacheConstant;
+import com.github.platform.core.sys.domain.constant.SysCacheKeyPrefix;
 import com.github.platform.core.sys.domain.context.SysDeptContext;
 import com.github.platform.core.sys.domain.context.SysDeptQueryContext;
 import com.github.platform.core.sys.domain.dto.SysDeptDto;
 import com.github.platform.core.sys.domain.dto.resp.TreeSelectDto;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 
 import java.util.List;
 
@@ -18,7 +16,12 @@ import java.util.List;
  * @version: 1.0
  */
 public interface ISysDeptGateway {
-
+    /**缓存前缀*/
+    String PREFIX =  SysCacheKeyPrefix.DEPT.getPrefix();
+    /**缓存前缀加冒号*/
+    String PREFIX_COLON = SysCacheKeyPrefix.DEPT.getWithColon();
+    /**缓存名称*/
+    String CACHE_NAME = CacheConstant.c1h;
     /**
      * 查询部门列表
      * @param context
@@ -31,7 +34,7 @@ public interface ISysDeptGateway {
      * @param deptContext
      * @return
      */
-    @CacheEvict(cacheNames =CacheConstant.c1h, key = "'sys:dept'",cacheManager = CacheConstant.cacheManager)
+
     void insert(SysDeptContext deptContext);
 
     /**
@@ -39,12 +42,6 @@ public interface ISysDeptGateway {
      * @param context
      * @return
      */
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames =CacheConstant.c1h, key = "'sys:dept:' + #context.id",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames =CacheConstant.c1h, key = "'sys:dept'",cacheManager = CacheConstant.cacheManager)
-            }
-    )
     void update(SysDeptContext context);
 
     /**
@@ -52,19 +49,12 @@ public interface ISysDeptGateway {
      * @param id
      * @return
      */
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames =CacheConstant.c1h, key = "'sys:dept:' + #id",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames =CacheConstant.c1h, key = "'sys:dept'",cacheManager = CacheConstant.cacheManager)
-            }
-    )
     void delete(Long id);
 
     /**
      * 获取当前用户部门树信息
      * @return
      */
-    @Cacheable(cacheNames = {CacheConstant.c1h}, key = "'sys:dept'", cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
     List<TreeSelectDto> deptTree();
 
 
@@ -90,6 +80,5 @@ public interface ISysDeptGateway {
      * @param id
      * @return
      */
-    @Cacheable(cacheNames = {CacheConstant.c1h}, key = "'sys:dept:' + #id", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     SysDeptDto findById(Long id);
 }

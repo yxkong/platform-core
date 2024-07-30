@@ -1,13 +1,16 @@
 package com.github.platform.core.sys.domain.gateway;
 
 import com.github.platform.core.cache.domain.constant.CacheConstant;
+import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
+import com.github.platform.core.sys.domain.constant.SysCacheConstant;
+import com.github.platform.core.sys.domain.constant.SysCacheKeyPrefix;
 import com.github.platform.core.sys.domain.context.SysDictTypeContext;
 import com.github.platform.core.sys.domain.context.SysDictTypeQueryContext;
+import com.github.platform.core.sys.domain.dto.SysDictDto;
 import com.github.platform.core.sys.domain.dto.SysDictTypeDto;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 
 import java.util.List;
 
@@ -18,6 +21,13 @@ import java.util.List;
  * @version: 1.0
  */
 public interface ISysDictTypeGateway {
+    /**缓存前缀*/
+    String PREFIX = SysCacheKeyPrefix.DICT_TYPE.getPrefix();
+    /**缓存前缀加冒号*/
+    String PREFIX_COLON = SysCacheKeyPrefix.DICT_TYPE.getWithColon();
+    String ALL_PREFIX_COLON = SysCacheKeyPrefix.DICT_TYPE.getWithColon()+"a:";
+    /**缓存名称*/
+    String CACHE_NAME = CacheConstant.c12h;
     /**
      * 分页查询字典类型
      *
@@ -46,12 +56,7 @@ public interface ISysDictTypeGateway {
      * @param context
      * @return
      */
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:dt:a:'+#context.type",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:dt:o:'+#context.type",cacheManager = CacheConstant.cacheManager)
-            }
-    )
+
     void update(SysDictTypeContext context);
 
     /**
@@ -60,12 +65,6 @@ public interface ISysDictTypeGateway {
      * @param context
      * @return
      */
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:dt:a:'+#context.type",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:dt:o:'+#context.type",cacheManager = CacheConstant.cacheManager)
-            }
-    )
     void delete(SysDictTypeContext context);
 
     /**
@@ -75,7 +74,7 @@ public interface ISysDictTypeGateway {
      */
     SysDictTypeDto findById(Long id);
 
-    @Cacheable(cacheNames = CacheConstant.c12h, key = "'sys:dt:o:' + #dictType", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+
     SysDictTypeDto findByType(String dictType);
 
     /**
@@ -83,11 +82,12 @@ public interface ISysDictTypeGateway {
      * @param dictType
      * @return
      */
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:dt:a:'+#dictType",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:dt:o:'+#dictType",cacheManager = CacheConstant.cacheManager)
-            }
-    )
     void deleteCache(String dictType);
+    /**查询所有*/
+    List<SysDictDto> findAllType();
+
+    /**
+     * 删除所有缓存
+     */
+    void deleteAllCache();
 }

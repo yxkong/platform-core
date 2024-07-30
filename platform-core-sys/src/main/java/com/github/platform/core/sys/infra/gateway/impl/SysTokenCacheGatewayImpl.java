@@ -2,8 +2,8 @@ package com.github.platform.core.sys.infra.gateway.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.gateway.BaseGatewayImpl;
-import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.persistence.mapper.sys.SysTokenCacheMapper;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
@@ -13,6 +13,10 @@ import com.github.platform.core.sys.domain.context.SysTokenCacheQueryContext;
 import com.github.platform.core.sys.domain.dto.SysTokenCacheDto;
 import com.github.platform.core.sys.domain.gateway.ISysTokenCacheGateway;
 import com.github.platform.core.sys.infra.convert.SysTokenCacheInfraConvert;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -26,6 +30,7 @@ import java.util.Objects;
  * @version 1.0
  */
 @Service
+@Slf4j
 public class SysTokenCacheGatewayImpl extends BaseGatewayImpl implements ISysTokenCacheGateway {
 
     @Resource
@@ -64,18 +69,26 @@ public class SysTokenCacheGatewayImpl extends BaseGatewayImpl implements ISysTok
     }
 
     @Override
+    @Cacheable(cacheNames = CACHE_NAME, key = "#root.target.PREFIX_COLON + #token", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public SysTokenCacheDto findByToken(String token) {
         SysTokenCacheBase record = sysTokenCacheMapper.findByToken(token);
         return sysTokenCacheConvert.toDto(record);
     }
 
     @Override
+    @Cacheable(cacheNames = CACHE_NAME, key = "#root.target.PREFIX_COLON + #tenantId+':'+loginName", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public SysTokenCacheDto findByLoginName(Integer tenantId, String loginName) {
         SysTokenCacheBase record = sysTokenCacheMapper.findByLoginName(tenantId,loginName);
         return sysTokenCacheConvert.toDto(record);
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.token",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.tenantId+':'+#context.loginName",cacheManager = CacheConstant.cacheManager)
+            }
+    )
     public SysTokenCacheDto update(SysTokenCacheContext context) {
         SysTokenCacheBase record = sysTokenCacheConvert.toSysTokenCacheBase(context);
         int flag = sysTokenCacheMapper.updateById(record);
@@ -83,6 +96,12 @@ public class SysTokenCacheGatewayImpl extends BaseGatewayImpl implements ISysTok
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.token",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.tenantId+':'+#context.loginName",cacheManager = CacheConstant.cacheManager)
+            }
+    )
     public int expire(SysTokenCacheContext context) {
         //过期只是把expire_time改为当前时间减去1分钟
         context.setExpireTime(LocalDateTimeUtil.dateTime().minusMinutes(1));

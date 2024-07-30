@@ -63,6 +63,7 @@ public class SysDictTypeExecutorImpl extends BaseExecutor implements ISysDictTyp
         if (CollectionUtil.isEmpty(list)){
             return;
         }
+        dictTypeGateway.deleteAllCache();
         list.forEach(s->{
             dictTypeGateway.deleteCache(s.getType());
             dictGateway.findByType(s.getType());

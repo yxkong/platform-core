@@ -3,6 +3,7 @@ package com.github.platform.core.sys.application.executor.impl;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.sys.application.executor.ISysDictExecutor;
+import com.github.platform.core.sys.domain.constant.DictConstant;
 import com.github.platform.core.sys.domain.context.SysDictContext;
 import com.github.platform.core.sys.domain.context.SysDictQueryContext;
 import com.github.platform.core.sys.domain.dto.SysDictDto;
@@ -40,7 +41,7 @@ public class SysDictExecutorImpl extends BaseExecutor implements ISysDictExecuto
     public void insert(SysDictContext context) {
         SysDictTypeDto dictType = dictTypeGateway.findByType(context.getDictType());
         if (Objects.isNull(dictType)){
-            exception(SysInfraResultEnum.DICT_TYPE_NOT_FOUND);
+            throw exception(SysInfraResultEnum.DICT_TYPE_NOT_FOUND);
         }
         context.setTenantId(dictType.getTenantId());
         dictGateway.insert(context);
@@ -54,13 +55,16 @@ public class SysDictExecutorImpl extends BaseExecutor implements ISysDictExecuto
     public void delete(Long id) {
         SysDictDto dto = dictGateway.findById(id);
         if (Objects.isNull(dto)  ) {
-            exception(SysInfraResultEnum.DICT_EXIST);
+            throw exception(SysInfraResultEnum.DICT_EXIST);
         }
         dictGateway.delete(SysDictContext.builder().id(dto.getId()).dictType(dto.getDictType()).build());
     }
 
     @Override
     public List<SysDictDto> findByType(SysDictQueryContext queryContext) {
+        if (Objects.equals(DictConstant.ALL_DICT,queryContext.getDictType())){
+            return dictTypeGateway.findAllType();
+        }
         return dictGateway.findByType(queryContext.getDictType());
     }
 

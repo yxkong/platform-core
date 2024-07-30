@@ -106,7 +106,7 @@ public class SysUserController extends BaseController {
     @OptLog(module="user",title="新增用户",optType = LogOptTypeEnum.add)
     @Operation(summary = "新增用户",tags = {"user"})
     @PostMapping(value = "/add")
-    public ResultBean<Void> add(@RequestBody @Validated SysUserCmd cmd) {
+    public ResultBean add(@RequestBody @Validated SysUserCmd cmd) {
         cmd.setLoginName(cmd.getLoginName().toLowerCase());
         RegisterContext registerContext = convert.toRegister(cmd);
         if (Objects.isNull(registerContext.getTenantId())){
@@ -127,10 +127,10 @@ public class SysUserController extends BaseController {
     @OptLog(module="user",title="修改用户",optType = LogOptTypeEnum.modify)
     @Operation(summary = "修改用户",tags = {"user"})
     @PostMapping(value = "/modify")
-    public ResultBean<Void> modify(@RequestBody @Validated SysUserCmd cmd) {
+    public ResultBean modify(@RequestBody @Validated SysUserCmd cmd) {
         // 只有管理员自己能修改自己
-        if (UserConstant.SUPER_ADMIN.equals(cmd.getLoginName()) && !LoginUserInfoUtil.getLoginName().equals(cmd.getLoginName())){
-            exception(SysAdapterResultEnum.dont_allow_opt);
+        if (UserConstant.SUPER_ADMIN.equals(cmd.getLoginName()) && !Objects.equals(LoginUserInfoUtil.getLoginName(),cmd.getLoginName())){
+            throw exception(SysAdapterResultEnum.dont_allow_opt);
         }
         RegisterContext registerContext = convert.toRegister(cmd);
         userExecutor.update(registerContext);

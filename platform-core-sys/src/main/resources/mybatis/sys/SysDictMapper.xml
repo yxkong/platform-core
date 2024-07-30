@@ -198,34 +198,6 @@
 		</where>
 		limit 200
 	</select>
-	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select 
- 		<include refid="BaseColumnList" />
-		from t_sys_dict t
-        <where>
-			<if test="key != null">
-				and t.`key` = #{key}
-			</if>
-			<if test="label != null">
-				and t.label like concat('%', #{label}, '%')
-			</if>
-			<if test="dictType != null">
-				and t.dict_type = #{dictType}
-			</if>
-			<if test="tenantId != null">
-				and t.tenant_id = #{tenantId}
-			</if>
-			<if test="status != null">
-				and t.status = #{status}
-			</if>
-			<if test="searchStartTime != null ">
-				and t.create_time <![CDATA[>=]]> #{searchStartTime}
-			</if>
-			<if test="searchEndTime != null ">
-				and t.create_time <![CDATA[<=]]>  #{searchEndTime}
-			</if>
-		</where>
-	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysDictBase">
 		select
 		<include refid="BaseColumnList" />
@@ -297,47 +269,6 @@
 		</if>
 		order by t.dict_type,t.sort
 
-	</select>
-	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
-		select  count(t.id) from t_sys_dict t
-		<where> 
- 			<if test="id != null">
- 				and t.id = #{id}
- 			</if>
- 			<if test="key != null">
- 				and t.`key` = #{key}
- 			</if>
- 			<if test="label != null">
- 				and t.label = #{label}
- 			</if>
- 			<if test="dictType != null">
- 				and t.dict_type = #{dictType}
- 			</if>
- 			<if test="sort != null">
- 				and t.sort = #{sort}
- 			</if>
-			<if test="tenantId != null">
-				and t.tenant_id = #{tenantId}
-			</if>
- 			<if test="status != null">
- 				and t.status = #{status}
- 			</if>
- 			<if test="createBy != null">
- 				and t.create_by = #{createBy}
- 			</if>
- 			<if test="createTime != null">
- 				and t.create_time = #{createTime}
- 			</if>
- 			<if test="updateBy != null">
- 				and t.update_by = #{updateBy}
- 			</if>
- 			<if test="updateTime != null">
- 				and t.update_time = #{updateTime}
- 			</if>
- 			<if test="remark != null">
- 				and t.remark = #{remark}
- 			</if>
-		</where>
 	</select>
 	<select id="findListByCount" resultType="java.lang.Integer" parameterType="com.github.platform.core.sys.domain.common.entity.SysDictBase">
 		select  count(t.id) from t_sys_dict t

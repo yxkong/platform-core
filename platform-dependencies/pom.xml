@@ -11,8 +11,8 @@
     </parent>
     <groupId>com.github.platform</groupId>
     <artifactId>platform-dependencies</artifactId>
-    <version>0.1.8-SNAPSHOT</version>
-<!--    <version>0.1.-release</version>-->
+    <version>0.1.9-SNAPSHOT</version>
+<!--    <version>0.1.8-release</version>-->
     <packaging>pom</packaging>
     <properties>
 
@@ -21,8 +21,8 @@
         <java.version>8</java.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-<!--        <platform.core.version>0.1.7-release</platform.core.version>-->
-        <platform.core.version>0.1.8-SNAPSHOT</platform.core.version>
+<!--        <platform.core.version>0.1.8-release</platform.core.version>-->
+        <platform.core.version>0.1.9-SNAPSHOT</platform.core.version>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <spring.boot.version>2.7.18</spring.boot.version>
         <spring.cloud.version>2021.0.9</spring.cloud.version>
@@ -449,7 +449,13 @@
                 <artifactId>log4j-jul</artifactId>
                 <version>${log4j2.version}</version>
             </dependency>
-            <!--sl4j 一来-->
+            <!--用于收集日志所在的ip-->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-spring-boot</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <!--sl4j 依赖-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>

@@ -71,7 +71,7 @@ public class SysDictController extends BaseController {
     @OptLog(module="dict",title="新增字典数据",optType = LogOptTypeEnum.add)
     @Operation(summary = "新增字典数据",tags = {"dict"})
     @PostMapping("/add")
-    public ResultBean add(@RequestBody @Validated SysDictCmd cmd) {
+    public ResultBean<?> add(@RequestBody @Validated SysDictCmd cmd) {
         SysDictContext context = convert.toDict(cmd);
         dictExecutor.insert(context);
         return buildSucResp();
@@ -85,7 +85,7 @@ public class SysDictController extends BaseController {
     @OptLog(module="dict",title="修改字典数据",optType = LogOptTypeEnum.modify)
     @Operation(summary = "修改字典数据",tags = {"dict"})
     @PostMapping("/modify")
-    public ResultBean modify(@RequestBody @Validated SysDictCmd cmd) {
+    public ResultBean<?> modify(@RequestBody @Validated SysDictCmd cmd) {
         SysDictContext context = convert.toDict(cmd);
         dictExecutor.update(context);
         return buildSucResp();
@@ -100,7 +100,7 @@ public class SysDictController extends BaseController {
     @OptLog(module="dict",title="删除字典",optType = LogOptTypeEnum.delete)
     @Operation(summary = "删除字典",tags = {"dict"})
     @PostMapping("/delete")
-    public ResultBean delete(@RequestBody @Validated StrIdReq id) {
+    public ResultBean<?> delete(@RequestBody @Validated StrIdReq id) {
         dictExecutor.delete(id.getId());
         return buildSucResp();
     }

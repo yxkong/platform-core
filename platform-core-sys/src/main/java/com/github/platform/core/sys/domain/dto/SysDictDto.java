@@ -2,10 +2,14 @@ package com.github.platform.core.sys.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.platform.core.sys.domain.common.entity.SysDictBase;
+import com.github.platform.core.sys.domain.constant.DictConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.Objects;
+
 /**
 * 字典数据传输实体
 * @website <a href="https://www.5ycode.com/">5ycode</a>
@@ -25,13 +29,13 @@ public class SysDictDto extends SysDictBase{
     private String dictTypeName;
     private String charType;
     @JsonIgnore
-    public boolean isChar(){
-        return this.charType.equals("str");
+    public boolean isStr(){
+        return Objects.equals(DictConstant.CHAR_TYPE_STR,this.charType);
     }
 
     @JsonIgnore
     public boolean isInt(){
-        return this.charType.equals("int");
+        return Objects.equals(DictConstant.CHAR_TYPE_INT,this.charType);
     }
 
 }

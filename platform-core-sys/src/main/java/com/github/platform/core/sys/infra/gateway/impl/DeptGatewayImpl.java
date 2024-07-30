@@ -2,6 +2,7 @@ package com.github.platform.core.sys.infra.gateway.impl;
 
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.gateway.BaseGatewayImpl;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.persistence.mapper.sys.SysDeptMapper;
@@ -18,6 +19,9 @@ import com.github.platform.core.sys.domain.gateway.ISysDeptGateway;
 import com.github.platform.core.sys.infra.constant.SysInfraResultEnum;
 import com.github.platform.core.sys.infra.convert.SysDeptInfraConvert;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -54,22 +58,22 @@ public class DeptGatewayImpl extends BaseGatewayImpl implements ISysDeptGateway 
         return convert.toDtos(list);
     }
     @Override
+    @CacheEvict(cacheNames =CACHE_NAME, key = "#root.target.PREFIX" ,cacheManager = CacheConstant.cacheManager)
     public void insert(SysDeptContext context) {
         SysDeptBase deptDO = convert.toSysDeptBase(context);
         deptDO.setId(null);
         if (deptDO.getParentId() == 0 && !AuthUtil.isSuperAdmin()){
-            exception(SysInfraResultEnum.DEPT_ADD_FAIL);
+            throw exception(SysInfraResultEnum.DEPT_ADD_FAIL);
         }
         //查询是否存在部门
         int existDept = sysDeptMapper.isExistDept(null, deptDO.getParentId(), deptDO.getDeptName());
         if (existDept > 0) {
-
-            exception(SysInfraResultEnum.DEPT_EXIST);
+            throw exception(SysInfraResultEnum.DEPT_EXIST);
         }
         SysDeptBase parent = sysDeptMapper.findById(deptDO.getParentId());
         // 如果父节点不为正常状态,则不允许新增子节点
         if (DeptConstant.DEPT_DISABLE.equals(parent.getStatus())) {
-            exception(SysInfraResultEnum.DEPT_DISABLE);
+            throw exception(SysInfraResultEnum.DEPT_DISABLE);
         }
         deptDO.setAncestors(parent.getAncestors() + "," + deptDO.getParentId());
         deptDO.setTenantId(parent.getTenantId());
@@ -77,6 +81,12 @@ public class DeptGatewayImpl extends BaseGatewayImpl implements ISysDeptGateway 
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames =CACHE_NAME, key = "#root.target.PREFIX_COLON +#context.id",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames =CACHE_NAME, key = "#root.target.PREFIX",cacheManager = CacheConstant.cacheManager)
+            }
+    )
     public void update(SysDeptContext context) {
         SysDeptBase dept = convert.toSysDeptBase(context);
         SysDeptBase sysDept = sysDeptMapper.findById(dept.getId());
@@ -85,25 +95,32 @@ public class DeptGatewayImpl extends BaseGatewayImpl implements ISysDeptGateway 
         //查询是否存在部门
         int  existDept = sysDeptMapper.isExistDept(dept.getId(), sysDept.getParentId(), sysDept.getDeptName());
         if (existDept > 0 ) {
-            exception(SysInfraResultEnum.DEPT_EXIST);
+            throw exception(SysInfraResultEnum.DEPT_EXIST);
         }
         sysDeptMapper.updateById(dept);
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames =CACHE_NAME, key =  "#root.target.PREFIX_COLON + #id",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames =CACHE_NAME, key = "#root.target.PREFIX",cacheManager = CacheConstant.cacheManager)
+            }
+    )
     public void delete(Long id) {
         int subDeptCount = sysDeptMapper.findListByCount(SysDeptBase.builder().parentId(id).build());
         if (subDeptCount > 0) {
-            exception(SysInfraResultEnum.DEPT_DELETE_EXIST_SUB_DEPT);
+            throw exception(SysInfraResultEnum.DEPT_DELETE_EXIST_SUB_DEPT);
         }
         long userCount = sysUserMapper.findListByCount(SysUserBase.builder().deptId(id).build());
         if (userCount > 0) {
-            exception(SysInfraResultEnum.DEPT_DELETE_EXIST_USER);
+            throw exception(SysInfraResultEnum.DEPT_DELETE_EXIST_USER);
         }
         sysDeptMapper.deleteById(id) ;
     }
 
     @Override
+    @Cacheable(cacheNames = {CACHE_NAME}, key = "#root.target.PREFIX", cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
     public List<TreeSelectDto> deptTree() {
         SysDeptBase sysDept = SysDeptBase.builder().status(StatusEnum.ON.getStatus()).build();
         /**暂时不实现租户*/
@@ -156,6 +173,7 @@ public class DeptGatewayImpl extends BaseGatewayImpl implements ISysDeptGateway 
     }
 
     @Override
+    @Cacheable(cacheNames = {CACHE_NAME}, key = "#root.target.PREFIX_COLON + #id", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public SysDeptDto findById(Long id) {
         SysDeptBase sysDept = sysDeptMapper.findById(id);
         return convert.toDto(sysDept);

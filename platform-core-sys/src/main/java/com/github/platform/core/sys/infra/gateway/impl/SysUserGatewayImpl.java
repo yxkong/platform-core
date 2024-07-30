@@ -42,6 +42,9 @@ import com.github.platform.core.web.util.WebUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -164,6 +167,13 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'l:'+ #context.loginName",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'m:'+ #context.mobile",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'s:'+ #context.secretKey",cacheManager = CacheConstant.cacheManager)
+            }
+    )
     public void editUser(RegisterContext context) {
         SysUserBase sysUser = userInfraConvert.of(context, "", "");
         int rows = sysUserMapper.updateById(sysUser);
@@ -222,6 +232,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     }
 
     @Override
+    @Cacheable(cacheNames = CACHE_NAME, key =  "#root.target.PREFIX_COLON +'l:'+ #loginName", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public UserEntity findByLoginName(String loginName) {
         if (StringUtils.isEmpty(loginName)) {
             return null;
@@ -243,6 +254,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     }
 
     @Override
+    @Cacheable(cacheNames = CACHE_NAME, key =  "#root.target.PREFIX_COLON +'m:'+ #mobile", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public UserEntity findByMobile(String mobile) {
         if (StringUtils.isEmpty(mobile)){
             return null;
@@ -251,6 +263,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         return getUserEntity(sysUser);
     }
     @Override
+    @Cacheable(cacheNames = CACHE_NAME, key =  "#root.target.PREFIX_COLON +'s:'+ #secretKey", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public UserEntity findBySecretKey(String secretKey) {
         if (StringUtils.isEmpty(secretKey)){
             return null;
@@ -319,7 +332,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
             roleEntities = roleGateway.findRoleByUserId(entity.getId());
         } else {
             //使用传递过来的角色
-            List<String> roles = roleKeys.stream().collect(Collectors.toList());
+            List<String> roles = new ArrayList<>(roleKeys);
             roleEntities = roleGateway.findByKeys(roles,entity.getTenantId());
         }
         if (CollectionUtil.isNotEmpty(roleEntities)){
@@ -371,13 +384,13 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     public UserEntity baseAccountCheck(String loginName, String pwd) {
         UserEntity userEntity = this.findByLoginName(loginName);
         if (Objects.isNull(userEntity)) {
-            exception(SysInfraResultEnum.NOT_FOUND_USER);
+            throw exception(SysInfraResultEnum.NOT_FOUND_USER);
         }
         if (!userEntity.login(pwd)) {
-            exception(SysInfraResultEnum.PWD_NOT_EQUALS);
+            throw exception(SysInfraResultEnum.PWD_NOT_EQUALS);
         }
         if (userEntity.disable()) {
-            exception(SysInfraResultEnum.USER_DISABLED);
+            throw exception(SysInfraResultEnum.USER_DISABLED);
         }
         return userEntity;
     }

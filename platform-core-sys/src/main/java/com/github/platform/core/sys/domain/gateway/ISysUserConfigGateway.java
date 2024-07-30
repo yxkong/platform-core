@@ -1,10 +1,9 @@
 package com.github.platform.core.sys.domain.gateway;
 
 import com.github.platform.core.cache.domain.constant.CacheConstant;
+import com.github.platform.core.sys.domain.constant.SysCacheKeyPrefix;
 import com.github.platform.core.sys.domain.context.SysUserConfigContext;
 import com.github.platform.core.sys.domain.dto.SysUserConfigDto;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -16,6 +15,12 @@ import java.util.List;
  * @version 1.0
  */
 public interface ISysUserConfigGateway {
+    /**缓存前缀*/
+    String PREFIX =  SysCacheKeyPrefix.TOKEN_CACHE.getPrefix();
+    /**缓存前缀加冒号*/
+    String PREFIX_COLON = SysCacheKeyPrefix.TOKEN_CACHE.getWithColon();
+    /**缓存名称*/
+    String CACHE_NAME = CacheConstant.c12h;
     /**
     * 新增用户配置
     * @param context 新增上下文
@@ -33,7 +38,6 @@ public interface ISysUserConfigGateway {
     * @param context 修改上下文
     * @return 更新结果
     */
-    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:uc:'+#context.loginName+'*'",allEntries = true,cacheManager = CacheConstant.cacheManager)
     Boolean update(SysUserConfigContext context);
     /**
     * 通过实体参数获取列表
@@ -47,7 +51,6 @@ public interface ISysUserConfigGateway {
      * @param loginName
      * @return
      */
-    @Cacheable(cacheNames = CacheConstant.c12h, key = "'sys:uc:' + #context.loginName", cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
     List<SysUserConfigDto> getUserAllConfig(String loginName);
 
     /**
@@ -56,6 +59,5 @@ public interface ISysUserConfigGateway {
      * @param configKey
      * @return
      */
-    @Cacheable(cacheNames = CacheConstant.c12h, key = "'sys:uc:' + #loginName+':'+#configKey", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     SysUserConfigDto getConfig(String loginName, String configKey);
 }

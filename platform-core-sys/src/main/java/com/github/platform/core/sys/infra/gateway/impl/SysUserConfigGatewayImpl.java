@@ -1,5 +1,6 @@
 package com.github.platform.core.sys.infra.gateway.impl;
 
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.sys.domain.common.entity.SysUserConfigBase;
 import com.github.platform.core.sys.domain.context.SysUserConfigContext;
@@ -8,6 +9,8 @@ import com.github.platform.core.sys.domain.gateway.ISysUserConfigGateway;
 import com.github.platform.core.sys.infra.convert.SysUserConfigInfraConvert;
 import com.github.platform.core.persistence.mapper.sys.SysUserConfigMapper;
 import com.github.platform.core.common.gateway.BaseGatewayImpl;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
@@ -40,6 +43,7 @@ public class SysUserConfigGatewayImpl extends BaseGatewayImpl implements ISysUse
     }
 
     @Override
+    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.loginName+'*'",allEntries = true,cacheManager = CacheConstant.cacheManager)
     public Boolean update(SysUserConfigContext context){
         SysUserConfigBase record = sysUserConfigConvert.toSysUserConfigBase(context);
         return sysUserConfigMapper.updateById(record) > 0;
@@ -53,6 +57,7 @@ public class SysUserConfigGatewayImpl extends BaseGatewayImpl implements ISysUse
     }
 
     @Override
+    @Cacheable(cacheNames = CACHE_NAME, key ="#root.target.PREFIX_COLON + #loginName+':'+#configKey", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public SysUserConfigDto getConfig(String loginName, String configKey) {
         List<SysUserConfigBase> list = sysUserConfigMapper.findListBy(SysUserConfigBase.builder().loginName(loginName).configKey(configKey).build());
         if (CollectionUtil.isEmpty(list)){
@@ -62,6 +67,7 @@ public class SysUserConfigGatewayImpl extends BaseGatewayImpl implements ISysUse
     }
 
     @Override
+    @Cacheable(cacheNames = CACHE_NAME, key = "#root.target.PREFIX_COLON + #loginName", cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
     public List<SysUserConfigDto> getUserAllConfig(String loginName) {
         List<SysUserConfigBase> list = sysUserConfigMapper.findListBy(SysUserConfigBase.builder().loginName(loginName).build());
         return sysUserConfigConvert.toDtos(list);

@@ -4,6 +4,7 @@ import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.sys.domain.constant.LoginWayEnum;
+import com.github.platform.core.sys.domain.constant.SysCacheKeyPrefix;
 import com.github.platform.core.sys.domain.context.ModifyPwdContext;
 import com.github.platform.core.sys.domain.context.RegisterContext;
 import com.github.platform.core.sys.domain.context.ResetPwdContext;
@@ -11,9 +12,6 @@ import com.github.platform.core.sys.domain.context.SysUserQueryContext;
 import com.github.platform.core.sys.domain.dto.SysUserDto;
 import com.github.platform.core.sys.domain.dto.resp.PwdResult;
 import com.github.platform.core.sys.domain.model.user.UserEntity;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 
 import java.util.List;
 import java.util.Set;
@@ -26,6 +24,12 @@ import java.util.Set;
  * @version: 1.0
  */
 public interface ISysUserGateway {
+    /**缓存前缀*/
+    String PREFIX =  SysCacheKeyPrefix.USER.getPrefix();
+    /**缓存前缀加冒号*/
+    String PREFIX_COLON = SysCacheKeyPrefix.USER.getWithColon();
+    /**缓存名称*/
+    String CACHE_NAME = CacheConstant.c30m;
     /**
      * 列表查询
      * @param context
@@ -53,7 +57,6 @@ public interface ISysUserGateway {
      * @param loginName
      * @return
      */
-    @Cacheable(cacheNames = CacheConstant.c30m, key = "'sys:u:l:' + #loginName", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     UserEntity findByLoginName(String loginName);
 
     /**
@@ -62,9 +65,13 @@ public interface ISysUserGateway {
      * @param mobile
      * @return
      */
-    @Cacheable(cacheNames = CacheConstant.c30m, key = "'sys:u:m:' + #mobile", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     UserEntity findByMobile(String mobile);
-    @Cacheable(cacheNames = CacheConstant.c30m, key = "'sys:u:s:' + #secretKey", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+
+    /**
+     * 通过密钥查询用户
+     * @param secretKey 密钥
+     * @return
+     */
     UserEntity findBySecretKey(String secretKey);
 
 
@@ -122,13 +129,6 @@ public interface ISysUserGateway {
      * @param context
      * @return
      */
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'sys:u:l:'+#context.loginName",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'sys:u:m:'+#context.mobile",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'sys:u:s:'+#context.secretKey",cacheManager = CacheConstant.cacheManager)
-            }
-    )
     void editUser(RegisterContext context);
 
     /**

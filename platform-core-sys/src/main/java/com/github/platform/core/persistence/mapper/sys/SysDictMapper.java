@@ -39,12 +39,6 @@ public interface SysDictMapper  {
 	*/
 	List<SysDictBase> findByIds(@Param("ids") Long[] ids);
 	/**
-	 * 通过map参数获取列表
-	 * @param params
-	 * @return List<SysDictBase>
-	 */
-	List<SysDictBase> findList(Map<String,Object> params);
-	/**
 	* 通过实体查询
 	* @param record
 	* @return List<SysDictDto>
@@ -56,12 +50,7 @@ public interface SysDictMapper  {
 	* @return List<SysDictBase>
 	*/
 	List<SysDictBase> findListBy(SysDictBase record);
-	/**
-	 * 通过map参数获取 总数
-	 * @param params
-	 * @return int
-	 */
-	int findListCount(Map<String,Object> params);
+
 
 	/**
 	 * 通过实体统计

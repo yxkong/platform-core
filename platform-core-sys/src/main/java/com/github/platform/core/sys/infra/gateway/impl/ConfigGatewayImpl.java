@@ -2,6 +2,7 @@ package com.github.platform.core.sys.infra.gateway.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.gateway.BaseGatewayImpl;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.persistence.mapper.sys.SysConfigMapper;
@@ -14,6 +15,9 @@ import com.github.platform.core.sys.domain.dto.SysConfigDto;
 import com.github.platform.core.sys.domain.gateway.ISysConfigGateway;
 import com.github.platform.core.sys.infra.constant.SysInfraResultEnum;
 import com.github.platform.core.sys.infra.convert.SysConfigInfraConvert;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -69,22 +73,34 @@ public class ConfigGatewayImpl extends BaseGatewayImpl implements ISysConfigGate
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.id",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.tenantId+':'+#context.key",cacheManager = CacheConstant.cacheManager)
+            }
+    )
     public void update(SysConfigContext context) {
         if (Objects.isNull(context.getId())){
-            exception(ResultStatusEnum.UPDATE_ID_IS_NULL);
+            throw exception(ResultStatusEnum.UPDATE_ID_IS_NULL);
         }
         SysConfigBase record = sysConfigMapper.findById(context.getId());
         if (!record.getKey().equals(context.getKey())){
-            exception(SysInfraResultEnum.CONFIG_NOT_UPDATE_KEY);
+            throw exception(SysInfraResultEnum.CONFIG_NOT_UPDATE_KEY);
         }
         record = convert.toSysConfigBase(context);
         int flag = sysConfigMapper.updateById(record);
         if (flag <= 0){
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
 
     }
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #id",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +#tenantId+':'+#key",cacheManager = CacheConstant.cacheManager)
+            }
+    )
     public void delete(Long id,Integer tenantId,String key) {
         SysConfigBase record = sysConfigMapper.findById(id);
         if (Objects.isNull(record)){
@@ -104,12 +120,14 @@ public class ConfigGatewayImpl extends BaseGatewayImpl implements ISysConfigGate
     }
 
     @Override
+    @Cacheable(cacheNames = CACHE_NAME, key = "#root.target.PREFIX_COLON + #tenantId+':'+ #key", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public SysConfigDto getConfig(Integer tenantId,String key) {
         SysConfigBase sysConfig = this.findByKey(null, key);
         return convert.toDto(sysConfig);
     }
 
     @Override
+    @Cacheable(cacheNames = CACHE_NAME, key = "#root.target.PREFIX_COLON + #tenantId+':'+ #key", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public void deleteCache(Integer tenantId,String key) {
 
     }

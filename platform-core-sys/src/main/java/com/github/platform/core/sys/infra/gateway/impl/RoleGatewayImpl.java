@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.gateway.BaseGatewayImpl;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
@@ -29,6 +30,9 @@ import com.github.platform.core.sys.infra.util.ResultPageBeanUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Sets;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,7 +101,7 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
 
         if (Objects.nonNull(res)) {
             log.warn("[{}]添加角色,当前租户:{}中角色:{},已存在", loginName, tenantId, roleName);
-            exception(SysInfraResultEnum.ROLE_ALREADY_EXIST);
+            throw exception(SysInfraResultEnum.ROLE_ALREADY_EXIST);
         }
         SysRoleBase sysRole = roleInfraConvert.toSysRoleBase(roleContext);
         sysRole.setTenantId(LoginUserInfoUtil.getTenantId());
@@ -116,7 +120,7 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
             userRoleDOList.forEach(s->{
                 SysUserBase sysUser = sysUserMapper.findById(s.getUserId());
                 if (Objects.nonNull(sysUser) && sysUser.getStatus().equals(StatusEnum.ON.getStatus())){
-                    exception(SysInfraResultEnum.FORBID_DELETE_ROLE);
+                    throw exception(SysInfraResultEnum.FORBID_DELETE_ROLE);
                 }
             });
         }
@@ -175,13 +179,14 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
         return roleInfraConvert.toDto(list.get(0)) ;
     }
 
-    @Override
-    public void evictCacheUsers() {
-
-    }
-
     @Transactional(rollbackFor = Exception.class)
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.id",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames =CacheConstant.c1h, key = "#root.target.ROLE_MENU_COLON +  #context.id",cacheManager = CacheConstant.cacheManager)
+            }
+    )
     public void update(SysRoleContext context) {
         String roleName = context.getName();
         String loginName = LoginUserInfoUtil.getLoginName();
@@ -251,6 +256,7 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
     }
 
     @Override
+    @Cacheable(cacheNames =CacheConstant.c1h, key = "#root.target.ROLE_MENU_COLON + #roleId",cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
     public Set<Long> queryMenuIds(Long roleId) {
 
         List<SysRoleMenuBase> sysRoleMenuList = iSysRoleMenuService.findByIds(new Long[]{roleId});

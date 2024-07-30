@@ -2,6 +2,7 @@ package com.github.platform.core.sys.infra.gateway.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.gateway.BaseGatewayImpl;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.persistence.mapper.sys.SysDictMapper;
@@ -16,9 +17,12 @@ import com.github.platform.core.sys.domain.gateway.ISysDictGateway;
 import com.github.platform.core.sys.infra.constant.SysInfraResultEnum;
 import com.github.platform.core.sys.infra.convert.SysDictInfraConvert;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,10 +49,11 @@ public class DictGatewayImpl extends BaseGatewayImpl implements ISysDictGateway 
     }
 
     @Override
+    @CacheEvict(cacheNames = CACHE_NAME, key = "#root.target.ALL_PREFIX_COLON + #context.dictType", cacheManager = CacheConstant.cacheManager)
     public SysDictDto insert(SysDictContext context) {
         int isExist = this.isExistDict(context);
         if (isExist > 0) {
-            exception(SysInfraResultEnum.DICT_EXIST);
+            throw exception(SysInfraResultEnum.DICT_EXIST);
         }
         SysDictBase record = dictInfraConvert.toSysDictBase(context);
         sysDictMapper.insert(record);
@@ -56,15 +61,16 @@ public class DictGatewayImpl extends BaseGatewayImpl implements ISysDictGateway 
     }
 
     @Override
+    @CacheEvict(cacheNames =CACHE_NAME,key = "#root.target.ALL_PREFIX_COLON +#context.dictType",cacheManager = CacheConstant.cacheManager)
     public void update(SysDictContext context) {
         int existDict = this.isExistDict(context);
         if (existDict > 0 ) {
-            exception(SysInfraResultEnum.DICT_EXIST);
+            throw exception(SysInfraResultEnum.DICT_EXIST);
         }
         SysDictBase record = dictInfraConvert.toSysDictBase(context);
         int row = sysDictMapper.updateById(record);
         if ( row <= 0) {
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
     }
 
@@ -74,6 +80,7 @@ public class DictGatewayImpl extends BaseGatewayImpl implements ISysDictGateway 
     }
 
     @Override
+    @CacheEvict(cacheNames =CACHE_NAME,key = "#root.target.ALL_PREFIX_COLON +#context.dictType",cacheManager = CacheConstant.cacheManager)
     public void delete(SysDictContext context) {
         //删除字典
         sysDictMapper.deleteById(context.getId());
@@ -89,13 +96,11 @@ public class DictGatewayImpl extends BaseGatewayImpl implements ISysDictGateway 
     }
 
     @Override
+    @Cacheable(cacheNames =CACHE_NAME, key = "#root.target.ALL_PREFIX_COLON + #dictType", cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
     public List<SysDictDto> findByType(String dictType) {
         if (StringUtils.isEmpty(dictType)){
             return null;
         }
         return sysDictMapper.findDtoListBy(SysDictBase.builder().dictType(dictType).status(StatusEnum.ON.getStatus()).build());
     }
-
-
-
 }

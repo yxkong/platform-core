@@ -2,12 +2,10 @@ package com.github.platform.core.sys.domain.gateway;
 
 import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
+import com.github.platform.core.sys.domain.constant.SysCacheKeyPrefix;
 import com.github.platform.core.sys.domain.context.SysTokenCacheContext;
 import com.github.platform.core.sys.domain.context.SysTokenCacheQueryContext;
 import com.github.platform.core.sys.domain.dto.SysTokenCacheDto;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 
 import java.util.List;
 
@@ -19,6 +17,12 @@ import java.util.List;
  * @version 1.0
  */
 public interface ISysTokenCacheGateway {
+    /**缓存前缀*/
+    String PREFIX =  SysCacheKeyPrefix.TOKEN_CACHE.getPrefix();
+    /**缓存前缀加冒号*/
+    String PREFIX_COLON = SysCacheKeyPrefix.TOKEN_CACHE.getWithColon();
+    /**缓存名称*/
+    String CACHE_NAME = CacheConstant.c30m;
     /**
     * 查询token缓存列表
     * @param context 查询上下文
@@ -50,7 +54,6 @@ public interface ISysTokenCacheGateway {
      * @param token
      * @return
      */
-    @Cacheable(cacheNames = CacheConstant.c30m, key = "'s:t:' +#token", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     SysTokenCacheDto findByToken(String token);
     /**
      * 根据token查询缓存信息
@@ -63,24 +66,12 @@ public interface ISysTokenCacheGateway {
     * @param context 修改上下文
     * @return 更新结果
     */
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'s:t:'+#context.token",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'s:t:'+#context.tenantId+':'+#context.loginName",cacheManager = CacheConstant.cacheManager)
-            }
-    )
     SysTokenCacheDto update(SysTokenCacheContext context);
     /**
     * 根据id删除token缓存记录
     * @param context 删除上下文（由id改为上下文了，是为了兼容cache的多处理）
     * @return 删除结果
     */
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'s:t:'+#context.token",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CacheConstant.c30m,key = "'s:t:'+#context.tenantId+':'+#context.loginName",cacheManager = CacheConstant.cacheManager)
-            }
-    )
     int expire(SysTokenCacheContext context);
 
 

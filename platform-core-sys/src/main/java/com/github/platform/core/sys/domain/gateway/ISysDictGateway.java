@@ -1,7 +1,10 @@
 package com.github.platform.core.sys.domain.gateway;
 
 import com.github.platform.core.cache.domain.constant.CacheConstant;
+import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
+import com.github.platform.core.sys.domain.constant.SysCacheConstant;
+import com.github.platform.core.sys.domain.constant.SysCacheKeyPrefix;
 import com.github.platform.core.sys.domain.context.SysDictContext;
 import com.github.platform.core.sys.domain.context.SysDictQueryContext;
 import com.github.platform.core.sys.domain.dto.SysDictDto;
@@ -18,6 +21,10 @@ import java.util.List;
  * @version: 1.0
  */
 public interface ISysDictGateway {
+    /**缓存前缀*/
+    String ALL_PREFIX_COLON = SysCacheKeyPrefix.DICT_TYPE.getWithColon()+"a:";
+    /**缓存名称*/
+    String CACHE_NAME = CacheConstant.c12h;
     /**
      * 分页查询字典数据
      *
@@ -31,7 +38,6 @@ public interface ISysDictGateway {
      * @param context
      * @return
      */
-    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:dt:a:'+#context.dictType",cacheManager = CacheConstant.cacheManager)
     SysDictDto insert(SysDictContext context);
 
     /**
@@ -39,7 +45,6 @@ public interface ISysDictGateway {
      * @param context
      * @return
      */
-    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:dt:a:'+#context.dictType",cacheManager = CacheConstant.cacheManager)
     void update(SysDictContext context);
     /**
      * 查询对应的dictType中有无对应的key或label
@@ -53,7 +58,6 @@ public interface ISysDictGateway {
      * @param context
      * @return
      */
-    @CacheEvict(cacheNames = CacheConstant.c12h,key = "'sys:dt:a:'+#context.dictType",cacheManager = CacheConstant.cacheManager)
     void delete(SysDictContext context);
     /**
      * 通过主键id 获取实体对象
@@ -69,6 +73,6 @@ public interface ISysDictGateway {
      * @param dictType
      * @return
      */
-    @Cacheable(cacheNames = CacheConstant.c12h, key = "'sys:dt:a:' + #dictType", cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
+
     List<SysDictDto> findByType(String dictType);
 }
