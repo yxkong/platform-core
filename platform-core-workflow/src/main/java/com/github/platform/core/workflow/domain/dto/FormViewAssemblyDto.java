@@ -20,5 +20,6 @@ import java.util.List;
 @Builder
 public class FormDataViewDto implements Serializable {
     private String title;
-    private List<FormDataDto> list;
+    private Boolean isCheck;
+    private List<FormInfoDto> list;
 }
