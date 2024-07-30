@@ -5,6 +5,8 @@ import com.github.platform.core.standard.exception.BaseResult;
 import com.github.platform.core.standard.util.ResultBeanUtil;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Objects;
+
 /**
  * 构建返回
  *
@@ -30,10 +32,10 @@ public class BaseBizCommon {
         return ResultBeanUtil.succ(msg,data);
     }
     protected ResultBean buildSimpleResp(Boolean res) {
-        return Boolean.TRUE.equals(res) ? ResultBeanUtil.success() : ResultBeanUtil.fail("操作失败", null);
+        return Objects.equals(Boolean.TRUE,res) ? ResultBeanUtil.success() : ResultBeanUtil.fail("操作失败", null);
     }
     protected ResultBean buildSimpleResp(Boolean res,String msg) {
-        return Boolean.TRUE.equals(res) ? ResultBeanUtil.success(msg,null) : ResultBeanUtil.fail(msg, null);
+        return Objects.equals(Boolean.TRUE,res) ? ResultBeanUtil.success(msg,null) : ResultBeanUtil.fail(msg, null);
     }
     protected ResultBean buildSimpleResp(Pair<Boolean,String> pair) {
         return buildSimpleResp(pair.getKey(),pair.getValue());

@@ -5,10 +5,12 @@ import feign.Logger;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.Data;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.openfeign.FeignLoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /**
  * @author yxkong
@@ -20,7 +22,9 @@ import org.springframework.context.annotation.Configuration;
 public class FeignConfiguration {
     private String level;
     @Bean
-    public FeignLoggerFactory feignLoggerFactory() {
+    @Primary
+    @ConditionalOnMissingBean
+    public FeignLoggerFactory customizedFeignLoggerFactory() {
         return new CustomizedFeignLoggerFactory();
     }
 

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * admin后端实现
@@ -26,8 +27,8 @@ import java.util.Objects;
 @Service("sysTokenService")
 @Slf4j
 public class SysTokenServiceImpl implements ITokenService {
-    @Autowired(required = false)
-    private ITokenCacheGateway tokenCacheGateway;
+    @Autowired
+    private Optional<ITokenCacheGateway> tokenCacheGateway;
     private SecureRandom randGen = new SecureRandom();
 
     /**
@@ -41,25 +42,21 @@ public class SysTokenServiceImpl implements ITokenService {
     @Override
     @Cacheable(cacheNames = CacheConstant.sysToken, key = "''+#token", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public String getLoginInfoStr(String token) {
-        if (Objects.nonNull(tokenCacheGateway)){
-            TokenCacheEntity tokenCacheEntity = tokenCacheGateway.findByToken(token);
-            if (Objects.nonNull(tokenCacheEntity)){
-                return tokenCacheEntity.getLoginInfo();
-            }
-        }
-        return null;
+        return tokenCacheGateway
+                .map(gateway -> gateway.findByToken(token))
+                .filter(Objects::nonNull)
+                .map(TokenCacheEntity::getLoginInfo)
+                .orElse(null);
     }
 
     @Override
     @Cacheable(cacheNames = CacheConstant.sysToken, key = "#tenantId+':'+#loginName", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public String getLoginInfoStr(Integer tenantId, String loginName) {
-        if (Objects.nonNull(tokenCacheGateway)){
-            TokenCacheEntity tokenCacheEntity = tokenCacheGateway.findByLoginName(tenantId, loginName);
-            if (Objects.nonNull(tokenCacheEntity)){
-                return tokenCacheEntity.getLoginInfo();
-            }
-        }
-        return null;
+        return tokenCacheGateway
+                .map(gateway -> gateway.findByLoginName(tenantId,loginName))
+                .filter(Objects::nonNull)
+                .map(TokenCacheEntity::getLoginInfo)
+                .orElse(null);
     }
 
     @Override
@@ -68,10 +65,10 @@ public class SysTokenServiceImpl implements ITokenService {
         if (!isLogin && isRenew()){
             return loginInfo;
         }
-        log.debug("登录：{} token:{} loginName:{}",isLogin,token,loginName);
-        if (Objects.nonNull(tokenCacheGateway)){
-            tokenCacheGateway.saveOrUpdate(tenantId,token,loginName,loginInfo,isLogin);
+        if (log.isDebugEnabled()){
+            log.debug("登录：{} token:{} loginName:{}",isLogin,token,loginName);
         }
+        tokenCacheGateway.ifPresent(gateway -> gateway.saveOrUpdate(tenantId, token, loginName, loginInfo, isLogin));
         return loginInfo;
     }
     private boolean isRenew(){
@@ -85,16 +82,12 @@ public class SysTokenServiceImpl implements ITokenService {
     }
     @Override
     public void expireByLoginName(Integer tenantId, String loginName) {
-        if (Objects.nonNull(tokenCacheGateway)){
-            tokenCacheGateway.expireByLoginName(tenantId,loginName);
-        }
+        tokenCacheGateway.ifPresent(gateway -> gateway.expireByLoginName(tenantId, loginName));
     }
 
     @Override
     @CacheEvict(cacheNames = CacheConstant.sysToken, key = "''+#token", cacheManager = CacheConstant.cacheManager)
     public void expireByToken(String token) {
-        if (Objects.nonNull(tokenCacheGateway)){
-            tokenCacheGateway.expireByToken(token);
-        }
+        tokenCacheGateway.ifPresent(gateway -> gateway.expireByToken(token));
     }
 }

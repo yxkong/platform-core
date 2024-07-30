@@ -60,10 +60,7 @@ public class BaseExecutor extends BaseBizCommon {
 
     /**
      * 抛出Application层业务异常
-     * @param resultStatusEnum
-     * @param throwable
-     * @return
-     * @throws ApplicationException
+     * @param resultStatusEnum 通用状态枚举
      */
     protected ApplicationException exception(ResultStatusEnum resultStatusEnum,Throwable throwable )throws ApplicationException{
         throw new ApplicationException(resultStatusEnum,throwable);
@@ -72,7 +69,7 @@ public class BaseExecutor extends BaseBizCommon {
 
     /**
      *
-     * @param object
+     * @param object 事件
      */
     protected void sendEvent(Object object){
         ApplicationContextHolder.getBean(IDomainEventService.class).publish(object);

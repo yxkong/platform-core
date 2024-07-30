@@ -83,11 +83,11 @@ public class BaseAdminEntity extends BaseEntity {
     }
     @JsonIgnore
     public boolean isOn(){
-        return StatusEnum.ON.getStatus().equals(this.status) ;
+        return Objects.equals(StatusEnum.ON.getStatus(),this.status);
     }
     @JsonIgnore
     public boolean isOff(){
-        return StatusEnum.OFF.getStatus().equals(this.status) ;
+        return Objects.equals(StatusEnum.OFF.getStatus(),this.status);
     }
     public boolean statusIsNull(){
         return Objects.isNull(this.status);
