@@ -29,7 +29,7 @@ public class ${entityName}GatewayImpl extends BaseGatewayImpl implements I${enti
     @Override
     public ${entityName}Dto insert(${entityName}Context context) {
         ${entityName}Base record = ${lowerEntityName}Convert.to${entityName}Base(context);
-        ${lowerEntityName}Mapper.insert(${lowerEntityName}Base);
+        ${lowerEntityName}Mapper.insert(record);
         return ${lowerEntityName}Convert.toDto(record);
     }
 

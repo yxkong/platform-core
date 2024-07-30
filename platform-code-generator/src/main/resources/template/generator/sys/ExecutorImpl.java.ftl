@@ -30,6 +30,7 @@ public class ${entityName}ExecutorImpl extends BaseExecutor implements I${entity
     * @param context 查询上下文
     * @return 分页结果
     */
+    @Override
     public PageBean<${entityName}Dto> query(${entityName}QueryContext context){
         return ${lowerEntityName}Gateway.query(context);
     };
@@ -37,10 +38,11 @@ public class ${entityName}ExecutorImpl extends BaseExecutor implements I${entity
     * 新增${apiAlias}
     * @param context 新增上下文
     */
+    @Override
     public String insert(${entityName}Context context){
         ${entityName}Dto record = ${lowerEntityName}Gateway.insert(context);
         if (Objects.isNull(record.getId())){
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
         return record.getStrId();
     }
@@ -49,6 +51,7 @@ public class ${entityName}ExecutorImpl extends BaseExecutor implements I${entity
     * @param id 主键
     * @return 单条记录
     */
+    @Override
     public ${entityName}Dto findById(Long id) {
         return ${lowerEntityName}Gateway.findById(id);
     }
@@ -56,22 +59,24 @@ public class ${entityName}ExecutorImpl extends BaseExecutor implements I${entity
     * 修改${apiAlias}
     * @param context 更新上下文
     */
+    @Override
     public void update(${entityName}Context context) {
         Pair<Boolean, ${entityName}Dto> update = ${lowerEntityName}Gateway.update(context);
         if (!update.getKey()){
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
     }
     /**
     * 根据id删除${apiAlias}记录
     * @param id 主键
     */
+    @Override
     public void delete(Long id) {
         /**此处是为了再gateway上做多条件缓存，如果有必要，先查，后设置值*/
         ${entityName}Context context = ${entityName}Context.builder().id(id).build();
         int d = ${lowerEntityName}Gateway.delete(context);
         if (d <=0 ){
-            exception(ResultStatusEnum.COMMON_DELETE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
     }
 }

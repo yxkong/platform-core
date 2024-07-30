@@ -24,6 +24,7 @@ public class ${entityName}ExecutorImpl extends BaseExecutor implements I${entity
     * @param id 主键
     * @return 单条记录
     */
+    @Override
     public ${entityName}Dto findById(Long id) {
         return ${lowerEntityName}Gateway.findById(id);
     }
