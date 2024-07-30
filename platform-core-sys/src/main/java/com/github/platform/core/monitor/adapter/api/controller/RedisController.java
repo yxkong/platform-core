@@ -2,11 +2,10 @@ package com.github.platform.core.monitor.adapter.api.controller;
 
 import com.github.platform.core.auth.annotation.RequiredLogin;
 import com.github.platform.core.cache.infra.service.ICacheService;
-import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.monitor.adapter.api.convert.RedisAdapterConvert;
 import com.github.platform.core.monitor.domain.dto.RedisMonitorDto;
-import com.github.platform.core.standard.entity.dto.ResultBean;
 import com.github.platform.core.standard.entity.KeyReq;
+import com.github.platform.core.standard.entity.dto.ResultBean;
 import com.github.platform.core.web.web.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -85,7 +83,7 @@ public class RedisController extends BaseController {
     }
     @Operation(summary = "删除对应的key",tags = {"redis"})
     @PostMapping("/deleteByKey")
-    public ResultBean<Boolean> deleteByKey(@RequestBody @Validated KeyReq keyReq){
+    public ResultBean<Void> deleteByKey(@RequestBody @Validated KeyReq keyReq){
         Boolean delete = stringRedisTemplate.delete(keyReq.getKey());
         return buildSimpleResp(delete,delete? "删除成功！":"删除失败！");
     }

@@ -22,6 +22,11 @@ public interface SymbolConstant {
      */
     String colon = ":";
     /**
+     单引号
+     */
+    String single = "'";
+
+    /**
      * 分号
      */
     String semicolon = ";";

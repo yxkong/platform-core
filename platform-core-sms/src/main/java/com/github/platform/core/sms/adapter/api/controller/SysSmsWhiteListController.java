@@ -87,7 +87,7 @@ public class SysSmsWhiteListController extends BaseController{
     @OptLog(module="sysSmsWhiteList",title="根据id删除短信白名单记录",optType = LogOptTypeEnum.delete)
     @Operation(summary = "根据id删除短信白名单记录",tags = {"sysSmsWhiteList"})
     @PostMapping("/delete")
-    public ResultBean<Void> delete(@Validated @RequestBody IdReq id) {
+    public ResultBean<?> delete(@Validated @RequestBody IdReq id) {
         executor.delete(id.getId());
         return buildSucResp();
     }
@@ -100,7 +100,7 @@ public class SysSmsWhiteListController extends BaseController{
     @OptLog(module="sysSmsWhiteList",title="修改短信白名单",optType = LogOptTypeEnum.modify)
     @Operation(summary = "修改短信白名单",tags = {"sysSmsWhiteList"})
     @PostMapping("/modify")
-    public ResultBean<Void> modify(@Validated @RequestBody SysSmsWhiteListCmd cmd) {
+    public ResultBean<?> modify(@Validated @RequestBody SysSmsWhiteListCmd cmd) {
         SysSmsWhiteListContext context = convert.toContext(cmd);
         executor.update(context);
         return buildSucResp();

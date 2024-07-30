@@ -22,6 +22,6 @@ public class KeyReq implements Serializable {
      */
     @NotEmpty(message = "关键词(key)不能为空")
     @Schema(description ="关键词")
-    private String key;
+    protected String key;
 
 }

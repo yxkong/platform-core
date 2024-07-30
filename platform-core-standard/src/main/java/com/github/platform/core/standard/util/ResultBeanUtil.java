@@ -197,7 +197,7 @@ public class ResultBeanUtil {
 
     }
 
-    public static Boolean isSuccess(ResultBean<?> data) {
+    public static Boolean isSuccess(ResultBean data) {
         if (data == null) {
             return Boolean.FALSE;
         }
