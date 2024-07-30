@@ -4,6 +4,10 @@ import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.workflow.domain.context.FormDataContext;
 import com.github.platform.core.workflow.domain.context.FormDataQueryContext;
 import com.github.platform.core.workflow.domain.dto.FormDataDto;
+import com.github.platform.core.workflow.domain.dto.FormInfoDto;
+import com.github.platform.core.workflow.domain.dto.ProcessInstanceDto;
+
+import java.util.List;
 
 /**
  * 表单数据执行器
@@ -48,4 +52,21 @@ public interface IFormDataExecutor {
      * @param id 主键
      */
     void delete(Long id);
+
+    /**
+     * 表单数据数据
+     * @param taskFormInfo 表单数据
+     * @param instanceNo 实例编号
+     * @param formInstNo 表单实例编号（为空）
+     */
+    void formDataHandler(List<FormDataContext> taskFormInfo,String instanceNo, String formInstNo);
+
+    /**
+     * 获取表单数据
+     * @param instanceDto
+     * @param isMain
+     * @param formKey
+     * @return
+     */
+    List<FormInfoDto> getFormInfoWithData(ProcessInstanceDto instanceDto, boolean isMain, String formKey);
 }

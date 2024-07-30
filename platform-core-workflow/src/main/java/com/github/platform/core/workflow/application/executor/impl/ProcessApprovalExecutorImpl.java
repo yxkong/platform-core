@@ -5,20 +5,23 @@ import com.github.platform.core.cache.infra.constant.SequenceEnum;
 import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.utils.ApplicationContextHolder;
+import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
+import com.github.platform.core.workflow.adapter.api.command.TaskFormDataCmd;
 import com.github.platform.core.workflow.application.constant.WorkflowApplicationEnum;
+import com.github.platform.core.workflow.application.executor.IFormDataExecutor;
 import com.github.platform.core.workflow.application.executor.IProcessApprovalExecutor;
 import com.github.platform.core.workflow.domain.constant.ProcessOptTypeEnum;
 import com.github.platform.core.workflow.domain.context.ApprovalContext;
+import com.github.platform.core.workflow.domain.context.FormDataContext;
 import com.github.platform.core.workflow.domain.context.ProcessApprovalRecordContext;
+import com.github.platform.core.workflow.domain.context.ProcessInstanceContext;
 import com.github.platform.core.workflow.domain.dto.ProcessApprovalRecordDto;
 import com.github.platform.core.workflow.domain.dto.ProcessInstanceDto;
-import com.github.platform.core.workflow.domain.gateway.IProcessApprovalGateway;
-import com.github.platform.core.workflow.domain.gateway.IProcessApprovalRecordGateway;
-import com.github.platform.core.workflow.domain.gateway.IProcessInstanceGateway;
+import com.github.platform.core.workflow.domain.gateway.*;
 import com.github.platform.core.workflow.infra.service.IProcessInstanceService;
 import com.github.platform.core.workflow.infra.service.IProcessTaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +30,8 @@ import org.flowable.task.api.Task;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * 流程审批执行器
@@ -46,6 +47,8 @@ public class ProcessApprovalExecutorImpl extends BaseExecutor implements IProces
     private IProcessInstanceGateway instanceGateway;
     @Resource
     private IProcessApprovalRecordGateway approvalRecordGateway;
+    @Resource
+    private IFormDataExecutor formDataExecutor;
     @Resource(name="flowableProcessInstanceService")
     private IProcessInstanceService processInstanceService;
 
@@ -56,12 +59,12 @@ public class ProcessApprovalExecutorImpl extends BaseExecutor implements IProces
     public void submit(ProcessOptTypeEnum optType,String bizNo, String taskKey){
         ProcessInstanceDto dto = instanceGateway.findByBizNoAndProcessNo(bizNo, null);
         if (Objects.isNull(dto)){
-            exception(WorkflowApplicationEnum.PROCESS_INSTANCE_NOT_EXIST);
+            throw exception(WorkflowApplicationEnum.PROCESS_INSTANCE_NOT_EXIST);
         }
         // 适用于 一人通过就通过的场景
         Task task = processTaskService.getTaskByInstanceIdAndTaskKey(dto.getInstanceId(), taskKey);
         if (Objects.isNull(task)){
-            exception(WorkflowApplicationEnum.PROCESS_TASK_NOT_EXIST);
+            throw exception(WorkflowApplicationEnum.PROCESS_TASK_NOT_EXIST);
         }
         ApprovalContext context = ApprovalContext.builder()
                 .optTypeEnum(optType)
@@ -79,7 +82,7 @@ public class ProcessApprovalExecutorImpl extends BaseExecutor implements IProces
         ProcessOptTypeEnum optType = context.getOptTypeEnum();
         IProcessApprovalGateway approvalGateway = ApplicationContextHolder.getBean(optType.getBean(), IProcessApprovalGateway.class);
         if (Objects.isNull(optType)){
-            exception(WorkflowApplicationEnum.PROCESS_TASK_EXECUTE_NOT_FOUND);
+            throw exception(WorkflowApplicationEnum.PROCESS_TASK_EXECUTE_NOT_FOUND);
         }
         ProcessInstanceDto instanceDto = context.getProcessInstanceDto();
         if (Objects.isNull(instanceDto)){
@@ -93,7 +96,7 @@ public class ProcessApprovalExecutorImpl extends BaseExecutor implements IProces
             task = processTaskService.getTask(context.getTaskId());
         }
         if (Objects.isNull(task)){
-            exception(WorkflowApplicationEnum.PROCESS_TASK_NOT_EXIST);
+            throw exception(WorkflowApplicationEnum.PROCESS_TASK_NOT_EXIST);
         }
 
         /** ③根据策略执行任务*/
@@ -104,6 +107,13 @@ public class ProcessApprovalExecutorImpl extends BaseExecutor implements IProces
 
         /** ⑤表单实例数据记录*/
         String formInstNo = SequenceUtil.nextSequenceNum(SequenceEnum.FORM_INSTANCE);
+//        if (StringUtils.isEmpty(instanceDto.getFormInstNo())){
+//            String formInstNo = SequenceUtil.nextSequenceNum(SequenceEnum.FORM_INSTANCE);
+//            instanceDto.setFormInstNo(formInstNo);
+//            ProcessInstanceContext instanceContext = ProcessInstanceContext.builder().id(instanceDto.getId()).bizNo(instanceDto.getBizNo()).instanceId(instanceDto.getInstanceId()).formInstNo(formInstNo).build();
+//            instanceGateway.update(instanceContext);
+//        }
+        formDataExecutor.formDataHandler(context.getTaskFormInfo(), instanceDto.getInstanceNo(),formInstNo);
         /**
          * ⑥ 日志记录
          */
@@ -114,7 +124,7 @@ public class ProcessApprovalExecutorImpl extends BaseExecutor implements IProces
     public void changeState(String bizNo, String currentActivityId, String targetActivityId) {
         ProcessInstanceDto instanceDto = instanceGateway.findByBizNoAndProcessNo(bizNo, null);
         if (Objects.isNull(instanceDto)){
-            exception(WorkflowApplicationEnum.PROCESS_INSTANCE_NOT_EXIST);
+            throw  exception(WorkflowApplicationEnum.PROCESS_INSTANCE_NOT_EXIST);
         }
         processInstanceService.changeState(instanceDto.getInstanceId(),currentActivityId,targetActivityId,null);
     }

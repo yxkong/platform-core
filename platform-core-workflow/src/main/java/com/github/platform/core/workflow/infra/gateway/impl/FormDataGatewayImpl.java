@@ -51,6 +51,11 @@ public class FormDataGatewayImpl extends BaseGatewayImpl implements IFormDataGat
     }
 
     @Override
+    public void updateList(List<FormDataContext> infos, String instanceNo) {
+        formDataMapper.updateList(convert.toFormDatas(infos,instanceNo));
+    }
+
+    @Override
     public FormDataDto findById(Long id) {
         FormDataBase formDataBase = formDataMapper.findById(id);
         return convert.toDto(formDataBase);

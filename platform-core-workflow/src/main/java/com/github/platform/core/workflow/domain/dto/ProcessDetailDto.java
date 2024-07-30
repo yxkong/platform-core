@@ -1,12 +1,14 @@
 package com.github.platform.core.workflow.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.platform.core.common.utils.CollectionUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.flowable.bpmn.model.BpmnModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,5 +47,14 @@ public class ProcessDetailDto {
     @Schema(description = " 流程任务状态，用于回显")
     private ProcessTaskStatusDto taskStatus;
     @Schema(description = "表单信息")
-    private List<FormDataViewDto> formInfos;
+    private List<FormViewAssemblyDto> formInfos;
+    @Schema(description = "当前任务表单信息")
+    private FormViewAssemblyDto taskFormInfo;
+
+    public void addFormInfos(String title, List<FormInfoDto> list) {
+        if (CollectionUtil.isEmpty(this.formInfos) ) {
+            formInfos = new ArrayList<>();
+        }
+        this.formInfos.add(new FormViewAssemblyDto(title,list));
+    }
 }

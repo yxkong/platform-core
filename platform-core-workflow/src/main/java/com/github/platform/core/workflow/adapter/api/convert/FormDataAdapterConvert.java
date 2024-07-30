@@ -2,10 +2,14 @@ package com.github.platform.core.workflow.adapter.api.convert;
 
 import com.github.platform.core.workflow.adapter.api.command.FormDataCmd;
 import com.github.platform.core.workflow.adapter.api.command.FormDataQuery;
+import com.github.platform.core.workflow.adapter.api.command.TaskFormDataCmd;
 import com.github.platform.core.workflow.domain.context.FormDataContext;
 import com.github.platform.core.workflow.domain.context.FormDataQueryContext;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
+
+import java.util.List;
+
 /**
 * 表单数据Controller到Application层的适配
 * @website <a href="https://www.5ycode.com/">5ycode</a>
@@ -27,4 +31,11 @@ public interface FormDataAdapterConvert {
     * @return 操作上下文
     */
     FormDataContext toContext(FormDataCmd cmd);
+
+    /**
+     * 转换上下文
+     * @param taskFormInfo
+     * @return
+     */
+    List<FormDataContext> toContexts(List<TaskFormDataCmd> taskFormInfo);
 }

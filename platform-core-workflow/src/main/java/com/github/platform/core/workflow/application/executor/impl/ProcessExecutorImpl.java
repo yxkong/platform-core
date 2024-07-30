@@ -8,15 +8,17 @@ import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
-import com.github.platform.core.sys.domain.gateway.ISysCommonGateway;
 import com.github.platform.core.workflow.application.constant.WorkflowApplicationEnum;
+import com.github.platform.core.workflow.application.executor.IFormDataExecutor;
 import com.github.platform.core.workflow.application.executor.IProcessExecutor;
 import com.github.platform.core.workflow.domain.constant.FlwConstant;
-import com.github.platform.core.workflow.domain.constant.ProcessTypeEnum;
 import com.github.platform.core.workflow.domain.context.ProcessDetailQueryContext;
 import com.github.platform.core.workflow.domain.context.ProcessQueryContext;
 import com.github.platform.core.workflow.domain.dto.*;
-import com.github.platform.core.workflow.domain.gateway.*;
+import com.github.platform.core.workflow.domain.gateway.IFormInfoGateway;
+import com.github.platform.core.workflow.domain.gateway.IProcessApprovalRecordGateway;
+import com.github.platform.core.workflow.domain.gateway.IProcessDefinitionGateway;
+import com.github.platform.core.workflow.domain.gateway.IProcessInstanceGateway;
 import com.github.platform.core.workflow.infra.service.IProcessInstanceService;
 import com.github.platform.core.workflow.infra.service.IProcessTaskService;
 import com.github.platform.core.workflow.infra.util.BpmnModelUtils;
@@ -28,8 +30,6 @@ import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.UserTask;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.task.api.Task;
-import org.flowable.task.api.history.HistoricTaskInstance;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -52,6 +52,8 @@ public class ProcessExecutorImpl extends BaseExecutor implements IProcessExecuto
 
     @Resource(name = "flowableProcessTaskService")
     private IProcessTaskService processTaskService;
+    @Resource
+    private IFormDataExecutor formDataExecutor;
 
     @Resource
     private IProcessInstanceGateway instanceGateway;
@@ -61,10 +63,6 @@ public class ProcessExecutorImpl extends BaseExecutor implements IProcessExecuto
     private IProcessApprovalRecordGateway approvalRecordGateway;
     @Resource
     private IFormInfoGateway formInfoGateway;
-    @Resource
-    private ISysCommonGateway sysCommonGateway;
-    @Autowired
-    private  Map<String,ICustomFormDataGateway> formDataGatewayMap;
 
     @Override
     public PageBean<ProcessDto> queryTodo(ProcessQueryContext context) {
@@ -120,15 +118,13 @@ public class ProcessExecutorImpl extends BaseExecutor implements IProcessExecuto
         return queryDetail(context);
     }
     @Override
-    public String getCurrentTaskDefinitionKey(Set<String> actives, String instanceId, String loginName){
-        Task activeTask = processTaskService.getUserActiveTask(instanceId, loginName);
-        if (Objects.nonNull(activeTask)){
-            return activeTask.getTaskDefinitionKey();
+    public ProcessTaskDto getCurrentTaskDefinitionKey(Set<String> actives, String instanceId, String loginName){
+        Task task = processTaskService.getUserActiveTask(instanceId, loginName);
+        ProcessTaskDto.ProcessTaskDtoBuilder builder = ProcessTaskDto.builder();
+        if (Objects.nonNull(task)){
+            return builder.taskId(task.getId()).taskDefinitionKey(task.getTaskDefinitionKey()).formKey(task.getFormKey()).name(task.getName()).build();
         }
-        if (CollectionUtil.isEmpty(actives)){
-            return null;
-        }
-        return  new ArrayList<>(actives).get(0);
+        return builder.taskDefinitionKey( CollectionUtil.isEmpty(actives)? null : new ArrayList<>(actives).get(0)).build() ;
     }
 
     @Override
@@ -150,38 +146,58 @@ public class ProcessExecutorImpl extends BaseExecutor implements IProcessExecuto
     public ProcessDetailDto queryDetail(ProcessDetailQueryContext context) {
         ProcessDetailDto rst = new ProcessDetailDto();
         // 1,流程实例信息
-        ProcessInstanceDto instanceDto = context.getInstanceDto();
-        if (Objects.isNull(instanceDto) || StringUtils.isEmpty(instanceDto.getInstanceName())){
-            if (StringUtils.isEmpty(context.getInstanceId())){
-                exception(WorkflowApplicationEnum.INSTANCE_ID_IS_EMPTY);
-            }
-            instanceDto = instanceGateway.findByInstanceId(context.getInstanceId());
-        }
+        ProcessInstanceDto instanceDto = getInstanceDto(context);
         // 2，获取指定版本的流程图
         ProcessDefinitionDto processDefinitionDto = definitionGateway.findByProcessNo(instanceDto.getProcessNo(), instanceDto.getProcessVersion());
         rst.setBpmnXml(processDefinitionDto.getProcessFile());
         rst.setInstanceDto(instanceDto);
         BpmnModel bpmnModel = BpmnModelUtils.getBpmnModel(processDefinitionDto.getProcessFile());
+        //缓存
+        rst.setBpmnModel(bpmnModel);
         // 3，如果taskId存在，需要构建任务表单信息
         rst.setTaskStatus(getTaskStatus(bpmnModel, instanceDto.getInstanceId()));
-        // 非项目流程场景，需要查询信息
+        // 查询流程的formKey
+        String formKey = BpmnModelUtils.getStartEventFormKey(bpmnModel);
+        // 非项目流程场景，需要查询信息,项目流程需要查询流程表单信息
+        List<FormViewAssemblyDto> formInfos  =new ArrayList<>();
+
+        /**非项目流程的获取所有表单*/
         if (context.isNotPm()){
             /**查询审批记录*/
             rst.setApprovalRecords( getApprovalRecords(instanceDto));
+            formInfos.add(new FormViewAssemblyDto("流程主表单", formDataExecutor.getFormInfoWithData(instanceDto, true, formKey)));
+            //当前任务节点
+            Task task = processTaskService.getTask(context.getTaskId());
 
-            String formKey = BpmnModelUtils.getStartEventFormKey(bpmnModel);
-            List<FormDataViewDto> formInfos  =new ArrayList<>();
-            formInfos.add(new FormDataViewDto("流程表单信息", getFormData(instanceDto,true,formKey)));
-            if (StringUtils.isNotEmpty(context.getTaskId())){
-                // 获取当前任务的节点
-                HistoricTaskInstance hisTask = processTaskService.getHisTask(context.getTaskId());
-                formInfos.add(new FormDataViewDto("审批任务表单信息", getFormData(instanceDto,false,formKey)));
-            }
-            rst.setFormInfos(formInfos);
+            /**查询所有的表单*/
+            List<BpmnModelUtils.FormKey> allUserTaskFormKey = BpmnModelUtils.getAllUserTaskFormKey(bpmnModel);
+            Set<String> finishedTasks = rst.getTaskStatus().getFinishedTasks();
 
+            allUserTaskFormKey.forEach(s ->{
+                boolean flag = Objects.nonNull(task) && Objects.equals(task.getTaskDefinitionKey(), s.getNodeKey());
+                if (finishedTasks.contains(s.getNodeKey()) || flag){
+                    if (flag){
+                        rst.setTaskFormInfo(new FormViewAssemblyDto(s.getName() ,formDataExecutor.getFormInfoWithData(instanceDto, false, s.getFormKey())));
+                    } else {
+                        formInfos.add(new FormViewAssemblyDto(s.getName() ,formDataExecutor.getFormInfoWithData(instanceDto, false, s.getFormKey())));
+                    }
+                }
+            });
         }
+        rst.setFormInfos(formInfos);
         return rst;
     }
+    private ProcessInstanceDto getInstanceDto(ProcessDetailQueryContext context) {
+        ProcessInstanceDto instanceDto = context.getInstanceDto();
+        if (Objects.isNull(instanceDto) || StringUtils.isBlank(instanceDto.getInstanceName())){
+            if (StringUtils.isBlank(context.getInstanceId())){
+                throw  exception(WorkflowApplicationEnum.INSTANCE_ID_IS_EMPTY);
+            }
+            instanceDto = instanceGateway.findByInstanceId(context.getInstanceId());
+        }
+        return instanceDto;
+    }
+
     @Override
     public Map<String, String> getTaskExtendProperty(String bizNo, String taskKey) {
         ProcessInstanceDto instanceDto = instanceGateway.findByBizNoAndProcessNo(bizNo, null);
@@ -195,53 +211,21 @@ public class ProcessExecutorImpl extends BaseExecutor implements IProcessExecuto
     public List<FormInfoDto> createQuery(String processNo) {
         ProcessDefinitionDto definitionDto = definitionGateway.findLatestByProcessNo(processNo);
         if (Objects.isNull(definitionDto)){
-            exception(WorkflowApplicationEnum.definition_no_found);
+            throw exception(WorkflowApplicationEnum.definition_no_found);
         }
         if (StringUtils.isBlank(definitionDto.getProcessFile())) {
-            exception(WorkflowApplicationEnum.bpmn_is_null);
+            throw exception(WorkflowApplicationEnum.bpmn_is_null);
         }
         BpmnModel bpmnModel = BpmnModelUtils.getBpmnModel(definitionDto.getProcessFile());
         String formKey = BpmnModelUtils.getStartEventFormKey(bpmnModel);
         //查询form表单配置
-        List<FormInfoDto> list = formInfoGateway.findByFromNo(getFormNo(formKey));
+        List<FormInfoDto> list = formInfoGateway.findByFromNoWithDict(BpmnModelUtils.getFormNo(formKey));
         if (CollectionUtil.isEmpty(list)){
-            exception(WorkflowApplicationEnum.FORM_INFO__NOT_FOUND);
+            throw exception(WorkflowApplicationEnum.FORM_INFO__NOT_FOUND);
         }
-        list.forEach(s->{
-            if (s.isOption()){
-                s.setOptions(sysCommonGateway.getOptionsByType(s.getOptionName()));
-            }
-        });
         return list;
     }
 
-    /**
-     * 组装表单数据
-     * @param instanceDto
-     * @param formKey
-     * @return
-     */
-    private List<FormDataDto> getFormData(ProcessInstanceDto instanceDto, boolean isProcess, String formKey){
-        List<FormDataDto> rst = new ArrayList<>();
-        if (instanceDto.isPm() && !isProcess){
-            return rst;
-        }
-        ProcessTypeEnum processTypeEnum = ProcessTypeEnum.get(instanceDto.getProcessType());
-        if (instanceDto.isPm()){
-            formKey = FlwConstant.PM_FORM_KEY ;
-        } else {
-            formKey = getFormNo(formKey);
-        }
-        ICustomFormDataGateway formDataGateway = formDataGatewayMap.get(processTypeEnum.getFormBean());
-
-        return formDataGateway.findFormData(instanceDto.getBizNo(),instanceDto.getInstanceNo(),formKey);
-    }
-    private String getFormNo(String formKey){
-        if (StringUtils.isNotEmpty(formKey)){
-            return formKey.replace("key_","");
-        }
-        return null;
-    }
 
     /**
      * 查询审批记录
@@ -256,18 +240,6 @@ public class ProcessExecutorImpl extends BaseExecutor implements IProcessExecuto
         ProcessApprovalRecordDto endNode = getEndNode(instanceDto);
         if (Objects.nonNull(endNode)){
             rst.add(endNode);
-        }
-        return rst;
-    }
-
-    private Map<String,List<FormInfoDto>> getFormData(BpmnModel bpmnModel){
-        Map<String,List<FormInfoDto>> rst = new HashMap<>();
-        Collection<UserTask> userTasks = BpmnModelUtils.getAllUserTaskEvent(bpmnModel);
-        if (CollectionUtil.isNotEmpty(userTasks)){
-            userTasks.forEach(s->{
-                String name = StringUtils.isNotEmpty(s.getName()) ? s.getName(): s.getId();
-                rst.put(name,formInfoGateway.findByFromNo(s.getFormKey()));
-            });
         }
         return rst;
     }

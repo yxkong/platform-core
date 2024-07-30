@@ -65,7 +65,7 @@ public class ProcessController extends BaseController {
     @OptLog(module="processInstance",title="创建流程实例",optType = LogOptTypeEnum.modify)
     @Operation(summary = "创建流程实例",tags = {"processInstance"})
     @PostMapping("/create")
-    public ResultBean create(@Validated @RequestBody ProcessRunCmd cmd) {
+    public ResultBean<Void> create(@Validated @RequestBody ProcessRunCmd cmd) {
         ProcessRunContext processRunContext = instanceAdapterConvert.toProcessRunContext(cmd);
         processRunContext.setInitiator(LoginUserInfoUtil.getLoginName());
         processRunContext.setTenantId(LoginUserInfoUtil.getTenantId());
@@ -79,7 +79,7 @@ public class ProcessController extends BaseController {
     @PostMapping("/createQuery")
     public ResultBean<List<FormInfoDto>> createQuery(@RequestBody ProcessQuery query){
         if (StringUtils.isEmpty(query.getProcessNo())){
-            exception(ResultStatusEnum.PARAM_EMPTY.getStatus(),"processNo不能为空");
+            throw exception(ResultStatusEnum.PARAM_EMPTY.getStatus(),"processNo不能为空");
         }
         List<FormInfoDto> list = executor.createQuery(query.getProcessNo());
         return buildSucResp(list);

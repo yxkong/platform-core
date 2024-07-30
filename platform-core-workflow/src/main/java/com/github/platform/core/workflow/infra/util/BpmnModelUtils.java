@@ -1,13 +1,13 @@
 package com.github.platform.core.workflow.infra.util;
 
+import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import feign.form.util.CharsetUtil;
 import org.assertj.core.util.Lists;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
-import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
+import org.flowable.bpmn.model.*;
 import org.flowable.common.engine.impl.util.io.StringStreamSource;
-import com.github.platform.core.common.utils.CollectionUtil;
 
 import java.util.*;
 
@@ -269,20 +269,60 @@ public class BpmnModelUtils {
         StartEvent startEvent = getStartEvent(model);
         return getFormKey(startEvent);
     }
+
+    /**
+     * 获取表单编号，bpmn会加前缀
+     * @param formKey
+     * @return
+     */
+    public static String getFormNo(String formKey){
+        if (StringUtils.isNotEmpty(formKey)){
+            return formKey.replace("key_","");
+        }
+        return null;
+    }
     /**
      * 获取 用户节点的form表单key
      * @param model
      * @return
      */
-    public static List<String> getAllUserTaskFormKey(BpmnModel model){
-        List<String> rst = new ArrayList<>();
+    public static List<FormKey> getAllUserTaskFormKey(BpmnModel model){
+        List<FormKey> rst = new ArrayList<>();
         Collection<UserTask> allUserTaskEvent = getAllUserTaskEvent(model);
         if (CollectionUtil.isNotEmpty(allUserTaskEvent)){
             allUserTaskEvent.forEach(s->{
-                rst.add(getFormKey(s));
+                String formKey = getFormKey(s);
+                if (StringUtils.isNotEmpty(formKey)){
+                    rst.add(new FormKey(formKey,s.getId(),s.getName()));
+                }
             });
         }
         return rst;
+    }
+    public static class FormKey {
+        //节点的form表单
+        private String formKey;
+        //节点id
+        private String id;
+        //节点的中文名称
+        private String name;
+
+        public FormKey(String formKey, String id, String name) {
+            this.formKey = formKey;
+            this.id = id;
+            this.name = name;
+        }
+
+        public String getFormKey() {
+            return formKey;
+        }
+
+        public String getName() {
+            return name;
+        }
+        public String getNodeKey() {
+            return id;
+        }
     }
 
     /**

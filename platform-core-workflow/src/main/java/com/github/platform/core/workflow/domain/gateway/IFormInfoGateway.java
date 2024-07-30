@@ -1,6 +1,5 @@
 package com.github.platform.core.workflow.domain.gateway;
 
-import com.github.platform.core.workflow.domain.common.entity.FormInfoBase;
 import com.github.platform.core.workflow.domain.context.FormInfoContext;
 import com.github.platform.core.workflow.domain.context.FormInfoQueryContext;
 import com.github.platform.core.workflow.domain.dto.FormInfoDto;
@@ -60,6 +59,13 @@ public interface IFormInfoGateway {
      * @return
      */
     List<FormInfoDto> findByFromNo(String formNo);
+
+    /**
+     * 返回表单，带字典
+     * @param formNo
+     * @return
+     */
+    List<FormInfoDto> findByFromNoWithDict(String formNo);
 
     /**
      * 批量更新

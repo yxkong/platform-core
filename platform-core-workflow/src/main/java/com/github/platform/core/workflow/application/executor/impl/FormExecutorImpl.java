@@ -15,6 +15,7 @@ import com.github.platform.core.workflow.domain.context.FormInfoWrapContext;
 import com.github.platform.core.workflow.domain.context.FormQueryContext;
 import com.github.platform.core.workflow.domain.dto.FormDetailDto;
 import com.github.platform.core.workflow.domain.dto.FormDto;
+import com.github.platform.core.workflow.domain.gateway.ICustomFormDataGateway;
 import com.github.platform.core.workflow.domain.gateway.IFormGateway;
 import com.github.platform.core.workflow.domain.gateway.IFormInfoGateway;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -77,7 +79,7 @@ public class FormExecutorImpl extends BaseExecutor implements IFormExecutor {
         basic.setFormNo(null);
         Pair<Boolean, FormDto> update = gateway.update(basic);
         if (!update.getKey()){
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
         List<FormInfoContext> infos = context.getInfos();
         if (CollectionUtil.isNotEmpty(infos)){
@@ -95,7 +97,7 @@ public class FormExecutorImpl extends BaseExecutor implements IFormExecutor {
     public void delete(Long id) {
         int d = gateway.delete(id);
         if (d <=0 ){
-            exception(ResultStatusEnum.COMMON_DELETE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
     }
 

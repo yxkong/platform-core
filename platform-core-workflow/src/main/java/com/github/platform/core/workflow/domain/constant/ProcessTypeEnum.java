@@ -30,4 +30,7 @@ public enum ProcessTypeEnum {
         }
         return ProcessTypeEnum.OA;
     }
+    public static boolean isPm(String type){
+        return PM.type.equals(type);
+    }
 }

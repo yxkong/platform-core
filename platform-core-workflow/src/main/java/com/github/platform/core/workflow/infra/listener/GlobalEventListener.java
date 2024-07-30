@@ -7,6 +7,7 @@ import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import com.github.platform.core.workflow.domain.constant.FlwConstant;
 import com.github.platform.core.workflow.domain.constant.InstanceStatusEnum;
+import com.github.platform.core.workflow.domain.constant.ProcessTypeEnum;
 import com.github.platform.core.workflow.domain.dto.ProcessDefinitionDto;
 import com.github.platform.core.workflow.domain.entity.WorkflowActivityEntity;
 import com.github.platform.core.workflow.domain.entity.WorkflowTaskEntity;
@@ -73,6 +74,9 @@ public class GlobalEventListener extends AbstractFlowableEngineEventListener {
 //        log.info("流程任务监听开始节点 instanceId = {} class = {}  ", instanceId,event.getClass());
         String bizNo = (String) entity.getVariable(FlwConstant.BIZ_NO);
         String processType = (String) entity.getVariable(FlwConstant.PROCESS_TYPE);
+        if (!ProcessTypeEnum.isPm(processType)){
+            return;
+        }
         Boolean createGroup = (Boolean) entity.getVariable(FlwConstant.CREATE_GROUP);
         String createUser = (String) entity.getVariable(BpmnXMLConstants.ATTRIBUTE_EVENT_START_INITIATOR);
         WorkflowProcessEvent processEvent = new WorkflowProcessEvent(instanceId, bizNo, processType, InstanceStatusEnum.ACTIVE);
@@ -87,10 +91,14 @@ public class GlobalEventListener extends AbstractFlowableEngineEventListener {
 
         org.flowable.engine.delegate.event.impl.FlowableProcessCancelledEventImpl t = (org.flowable.engine.delegate.event.impl.FlowableProcessCancelledEventImpl)event;
         DelegateExecution e = t.getExecution();
+        String processType = (String) e.getVariable(FlwConstant.PROCESS_TYPE);
+        if (!ProcessTypeEnum.isPm(processType)){
+            return;
+        }
         String currentActivityId = e.getCurrentActivityId();
         FlowableEngineEventType type = t.getType();
         String bizNo = (String) e.getVariable(FlwConstant.BIZ_NO);
-        String processType = (String) e.getVariable(FlwConstant.PROCESS_TYPE);
+
         log.info("流程任务监听取消节点 bizNo = {}, instanceId = {} currentActivityId={} class = {}  ", bizNo,instanceId,currentActivityId,event.getClass());
 
         applicationContext.publishEvent(new WorkflowProcessEvent(instanceId,bizNo,processType,InstanceStatusEnum.CANCELLED));
@@ -100,15 +108,20 @@ public class GlobalEventListener extends AbstractFlowableEngineEventListener {
         String instanceId = event.getProcessInstanceId();
         org.flowable.engine.delegate.event.impl.FlowableEntityEventImpl t = (org.flowable.engine.delegate.event.impl.FlowableEntityEventImpl)event;
         ExecutionEntityImpl entity = (ExecutionEntityImpl) t.getEntity();
+        String processType = (String) entity.getVariable(FlwConstant.PROCESS_TYPE);
+        if (!ProcessTypeEnum.isPm(processType)){
+            return;
+        }
         log.info("流程任务监听结束节点 instanceId = {} class = {}  ", instanceId,event.getClass());
         String instanceNo = (String) entity.getVariable(FlwConstant.INSTANCE_NO);
         String bizNo = (String) entity.getVariable(FlwConstant.BIZ_NO);
-        String processType = (String) entity.getVariable(FlwConstant.PROCESS_TYPE);
+
         IProcessInstanceGateway processInstanceGateway = ApplicationContextHolder.getBean(IProcessInstanceGateway.class);
         processInstanceGateway.updateByInstanceId(instanceId, InstanceStatusEnum.COMPLETED);
 
         applicationContext.publishEvent(new WorkflowProcessEvent(instanceId,bizNo,processType,InstanceStatusEnum.COMPLETED));
     }
+
 
     @Override
     protected void taskCreated(FlowableEngineEntityEvent event) {
@@ -137,9 +150,13 @@ public class GlobalEventListener extends AbstractFlowableEngineEventListener {
                 .singleResult();
         FlowElement flowElement = execution.getCurrentFlowElement();
         Map<String, Object> variables = entity.getVariables();
+        String processType = (String) variables.get(FlwConstant.PROCESS_TYPE);
+        if (!ProcessTypeEnum.isPm(processType)){
+            return;
+        }
         String instanceNo = (String) variables.get(FlwConstant.INSTANCE_NO);
         String bizNo = (String) variables.get(FlwConstant.BIZ_NO);
-        String processType = (String) variables.get(FlwConstant.PROCESS_TYPE);
+
         String processNo = (String) variables.get(FlwConstant.PROCESS_NO);
         Integer version = (Integer) variables.get(FlwConstant.PROCESS_VERSION);
         // 获取拆分角色
@@ -174,6 +191,9 @@ public class GlobalEventListener extends AbstractFlowableEngineEventListener {
             String instanceNo = (String) variables.get(FlwConstant.INSTANCE_NO);
             String bizNo = (String) variables.get(FlwConstant.BIZ_NO);
             String processType = (String) variables.get(FlwConstant.PROCESS_TYPE);
+            if (!ProcessTypeEnum.isPm(processType)){
+                return;
+            }
             String processNo = (String) variables.get(FlwConstant.PROCESS_NO);
             Integer version = (Integer) variables.get(FlwConstant.PROCESS_VERSION);
             ProcessDefinitionDto definitionDto = processDefinitionGateway.findByProcessNo(processNo, version);

@@ -43,15 +43,15 @@ public class ProcessApprovalController extends BaseController {
     @OptLog(module="processApproval",title="流程审批提交",persistent = false)
     @Operation(summary = "流程审批提交",tags = {"processApproval"})
     @PostMapping(value = "/submit")
-    public ResultBean submit(@Validated  @RequestBody TaskSubmitCmd cmd) {
+    public ResultBean<?> submit(@Validated  @RequestBody TaskSubmitCmd cmd) {
         ApprovalContext context = convert.toContext(cmd);
         processApprovalExecutor.submit(context);
         return buildSucResp();
     }
     @OptLog(module="processApproval",title="流程审批强制执行",persistent = false)
-    @Operation(summary = "流程审批提交",tags = {"processApproval"})
+    @Operation(summary = "流程审批强制执行",tags = {"processApproval"})
     @PostMapping(value = "/changeState")
-    public ResultBean changeState(@Validated  @RequestBody ChangeStateCmd cmd) {
+    public ResultBean<?> changeState(@Validated  @RequestBody ChangeStateCmd cmd) {
         if (AuthUtil.isSuperAdmin()){
             processApprovalExecutor.changeState(cmd.getBizNo(),cmd.getCurrentActivityId(), cmd.getTargetActivityId());
             return buildSucResp();

@@ -3,6 +3,7 @@ package com.github.platform.core.workflow.infra.listener;
 import com.github.platform.core.common.utils.ApplicationContextHolder;
 import com.github.platform.core.workflow.domain.constant.FlwConstant;
 import com.github.platform.core.workflow.domain.constant.InstanceStatusEnum;
+import com.github.platform.core.workflow.domain.constant.ProcessTypeEnum;
 import com.github.platform.core.workflow.domain.gateway.IProcessInstanceGateway;
 import com.github.platform.core.workflow.infra.event.WorkflowProcessEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,9 @@ public class ExecutionEndCreateListener implements ExecutionListener {
         String instanceNo = (String) delegate.getVariable(FlwConstant.INSTANCE_NO);
         String bizNo = (String) delegate.getVariable(FlwConstant.BIZ_NO);
         String processType = (String) delegate.getVariable(FlwConstant.PROCESS_TYPE);
+        if (!ProcessTypeEnum.isPm(processType)){
+            return;
+        }
         if (log.isDebugEnabled()){
             log.debug("end节点触发：instanceId:{} instanceNo:{} bizNo:{}  eventName:{}",instanceId,instanceNo,bizNo,eventName);
         }

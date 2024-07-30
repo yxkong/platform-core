@@ -9,6 +9,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 /**
  * 流程审批
@@ -28,4 +29,6 @@ public class TaskSubmitCmd extends ApprovalBase {
      */
     @NotEmpty(message="操作类型（optType）不能为空")
     private String optType;
+
+    private List<TaskFormDataCmd> taskFormInfo;
 }

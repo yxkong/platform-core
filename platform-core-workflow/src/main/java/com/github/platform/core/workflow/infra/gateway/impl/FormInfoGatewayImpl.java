@@ -2,19 +2,23 @@ package com.github.platform.core.workflow.infra.gateway.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.platform.core.common.gateway.BaseGatewayImpl;
+import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
+import com.github.platform.core.persistence.mapper.workflow.FormInfoMapper;
+import com.github.platform.core.standard.entity.dto.PageBean;
+import com.github.platform.core.sys.domain.gateway.ISysCommonGateway;
 import com.github.platform.core.workflow.domain.common.entity.FormInfoBase;
 import com.github.platform.core.workflow.domain.context.FormInfoContext;
 import com.github.platform.core.workflow.domain.context.FormInfoQueryContext;
 import com.github.platform.core.workflow.domain.dto.FormInfoDto;
 import com.github.platform.core.workflow.domain.gateway.IFormInfoGateway;
-import com.github.platform.core.persistence.mapper.workflow.FormInfoMapper;
 import com.github.platform.core.workflow.infra.convert.FormInfoInfraConvert;
-import com.github.platform.core.common.gateway.BaseGatewayImpl;
-import com.github.platform.core.standard.entity.dto.PageBean;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 /**
 * 表单信息网关层实现
@@ -30,6 +34,8 @@ public class FormInfoGatewayImpl extends BaseGatewayImpl implements IFormInfoGat
     private FormInfoMapper formInfoMapper;
     @Resource
     private FormInfoInfraConvert convert;
+    @Resource
+    private ISysCommonGateway sysCommonGateway;
     @Override
     public PageBean<FormInfoDto> query(FormInfoQueryContext context) {
         FormInfoBase formInfoBase = convert.toFormInfoBase(context);
@@ -75,6 +81,25 @@ public class FormInfoGatewayImpl extends BaseGatewayImpl implements IFormInfoGat
         }
         List<FormInfoBase> list = formInfoMapper.findListBy(FormInfoBase.builder().formNo(formNo).build());
         return convert.toDtos(list);
+    }
+    @Override
+    public List<FormInfoDto> findByFromNoWithDict(String formNo) {
+        if (StringUtils.isEmpty(formNo)){
+            return null;
+        }
+        List<FormInfoBase> list = formInfoMapper.findListBy(FormInfoBase.builder().formNo(formNo).build());
+        if (CollectionUtil.isEmpty(list)){
+            return null;
+        }
+        List<FormInfoDto> rst = new ArrayList<>();
+        list.forEach(s->{
+            FormInfoDto dto = convert.toFormView(s,null);
+            if (s.isOption()){
+                dto.setOptions(sysCommonGateway.getOptionsByType(s.getOptionName()));
+            }
+            rst.add(dto);
+        });
+        return rst;
     }
 
     @Override

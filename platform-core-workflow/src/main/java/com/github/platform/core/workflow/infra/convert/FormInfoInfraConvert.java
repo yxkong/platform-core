@@ -1,12 +1,16 @@
 package com.github.platform.core.workflow.infra.convert;
 
 import com.github.pagehelper.PageInfo;
+import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.workflow.domain.common.entity.FormInfoBase;
 import com.github.platform.core.workflow.domain.context.FormInfoContext;
 import com.github.platform.core.workflow.domain.context.FormInfoQueryContext;
+import com.github.platform.core.workflow.domain.dto.FormDataDto;
 import com.github.platform.core.workflow.domain.dto.FormInfoDto;
-import com.github.platform.core.standard.entity.dto.PageBean;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.Mappings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,20 @@ public interface FormInfoInfraConvert {
     */
     List<FormInfoDto> toDtos(List<FormInfoBase> list);
     /**
+    * 数据库实体列表转dto列表
+    * @param list 数据库实体列表
+    * @return dto列表
+    */
+    List<FormDataDto> toDataList(List<FormInfoBase> list);
+    default FormDataDto toDataDto(FormInfoBase entity){
+        return FormDataDto.builder()
+                .name(entity.getName())
+                .label(entity.getLabel())
+                .type(entity.getType())
+                .sort(entity.getSort())
+                .build();
+    }
+    /**
     * 数据库实体转dto
     * @param entity 数据库实体
     * @return dto
@@ -35,6 +53,20 @@ public interface FormInfoInfraConvert {
             
     })
     FormInfoDto toDto(FormInfoBase entity);
+    /**
+     * 数据库实体转dto
+     * @param entity 数据库实体
+     * @return dto
+     */
+    @Mappings({
+            @Mapping(target = "id", expression = "java(null)"),
+            @Mapping(target = "createBy", expression = "java(null)"),
+            @Mapping(target = "updateBy", expression = "java(null)"),
+            @Mapping(target = "createTime", expression = "java(null)"),
+            @Mapping(target = "updateTime", expression = "java(null)"),
+            @Mapping(target = "remark", expression = "java(null)"),
+    })
+    FormInfoDto toFormView(FormInfoBase entity,Integer x);
     /**
     * 数据库分页转业务分页
     * @param pageInfo 数据库分页

@@ -134,6 +134,17 @@
 			(#{item.formNo},#{item.instanceNo},#{item.type},#{item.label},#{item.name},#{item.value},#{item.sort},#{item.tenantId},now(),#{item.createBy})
 		</foreach>
 	</insert>
+	<update id="updateList" parameterType="java.util.List">
+		<foreach collection="list" item="item" separator=";">
+			UPDATE t_flw_form_data
+			<set>
+				<if test="item.value != null and item.value != ''">`value` = <![CDATA[#{item.value}]]>,</if>
+				<if test="item.updateTime != null">update_time = <![CDATA[#{item.updateTime}]]>,</if>
+				<if test="item.updateBy != null and item.updateBy != ''">update_by = <![CDATA[#{item.updateBy}]]>,</if>
+			</set>
+			WHERE id = #{item.id}
+		</foreach>
+	</update>
 	<update id="updateById" parameterType="com.github.platform.core.workflow.domain.common.entity.FormDataBase">
 		update t_flw_form_data
 		<set>
@@ -188,49 +199,6 @@
 		</where>
 		limit 200
 	</select>
-	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select 
-		<include refid="BaseColumnList" />
-		from t_flw_form_data t
-		<where>
-			<if test="id != null ">
-				and t.id = #{id}
-			</if>
-			<if test="formNo != null  and formNo != ''">
-				and t.form_no = #{formNo}
-			</if>
-			<if test="instanceNo != null  and instanceNo != ''">
-				and t.instance_no = #{instanceNo}
-			</if>
-			<if test="type != null  and type != ''">
-				and t.type = #{type}
-			</if>
-			<if test="label != null  and label != ''">
-				and t.label = #{label}
-			</if>
-			<if test="name != null  and name != ''">
-				and t.name = #{name}
-			</if>
-			<if test="value != null  and value != ''">
-				and t.value = #{value}
-			</if>
-			<if test="tenantId != null ">
-				and t.tenant_id = #{tenantId}
-			</if>
-			<if test="updateBy != null  and updateBy != ''">
-				and t.update_by = #{updateBy}
-			</if>
-			<if test="createBy != null  and createBy != ''">
-				and t.create_by = #{createBy}
-			</if>
-			<if test="searchStartTime != null">
-				and t.create_time <![CDATA[>=]]> #{searchStartTime}
-			</if>
-			<if test="searchEndTime != null">
-				and t.create_time <![CDATA[<=]]> #{searchEndTime}
-			</if>
-		</where>
-	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.workflow.domain.common.entity.FormDataBase">
 		select 
 		<include refid="BaseColumnList" />
@@ -271,50 +239,6 @@
 			</if>
 			<if test="searchEndTime != null">
 				and t.create_time <![CDATA[<=]]> #{searchEndTime}
-			</if>
-		</where>
-	</select>
-	<select id="findListCount" resultType="java.lang.Long"  parameterType="java.util.Map">
-		select count(t.id) from t_flw_form_data t
-		<where>
-			<if test="id != null ">
-				and t.id = #{id}
-			</if>
-			<if test="formNo != null  and formNo != ''">
-				and t.form_no = #{formNo}
-			</if>
-			<if test="instanceNo != null  and instanceNo != ''">
-				and t.instance_no = #{instanceNo}
-			</if>
-			<if test="type != null  and type != ''">
-				and t.type = #{type}
-			</if>
-			<if test="label != null  and label != ''">
-				and t.label = #{label}
-			</if>
-			<if test="name != null  and name != ''">
-				and t.name = #{name}
-			</if>
-			<if test="value != null  and value != ''">
-				and t.value = #{value}
-			</if>
-			<if test="tenantId != null ">
-				and t.tenant_id = #{tenantId}
-			</if>
-			<if test="createTime != null ">
-				and t.create_time = #{createTime}
-			</if>
-			<if test="updateTime != null ">
-				and t.update_time = #{updateTime}
-			</if>
-			<if test="updateBy != null  and updateBy != ''">
-				and t.update_by = #{updateBy}
-			</if>
-			<if test="createBy != null  and createBy != ''">
-				and t.create_by = #{createBy}
-			</if>
-			<if test="remark != null  and remark != ''">
-				and t.remark = #{remark}
 			</if>
 		</where>
 	</select>

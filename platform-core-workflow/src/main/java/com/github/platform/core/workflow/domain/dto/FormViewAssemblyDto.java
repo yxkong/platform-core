@@ -16,10 +16,20 @@ import java.util.List;
  */
 @Schema(description = "form表单信息")
 @Data
-@AllArgsConstructor
 @Builder
-public class FormDataViewDto implements Serializable {
+public class FormViewAssemblyDto implements Serializable {
     private String title;
-    private Boolean isCheck;
+    private Boolean readOnly;
     private List<FormInfoDto> list;
+
+    public FormViewAssemblyDto(String title, List<FormInfoDto> list) {
+        this.title = title;
+        this.list = list;
+    }
+
+    public FormViewAssemblyDto(String title, Boolean readOnly, List<FormInfoDto> list) {
+        this.title = title;
+        this.readOnly = readOnly;
+        this.list = list;
+    }
 }

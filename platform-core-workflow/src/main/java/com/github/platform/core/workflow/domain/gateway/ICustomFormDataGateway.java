@@ -1,6 +1,6 @@
 package com.github.platform.core.workflow.domain.gateway;
 
-import com.github.platform.core.workflow.domain.dto.FormDataDto;
+import com.github.platform.core.workflow.domain.dto.FormInfoDto;
 
 import java.util.List;
 
@@ -16,8 +16,8 @@ public interface ICustomFormDataGateway {
      * 查找表单数据
      * @param bizNo
      * @param instanceNo
-     * @param formKey
+     * @param formNo
      * @return
      */
-    List<FormDataDto> findFormData(String bizNo, String instanceNo, String formKey);
+    List<FormInfoDto> getFormViewWithData(String bizNo, String instanceNo, String formNo);
 }

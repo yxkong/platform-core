@@ -33,6 +33,9 @@ public class FormInfoBase extends BaseAdminEntity   {
     @Schema(description = "字段名")
     @NotEmpty(message="字段名（name）不能为空")
     protected String name;
+    /** 分组名称 */
+    @Schema(description = "分组名称")
+    protected String groupName;
     /** 数据长度，最大300 */
     @Schema(description = "数据长度，最大300")
     @NotNull(message="数据长度，最大300（len）不能为空")

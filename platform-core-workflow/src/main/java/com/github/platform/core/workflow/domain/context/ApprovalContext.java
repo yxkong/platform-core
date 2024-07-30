@@ -1,5 +1,6 @@
 package com.github.platform.core.workflow.domain.context;
 
+import com.github.platform.core.workflow.adapter.api.command.TaskFormDataCmd;
 import com.github.platform.core.workflow.domain.common.opt.ApprovalBase;
 import com.github.platform.core.workflow.domain.constant.ProcessOptTypeEnum;
 import com.github.platform.core.workflow.domain.dto.ProcessInstanceDto;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.flowable.task.api.Task;
+
+import java.util.List;
 
 /**
  * 流程审批上下文
@@ -34,4 +37,5 @@ public class ApprovalContext extends ApprovalBase {
      * 性能优化 -> 冗余task
      */
     protected Task task;
+    private List<FormDataContext> taskFormInfo;
 }

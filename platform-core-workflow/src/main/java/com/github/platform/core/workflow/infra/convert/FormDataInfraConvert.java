@@ -75,6 +75,7 @@ public interface FormDataInfraConvert {
 
     FormDataBase toFormDataBase(FormDataDto dto);
 
+
     /**
      * 自定义转换
      * @param datas
@@ -91,5 +92,5 @@ public interface FormDataInfraConvert {
         return result;
     }
 
-    FormDataDto info2Data(FormInfoDto s);
+    FormInfoDto info2Data(FormInfoDto s);
 }

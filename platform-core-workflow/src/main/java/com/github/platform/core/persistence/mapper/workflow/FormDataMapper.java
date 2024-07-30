@@ -30,6 +30,12 @@ public interface FormDataMapper  {
     * @return 1成功  其它失败
     */
     int updateById(FormDataBase record);
+
+    /**
+     * 批量更新
+     * @param formDatas
+     */
+    void updateList(List<FormDataBase> formDatas);
     /**
     * 通过主键id 获取实体对象
     * @param id 主键
@@ -42,24 +48,14 @@ public interface FormDataMapper  {
     * @return 返回列表
     */
     List<FormDataBase> findByIds(@Param("ids") Long[] ids);
-    /**
-    * 通过map参数获取列表
-    * @param params 参数map
-    * @return List<$FormDataDO>
-    */
-    List<FormDataBase> findList(Map<String,Object> params);
+
     /**
     * 通过实体查询
     * @param record 参数实体
     * @return List<FormDataBase>
     */
     List<FormDataBase> findListBy(FormDataBase record);
-    /**
-    * 通过map参数获取 总数
-    * @param params 参数map
-    * @return 总数
-    */
-    long findListCount(Map<String,Object> params);
+
     /**
     * 通过实体查询总数
     * @param record 参数实体
@@ -78,6 +74,7 @@ public interface FormDataMapper  {
     * @return 删除的条数
     */
     int deleteByIds(@Param("ids")Long[] ids);
+
 
 
 }

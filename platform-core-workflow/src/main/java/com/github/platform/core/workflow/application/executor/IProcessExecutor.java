@@ -4,9 +4,8 @@ import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.workflow.domain.context.ProcessDetailQueryContext;
 import com.github.platform.core.workflow.domain.context.ProcessQueryContext;
-import com.github.platform.core.workflow.domain.dto.FormInfoDto;
-import com.github.platform.core.workflow.domain.dto.ProcessDetailDto;
-import com.github.platform.core.workflow.domain.dto.ProcessDto;
+import com.github.platform.core.workflow.domain.dto.*;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
@@ -44,7 +43,7 @@ public interface IProcessExecutor {
      * @return
      */
 
-    String getCurrentTaskDefinitionKey(Set<String> actives, String instanceId, String loginName);
+    ProcessTaskDto getCurrentTaskDefinitionKey(Set<String> actives, String instanceId, String loginName);
 
     /**
      * 根据指定类型获取候选
@@ -63,6 +62,7 @@ public interface IProcessExecutor {
      * @return
      */
     ProcessDetailDto queryDetail(ProcessDetailQueryContext context);
+
 
     /**
      * 获取节点扩展属性

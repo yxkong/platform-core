@@ -30,7 +30,8 @@ public class ProcessDetailQueryContext extends ProcessDetailQueryBase {
     private ProcessInstanceDto instanceDto;
     /**
      * 场景
-     *  1， 表示 项目
+     *  1， 表示 项目来源
+     *  2， 表示流程来源
      */
     private Integer scene;
 

@@ -35,6 +35,12 @@ public interface IFormDataGateway {
     * @param instanceNo 实例编号
     */
     void insertList(List<FormDataContext> infos, String instanceNo);
+
+    /**
+     * 批量更新
+     * @param infos
+     */
+    void updateList(List<FormDataContext> infos, String instanceNo);
     /**
     * 根据id查询表单数据明细
     * @param id 主键

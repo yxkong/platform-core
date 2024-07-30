@@ -28,5 +28,10 @@ public class FormInfoDto extends FormInfoBase{
     /**
      * 配置项
      */
-    List<OptionsDto> options;
+    private List<OptionsDto> options;
+
+    /**表单数据值*/
+    private String value;
+    /**是否禁用*/
+    private boolean disabled;
 }
