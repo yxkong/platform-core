@@ -53,7 +53,7 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
 
     private void vlidateSchedule(){
         if (Objects.isNull(scheduleManager)){
-            exception(JobApplicationEnum.QUARTZ_IS_DISABLED);
+            throw exception(JobApplicationEnum.QUARTZ_IS_DISABLED);
         }
     }
     @Override
@@ -64,7 +64,7 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
         scheduleManager.deleteJob(jobDto.getName());
         int delete = gateway.delete(id);
         if (delete <=0 ){
-            exception(ResultStatusEnum.COMMON_DELETE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
     }
 
@@ -80,7 +80,7 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
         validateJobUnique(context);
         SysJobDto sysJobDto = gateway.insert(context);
         if (Objects.isNull(sysJobDto.getId())){
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
         // 回调处理
         if (context.isCallBack()){
@@ -89,12 +89,12 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
         try {
             scheduleManager.addOrUpdateJob(sysJobDto);
         } catch (SchedulerException e) {
-            exception(JobApplicationEnum.ADD_ERROR);
+            throw exception(JobApplicationEnum.ADD_ERROR);
         }
         SysJobDto updateJob = SysJobDto.builder().id(sysJobDto.getId()).jobStatus(JobStatusEnum.NORMAL.getStatus()).beanName(sysJobDto.getBeanName()).build();
         boolean update = gateway.update(updateJob);
         if (!update){
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
     }
 
@@ -107,7 +107,7 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
         validateJobUnique(context);
         Pair<Boolean, SysJobDto> update = gateway.update(context);
         if (!update.getKey()){
-             exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
         //订阅与发布
         scheduleManager.addOrUpdateJob(update.getRight());
@@ -120,7 +120,7 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
     }
     private void validateCronExpression(String cronExpression) {
         if (!CronUtil.isValid(cronExpression)) {
-            exception(JobApplicationEnum.CRON_VALIDATE);
+            throw exception(JobApplicationEnum.CRON_VALIDATE);
         }
     }
 
@@ -131,13 +131,13 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
     private void validateJobUnique(SysJobContext context) {
         SysJobDto jobDto = gateway.jobUnique(context);
         if (Objects.nonNull(jobDto)){
-            exception(JobApplicationEnum.CRON_UNIQUE);
+            throw exception(JobApplicationEnum.CRON_UNIQUE);
         }
     }
     private SysJobDto validateJobExist(Long id){
         SysJobDto jobDto = gateway.findById(id);
         if (Objects.isNull(jobDto)){
-            exception(JobApplicationEnum.JOB_NOT_EXIST);
+            throw exception(JobApplicationEnum.JOB_NOT_EXIST);
         }
         return jobDto;
     }

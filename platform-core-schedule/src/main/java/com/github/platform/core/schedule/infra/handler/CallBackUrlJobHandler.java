@@ -15,7 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 回调统一处理
+ * 远程调用定时任务，统一处理器
+ * 1，参数为body 格式为json
+ * 2，header 添加 accessToken 作为鉴权密钥
+ * 3，请求体为json
  * @author: yxkong
  * @date: 2023/9/19 10:09 AM
  * @version: 1.0
@@ -33,6 +36,7 @@ public class CallBackUrlJobHandler extends AbstractJobMonitorHandler {
         }
         Map<String,Object> header = new HashMap<>();
         header.put(HeaderConstant.ACCESS_TOKEN,jobDto.getAccessToken());
+        header.put(HeaderConstant.CONTENT_TYPE,HeaderConstant.CONTENT_TYPE_JSON);
 
         ResultBean resultBean = feignService.url(jobDto.getCallBackUrl()).request(requestMap).header(header).restful().resultBean();
         if (log.isDebugEnabled()){

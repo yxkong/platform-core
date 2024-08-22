@@ -75,6 +75,8 @@ public class JobHandlerExecutor extends QuartzJobBean {
             log.error("任务:{} 插入执行日志失败",jobDto.getBeanName(),e);
         }
         Long  start  = System.currentTimeMillis();
+
+        // 根据执行器，执行人物
         try {
             IJobMonitorHandler scheduleHandler = null;
             if (jobDto.isCallBack()){

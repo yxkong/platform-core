@@ -3,14 +3,12 @@ package com.github.platform.core.schedule.infra.configuration;
 import com.github.platform.core.auth.util.LoginInfoUtil;
 import com.github.platform.core.schedule.domain.common.entity.SysJobBase;
 import com.github.platform.core.schedule.domain.constant.JobDataEnum;
-import com.github.platform.core.schedule.domain.dto.SysJobDto;
 import com.github.platform.core.schedule.infra.handler.JobHandlerExecutor;
 import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
