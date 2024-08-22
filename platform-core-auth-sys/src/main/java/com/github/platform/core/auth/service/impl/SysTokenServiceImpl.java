@@ -3,18 +3,14 @@ package com.github.platform.core.auth.service.impl;
 import com.github.platform.core.auth.entity.TokenCacheEntity;
 import com.github.platform.core.auth.gateway.ITokenCacheGateway;
 import com.github.platform.core.auth.service.ITokenService;
-import com.github.platform.core.cache.domain.constant.CacheConstant;
-import com.github.platform.core.common.utils.CollectionUtil;
-import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.security.SecureRandom;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,10 +23,9 @@ import java.util.Optional;
 @Service("sysTokenService")
 @Slf4j
 public class SysTokenServiceImpl implements ITokenService {
-    @Autowired
+    @Resource
     private Optional<ITokenCacheGateway> tokenCacheGateway;
     private SecureRandom randGen = new SecureRandom();
-
     /**
      * 三层缓存
      * <br> 第一层：p:s:t:+token 缓存，默认30分钟，可配置，如果通过网关，网关只查第一层缓存，会有一定的概率出现1008
@@ -40,7 +35,10 @@ public class SysTokenServiceImpl implements ITokenService {
      * @return
      */
     @Override
-    @Cacheable(cacheNames = CacheConstant.sysToken, key = "''+#token", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    @Cacheable(
+            cacheResolver = "sysAuthCacheResolver",
+            key = "''+#token",
+            unless = "#result == null")
     public String getLoginInfoStr(String token) {
         return tokenCacheGateway
                 .map(gateway -> gateway.findByToken(token))
@@ -50,7 +48,10 @@ public class SysTokenServiceImpl implements ITokenService {
     }
 
     @Override
-    @Cacheable(cacheNames = CacheConstant.sysToken, key = "#tenantId+':'+#loginName", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    @Cacheable(
+            cacheResolver = "sysAuthCacheResolver",
+            key = "#tenantId+':'+#loginName",
+            unless = "#result == null")
     public String getLoginInfoStr(Integer tenantId, String loginName) {
         return tokenCacheGateway
                 .map(gateway -> gateway.findByLoginName(tenantId,loginName))
@@ -60,7 +61,10 @@ public class SysTokenServiceImpl implements ITokenService {
     }
 
     @Override
-    @CachePut(cacheNames = CacheConstant.sysToken, key = "''+#token", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    @CachePut(
+            cacheResolver = "sysAuthCacheResolver",
+            key = "''+#token",
+            unless = "#result == null")
     public String saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo, boolean isLogin) {
         if (!isLogin && isRenew()){
             return loginInfo;
@@ -86,7 +90,10 @@ public class SysTokenServiceImpl implements ITokenService {
     }
 
     @Override
-    @CacheEvict(cacheNames = CacheConstant.sysToken, key = "''+#token", cacheManager = CacheConstant.cacheManager)
+    @CacheEvict(
+            cacheResolver = "sysAuthCacheResolver",
+            key = "''+#token"
+    )
     public void expireByToken(String token) {
         tokenCacheGateway.ifPresent(gateway -> gateway.expireByToken(token));
     }

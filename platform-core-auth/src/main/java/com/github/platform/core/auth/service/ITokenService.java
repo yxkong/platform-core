@@ -1,5 +1,8 @@
 package com.github.platform.core.auth.service;
 
+import com.github.platform.core.auth.configuration.properties.AuthProperties;
+import com.github.platform.core.standard.constant.SymbolConstant;
+
 /**
  * token服务，由各个服务实现
  *
@@ -49,4 +52,25 @@ public interface ITokenService {
      * @param token
      */
     void expireByToken(String token);
+
+    /**
+     * 获取缓存key
+     * @param login 登录配置
+     * @param token token的key
+     * @return redis中缓存的key
+     */
+    default String getTokenKey(AuthProperties.Login login, String token){
+        return  String.format("%s:%s",login.getToken(),token);
+    }
+
+    /**
+     * 获取用户的缓存key
+     * @param login 登录配置
+     * @param tenantId 租户
+     * @param loginName 登录用户名
+     * @return redis中缓存的key
+     */
+    default String getMappingKey(AuthProperties.Login login,Integer tenantId, String loginName){
+        return login.getUserTokenMapping() +tenantId+ SymbolConstant.colon+loginName;
+    }
 }

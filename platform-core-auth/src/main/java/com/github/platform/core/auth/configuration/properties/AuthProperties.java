@@ -45,7 +45,7 @@ public class AuthProperties {
          * @return
          */
         public String getTokenKey(String token){
-            return  CacheConstant.apiToken+SymbolConstant.colon+token;
+            return  login.getToken()+SymbolConstant.colon+token;
         }
 
         /**
@@ -55,7 +55,7 @@ public class AuthProperties {
          * @return
          */
         public String getLoginNameKey(Integer tenantId,String loginName){
-            return CacheConstant.apiUserTokenMapping+tenantId+SymbolConstant.colon+loginName;
+            return login.getUserTokenMapping()+ SymbolConstant.colon +tenantId+SymbolConstant.colon+loginName;
         }
         public Long getExpire(){
             if (Objects.isNull(this.login) || Objects.isNull(this.login.getExpire())){
@@ -91,7 +91,7 @@ public class AuthProperties {
          * @return
          */
         public String getTokenKey(String token){
-            return CacheConstant.sysToken+ SymbolConstant.colon+token;
+            return login.getToken() + SymbolConstant.colon+token;
         }
 
         /**
@@ -101,7 +101,7 @@ public class AuthProperties {
          * @return
          */
         public String getLoginNameKey(Integer tenantId,String loginName){
-            return CacheConstant.sysUserTokenMapping+tenantId+SymbolConstant.colon+loginName;
+            return login.getUserTokenMapping() + SymbolConstant.colon +tenantId+SymbolConstant.colon+loginName;
         }
         public Long getExpire(){
             if (Objects.isNull(this.login) || Objects.isNull(this.login.getExpire())){
