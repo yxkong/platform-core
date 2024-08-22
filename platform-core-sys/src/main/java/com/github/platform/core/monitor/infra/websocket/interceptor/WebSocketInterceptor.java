@@ -1,13 +1,12 @@
 package com.github.platform.core.monitor.infra.websocket.interceptor;
 
-import com.github.platform.core.auth.constants.AuthTypeEnum;
 import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.auth.service.ITokenService;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.monitor.domain.ws.OutMessage;
-import com.github.platform.core.monitor.infra.websocket.WebSocketSessionManager;
 import com.github.platform.core.monitor.infra.websocket.constant.WsConstant;
 import com.github.platform.core.standard.constant.ResultStatusEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
@@ -33,7 +31,7 @@ import java.util.Map;
 @Component
 @Slf4j
 public class WebSocketInterceptor implements HandshakeInterceptor {
-    @Resource
+    @Resource(name = CacheConstant.sysTokenService)
     private ITokenService tokenService;
     /**
      * 握手前

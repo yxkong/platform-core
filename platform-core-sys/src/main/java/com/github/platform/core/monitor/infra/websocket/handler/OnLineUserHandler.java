@@ -2,7 +2,6 @@ package com.github.platform.core.monitor.infra.websocket.handler;
 
 import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.auth.service.ITokenService;
-import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;

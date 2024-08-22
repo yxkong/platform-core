@@ -44,11 +44,11 @@ import java.util.Map;
 @Service
 @Slf4j
 public class AuthExecutorImpl extends BaseExecutor implements IAuthExecutor {
-    @Autowired
+    @Resource
     private Map<String, VerifyStrategy> verifyStrategyMap;
     @Resource
     private ISysUserGateway userGateway;
-    @Autowired
+    @Resource
     private Map<String, ISysLoginGateway> loginGatewayMap;
     @Resource
     private SysUserInfraConvert userConvert;

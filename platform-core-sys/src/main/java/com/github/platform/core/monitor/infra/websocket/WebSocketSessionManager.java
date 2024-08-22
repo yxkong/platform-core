@@ -1,6 +1,5 @@
 package com.github.platform.core.monitor.infra.websocket;
 
-import com.github.platform.core.auth.service.ITokenService;
 import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.cache.infra.service.ICacheService;
 import com.github.platform.core.monitor.infra.websocket.constant.WsConstant;
@@ -25,8 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 @Slf4j
 public class WebSocketSessionManager {
-    @Resource
-    private ITokenService tokenService;
+
     @Resource(name = "stringRedisTemplate")
     private StringRedisTemplate stringRedisTemplate;
     /**

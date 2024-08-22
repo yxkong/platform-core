@@ -2,7 +2,6 @@ package com.github.platform.core.sys.adapter.api.controller;
 
 import com.github.platform.core.auth.service.ITokenService;
 import com.github.platform.core.cache.domain.constant.CacheConstant;
-import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;

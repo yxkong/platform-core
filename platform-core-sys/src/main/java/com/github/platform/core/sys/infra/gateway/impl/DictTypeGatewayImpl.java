@@ -62,6 +62,7 @@ public class DictTypeGatewayImpl extends BaseGatewayImpl implements ISysDictType
     }
 
     @Override
+    @CacheEvict(cacheNames = CACHE_NAME, key = "#root.target.PREFIX", cacheManager = CacheConstant.cacheManager)
     public void insert(SysDictTypeContext context) {
         SysDictTypeBase record = typeInfraConvert.toSysDictTypeBase(context);
         if (sysDictTypeMapper.isExistDictTypeInsert(context.getName(), context.getType())>0) {
@@ -74,7 +75,8 @@ public class DictTypeGatewayImpl extends BaseGatewayImpl implements ISysDictType
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.ALL_PREFIX_COLON +#context.type",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.type",cacheManager = CacheConstant.cacheManager)
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.type",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME, key = "#root.target.PREFIX", cacheManager = CacheConstant.cacheManager)
             }
     )
     public void update(SysDictTypeContext context) {
@@ -90,7 +92,8 @@ public class DictTypeGatewayImpl extends BaseGatewayImpl implements ISysDictType
     @Caching(
             evict = {
                     @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.ALL_PREFIX_COLON +#context.type",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.type",cacheManager = CacheConstant.cacheManager)
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.type",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME, key = "#root.target.PREFIX", cacheManager = CacheConstant.cacheManager)
             }
     )
     public void delete(SysDictTypeContext context) {

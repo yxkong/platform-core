@@ -2,7 +2,6 @@ package com.github.platform.core.sys.adapter.api.controller;
 
 import com.github.platform.core.auth.annotation.NoLogin;
 import com.github.platform.core.auth.annotation.RequiredLogin;
-import com.github.platform.core.auth.constants.AuthTypeEnum;
 import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.auth.service.ITokenService;
 import com.github.platform.core.cache.domain.constant.CacheConstant;

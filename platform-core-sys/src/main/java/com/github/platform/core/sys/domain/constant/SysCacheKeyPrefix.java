@@ -1,5 +1,6 @@
 package com.github.platform.core.sys.domain.constant;
 
+import com.github.platform.core.standard.constant.BaseCacheKeyPrefix;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import lombok.Getter;
 
@@ -10,7 +11,7 @@ import lombok.Getter;
  * @version: 1.0
  */
 @Getter
-public enum SysCacheKeyPrefix {
+public enum SysCacheKeyPrefix implements BaseCacheKeyPrefix {
 
     DICT(SysCacheConstant.DICT_PREFIX),
     DICT_TYPE(SysCacheConstant.DICT_TYPE_PREFIX),
@@ -26,14 +27,7 @@ public enum SysCacheKeyPrefix {
     private final String withColon;
 
     SysCacheKeyPrefix(String prefix) {
-        this.prefix = prefix;
-        this.withColon = getPrefixWithColon(prefix);
-    }
-
-    private static String getPrefix(String key) {
-        return key;
-    }
-    private static String getPrefixWithColon(String key) {
-        return key+SymbolConstant.colon;
+        this.prefix = handlerPrefix(prefix);
+        this.withColon = handlerPrefixWithColon(prefix);
     }
 }
