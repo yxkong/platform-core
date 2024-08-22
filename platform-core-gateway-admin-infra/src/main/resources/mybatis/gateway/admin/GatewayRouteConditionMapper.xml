@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.gateway.admin.GatewayRouteConditionMapper">
+
+	<!--数据库字段与属性映射-->
+	<resultMap type="com.github.platform.core.gateway.admin.domain.common.entity.GatewayRouteConditionBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="route_id" property="routeId" />
+		<id column="type" property="type" />
+		<id column="name" property="name" />
+		<id column="args" property="args" />
+		<id column="create_by" property="createBy" />
+		<id column="create_time" property="createTime" />
+		<id column="update_by" property="updateBy" />
+		<id column="update_time" property="updateTime" />
+    </resultMap>
+	<!--通用查询字段封装-->
+    <sql id="BaseColumnList">
+		t.id,
+		t.route_id,
+		t.type,
+		t.name,
+		t.args,
+		t.create_by,
+		t.create_time,
+		t.update_by,
+		t.update_time
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.gateway.admin.domain.common.entity.GatewayRouteConditionBase">
+		insert into t_gateway_route_condition
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null ">id,</if>
+			<if test="routeId != null ">route_id,</if>
+			<if test="type != null  and type != ''">type,</if>
+			<if test="name != null  and name != ''">name,</if>
+			<if test="args != null  and args != ''">args,</if>
+			<if test="createBy != null  and createBy != ''">create_by,</if>
+			<if test="createTime != null ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''">update_by,</if>
+			<if test="updateTime != null ">update_time,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null ">#{id},</if>
+			<if test="routeId != null ">#{routeId},</if>
+			<if test="type != null  and type != ''">#{type},</if>
+			<if test="name != null  and name != ''">#{name},</if>
+			<if test="args != null  and args != ''">#{args},</if>
+			<if test="createBy != null  and createBy != ''">#{createBy},</if>
+			<if test="createTime != null ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
+		</trim>
+	</insert>
+	<insert id="insertList">
+		insert into t_gateway_route_condition
+		(route_id,`type`,name,`args`,create_time,create_by)
+		values
+		<foreach item="item"  collection="list"  separator=","  >
+			(#{item.routeId},#{item.type},#{item.name},#{item.args},now(),#{item.createBy})
+		</foreach>
+	</insert>
+	<update id="updateList" parameterType="java.util.List">
+		<foreach collection="list" item="item" separator=";">
+			UPDATE t_gateway_route_condition
+			<set>
+				<if test="item.type != null and item.type != ''">`type` = <![CDATA[#{item.type}]]>,</if>
+				<if test="item.name != null and item.name != ''">`name` = <![CDATA[#{item.name}]]>,</if>
+				<if test="item.args != null and item.args != ''">`args` = <![CDATA[#{item.args}]]>,</if>
+				<if test="item.updateTime != null">update_time = <![CDATA[#{item.updateTime}]]>,</if>
+				<if test="item.updateBy != null and item.updateBy != ''">update_by = <![CDATA[#{item.updateBy}]]>,</if>
+			</set>
+			WHERE id = #{item.id}
+		</foreach>
+	</update>
+	<update id="updateById" parameterType="com.github.platform.core.gateway.admin.domain.common.entity.GatewayRouteConditionBase">
+		update t_gateway_route_condition
+		<set>
+			<if test="routeId != null ">route_id = #{routeId},</if>
+			<if test="type != null  and type != ''">type = #{type},</if>
+			<if test="name != null  and name != ''">name = #{name},</if>
+			<if test="args != null  and args != ''">args = #{args},</if>
+			<if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+			<if test="createTime != null ">create_time = #{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+			<if test="updateTime != null ">update_time = #{updateTime},</if>
+		</set>
+		where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_gateway_route_condition t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_gateway_route_condition t
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.gateway.admin.domain.common.entity.GatewayRouteConditionBase">
+		select 
+		<include refid="BaseColumnList" />
+		from t_gateway_route_condition t
+		<where>
+			<if test="routeId != null "> and t.route_id = #{routeId}</if>
+			<if test="type != null  and type != ''"> and t.type = #{type}</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.gateway.admin.domain.common.entity.GatewayRouteConditionBase">
+		select count(t.id) from t_gateway_route_condition t
+		<where>
+			<if test="routeId != null "> and t.route_id = #{routeId}</if>
+			<if test="type != null  and type != ''"> and t.type = #{type}</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_gateway_route_condition where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_gateway_route_condition
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

@@ -18,7 +18,7 @@ public interface ConfigGateway {
      */
     default boolean hostEquals(List<String> hosts,String host){
         if(hosts!= null
-                && hosts.stream().anyMatch(s -> host.equals(s))){
+                && hosts.stream().anyMatch(host::equals)){
             return Boolean.TRUE;
         }
         return  Boolean.FALSE;
@@ -32,7 +32,7 @@ public interface ConfigGateway {
      */
     default boolean urlEndWith(List<String> hosts,String url){
         if(hosts!= null
-                && hosts.stream().anyMatch(s -> url.endsWith(s))){
+                && hosts.stream().anyMatch(url::endsWith)){
             return Boolean.TRUE;
         }
         return  Boolean.FALSE;
@@ -45,7 +45,7 @@ public interface ConfigGateway {
      */
     default boolean urlStartWith(List<String> urls,String url){
         if(urls != null
-                && urls.stream().anyMatch(s -> url.startsWith(s))){
+                && urls.stream().anyMatch(url::startsWith)){
             return Boolean.TRUE;
         }
         return  Boolean.FALSE;

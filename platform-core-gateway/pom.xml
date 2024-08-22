@@ -23,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>com.github.platform</groupId>
+            <artifactId>platform-core-gateway-admin-infra</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.platform</groupId>
             <artifactId>platform-core-cloud</artifactId>
         </dependency>
         <dependency>

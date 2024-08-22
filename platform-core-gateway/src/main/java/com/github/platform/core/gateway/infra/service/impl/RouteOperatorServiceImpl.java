@@ -1,6 +1,7 @@
 package com.github.platform.core.gateway.infra.service.impl;
 
-import com.github.platform.core.gateway.infra.service.RouteOperatorService;
+import com.github.platform.core.common.utils.CollectionUtil;
+import com.github.platform.core.gateway.infra.service.IRouteOperatorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.route.RouteDefinition;
@@ -22,7 +23,7 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
-public class RouteOperatorServiceImpl implements RouteOperatorService {
+public class RouteOperatorServiceImpl implements IRouteOperatorService {
 
 
     @Resource
@@ -47,27 +48,38 @@ public class RouteOperatorServiceImpl implements RouteOperatorService {
         }
     }
     @Override
-    public Boolean delete(String id){
+    public boolean delete(String id){
         try {
-            routeDefinitionRepository.delete(Mono.just(id)).subscribe();
             //删除以后必须刷新
-            publisher.publishEvent(new RefreshRoutesEvent(this));
-            return true;
+            return Boolean.TRUE.equals(routeDefinitionRepository.delete(Mono.just(id))
+                    .doOnSuccess(v -> publisher.publishEvent(new RefreshRoutesEvent(this))).thenReturn(true)
+                    .onErrorResume(e -> {
+                        log.error("update route {} is error", id, e);
+                        return Mono.just(false);
+                    })
+                    .block());
         } catch (Exception e) {
            log.error("delete route {} is error",id,e);
            return false;
         }
     }
     @Override
-    public Boolean update(RouteDefinition routeDefinition){
+    public boolean update(RouteDefinition routeDefinition){
         try {
             if (Objects.nonNull(routeDefinition) &&  !StringUtils.hasText(routeDefinition.getId())){
                 return false;
             }
-            routeDefinitionRepository.delete(Mono.just(routeDefinition.getId())).subscribe();
-            routeDefinitionRepository.save(Mono.just(routeDefinition)).subscribe();
-            publisher.publishEvent(new RefreshRoutesEvent(this));
-            return true;
+            //删除路由,保存新的路由定义,发布刷新事件
+            // 先解包 routeDefinition.getId() 再传给 delete 方法
+            String routeId = routeDefinition.getId();
+            return Boolean.TRUE.equals(routeDefinitionRepository.delete(Mono.just(routeId))
+                    .then(routeDefinitionRepository.save(Mono.just(routeDefinition)))
+                    .doOnSuccess(v -> publisher.publishEvent(new RefreshRoutesEvent(this)))
+                    .thenReturn(true)
+                    .onErrorResume(e -> {
+                        log.error("update route {} is error", routeId, e);
+                        return Mono.just(false);
+                    }).block());
         } catch (Exception e) {
             log.error("update route {} is error",routeDefinition.getId(),e);
             return false;
@@ -75,18 +87,20 @@ public class RouteOperatorServiceImpl implements RouteOperatorService {
 
     }
 
-
     @Override
-    public Boolean refresh(List<RouteDefinition> list){
+    public boolean refresh(List<RouteDefinition> list){
         try {
-            if (Objects.nonNull(list)){
-                routeDefinitionRepository.clear();
-                list.forEach(routeDefinition -> {
-                    routeDefinitionRepository.save(Mono.just(routeDefinition)).subscribe();
-                });
+            if (CollectionUtil.isEmpty(list)){
+                return false;
             }
+            routeDefinitionRepository.getRouteDefinitions().collectList().flatMap(existingRoutes -> {
+                existingRoutes.forEach(route -> routeDefinitionRepository.delete(Mono.just(route.getId())).subscribe());
+                list.forEach(route -> routeDefinitionRepository.save(Mono.just(route)).subscribe());
+                return Mono.empty();
+            }).subscribe();
             publisher.publishEvent(new RefreshRoutesEvent(this));
             return true;
+
         } catch (Exception e) {
             log.error("refresh route  is error",e);
             return false;

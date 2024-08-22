@@ -10,7 +10,7 @@ import java.util.List;
  * @author: yxkong
  * @version: 1.0
  */
-public interface RouteOperatorService {
+public interface IRouteOperatorService {
     /**
      * 新增路由（基本上是通过数据库，一条条的插入进来的）
      * @param routeDefinition
@@ -22,19 +22,19 @@ public interface RouteOperatorService {
      * @param id
      * @return
      */
-    Boolean delete(String id);
+    boolean delete(String id);
 
     /**
      * 更新路由,先删除后新增
      * @param routeDefinition
      * @return
      */
-    Boolean update(RouteDefinition routeDefinition);
+    boolean update(RouteDefinition routeDefinition);
     /**
      * 刷新路由
      * @param list
      * @return
      */
-    public Boolean refresh(List<RouteDefinition> list);
+    boolean refresh(List<RouteDefinition> list);
 
 }

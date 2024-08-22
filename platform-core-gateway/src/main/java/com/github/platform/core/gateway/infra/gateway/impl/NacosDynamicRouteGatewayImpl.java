@@ -7,7 +7,7 @@ import com.github.platform.core.gateway.domain.gateway.RouteDataGateway;
 import com.github.platform.core.common.utils.YamlUtil;
 import com.github.platform.core.gateway.infra.configuration.properties.NacosRouteProperties;
 import com.github.platform.core.gateway.infra.gateway.dto.RouteDto;
-import com.github.platform.core.gateway.infra.service.RouteOperatorService;
+import com.github.platform.core.gateway.infra.service.IRouteOperatorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 
@@ -27,9 +27,9 @@ public class NacosDynamicRouteGatewayImpl implements RouteDataGateway {
 
     private NacosRouteProperties routeProperties;
 
-    private RouteOperatorService routeOperatorService;
+    private IRouteOperatorService routeOperatorService;
 
-    public NacosDynamicRouteGatewayImpl(NacosConfigManager nacosConfigManager, NacosRouteProperties routeProperties, RouteOperatorService routeOperatorService) {
+    public NacosDynamicRouteGatewayImpl(NacosConfigManager nacosConfigManager, NacosRouteProperties routeProperties, IRouteOperatorService routeOperatorService) {
         this.nacosConfigManager = nacosConfigManager;
         this.routeProperties = routeProperties;
         this.routeOperatorService = routeOperatorService;

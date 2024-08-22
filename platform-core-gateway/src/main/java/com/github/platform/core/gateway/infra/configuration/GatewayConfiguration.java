@@ -6,12 +6,14 @@ import com.github.platform.core.cache.infra.service.ICacheService;
 import com.github.platform.core.common.constant.PropertyConstant;
 import com.github.platform.core.common.constant.SpringBeanNameConstant;
 import com.github.platform.core.common.constant.SpringBeanOrderConstant;
+import com.github.platform.core.gateway.admin.domain.gateway.IGatewayRouteConditionGateway;
+import com.github.platform.core.gateway.admin.domain.gateway.IGatewayRouteGateway;
 import com.github.platform.core.gateway.domain.gateway.RouteDataGateway;
 import com.github.platform.core.gateway.infra.configuration.properties.NacosRouteProperties;
 import com.github.platform.core.gateway.infra.filter.GrayReactiveLoadBalancerFilter;
 import com.github.platform.core.gateway.infra.gateway.impl.MysqlDynamicRouteGatewayImpl;
 import com.github.platform.core.gateway.infra.gateway.impl.NacosDynamicRouteGatewayImpl;
-import com.github.platform.core.gateway.infra.service.RouteOperatorService;
+import com.github.platform.core.gateway.infra.service.IRouteOperatorService;
 import com.github.platform.core.gateway.infra.service.impl.RedisGrayRuleGatewayImpl;
 import com.github.platform.core.loadbalancer.gateway.IGrayRuleQueryGateway;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -51,15 +53,15 @@ public class GatewayConfiguration {
 
     @Bean(name = SpringBeanNameConstant.ROUTE_DATA_GATEWAY)
     @ConditionalOnMissingBean(name = SpringBeanNameConstant.ROUTE_DATA_GATEWAY)
-    @ConditionalOnProperty(name = PropertyConstant.CON_GATEWAY_ROUTE_TYPE,havingValue = "nacos",matchIfMissing = true)
-    public RouteDataGateway nacosDynamicRouteGateway(NacosConfigManager nacosConfigManager, NacosRouteProperties routeProperties, RouteOperatorService routeOperatorService){
+    @ConditionalOnProperty(name = PropertyConstant.CON_GATEWAY_ROUTE_TYPE,havingValue = "nacos",matchIfMissing = false)
+    public RouteDataGateway nacosDynamicRouteGateway(NacosConfigManager nacosConfigManager, NacosRouteProperties routeProperties, IRouteOperatorService routeOperatorService){
         return new NacosDynamicRouteGatewayImpl(nacosConfigManager,routeProperties,routeOperatorService);
     }
     @Bean(name = SpringBeanNameConstant.ROUTE_DATA_GATEWAY)
     @ConditionalOnMissingBean(name = SpringBeanNameConstant.ROUTE_DATA_GATEWAY)
     @ConditionalOnProperty(name = PropertyConstant.CON_GATEWAY_ROUTE_TYPE,havingValue = "mysql",matchIfMissing = false)
-    public RouteDataGateway mysqlDynamicRouteGateway(){
-        return new MysqlDynamicRouteGatewayImpl();
+    public RouteDataGateway mysqlDynamicRouteGateway( IRouteOperatorService routeOperatorService,IGatewayRouteGateway gatewayRouteGateway,IGatewayRouteConditionGateway gatewayRouteConditionGateway){
+        return new MysqlDynamicRouteGatewayImpl(routeOperatorService,gatewayRouteGateway,gatewayRouteConditionGateway);
     }
 
 

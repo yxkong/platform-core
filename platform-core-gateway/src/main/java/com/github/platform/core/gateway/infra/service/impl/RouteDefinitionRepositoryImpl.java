@@ -39,14 +39,13 @@ public class RouteDefinitionRepositoryImpl implements RouteDefinitionRepository 
     }
 
     @Override
-    public Mono<Void> delete(Mono<String> routeId) {
-        return routeId.flatMap(id -> {
-            if (routes.containsKey(id)) {
-                routes.remove(id);
+    public Mono<Void> delete(Mono<String> routeIdMono) {
+        return routeIdMono.flatMap(routeId -> {
+            if (routes.containsKey(routeId)) {
+                routes.remove(routeId);
                 return Mono.empty();
             }
-            return Mono.defer(() -> Mono.error(
-                    new NotFoundException("RouteDefinition not found: " + routeId)));
+            return Mono.error(new NotFoundException("RouteDefinition not found: " + routeId));
         });
     }
 
