@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 
 import javax.annotation.Resource;
@@ -62,13 +63,14 @@ public class SpringBootConfiguration {
     }
 
     /**
-     * 系统事件，发布服务，默认实现
+     * 系统事件，发布服务，默认实现,本机发布
      * @param applicationContext
      * @return
      */
     @Bean(SpringBeanNameConstant.PUBLISH_SERVICE)
     @Order(SpringBeanOrderConstant.PUBLISH_SERVICE_DEFAULT)
     @ConditionalOnMissingBean(IPublishService.class)
+    @Primary
     public IPublishService publishService(ApplicationContext applicationContext){
         return new EventPublishServiceImpl(applicationContext);
     }

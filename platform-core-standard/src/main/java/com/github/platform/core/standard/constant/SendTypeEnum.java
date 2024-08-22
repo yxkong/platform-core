@@ -23,11 +23,12 @@ public enum SendTypeEnum {
         this.channel = channel;
         this.desc = desc;
     }
-
-    private Integer type;
+    /**类型*/
+    private final Integer type;
     /**实现bean*/
-    private String implBean;
+    private final String implBean;
     /**通道或主题*/
-    private String channel;
-    private String desc;
+    private final String channel;
+    /**描述*/
+    private final String desc;
 }

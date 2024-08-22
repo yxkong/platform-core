@@ -57,6 +57,15 @@ public class ApplicationContextHolder implements ApplicationContextAware {
     }
 
     /**
+     * 判断是否包含bean
+     * @param name
+     * @return
+     */
+    public static Boolean containsBean(String name){
+        return applicationContext.containsBean(name);
+    }
+
+    /**
      * 根据类型获取所有的bean
      *
      * @param type

@@ -31,6 +31,8 @@ public class CommonPublishDto<T> implements Serializable {
     private String handlerBean;
     /**发送时间*/
     private LocalDateTime sendTime;
+    /**操作人*/
+    private String loginName;
     /**业务数据*/
     private T data;
 }

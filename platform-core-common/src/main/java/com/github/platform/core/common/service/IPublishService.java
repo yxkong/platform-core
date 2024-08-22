@@ -12,8 +12,8 @@ public interface IPublishService {
 
     /**
      * 发布接口
-     * @param dto
-     * @return
+     * @param dto 数据体
+     * @return 是否成功
      */
     boolean publish(CommonPublishDto dto);
 }

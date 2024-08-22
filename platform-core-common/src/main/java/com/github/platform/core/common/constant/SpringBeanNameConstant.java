@@ -21,6 +21,7 @@ public interface SpringBeanNameConstant {
     String DOMAIN_EVENT_SERVICE = "domainEventService";
     /**发布服务*/
     String PUBLISH_SERVICE = "publishService";
+    String REDIS_PUBLISH_SERVICE = "redisPublishService";
     /**令牌服务*/
     String TOKEN_SERVICE = "tokenService";
     /**登录令牌服务*/

@@ -74,4 +74,6 @@ public interface PropertyConstant {
     String FEIGN = "feign";
     /**redis订阅发布开关*/
     String CON_REDIS_PUBLISH_ENABLED = "platform.redis.publish.enabled";
+    String CON_REDIS_SUBSCRIBE_ENABLED = "platform.redis.subscribe.enabled";
+    String DATA_REDIS_SUBSCRIBE = "platform.redis.subscribe";
 }

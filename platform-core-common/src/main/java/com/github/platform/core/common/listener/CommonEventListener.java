@@ -9,12 +9,11 @@ import com.github.platform.core.standard.entity.dto.CommonPublishDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 /**
- * 公共Event 监听器
+ * 处理本机发布事件，公共Event 监听器
  * @author: yxkong
  * @date: 2023/9/8 2:28 PM
  * @version: 1.0
@@ -22,7 +21,12 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class CommonEventListener {
+    /**
+     * 异步处理自定义事件
+     * @param customEvent
+     */
     @EventListener
+    @Async
     public void handleCustomEvent(CommonPublishEvent customEvent) {
         CommonPublishDto dto = customEvent.getCommonPublishDto();
         String handlerBean = dto.getHandlerBean();
@@ -30,11 +34,13 @@ public class CommonEventListener {
             log.error("无效事件:{}", JsonUtils.toJson(dto));
             return;
         }
-        IEventHandlerService eventHandlerService = ApplicationContextHolder.getBean(handlerBean, IEventHandlerService.class);
-        if (Objects.isNull(eventHandlerService)){
+
+        if (!ApplicationContextHolder.containsBean(handlerBean)){
             log.error("未找到bean:{} ,事件详情:{}", handlerBean,JsonUtils.toJson(dto));
             return;
         }
+        IEventHandlerService eventHandlerService = ApplicationContextHolder.getBean(handlerBean, IEventHandlerService.class);
+
         Pair result = eventHandlerService.handler(dto);
         if (log.isWarnEnabled()){
             log.warn("bean:{}  处理事件：{} ,结果：{}/{} ",handlerBean,JsonUtils.toJson(dto),result.getKey(),result.getValue());

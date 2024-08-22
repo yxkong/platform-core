@@ -18,7 +18,7 @@ public interface SpringBeanOrderConstant extends Ordered {
     /**发布服务默认实现*/
     int PUBLISH_SERVICE_DEFAULT =  0;
     /**发布服务redis实现*/
-    int PUBLISH_SERVICE_REDIS = PUBLISH_SERVICE_DEFAULT-1;
+    int PUBLISH_SERVICE_REDIS = -99;
     /**
      * 排序
      * */
