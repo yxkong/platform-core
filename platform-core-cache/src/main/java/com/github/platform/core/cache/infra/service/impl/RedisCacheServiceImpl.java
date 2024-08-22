@@ -22,13 +22,13 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 @Slf4j
-public class RedisCacheService implements ICacheService {
+public class RedisCacheServiceImpl implements ICacheService {
 
     private static Long LOCK_SUC = 1L;
     @Resource(name = "stringRedisTemplate")
     private RedisTemplate<String,String> redisTemplate;
 
-    public RedisCacheService(RedisTemplate<String, String> redisTemplate) {
+    public RedisCacheServiceImpl(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -640,5 +640,10 @@ public class RedisCacheService implements ICacheService {
             log.error("zRangeByScore key:{} min:{} max:{} is error:",key,min,max, e);
             return null;
         }
+    }
+
+    @Override
+    public void publish(String channel, Object message) {
+        redisTemplate.convertAndSend(channel, message);
     }
 }

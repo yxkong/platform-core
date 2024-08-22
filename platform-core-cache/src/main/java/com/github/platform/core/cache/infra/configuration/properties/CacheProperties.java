@@ -16,6 +16,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = PropertyConstant.DATA_CACHE_PREFIX)
 public class CacheProperties {
+
+    /**token缓存默认前缀*/
+    private String apiToken = CacheConstant.apiToken;
+    /**用户与token的映射默认前缀*/
+    String apiUserTokenMapping = CacheConstant.apiUserTokenMapping;
+    /**token缓存默认前缀*/
+    String sysToken = CacheConstant.sysToken;
+    /**用户与token的映射默认前缀*/
+    String sysUserTokenMapping = CacheConstant.sysUserTokenMapping;
     /**config配置缓存前缀 */
     private String config = CacheConstant.config;
     /**字典配置缓存前缀 */

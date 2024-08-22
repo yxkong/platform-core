@@ -35,6 +35,7 @@ public class RedissonConfiguration  {
 
     @Resource
     private RedissonProperties redissonProperties;
+
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();

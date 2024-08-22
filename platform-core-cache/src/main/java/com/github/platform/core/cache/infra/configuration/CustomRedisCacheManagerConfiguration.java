@@ -68,14 +68,6 @@ public class CustomRedisCacheManagerConfiguration {
     }
 
     /**
-     * 使用lettuce的连接工厂，需要手动绑定redis
-     * @return
-     */
-//    @Bean
-//    public RedisConnectionFactory redisConnectionFactory() {
-//        return new LettuceConnectionFactory();
-//    }
-    /**
      * 如果引入了redisson
      *    @Qualifier("redissonConnectionFactory") RedisConnectionFactory redisConnectionFactory,
      * @param redisConnectionFactory

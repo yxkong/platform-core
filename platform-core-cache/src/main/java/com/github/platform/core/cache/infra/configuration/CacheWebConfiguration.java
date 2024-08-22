@@ -24,9 +24,14 @@ public class CacheWebConfiguration implements WebMvcConfigurer{
     @Resource
     private ICacheService cacheService;
     @Resource CacheProperties properties;
+    /**
+     * 拦截器配置
+     * @param registry
+     */
     @Override
     @ConditionalOnClass(ICacheService.class)
     public void addInterceptors(InterceptorRegistry registry) {
+        //添加防重拦截器
         registry.addInterceptor(new RepeatSubmitInterceptor(cacheService,properties)).addPathPatterns("/**");
     }
 }

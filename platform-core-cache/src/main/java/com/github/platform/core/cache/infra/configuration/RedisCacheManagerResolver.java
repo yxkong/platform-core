@@ -12,8 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <TODO>
- *
+ * 此类准备解决不能批量删除的问题
  * @author: yxkong
  * @date: 2024/6/20 11:37
  * @version: 1.0

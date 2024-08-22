@@ -4,7 +4,7 @@ import com.github.platform.core.standard.constant.SymbolConstant;
 import org.springframework.util.Assert;
 
 /**
- * 默认缓存key,
+ * 默认缓存key,如果没有配置缓存，默认使用这里的配置好
  * ps: 尽可能压缩key的长度，减少redis的内存空间使用
  * @author: yxkong
  * @date: 2023/4/20 5:11 PM
@@ -32,13 +32,13 @@ public interface CacheConstant {
     String sequence = "p:s:";
     /**灰度缓存默认key,  p:gr 表示：platform:grayrule*/
     String grayRule = "p:gr";
-    /**token缓存默认前缀,p:a:t 表示：platform:api:token:*/
+    /**token缓存默认前缀,p:a:t 配置：platform.auth:api:login:token:*/
     String apiToken = "p:a:t";
-    /**用户与token的映射默认前缀,p:a:u 表示，platform:api:user*/
+    /**用户与token的映射默认前缀,p:a:u 配置，platform.auth:api:login:user*/
     String apiUserTokenMapping = "p:a:u:";
-    /**token缓存默认前缀, 表示，platform:sys:token:*/
+    /**token缓存默认前缀, 配置，platform.auth:sys:login:token:*/
     String sysToken = "p:s:t";
-    /**用户与token的映射默认前缀,p:s:u 表示，platform:sys:user*/
+    /**用户与token的映射默认前缀,p:s:u 配置，platform.auth:sys:login:user*/
     String sysUserTokenMapping = "p:s:u:";
     /**验证码缓存key前缀，p:c 表示：platform:captcha:*/
     String captcha = "p:c:" ;

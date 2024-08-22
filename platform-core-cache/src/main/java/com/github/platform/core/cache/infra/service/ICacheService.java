@@ -530,4 +530,13 @@ public interface ICacheService {
      */
     Set<ZSetOperations.TypedTuple<String>> zRangeByScoreWithScores(String key, double min, double max, int offset, int count);
 
+    ///////////////////////////////////publish//////////////////////////////////////
+    /**
+     * 发布接口
+     * @param channel 通道
+     * @param message 消息
+     */
+
+    void publish(String channel, Object message);
+
 }
