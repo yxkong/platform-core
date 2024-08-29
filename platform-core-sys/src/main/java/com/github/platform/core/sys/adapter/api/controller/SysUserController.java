@@ -128,7 +128,7 @@ public class SysUserController extends BaseController {
     @Operation(summary = "修改用户",tags = {"user"})
     @PostMapping(value = "/modify")
     public ResultBean modify(@RequestBody @Validated SysUserCmd cmd) {
-        // 只有管理员自己能修改自己
+        // 只有管理员自己能修改自己,如果管理员的密码被别人修改，将无法修改 TODO
         if (UserConstant.SUPER_ADMIN.equals(cmd.getLoginName()) && !Objects.equals(LoginUserInfoUtil.getLoginName(),cmd.getLoginName())){
             throw exception(SysAdapterResultEnum.dont_allow_opt);
         }
@@ -141,7 +141,7 @@ public class SysUserController extends BaseController {
     @OptLog(module="user",title="修改个人信息",optType = LogOptTypeEnum.modify)
     @Operation(summary = "修改个人信息",tags = {"user"})
     @PostMapping(value = "/updateUserProfile")
-    public ResultBean<Void> updateUserProfile(@RequestBody @Validated UserProfileCmd cmd) {
+    public ResultBean updateUserProfile(@RequestBody @Validated UserProfileCmd cmd) {
         LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
         RegisterContext context = convert.profileToRegister(cmd);
         context.setLoginName(userInfo.getLoginName());

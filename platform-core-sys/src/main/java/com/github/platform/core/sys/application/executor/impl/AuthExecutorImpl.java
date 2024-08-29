@@ -113,7 +113,7 @@ public class AuthExecutorImpl extends BaseExecutor implements IAuthExecutor {
     @Override
     public void modifyPwd(ModifyPwdContext context) {
         String loginName = LoginUserInfoUtil.getLoginName();
-        UserEntity userEntity = userGateway.baseAccountCheck(loginName, context.getOldPwd());
+        UserEntity userEntity = userGateway.baseAccountCheck(loginName,LoginUserInfoUtil.getTenantId(), context.getOldPwd());
         context.setId(userEntity.getId());
         userGateway.modifyPwd(context);
     }

@@ -53,6 +53,8 @@ public class SysMenuBase extends BaseAdminEntity   {
     @Schema(description = "菜单类型（M目录 C菜单 F按钮）")
     @NotEmpty(message="菜单类型（M目录 C菜单 F按钮）（type）不能为空")
     protected String type;
+    @Schema(description = "子菜单（1子菜单 0主菜单）")
+    protected Integer subMenu;
     /** 菜单状态（0显示 1隐藏） */
     @Schema(description = "菜单状态（0显示 1隐藏）")
     @NotNull(message="菜单状态（0显示 1隐藏）（visible）不能为空")
@@ -111,6 +113,11 @@ public class SysMenuBase extends BaseAdminEntity   {
     @JsonIgnore
     public boolean isBtn(){
         return MenuConstant.TYPE_BUTTON.equals(this.getType());
+    }
+
+    @JsonIgnore
+    public boolean isTopMenu(){
+        return MenuConstant.SUB_MENU_NO.equals(this.getSubMenu());
     }
     /**
      * 是否接口

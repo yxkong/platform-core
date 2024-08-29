@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.sys.SysFlowRuleMapper">
+
+	<!--数据库字段与属性映射-->
+	<resultMap type="com.github.platform.core.sys.domain.common.entity.SysFlowRuleBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="biz_type" property="bizType" />
+		<id column="current_status" property="currentStatus" />
+		<id column="target_status" property="targetStatus" />
+		<id column="status" property="status" />
+		<id column="create_by" property="createBy" />
+		<id column="create_time" property="createTime" />
+		<id column="update_by" property="updateBy" />
+		<id column="update_time" property="updateTime" />
+		<id column="remark" property="remark" />
+    </resultMap>
+	<!--通用查询字段封装-->
+    <sql id="BaseColumnList">
+		t.id,
+		t.biz_type,
+		t.current_status,
+		t.target_status,
+		t.status,
+		t.create_by,
+		t.create_time,
+		t.update_by,
+		t.update_time,
+		t.remark
+    </sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.sys.domain.common.entity.SysFlowRuleBase">
+		insert into t_sys_flow_rule
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null ">id,</if>
+			<if test="bizType != null  and bizType != ''">biz_type,</if>
+			<if test="currentStatus != null  and currentStatus != ''">current_status,</if>
+			<if test="targetStatus != null  and targetStatus != ''">target_status,</if>
+			<if test="status != null ">status,</if>
+			<if test="createBy != null  and createBy != ''">create_by,</if>
+			<if test="createTime != null ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''">update_by,</if>
+			<if test="updateTime != null ">update_time,</if>
+			<if test="remark != null  and remark != ''">remark,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null ">#{id},</if>
+			<if test="bizType != null  and bizType != ''">#{bizType},</if>
+			<if test="currentStatus != null  and currentStatus != ''">#{currentStatus},</if>
+			<if test="targetStatus != null  and targetStatus != ''">#{targetStatus},</if>
+			<if test="status != null ">#{status},</if>
+			<if test="createBy != null  and createBy != ''">#{createBy},</if>
+			<if test="createTime != null ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''">#{remark},</if>
+		</trim>
+	</insert>
+	
+	<update id="updateById" parameterType="com.github.platform.core.sys.domain.common.entity.SysFlowRuleBase">
+		update t_sys_flow_rule
+		<set>
+			<if test="bizType != null  and bizType != ''">biz_type = #{bizType},</if>
+			<if test="currentStatus != null  and currentStatus != ''">current_status = #{currentStatus},</if>
+			<if test="targetStatus != null  and targetStatus != ''">target_status = #{targetStatus},</if>
+			<if test="status != null ">status = #{status},</if>
+			<if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+			<if test="createTime != null ">create_time = #{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+			<if test="updateTime != null ">update_time = #{updateTime},</if>
+			<if test="remark != null  and remark != ''">remark = #{remark},</if>
+		</set>
+		where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_sys_flow_rule t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_sys_flow_rule t
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysFlowRuleBase">
+		select 
+		<include refid="BaseColumnList" />
+		from t_sys_flow_rule t
+		<where>
+			<if test="bizType != null  and bizType != ''"> and t.biz_type = #{bizType}</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.sys.domain.common.entity.SysFlowRuleBase">
+		select count(t.id) from t_sys_flow_rule t
+		<where>
+			<if test="bizType != null  and bizType != ''"> and t.biz_type = #{bizType}</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_flow_rule where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_flow_rule
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

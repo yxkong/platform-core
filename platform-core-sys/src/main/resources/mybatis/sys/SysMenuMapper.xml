@@ -13,7 +13,8 @@
 		  <id column="frame" property="frame" /> 
 		  <id column="cache" property="cache" /> 
 		  <id column="type" property="type" /> 
-		  <id column="visible" property="visible" /> 
+		  <id column="subMenu" property="subMenu" />
+		  <id column="visible" property="visible" />
 		  <id column="giveTenant" property="giveTenant" />
 		  <id column="perms" property="perms" />
 		  <id column="icon" property="icon" /> 
@@ -37,6 +38,7 @@
  		 t.frame as frame ,
  		 t.cache as cache ,
  		 t.type as type ,
+ 		 t.sub_menu as subMenu ,
  		 t.visible as visible ,
  		 t.give_tenant as giveTenant ,
  		 t.perms as perms ,
@@ -83,7 +85,10 @@
  			<if test="type != null">
  				type,
  			</if>
- 			<if test="visible != null">
+ 			<if test="subMenu != null">
+ 				sub_menu,
+ 			</if>
+			<if test="visible != null">
  				visible,
  			</if>
 			<if test="giveTenant != null">
@@ -148,6 +153,9 @@
  			<if test="type != null">
  				#{type},
  			</if>
+			<if test="subMenu != null">
+				#{subMenu},
+			</if>
  			<if test="visible != null">
  				#{visible},
  			</if>
@@ -214,6 +222,9 @@
  			 <if test="type != null">
  				type = #{type},
  			 </if>
+			 <if test="subMenu != null">
+				 sub_menu = #{subMenu},
+			 </if>
  			 <if test="visible != null">
  				visible = #{visible},
  			 </if>
@@ -261,77 +272,6 @@
 			</foreach>
 		</where>
 		limit 200
-	</select>
-	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select
- 		<include refid="BaseColumnList" />
- 		from t_sys_menu t
- 		<where>
- 			<if test="id != null">
- 				and t.id = #{id}
- 			</if>
- 			<if test="name != null">
- 				and t.name like concat('%', #{name}, '%')
- 			</if>
- 			<if test="parentId != null">
- 				and t.parent_id = #{parentId}
- 			</if>
- 			<if test="sort != null">
- 				and t.sort = #{sort}
- 			</if>
- 			<if test="path != null">
- 				and t.path = #{path}
- 			</if>
- 			<if test="component != null">
- 				and t.component = #{component}
- 			</if>
- 			<if test="query != null">
- 				and t.query = #{query}
- 			</if>
- 			<if test="frame != null">
- 				and t.frame = #{frame}
- 			</if>
- 			<if test="cache != null">
- 				and t.cache = #{cache}
- 			</if>
- 			<if test="type != null">
- 				and t.type = #{type}
- 			</if>
- 			<if test="visible != null">
- 				and t.visible = #{visible}
- 			</if>
-			<if test="giveTenant != null">
- 				and t.give_tenant = #{giveTenant}
- 			</if>
- 			<if test="perms != null">
- 				and t.perms = #{perms}
- 			</if>
- 			<if test="icon != null">
- 				and t.icon = #{icon}
- 			</if>
-			<if test="tenantId != null">
-				and t.tenant_id = #{tenantId}
-			</if>
- 			<if test="status != null">
- 				and t.status = #{status}
- 			</if>
- 			<if test="createBy != null">
- 				and t.create_by = #{createBy}
- 			</if>
- 			<if test="createTime != null">
- 				and t.create_time = #{createTime}
- 			</if>
- 			<if test="updateBy != null">
- 				and t.update_by = #{updateBy}
- 			</if>
- 			<if test="updateTime != null">
- 				and t.update_time = #{updateTime}
- 			</if>
- 			<if test="remark != null">
- 				and t.remark = #{remark}
- 			</if>
-		</where>
-		order by t.parent_id, t.sort;
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.sys.domain.common.entity.SysMenuBase">
 		select 
@@ -403,35 +343,6 @@
  			</if>
 		</where>
 		order by t.parent_id, t.sort;
-	</select>
-	<select id="findListCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
-		select  count(t.id) from t_sys_menu t
-		<where>
- 			<if test="name != null">
- 				and t.name = #{name}
- 			</if>
- 			<if test="parentId != null">
- 				and t.parent_id = #{parentId}
- 			</if>
- 			<if test="frame != null">
- 				and t.frame = #{frame}
- 			</if>
- 			<if test="cache != null">
- 				and t.cache = #{cache}
- 			</if>
- 			<if test="type != null">
- 				and t.type = #{type}
- 			</if>
- 			<if test="visible != null">
- 				and t.visible = #{visible}
- 			</if>
-			<if test="tenantId != null">
-				and t.tenant_id = #{tenantId}
-			</if>
- 			<if test="status != null">
- 				and t.status = #{status}
- 			</if>
-		</where>
 	</select>
 	<select id="findListByCount" resultType="java.lang.Integer" parameterType="com.github.platform.core.sys.domain.common.entity.SysMenuBase">
 		select  count(t.id) from t_sys_menu t

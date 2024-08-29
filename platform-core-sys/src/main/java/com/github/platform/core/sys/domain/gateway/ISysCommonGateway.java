@@ -19,10 +19,11 @@ import java.util.Map;
 public interface ISysCommonGateway {
     /**
      * 根据登录账户获取用户名
-     * @param loginName
+     * @param loginName 登录账户
+     * @param  tenantId 租户id
      * @return
      */
-    String getUserName(String loginName);
+    String getUserName(String loginName,Integer tenantId);
 
     /**
      * 根据字典类型，获取对应的kv

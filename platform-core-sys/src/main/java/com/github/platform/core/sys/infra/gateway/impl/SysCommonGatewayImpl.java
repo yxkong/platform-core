@@ -1,5 +1,6 @@
 package com.github.platform.core.sys.infra.gateway.impl;
 
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
@@ -33,8 +34,8 @@ public class SysCommonGatewayImpl implements ISysCommonGateway {
     @Resource
     private ISysUserConfigGateway userConfigGateway;
     @Override
-    public String getUserName(String loginName) {
-        UserEntity userEntity = sysUserGateway.findByLoginName(loginName);
+    public String getUserName(String loginName,Integer tenantId) {
+        UserEntity userEntity = sysUserGateway.findByLoginName(loginName,tenantId);
         if (Objects.isNull(userEntity)){
             return loginName;
         }

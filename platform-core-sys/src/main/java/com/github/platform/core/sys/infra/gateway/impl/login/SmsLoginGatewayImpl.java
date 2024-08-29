@@ -35,7 +35,7 @@ public class SmsLoginGatewayImpl extends BaseServiceImpl implements ISysLoginGat
     public UserEntity login(LoginContext context)throws InfrastructureException {
         VerifyEntity verifyEntity = userConvert.verify(context);
         verifyStrategy.verify(verifyEntity);
-        UserEntity userEntity = userGateway.findByLoginName(context.getLoginName());
+        UserEntity userEntity = userGateway.findByLoginName(context.getLoginName(),context.getTenantId());
         if (Objects.isNull(userEntity)){
             exception(SysInfraResultEnum.NOT_FOUND_USER);
         }

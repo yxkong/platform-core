@@ -7,6 +7,7 @@ import com.github.platform.core.auth.gateway.ITokenCacheGateway;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.utils.CollectionUtil;
+import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
@@ -61,14 +62,8 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
     }
 
     @Override
-    public TokenCacheEntity saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo ,boolean isLogin) {
-        LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
-        if (!AuthUtil.checkLogin()){
-            log.warn("未检测到登录信息，不做缓存，token:{} loginName:{} loginInfo:{}",token,loginName,loginInfo);
-        }
-        if (StringUtils.isEmpty(loginName)){
-            loginName = userInfo.getLoginName();
-        }
+    public TokenCacheEntity saveOrUpdate(Integer tenantId, String token, String loginName,String optUser, String loginInfo ,boolean isLogin) {
+        LoginUserInfo userInfo = JsonUtils.fromJson(loginInfo,LoginUserInfo.class);
         SysTokenCacheDto cacheDto =  sysTokenCacheGateway.findByToken(token);
         LocalDateTime localDateTime = LocalDateTimeUtil.dateTime();
         SysTokenCacheContext context = SysTokenCacheContext.builder()
@@ -85,13 +80,15 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
         }
         SysTokenCacheDto tokenCacheDto =  null;
         if (Objects.isNull(cacheDto)){
-            context.setCreateBy(loginName);
+            context.setCreateBy(optUser);
             context.setCreateTime(localDateTime);
             context.setLoginWay(userInfo.getLoginWay());
             context.setTenantId(userInfo.getTenantId());
             tokenCacheDto = sysTokenCacheGateway.insert(context);
         } else {
             context.setId(cacheDto.getId());
+            context.setUpdateBy(optUser);
+            context.setUpdateTime(localDateTime);
             context.setRemark("last:"+cacheDto.getExpireTime());
             tokenCacheDto  = sysTokenCacheGateway.update(context);
         }

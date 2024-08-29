@@ -23,6 +23,6 @@ public class NormalLoginGatewayImpl implements ISysLoginGateway {
     private ISysUserGateway userGateway;
     @Override
     public UserEntity login(LoginContext context) throws InfrastructureException {
-        return userGateway.baseAccountCheck(context.getLoginName(), context.getPwd());
+        return userGateway.baseAccountCheck(context.getLoginName(),context.getTenantId(), context.getPwd());
     }
 }

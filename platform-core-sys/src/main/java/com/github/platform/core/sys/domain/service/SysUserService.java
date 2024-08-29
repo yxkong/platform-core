@@ -52,7 +52,7 @@ public class SysUserService extends DomainBaseService {
      * @return
      */
     public UserEntity addUser(RegisterContext context) {
-        UserEntity userEntity = userGateway.findByLoginName(context.getLoginName());
+        UserEntity userEntity = userGateway.findByLoginName(context.getLoginName(),context.getTenantId());
         if (Objects.nonNull(userEntity)) {
             exception(SysInfraResultEnum.REGISTERED);
         }
@@ -69,7 +69,7 @@ public class SysUserService extends DomainBaseService {
      * @return
      */
     public UserEntity quietAddUserWithLoginName(ThirdUserEntity thirdUserEntity){
-        UserEntity userEntity = userGateway.findByLoginName(thirdUserEntity.getLoginName());
+        UserEntity userEntity = userGateway.findByLoginName(thirdUserEntity.getLoginName(),thirdUserEntity.getTenantId());
         if (Objects.isNull(userEntity)){
             userEntity =  userGateway.addUser(thirdToRegisterContext(thirdUserEntity));
         }
@@ -131,7 +131,7 @@ public class SysUserService extends DomainBaseService {
      * @return
      */
     public void editUser(RegisterContext context) {
-        UserEntity userEntity = userGateway.findByLoginName(context.getLoginName());
+        UserEntity userEntity = userGateway.findByLoginName(context.getLoginName(),context.getTenantId());
         if (Objects.isNull(userEntity)) {
             exception(SysInfraResultEnum.NOT_FOUND_USER);
         }

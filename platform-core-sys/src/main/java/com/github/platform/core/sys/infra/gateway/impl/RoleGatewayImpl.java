@@ -196,7 +196,7 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
 
         if (Objects.nonNull(res)) {
             log.warn("[{}]修改角色,当前租户:{}中角色:{},已存在", loginName, tenantId, roleName);
-            exception(SysInfraResultEnum.ROLE_ALREADY_EXIST);
+            throw exception(SysInfraResultEnum.ROLE_ALREADY_EXIST);
         }
         SysRoleBase sysRole = roleInfraConvert.toSysRoleBase(context);
         iSysRoleMenuService.deleteByRoleId(context.getId());

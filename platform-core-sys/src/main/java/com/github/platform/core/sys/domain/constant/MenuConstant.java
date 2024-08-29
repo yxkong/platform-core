@@ -12,7 +12,9 @@ import com.github.platform.core.sys.domain.dto.resp.TreeSelectDto;
 public interface MenuConstant {
     /**一级菜单*/
     Long ROOT_ID = 0L;
-
+    /**子菜单（1子菜单 0主菜单）*/
+    Integer SUB_MENU_YES = StatusEnum.ON.getStatus();
+    Integer SUB_MENU_NO = StatusEnum.OFF.getStatus();
     /**显示状态：1显示*/
     Integer VISIBLE_YES = StatusEnum.ON.getStatus();
     /**显示状态：0隐藏*/

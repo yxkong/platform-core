@@ -6,6 +6,8 @@ import com.github.platform.core.auth.configuration.properties.AuthProperties;
 import com.github.platform.core.auth.constant.DataScopeEnum;
 import com.github.platform.core.auth.constant.RoleConstant;
 import com.github.platform.core.auth.entity.LoginUserInfo;
+import com.github.platform.core.auth.entity.TokenCacheEntity;
+import com.github.platform.core.auth.gateway.ITokenCacheGateway;
 import com.github.platform.core.auth.service.ITokenService;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
@@ -71,6 +73,8 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     private SysUserInfraConvert userInfraConvert;
     @Resource(name = CacheConstant.sysTokenService)
     private ITokenService tokenService;
+    @Resource
+    private ITokenCacheGateway tokenCacheGateway;
     @Resource
     private ISysRoleGateway roleGateway;
     @Resource
@@ -232,12 +236,12 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     }
 
     @Override
-    @Cacheable(cacheNames = CACHE_NAME, key =  "#root.target.PREFIX_COLON +'l:'+ #loginName", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
-    public UserEntity findByLoginName(String loginName) {
+    @Cacheable(cacheNames = CACHE_NAME, key =  "#root.target.PREFIX_COLON +'l:'+ #loginName+#tenantId", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    public UserEntity findByLoginName(String loginName,Integer tenantId) {
         if (StringUtils.isEmpty(loginName)) {
             return null;
         }
-        SysUserBase sysUser = sysUserMapper.findByLoginName(loginName,null);
+        SysUserBase sysUser = sysUserMapper.findByLoginName(loginName,tenantId);
 
         return getUserEntity(sysUser);
     }
@@ -292,6 +296,13 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
             tokenService.expireByLoginName(entity.getTenantId(),entity.getLoginName());
         }
         String token = StringUtils.uuidRmLine();
+        LoginUserInfo loginUserInfo = getLoginUserInfo(entity, roleKeys, loginWay, token);
+        LoginUserInfoUtil.setLoginUserInfo(loginUserInfo);
+        //缓存token的登陆信息
+        tokenService.saveOrUpdate(entity.getTenantId(), token,entity.getLoginName(),entity.getLoginName(), JsonUtils.toJson(loginUserInfo),true);
+        return loginUserInfo;
+    }
+    private LoginUserInfo getLoginUserInfo(UserEntity entity, Set<String> roleKeys, LoginWayEnum loginWay, String token) {
         LoginUserInfo loginUserInfo = userInfraConvert.target(entity);
         loginUserInfo.setToken(token);
         loginUserInfo.setEmail(entity.getEmail());
@@ -306,16 +317,28 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         loginUserInfo.setOs(pair.getKey());
         loginUserInfo.setRequestIp(WebUtil.getIpAddress());
         loginUserInfo.setStatus(StatusEnum.ON.getVal());
-        LoginUserInfoUtil.setLoginUserInfo(loginUserInfo);
-        //缓存token的登陆信息
-        tokenService.saveOrUpdate(entity.getTenantId(), token,entity.getLoginName(), JsonUtils.toJson(loginUserInfo),true);
         return loginUserInfo;
     }
 
     @Override
+    public void reloadToken(String loginName, Integer tenantId) {
+        UserEntity userEntity = findByLoginName(loginName,tenantId);
+        TokenCacheEntity tokenCacheEntity = tokenCacheGateway.findByLoginName(tenantId, loginName);
+        if (Objects.isNull(tokenCacheEntity)){
+            return;
+        }
+        LoginUserInfo userInfo = JsonUtils.fromJson(tokenCacheEntity.getLoginInfo(), LoginUserInfo.class);
+        LoginUserInfo loginUserInfo = getLoginUserInfo(userEntity, null, LoginWayEnum.of(userInfo.getLoginWay()), userInfo.getToken());
+        tokenService.saveOrUpdate(tenantId, tokenCacheEntity.getToken(),loginName,LoginUserInfoUtil.getLoginName(), JsonUtils.toJson(loginUserInfo),false);
+    }
+
+    @Override
     public void reloadToken(String token,LoginUserInfo loginUserInfo) {
-        LoginUserInfoUtil.setLoginUserInfo(loginUserInfo);
-        tokenService.saveOrUpdate(loginUserInfo.getTenantId(),token,loginUserInfo.getLoginName(), JsonUtils.toJson(loginUserInfo),false);
+        //只有本人刷新自己的信息的时候，线程变量才会更新
+        if (Objects.equals(loginUserInfo.getLoginName(), LoginUserInfoUtil.getLoginName())){
+            LoginUserInfoUtil.setLoginUserInfo(loginUserInfo);
+        }
+        tokenService.saveOrUpdate(loginUserInfo.getTenantId(),token,loginUserInfo.getLoginName(),LoginUserInfoUtil.getLoginName(), JsonUtils.toJson(loginUserInfo),false);
     }
 
     /**
@@ -381,8 +404,8 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     }
 
     @Override
-    public UserEntity baseAccountCheck(String loginName, String pwd) {
-        UserEntity userEntity = this.findByLoginName(loginName);
+    public UserEntity baseAccountCheck(String loginName, Integer tenantId, String pwd) {
+        UserEntity userEntity = this.findByLoginName(loginName,tenantId);
         if (Objects.isNull(userEntity)) {
             throw exception(SysInfraResultEnum.NOT_FOUND_USER);
         }

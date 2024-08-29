@@ -48,6 +48,12 @@ public interface ISysUserExecutor {
     void update(RegisterContext context);
 
     /**
+     * 修改个人信息
+     * @param context
+     */
+    void updateUserProfile(RegisterContext context);
+
+    /**
      * 重置密码
      * @param context
      * @return

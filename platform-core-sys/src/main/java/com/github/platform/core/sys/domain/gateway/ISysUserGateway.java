@@ -2,6 +2,7 @@ package com.github.platform.core.sys.domain.gateway;
 
 import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.cache.domain.constant.CacheConstant;
+import com.github.platform.core.standard.entity.common.LoginInfo;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.sys.domain.constant.LoginWayEnum;
 import com.github.platform.core.sys.domain.constant.SysCacheKeyPrefix;
@@ -12,6 +13,7 @@ import com.github.platform.core.sys.domain.context.SysUserQueryContext;
 import com.github.platform.core.sys.domain.dto.SysUserDto;
 import com.github.platform.core.sys.domain.dto.resp.PwdResult;
 import com.github.platform.core.sys.domain.model.user.UserEntity;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 import java.util.Set;
@@ -53,11 +55,11 @@ public interface ISysUserGateway {
 
     /**
      * 根据登录名查询用户
-     *
-     * @param loginName
+     * @param loginName 登录账户
+     * @param tenantId 租户id
      * @return
      */
-    UserEntity findByLoginName(String loginName);
+    UserEntity findByLoginName(String loginName,Integer tenantId);
 
     /**
      * 根据手机号查询用户
@@ -98,9 +100,15 @@ public interface ISysUserGateway {
      * @return
      */
     LoginUserInfo generatorToken(UserEntity entity, Set<String> roleKeys, LoginWayEnum loginWay);
-
     /**
      * 刷新token
+     * @param loginName 登录账户
+     * @param tenantId 租户id
+     * @return
+     */
+    void reloadToken(String  loginName, Integer tenantId);
+    /**
+     * 刷新token(自己)
      * @param token
      * @param loginUserInfo
      * @return
@@ -113,7 +121,7 @@ public interface ISysUserGateway {
      * @param pwd
      * @return
      */
-    UserEntity baseAccountCheck(String loginName, String pwd);
+    UserEntity baseAccountCheck(String loginName, Integer tenantId, String pwd);
 
     /**
      * 新增用户

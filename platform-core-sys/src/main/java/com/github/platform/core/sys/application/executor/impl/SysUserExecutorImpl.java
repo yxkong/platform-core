@@ -97,14 +97,24 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
     @Override
     public void update(RegisterContext context) {
         SysUserService userService = new SysUserService(userGateway);
+        //修改用户信息
+        userService.editUser(context);
 
+        userGateway.reloadToken(context.getUserName(),context.getTenantId());
+    }
+
+    @Override
+    public void updateUserProfile(RegisterContext context) {
+        SysUserService userService = new SysUserService(userGateway);
+        //修改用户信息
         userService.editUser(context);
         LoginUserInfo userInfo = LoginUserInfoUtil.getLoginUserInfo();
         userInfo.setUserName(context.getUserName());
         userInfo.setEmail(context.getEmail());
         userInfo.setMobile(context.getMobile());
         userInfo.setSecretKey(context.getSecretKey());
-        userGateway.reloadToken(userInfo.getToken(),userInfo);
+        //这里需要重写
+        userGateway.reloadToken(LoginUserInfoUtil.getToken(),userInfo);
     }
 
     /**
@@ -117,17 +127,17 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
     public PwdResult resetPwd(ResetPwdContext context) {
         if (!AuthUtil.isSuperAdmin() && !AuthUtil.isTenantAdmin()){
             if (!LoginUserInfoUtil.getLoginName().equals(context.getLoginName())){
-                exception(ResultStatusEnum.NO_AUTH);
+                throw exception(ResultStatusEnum.NO_AUTH);
             }
         }
-        UserEntity userEntity = userGateway.findByLoginName(context.getLoginName());
+        UserEntity userEntity = userGateway.findByLoginName(context.getLoginName(),context.getTenantId());
         if (Objects.isNull(userEntity)){
-            exception(SysAppResultEnum.USER_NOT_FOUND);
+            throw exception(SysAppResultEnum.USER_NOT_FOUND);
         }
         if(AuthUtil.isTenantAdmin()){
             //租户管理员只能重置自己租户的密码
             if (LoginUserInfoUtil.getTenantId().equals(userEntity.getTenantId())){
-                exception(SysAppResultEnum.ADMIN_TENANT_NO_AUTH);
+                throw exception(SysAppResultEnum.ADMIN_TENANT_NO_AUTH);
             }
         }
         context.setId(userEntity.getId());

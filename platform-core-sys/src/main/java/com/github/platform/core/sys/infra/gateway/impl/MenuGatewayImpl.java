@@ -175,7 +175,7 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
     }
 
     private boolean hashMenu(List<SysMenuDto> list){
-        return list.stream().filter(s-> s.isMenu()).findAny().isPresent();
+        return list.stream().anyMatch(SysMenuBase::isMenu);
     }
 
 //    /**
@@ -223,7 +223,7 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
         }
         int row = sysMenuMapper.insert(sysMenuBase);
         if ( row <= 0) {
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
         //添加角色菜单关联信息
         insertRoleMenu(context, sysMenuBase.getId());
@@ -235,7 +235,7 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
         //查询出所有可以给租户管理员的菜单
         List<Long> menuIds = sysMenuMapper.findAllMenuIds(MenuConstant.GIVE_TENANT_YES);
         if (CollectionUtil.isEmpty(menuIds)) {
-            exception(SysInfraResultEnum.MENU_RELOAD_PERMISSION_EMPTY);
+            throw exception(SysInfraResultEnum.MENU_RELOAD_PERMISSION_EMPTY);
         }
         //清空租户管理员所有权限数据
         sysRoleMenuService.deleteByRoleKey(RoleConstant.TENANT_ADMIN_ROLE_KEY);
@@ -244,7 +244,7 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
     private void addTenantMenu(List<Long> menuIds) {
         List<SysRoleBase> roles = sysRoleMapper.findByKeys(new String[]{RoleConstant.TENANT_ADMIN_ROLE_KEY}, null);
         if (CollectionUtil.isEmpty(roles)) {
-            exception(SysInfraResultEnum.MENU_RELOAD_PERMISSION_EMPTY);
+            throw exception(SysInfraResultEnum.MENU_RELOAD_PERMISSION_EMPTY);
         }
         //为租户管理赋予权限
         roles.forEach(s->{
@@ -268,7 +268,7 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
         int row = sysMenuMapper.updateById(sysMenuBase);
         //只有当赋予租户改变的时候，才会重新授权给租户管理员
         if ( row <= 0) {
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
         if (sourceMenu.isGiveTenantMenu() && !sysMenuBase.isGiveTenantMenu()){
             //删除所有角色关联关系
@@ -285,11 +285,11 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
     public void delete(Long id) {
         boolean count = this.hasChild(id);
         if (count) {
-            exception(SysInfraResultEnum.MENU_EXIST_SUB_MENU);
+            throw exception(SysInfraResultEnum.MENU_EXIST_SUB_MENU);
         }
         boolean exist = sysRoleMenuService.checkMenuExistRole(id);
         if (exist) {
-            exception(SysInfraResultEnum.MENU_ASSIGNED);
+            throw  exception(SysInfraResultEnum.MENU_ASSIGNED);
         }
         int delete = sysMenuMapper.deleteById(id);
     }
@@ -385,11 +385,11 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
     private List<SysMenuDto> buildMenuTree(List<SysMenuDto> list) {
         List<SysMenuDto> rst = new ArrayList<>();
         //查找所有的模块
-        List<SysMenuDto> apps = list.stream().filter(s -> s.isApp()).collect(Collectors.toList());
+        List<SysMenuDto> apps = list.stream().filter(SysMenuBase::isApp).collect(Collectors.toList());
         getSysMenuDtos(list, apps, rst);
         if (!rst.isEmpty()) return rst;
         // 做了兼容性处理
-        apps = list.stream().filter(s -> s.isDir()).collect(Collectors.toList());
+        apps = list.stream().filter(s-> s.isDir() && s.isTopMenu()).collect(Collectors.toList());
         getSysMenuDtos(list, apps, rst);
         if (rst.isEmpty()){
             return list;
