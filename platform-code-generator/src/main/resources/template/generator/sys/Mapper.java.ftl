@@ -1,7 +1,6 @@
 package ${mapperPackage};
 import ${domainPackage}.common.entity.${entityName}Base;
 import java.util.List;
-import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 /**
  * ${apiAlias} mappper

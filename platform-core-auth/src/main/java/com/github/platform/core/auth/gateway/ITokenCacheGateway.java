@@ -34,7 +34,7 @@ public interface ITokenCacheGateway {
      * @param loginInfo
      * @return
      */
-    TokenCacheEntity saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo, boolean isLogin);
+    TokenCacheEntity saveOrUpdate(Integer tenantId, String token,String loginName, String optUser, String loginInfo, boolean isLogin);
 
     /**
      * 过期token

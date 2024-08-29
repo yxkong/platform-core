@@ -59,6 +59,8 @@
 	    <module>platform-core-mysql</module>
 	    <module>platform-core-db</module>
         <module>platform-core-dingtalk</module>
+        <module>platform-core-gateway-admin</module>
+        <module>platform-core-gateway-admin-infra</module>
     </modules>
     <dependencies>
         <dependency>

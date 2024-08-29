@@ -72,7 +72,7 @@ public class UploadProperties {
         private String accessId;
         /**云的accessKey*/
         private String accessKey;
-        /**天翼云的bucketName*/
+        /**云的bucketName*/
         private String bucketName;
         /**云的链接超时时间*/
         private Integer connectionTimeout = 30 * 1000;

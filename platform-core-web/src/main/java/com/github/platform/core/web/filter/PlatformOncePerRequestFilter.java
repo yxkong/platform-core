@@ -58,8 +58,11 @@ public abstract class PlatformOncePerRequestFilter extends OncePerRequestFilter 
         if (isRequestValid(request)){
             return true;
         }
-        Set<String> excludeSet = EXCLUDE_URI_SET.stream().filter(request.getRequestURI()::contains).collect(Collectors.toSet());
-        if (!excludeSet.isEmpty() || Objects.equals(IGNORE_CONTENT_TYPE, request.getContentType())) {
+        String requestUri = request.getRequestURI().toLowerCase();
+        boolean isExcluded = EXCLUDE_URI_SET.stream()
+                .anyMatch(uri -> requestUri.equals(uri.toLowerCase()));
+
+        if (isExcluded || Objects.equals(IGNORE_CONTENT_TYPE, request.getContentType())) {
             return true;
         }
         return false;

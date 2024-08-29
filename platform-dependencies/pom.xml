@@ -230,6 +230,16 @@
             </dependency>
             <dependency>
                 <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-gateway-admin</artifactId>
+                <version>${platform.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-gateway-admin-infra</artifactId>
+                <version>${platform.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
                 <artifactId>platform-core-sys</artifactId>
                 <version>${platform.core.version}</version>
             </dependency>

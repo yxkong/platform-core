@@ -332,7 +332,7 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
 //            routerPath = innerLinkReplaceEach(routerPath);
 //        }
         // 非外链并且是一级目录（类型为目录）
-        if (menu.isDir() && !menu.isFrameUrl()) {
+        if ((menu.isDir() && menu.isTopMenu()) && !menu.isFrameUrl()) {
             routerPath = "/" + menu.getPath();
         }
         // 非外链并且是一级目录（类型为菜单）

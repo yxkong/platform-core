@@ -1,24 +1,19 @@
 package com.github.platform.core.workflow.application.executor.impl;
 
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
-import com.github.platform.core.cache.infra.constant.SequenceEnum;
 import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.utils.ApplicationContextHolder;
-import com.github.platform.core.common.utils.CollectionUtil;
-import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
-import com.github.platform.core.workflow.adapter.api.command.TaskFormDataCmd;
 import com.github.platform.core.workflow.application.constant.WorkflowApplicationEnum;
 import com.github.platform.core.workflow.application.executor.IFormDataExecutor;
 import com.github.platform.core.workflow.application.executor.IProcessApprovalExecutor;
 import com.github.platform.core.workflow.domain.constant.ProcessOptTypeEnum;
+import com.github.platform.core.workflow.domain.constant.WorkFlowSequenceEnum;
 import com.github.platform.core.workflow.domain.context.ApprovalContext;
-import com.github.platform.core.workflow.domain.context.FormDataContext;
 import com.github.platform.core.workflow.domain.context.ProcessApprovalRecordContext;
-import com.github.platform.core.workflow.domain.context.ProcessInstanceContext;
 import com.github.platform.core.workflow.domain.dto.ProcessApprovalRecordDto;
 import com.github.platform.core.workflow.domain.dto.ProcessInstanceDto;
 import com.github.platform.core.workflow.domain.gateway.*;
@@ -30,7 +25,6 @@ import org.flowable.task.api.Task;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -106,7 +100,7 @@ public class ProcessApprovalExecutorImpl extends BaseExecutor implements IProces
 
 
         /** ⑤表单实例数据记录*/
-        String formInstNo = SequenceUtil.nextSequenceNum(SequenceEnum.FORM_INSTANCE);
+        String formInstNo = SequenceUtil.nextSequenceNum(WorkFlowSequenceEnum.FORM_INSTANCE);
 //        if (StringUtils.isEmpty(instanceDto.getFormInstNo())){
 //            String formInstNo = SequenceUtil.nextSequenceNum(SequenceEnum.FORM_INSTANCE);
 //            instanceDto.setFormInstNo(formInstNo);

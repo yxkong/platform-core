@@ -36,7 +36,7 @@ public class DingTalkGatewayImpl extends BaseGatewayImpl implements IDingTalkGat
     private SysThirdUserMapper sysThirdUserMapper;
     @Override
     public void initDept(Long deptId,Integer tenantId,String optUser) {
-        List<DingDeptDto> allDept = dingTalkService.getALLDept(deptId);
+        List<DingDeptDto> allDept = dingTalkService.getAllDept(deptId);
         if (CollectionUtil.isNotEmpty(allDept)){
             List<DingDeptBase> list = new ArrayList<>();
             allDept.forEach(s->{

@@ -13,13 +13,23 @@ import java.util.Objects;
  */
 @Getter
 public enum ConditionEnum {
+    // filters
     RewritePath("RewritePath","filter",2, SymbolConstant.comma,"regexp","replacement"),
     AddRequestHeader("AddRequestHeader","filter",2, SymbolConstant.comma,"name","value"),
     SetPath("SetPath","filter",1, null,"template",null),
     RemoveRequestHeader("RemoveRequestHeader","filter",1, null,"name",null),
     AddRequestParameter("AddRequestParameter","filter",2, SymbolConstant.comma,"name","value"),
-    StripPrefix("StripPrefix","filter",1, null,"prefixes",null),
+    StripPrefix("StripPrefix","filter",1, null,"parts",null),
     Retry("Retry","filter",2, SymbolConstant.comma,"retries","backoff"),
+    AddResponseHeader("AddResponseHeader","filter",2, SymbolConstant.comma,"name","value"),
+    PrefixPath("PrefixPath","filter",1, null,"prefix",null),
+    RemoveRequestParameter("RemoveRequestParameter","filter",1, null,"name",null),
+    RemoveResponseHeader("RemoveResponseHeader","filter",1, null,"name",null),
+    RedirectTo("RedirectTo","filter",2, SymbolConstant.comma,"status","url"),
+    RewriteResponseHeader("RewriteResponseHeader","filter",2, SymbolConstant.comma,"header","regexp"),
+    SetResponseStatusCode("SetResponseStatusCode","filter",1, null,"status","null"),
+
+    // predicates
     Path("Path","predicate",1, null,"pattern",""),
     Header("Header","predicate",2, SymbolConstant.comma,"header","regexp"),
     Method("Method","predicate",1, null,"method",""),
@@ -27,6 +37,10 @@ public enum ConditionEnum {
     Host("Host","predicate",1, null,"host",""),
     Cookie("Cookie","predicate",2, SymbolConstant.comma,"name","value"),
     RemoteAddr("RemoteAddr","predicate",1, null,"remoteAddr",""),
+    After("After","predicate",1, null,"datetime",""),
+    Before("Before","predicate",1, null,"datetime",""),
+    Between("Between","predicate",2, SymbolConstant.comma,"datetime1","datetime2"),
+    Weight("Weight","predicate",2, SymbolConstant.comma,"group","weight");
     ;
 
     ConditionEnum(String name,String type, Integer length, String split, String split0, String split1) {

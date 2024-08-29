@@ -33,12 +33,13 @@ public interface ITokenService {
      * 缓存用户登陆信息,非登录情况属于续租
      * @param tenantId 租户信息
      * @param token 用户token
-     * @param loginName 登录账户
+     * @param loginName 用户账户
+     * @param optUser 操作用户
      * @param loginInfo
      * @param isLogin 是否登录
      * @return 返回结果放入缓存
      */
-    String saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo,boolean isLogin);
+    String saveOrUpdate(Integer tenantId, String token, String loginName,String optUser, String loginInfo,boolean isLogin);
 
     /**
      * 演示环境下不过期历史登录，非演示环境，新的登录会过期历史登录
@@ -52,7 +53,6 @@ public interface ITokenService {
      * @param token
      */
     void expireByToken(String token);
-
     /**
      * 获取缓存key
      * @param login 登录配置
@@ -73,4 +73,6 @@ public interface ITokenService {
     default String getMappingKey(AuthProperties.Login login,Integer tenantId, String loginName){
         return login.getUserTokenMapping() +tenantId+ SymbolConstant.colon+loginName;
     }
+
+
 }

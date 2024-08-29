@@ -51,7 +51,7 @@ public class ApiTokeServiceImpl implements ITokenService {
             cacheResolver = "apiAuthCacheResolver",
             key = "''+#token",
             unless = "#result == null")
-    public String saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo, boolean isLogin) {
+    public String saveOrUpdate(Integer tenantId, String token, String loginName,String optUser, String loginInfo, boolean isLogin) {
         cacheService.set(getMappingKey(authProperties.getApi().getLogin(), tenantId,loginName),token);
         return loginInfo;
     }
@@ -66,7 +66,5 @@ public class ApiTokeServiceImpl implements ITokenService {
     )
     public void expireByToken(String token) {
     }
-
-
 }
 

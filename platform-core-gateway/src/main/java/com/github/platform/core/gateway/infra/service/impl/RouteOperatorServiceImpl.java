@@ -32,21 +32,26 @@ public class RouteOperatorServiceImpl implements IRouteOperatorService {
     private RouteDefinitionRepositoryImpl routeDefinitionRepository;
 
     @Override
-    public boolean add(RouteDefinition routeDefinition){
+    public boolean add(RouteDefinition routeDefinition) {
         try {
-            if (Objects.isNull(routeDefinition) || !StringUtils.hasText(routeDefinition.getId())
-                    || Objects.nonNull(routeDefinition.getPredicates())){
+            if (Objects.isNull(routeDefinition) || !StringUtils.hasText(routeDefinition.getId())) {
                 return false;
             }
-            routeDefinitionRepository.save(Mono.just(routeDefinition)).subscribe();
-            //添加以后必须刷新
-            publisher.publishEvent(new RefreshRoutesEvent(this));
-            return true;
+
+            return Boolean.TRUE.equals(routeDefinitionRepository.save(Mono.just(routeDefinition))
+                    .then(Mono.fromRunnable(() -> publisher.publishEvent(new RefreshRoutesEvent(this))))
+                    .thenReturn(true)
+                    .onErrorResume(e -> {
+                        log.error("add route {} is error", routeDefinition.getId(), e);
+                        return Mono.just(false);
+                    })
+                    .block());
         } catch (Exception e) {
-            log.error("add route {} is error",routeDefinition.getId(),e);
+            log.error("add route {} is error", routeDefinition.getId(), e);
             return false;
         }
     }
+
     @Override
     public boolean delete(String id){
         try {

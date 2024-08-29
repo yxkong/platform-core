@@ -1,19 +1,14 @@
 package com.github.platform.core.workflow.application.executor.impl;
 
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
-import com.github.platform.core.cache.infra.constant.SequenceEnum;
 import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
-import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.workflow.application.constant.WorkflowApplicationEnum;
 import com.github.platform.core.workflow.application.executor.IProcessDefinitionExecutor;
-import com.github.platform.core.workflow.domain.constant.FlwConstant;
-import com.github.platform.core.workflow.domain.constant.ProcessListenerEnum;
-import com.github.platform.core.workflow.domain.constant.ProcessStatusEnum;
-import com.github.platform.core.workflow.domain.constant.ProcessTypeEnum;
+import com.github.platform.core.workflow.domain.constant.*;
 import com.github.platform.core.workflow.domain.context.ProcessDefinitionContext;
 import com.github.platform.core.workflow.domain.context.ProcessDefinitionQueryContext;
 import com.github.platform.core.workflow.domain.dto.ProcessDefinitionDto;
@@ -65,7 +60,7 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
     };
     @Override
     public void insert(ProcessDefinitionContext context){
-        context.setProcessNo(SequenceUtil.nextSequenceNum(SequenceEnum.FLW));
+        context.setProcessNo(SequenceUtil.nextSequenceNum(WorkFlowSequenceEnum.FLW));
         //同一个租户下只允许一个类型的流程
         ProcessDefinitionDto processManageDto = gateway.findByProcessNo(context.getProcessNo(), context.getTenantId(),null);
         if (Objects.nonNull(processManageDto)){

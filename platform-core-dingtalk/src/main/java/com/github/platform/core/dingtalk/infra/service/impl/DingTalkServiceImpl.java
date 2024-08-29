@@ -1,6 +1,6 @@
 package com.github.platform.core.dingtalk.infra.service.impl;
 
-import com.github.platform.core.cache.infra.service.ICacheService;
+import com.github.platform.core.cache.infra.service.impl.RedisCacheServiceImpl;
 import com.github.platform.core.common.service.BaseServiceImpl;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.JsonUtils;
@@ -47,7 +47,7 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
     @Resource
     private DingIMFeignClient imFeignClient;
     @Resource
-    private ICacheService cacheService;
+    private RedisCacheServiceImpl cacheService;
     @Override
     public String getAppAccessToken() {
 
@@ -59,7 +59,7 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
         DingAppAccessTokenDto result = baseFeignClient.getAccessToken(cmd);
 
         if(Objects.isNull(result)){
-            exception("1000","获取accessToken异常！");
+            throw exception("1000","获取accessToken异常！");
         }
         token = result.getAccessToken();
         Long expireIn = result.getExpireIn();
@@ -80,11 +80,11 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
         DingUserAccessTokenCmd cmd  = new DingUserAccessTokenCmd(dingProperties.getAppKey(),dingProperties.getAppSecret(),authCode);
         DingUserAccessTokenDto result = baseFeignClient.getUserAccessToken(cmd);
         if (Objects.isNull(result)){
-            exception("1000","获取用户accessToken异常！");
+            throw exception("1000","获取用户accessToken异常！");
         }
         DingAccessUserDto userDto = baseFeignClient.getUserInfo(result.getAccessToken(), "me");
         if (Objects.isNull(userDto)){
-            exception("1000","根据token获取用户信息异常！");
+            throw exception("1000","根据token获取用户信息异常！");
         }
         userDto.setRefreshToken(result.getRefreshToken());
         return userDto;
@@ -101,7 +101,7 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
     }
 
     @Override
-    public List<DingDeptDto> getALLDept(Long deptId) {
+    public List<DingDeptDto> getAllDept(Long deptId) {
         List<DingDeptDto> rst = new ArrayList<>();
         String token = getAppAccessToken();
         getDept(token, deptId,rst);

@@ -1,9 +1,9 @@
 package com.github.platform.core.sms.application.executor.impl;
 
-import com.github.platform.core.cache.infra.constant.SequenceEnum;
 import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.sms.application.executor.ISysSmsServiceProviderExecutor;
+import com.github.platform.core.sms.domain.constant.SmsSequenceEnum;
 import com.github.platform.core.sms.domain.context.SysSmsServiceProviderContext;
 import com.github.platform.core.sms.domain.context.SysSmsServiceProviderQueryContext;
 import com.github.platform.core.sms.domain.dto.SysSmsServiceProviderDto;
@@ -36,13 +36,13 @@ public class SysSmsServiceProviderExecutorImpl extends BaseExecutor implements I
     };
     @Override
     public void insert(SysSmsServiceProviderContext context){
-        String proNo = SequenceUtil.nextSequenceNum(SequenceEnum.MSS_SMS_SP);
+        String proNo = SequenceUtil.nextSequenceNum(SmsSequenceEnum.MSS_SMS_SP);
         context.setProNo(proNo);
 
 
         SysSmsServiceProviderDto record = gateway.insert(context);
         if (Objects.isNull(record.getId())){
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
     }
     @Override
@@ -54,14 +54,14 @@ public class SysSmsServiceProviderExecutorImpl extends BaseExecutor implements I
         context.setProNo(null);
         Pair<Boolean, SysSmsServiceProviderDto> update = gateway.update(context);
         if (!update.getKey()){
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
     }
     @Override
     public void delete(Long id) {
         int delete = gateway.delete(id);
         if (delete <=0 ){
-            exception(ResultStatusEnum.COMMON_DELETE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
     }
 

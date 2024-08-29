@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
 /**
 * 表单数据执行器
 * @website <a href="https://www.5ycode.com/">5ycode</a>
@@ -73,29 +75,34 @@ public class FormDataExecutorImpl extends BaseExecutor implements IFormDataExecu
 
     @Override
     public void formDataHandler(List<FormDataContext> taskFormInfo, String instanceNo, String formInstNo) {
-        List<FormDataContext> inserts = new ArrayList<>();
-        List<FormDataContext> updates = new ArrayList<>();
+        if (CollectionUtil.isEmpty(taskFormInfo)) {
+            return;
+        }
 
-        if (CollectionUtil.isNotEmpty(taskFormInfo)){
-            taskFormInfo.forEach(item -> {
-                LocalDateTime now = LocalDateTimeUtil.dateTime();
-                item.setUpdateTime(now);
-                item.setUpdateBy(LoginUserInfoUtil.getLoginName());
-                item.setRemark(formInstNo);
-                if (Objects.isNull(item.getId())){
-                    item.setCreateTime(now);
-                    item.setCreateBy(LoginUserInfoUtil.getLoginName());
-                    inserts.add(item);
-                }else {
-                    updates.add(item);
-                }
-            });
-            if (CollectionUtil.isNotEmpty(inserts)) {
-                gateway.insertList(inserts, instanceNo);
-            }
-            if (CollectionUtil.isNotEmpty(updates)){
-                gateway.updateList(updates,instanceNo);
-            }
+        LocalDateTime now = LocalDateTimeUtil.dateTime();
+        String loginUserName = LoginUserInfoUtil.getLoginName();
+
+        // 使用stream进行插入和更新的分类
+        Map<Boolean, List<FormDataContext>> partitionedData = taskFormInfo.stream()
+                .peek(item -> {
+                    item.setUpdateTime(now);
+                    item.setUpdateBy(loginUserName);
+                    item.setRemark(formInstNo);
+                    if (item.getId() == null) {
+                        item.setCreateTime(now);
+                        item.setCreateBy(loginUserName);
+                    }
+                })
+                .collect(Collectors.partitioningBy(item -> item.getId() == null));
+
+        List<FormDataContext> inserts = partitionedData.get(true);
+        List<FormDataContext> updates = partitionedData.get(false);
+
+        if (CollectionUtil.isNotEmpty(inserts)) {
+            gateway.insertList(inserts, instanceNo);
+        }
+        if (CollectionUtil.isNotEmpty(updates)) {
+            gateway.updateList(updates, instanceNo);
         }
     }
 

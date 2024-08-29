@@ -110,6 +110,6 @@ public class TrackChangeManager {
                     }
 
                 });
-        return sb.length()>0 ? sb.substring(prefixSplit.length()-1) : sb.toString();
+        return sb.length()>0 ? sb.substring(prefixSplit.length()) : sb.toString();
     }
 }

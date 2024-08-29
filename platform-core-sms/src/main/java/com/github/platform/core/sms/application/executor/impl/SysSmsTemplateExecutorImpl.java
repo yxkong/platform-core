@@ -1,9 +1,9 @@
 package com.github.platform.core.sms.application.executor.impl;
 
-import com.github.platform.core.cache.infra.constant.SequenceEnum;
 import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.sms.application.executor.ISysSmsTemplateExecutor;
+import com.github.platform.core.sms.domain.constant.SmsSequenceEnum;
 import com.github.platform.core.sms.domain.context.SysSmsTemplateContext;
 import com.github.platform.core.sms.domain.context.SysSmsTemplateQueryContext;
 import com.github.platform.core.sms.domain.dto.SysSmsTemplateDto;
@@ -35,11 +35,11 @@ public class SysSmsTemplateExecutorImpl extends BaseExecutor implements ISysSmsT
     };
     @Override
     public void insert(SysSmsTemplateContext context){
-        String tempNo = SequenceUtil.nextSequenceNum(SequenceEnum.MSS_SMS_TEMPLATE);
+        String tempNo = SequenceUtil.nextSequenceNum(SmsSequenceEnum.MSS_SMS_TEMPLATE);
         context.setTempNo(tempNo);
         SysSmsTemplateDto record = gateway.insert(context);
         if (Objects.isNull(record.getId())){
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
     }
     @Override
@@ -51,14 +51,14 @@ public class SysSmsTemplateExecutorImpl extends BaseExecutor implements ISysSmsT
         context.setTempNo(null);
         Pair<Boolean, SysSmsTemplateDto> update = gateway.update(context);
         if (!update.getKey()){
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
     }
     @Override
     public void delete(Long id) {
         int delete = gateway.delete(id);
         if (delete <=0 ){
-            exception(ResultStatusEnum.COMMON_DELETE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
     }
 }

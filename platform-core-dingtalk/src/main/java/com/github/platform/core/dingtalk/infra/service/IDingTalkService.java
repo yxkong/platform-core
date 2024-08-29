@@ -42,7 +42,7 @@ public interface IDingTalkService {
      * @param deptId 传null查全部
      * @return
      */
-    List<DingDeptDto> getALLDept(Long deptId);
+    List<DingDeptDto> getAllDept(Long deptId);
     /**
      * 获取钉钉部门用户
      * @param deptId 指定组织所有的部门
@@ -52,15 +52,15 @@ public interface IDingTalkService {
 
     /**
      * 获取钉钉用户信息
-     * @param dingUserId
+     * @param dingUserId 钉钉用户id
      * @return
      */
     DingUserDto getUserInfo(String dingUserId);
 
     /**
      * 工作通知：文本消息
-     * @param userList
-     * @param text
+     * @param userList 用户列表
+     * @param text 通知文本
      * @return
      */
 
@@ -68,8 +68,8 @@ public interface IDingTalkService {
 
     /**
      * 工作通知：markdown
-     * @param userList
-     * @param text
+     * @param userList 用户列表
+     * @param text 通知内容
      * @return
      */
     boolean workNoticeMarkDown(List<String> userList,String title, String text);
@@ -100,8 +100,8 @@ public interface IDingTalkService {
 
     /**
      * 群人员操作
-     * @param groupId
-     * @param users
+     * @param groupId 群id
+     * @param users  群用户
      * @param isAdd  是否添加
      * @return
      */

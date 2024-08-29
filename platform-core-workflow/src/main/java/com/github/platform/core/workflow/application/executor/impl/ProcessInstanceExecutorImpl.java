@@ -1,7 +1,6 @@
 package com.github.platform.core.workflow.application.executor.impl;
 
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
-import com.github.platform.core.cache.infra.constant.SequenceEnum;
 import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.utils.JsonUtils;
@@ -13,6 +12,7 @@ import com.github.platform.core.workflow.application.executor.IProcessInstanceEx
 import com.github.platform.core.workflow.domain.constant.FlwConstant;
 import com.github.platform.core.workflow.domain.constant.InstanceStatusEnum;
 import com.github.platform.core.workflow.domain.constant.ProcessStatusEnum;
+import com.github.platform.core.workflow.domain.constant.WorkFlowSequenceEnum;
 import com.github.platform.core.workflow.domain.context.FormDataContext;
 import com.github.platform.core.workflow.domain.context.ProcessInstanceContext;
 import com.github.platform.core.workflow.domain.context.ProcessInstanceQueryContext;
@@ -87,7 +87,7 @@ public class ProcessInstanceExecutorImpl extends BaseExecutor implements IProces
     @Override
     public void createProcessInstanceWithFormData(ProcessRunContext context, List<FormDataContext> formdataList) {
         // 生成实例业务号
-        String instanceNo = SequenceUtil.nextSequenceNum(SequenceEnum.FLW_INSTANCE);
+        String instanceNo = SequenceUtil.nextSequenceNum(WorkFlowSequenceEnum.FLW_INSTANCE);
         context.setInstanceNo(instanceNo);
         context.setBizNo(instanceNo);
         this.createProcessInstance(context);
@@ -103,20 +103,20 @@ public class ProcessInstanceExecutorImpl extends BaseExecutor implements IProces
         ProcessDefinitionDto definitionDto = processManageGateway.findByProcessNo(context.getProcessNo(), ProcessStatusEnum.ON.getStatus(),null);
         if (Objects.isNull(definitionDto)){
             log.warn("processNo:{} 流程定义为空",context.getProcessNo());
-            exception(WorkflowApplicationEnum.PROCESS_DEFINITION_EMPTY);
+            throw exception(WorkflowApplicationEnum.PROCESS_DEFINITION_EMPTY);
         }
         if (!definitionDto.isOn()){
             log.warn("processNo:{} 流程定义状态未启用",context.getProcessNo());
-            exception(WorkflowApplicationEnum.PROCESS_DEFINITION_EMPTY);
+            throw  exception(WorkflowApplicationEnum.PROCESS_DEFINITION_EMPTY);
         }
         if (StringUtils.isEmpty(context.getInstanceNo())){
-            context.setInstanceNo(SequenceUtil.nextSequenceNum(SequenceEnum.FLW_INSTANCE));
+            context.setInstanceNo(SequenceUtil.nextSequenceNum(WorkFlowSequenceEnum.FLW_INSTANCE));
         }
         // 查询对应的业务编号是否有流程实例
         ProcessInstanceDto dto = gateway.findByBizNoAndProcessNo(context.getBizNo(),context.getProcessNo());
         if (Objects.nonNull(dto) && dto.isNormal()){
             log.warn("processNo:{} 流程实例已存在，轻核查",context.getProcessNo());
-            exception(WorkflowApplicationEnum.PROCESS_INSTANCE_EXIST);
+            throw exception(WorkflowApplicationEnum.PROCESS_INSTANCE_EXIST);
         }
 
         String instanceId = null;

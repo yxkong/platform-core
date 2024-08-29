@@ -76,7 +76,7 @@ public class SysTokenCacheGatewayImpl extends BaseGatewayImpl implements ISysTok
     }
 
     @Override
-    @Cacheable(cacheNames = CACHE_NAME, key = "#root.target.PREFIX_COLON + #tenantId+':'+loginName", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    @Cacheable(cacheNames = CACHE_NAME, key = "#root.target.PREFIX_COLON + #tenantId+':'+#loginName", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public SysTokenCacheDto findByLoginName(Integer tenantId, String loginName) {
         SysTokenCacheBase record = sysTokenCacheMapper.findByLoginName(tenantId,loginName);
         return sysTokenCacheConvert.toDto(record);

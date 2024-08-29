@@ -65,14 +65,14 @@ public class SysTokenServiceImpl implements ITokenService {
             cacheResolver = "sysAuthCacheResolver",
             key = "''+#token",
             unless = "#result == null")
-    public String saveOrUpdate(Integer tenantId, String token, String loginName, String loginInfo, boolean isLogin) {
+    public String saveOrUpdate(Integer tenantId, String token, String loginName,String optUser, String loginInfo, boolean isLogin) {
         if (!isLogin && isRenew()){
             return loginInfo;
         }
         if (log.isDebugEnabled()){
             log.debug("登录：{} token:{} loginName:{}",isLogin,token,loginName);
         }
-        tokenCacheGateway.ifPresent(gateway -> gateway.saveOrUpdate(tenantId, token, loginName, loginInfo, isLogin));
+        tokenCacheGateway.ifPresent(gateway -> gateway.saveOrUpdate(tenantId, token, loginName,optUser, loginInfo, isLogin));
         return loginInfo;
     }
     private boolean isRenew(){
