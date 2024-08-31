@@ -19,8 +19,10 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = false)
 @Schema(description = "上传文件表传输实体")
 public class SysUploadFileDto extends SysUploadFileBase{
-
+    /**url*/
     private String url;
+    /**缩略图*/
     private String thumbUrl;
+    /*是否永久链接*/
     private Boolean permanent;
 }

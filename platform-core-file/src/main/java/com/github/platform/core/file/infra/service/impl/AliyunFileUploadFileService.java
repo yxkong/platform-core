@@ -6,13 +6,17 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
+import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.file.domain.dto.SysUploadFileDto;
 import com.github.platform.core.file.infra.configuration.properties.UploadProperties;
 import com.github.platform.core.file.infra.convert.SysUploadFileInfraConvert;
 import com.github.platform.core.persistence.mapper.file.SysUploadFileMapper;
+import com.github.platform.core.standard.constant.SymbolConstant;
+import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -38,17 +42,20 @@ public class AliyunFileUploadFileService extends AbstractUploadFileService{
         return properties.getAliyun();
     }
     @Override
-    public void upload(String module, String bizNo, String path, String uploadFileName, InputStream is) {
-
+    public String upload(String module, String bizNo, String uploadFileName, InputStream is) {
         try {
-            PutObjectRequest putObjectRequest = new PutObjectRequest(getAliyun().getBucketName(), getObjectName(path,uploadFileName), is);
+            String objectName = getObjectName(module, getDatePath(), bizNo,uploadFileName);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(getAliyun().getBucketName(),objectName, is);
             // 创建PutObject请求。
             PutObjectResult result = ossClient.putObject(putObjectRequest);
+            log.info("上传阿里云oss结果{}", JsonUtils.toJson(result));
+            return objectName;
         }catch (OSSException oe) {
             log.error("上传阿里云oss服务端异常，code:{},message:{},requestId:{},hostId:{}",oe.getErrorCode(),oe.getMessage(),oe.getRequestId(),oe.getHostId());
         } catch (ClientException ce) {
             log.error("上传阿里云oss客户端异常,code:{},message:{},requestId:{}",ce.getErrorCode(),ce.getMessage(),ce.getRequestId());
         }
+        return null;
     }
 
     @Override
@@ -64,7 +71,7 @@ public class AliyunFileUploadFileService extends AbstractUploadFileService{
      * @return
      */
     private String getUrlStr(SysUploadFileDto dto,String style) {
-        GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(getAliyun().getBucketName(), dto.getObjectName());
+        GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(getAliyun().getBucketName(), dto.getFilePath());
         // 设置失效时间
         int activeMinutes = Objects.equals(dto.getPermanent() ,Boolean.TRUE) ? Integer.MAX_VALUE :
                 Objects.isNull(getAliyun().getLinkExpireMinutes()) ? 30 : getAliyun().getLinkExpireMinutes();
@@ -87,4 +94,5 @@ public class AliyunFileUploadFileService extends AbstractUploadFileService{
         String style = "image/resize,m_lfit,w_100,h_100";
         return getUrlStr(dto,style);
     }
+
 }

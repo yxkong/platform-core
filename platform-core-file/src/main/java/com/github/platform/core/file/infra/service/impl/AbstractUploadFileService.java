@@ -9,13 +9,13 @@ import com.github.platform.core.file.infra.service.IUploadFileService;
 import com.github.platform.core.persistence.mapper.file.SysUploadFileMapper;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
+import com.github.platform.core.standard.util.MD5Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,26 +35,26 @@ public abstract class AbstractUploadFileService implements IUploadFileService {
 
     @Override
     public SysUploadFileDto uploadAndSave(String module, String bizNo, String fileName, Long fileSize, InputStream is) {
-        LocalDateTime nowDate = LocalDateTime.now();
-        String path = LocalDateTimeUtil.dateTime(nowDate,"yyyyMMdd");
-        Pair<String, String> pair = getObjectNameAndFileId(module, path, bizNo, fileName);
+        //生成文件id，TODO 后续在文件中添加校验码，用于文件的唯一性校验。
+        String fileId = generateFieldId();
         String fileType = getFileType(fileName);
-        String uploadFileName = getUploadFileName(pair.getValue(), fileType);
-        this.upload(module, bizNo, pair.getKey(),uploadFileName, is);
+        // 获取上传文件名称
+        String uploadFileName = getUploadFileName(fileId, fileType);
+        String relativeFile = this.upload(module, bizNo,uploadFileName, is);
         if (log.isWarnEnabled()){
-            log.warn("module:{} bizNo:{} fileName:{} uploadPath:{} uploadName:{}",module,bizNo,fileName,pair.getKey(),uploadFileName);
+            log.warn("module:{} bizNo:{} fileName:{} relativeFile:{} uploadName:{}",module,bizNo,fileName,relativeFile,uploadFileName);
         }
         //记录上传日志
         SysUploadFileBase record = SysUploadFileBase.builder()
                 .module(module)
                 .bizNo(bizNo)
                 .fileName(fileName)
-                .filePath(pair.getKey())
-                .fileId(pair.getValue())
+                .filePath(relativeFile)
+                .fileId(fileId)
                 .fileType(fileType)
                 .fileSize((Objects.nonNull(fileSize) ? fileSize : countBytes(is)))
                 .storage(properties.getStorage().name())
-                .createTime(nowDate)
+                .createTime(LocalDateTimeUtil.dateTime())
                 .build();
         int num = uploadFileMapper.insert(record);
         if (num <= 0) {
@@ -112,6 +112,23 @@ public abstract class AbstractUploadFileService implements IUploadFileService {
         }
         return sb;
     }
+    /**
+     * 获取文件路径
+     * @param module
+     * @param datePath
+     * @param bizNo
+     * @return
+     */
+    protected String getObjectName(String module,String datePath,String bizNo,String uploadFileName){
+        StringBuilder sb  = new StringBuilder(module);
+        sb.append(SymbolConstant.divide).append(datePath);
+        if (StringUtils.isNotEmpty(bizNo)){
+            sb.append(SymbolConstant.divide).append(bizNo);
+        }
+        return sb.append(uploadFileName).toString();
+    }
+
+
 
 
     /**

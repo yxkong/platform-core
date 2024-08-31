@@ -25,4 +25,6 @@ public class UploadEntity {
     private String fileId;
     @Schema(description = "文件url")
     private String url;
+
+    private String thumbUrl;
 }

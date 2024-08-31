@@ -76,7 +76,7 @@ public class SysUploadFileController extends BaseController{
     public ResultBean<List<UploadEntity>> add(@RequestParam("files") List<MultipartFile> files, @RequestParam("module") String module,
                           @RequestParam("bizNo") String bizNo) {
         if (CollectionUtil.isEmpty(files)){
-            exception(ResultStatusEnum.PARAM_EMPTY);
+            throw exception(ResultStatusEnum.PARAM_EMPTY);
         }
         List<UploadEntity> rst = new ArrayList<>();
         InputStream fileInputStream = null;
@@ -84,7 +84,7 @@ public class SysUploadFileController extends BaseController{
             try {
                 fileInputStream = file.getInputStream();
             } catch (IOException e) {
-                exception(ResultStatusEnum.COMMON_UPLOAD_STREAM_EXCEPTION);
+                throw exception(ResultStatusEnum.COMMON_UPLOAD_STREAM_EXCEPTION);
             }
             UploadEntity uploadEntity = uploadFileExecutor.uploadAndSave(module, bizNo, null, file.getOriginalFilename(), file.getSize(), fileInputStream);
             rst.add(uploadEntity);

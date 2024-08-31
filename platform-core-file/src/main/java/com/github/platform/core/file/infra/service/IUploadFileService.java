@@ -2,10 +2,14 @@ package com.github.platform.core.file.infra.service;
 
 import com.github.platform.core.file.domain.common.entity.SysUploadFileBase;
 import com.github.platform.core.file.domain.dto.SysUploadFileDto;
+import com.github.platform.core.standard.constant.SymbolConstant;
+import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 文件服务
@@ -27,11 +31,10 @@ public interface IUploadFileService {
      * 文件上传（使用这个，需要自己记录是什么类型的存储方式）
      * @param module 模块名，以模块区分
      * @param bizNo 业务号
-     * @param path 存储路径(相对路径)
      * @param uploadFileName 上传的文件名称 带后缀
      * @param is 文件流
      */
-    void upload(String module, String bizNo, String path, String uploadFileName, InputStream is);
+    String upload(String module, String bizNo,  String uploadFileName, InputStream is);
 
     /**
      * 根据文件id获取浏览的url
@@ -65,5 +68,15 @@ public interface IUploadFileService {
      */
     Pair<String,String> getObjectNameAndFileId(String module, String datePath, String bizNo, String fileName);
 
-
+    default String getPath(String path){
+        if (Objects.isNull(path)){
+            return null;
+        }
+        return path.replace("\\", SymbolConstant.divide);
+    }
+    default String getDatePath(){
+        LocalDateTime nowDate = LocalDateTime.now();
+        //生成日期目录
+        return LocalDateTimeUtil.dateTime(nowDate,"yyyyMMdd");
+    }
 }

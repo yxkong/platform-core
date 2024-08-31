@@ -50,11 +50,16 @@ public class UploadFileExecutorImpl extends BaseExecutor implements IUploadFileE
         IUploadFileService uploadFileService = maps.get(properties.getStorage() + "UploadFileService");
         if (Objects.isNull(uploadFileService)){
             log.warn("未找到对应存储类型{}的实现",properties.getStorage());
-            exception(ResultStatusEnum.NO_FOUND_IMPLEMENT);
+            throw exception(ResultStatusEnum.NO_FOUND_IMPLEMENT);
         }
         SysUploadFileDto uploadFileDto = uploadFileService.uploadAndSave(module, bizNo, fileName, fileSize, is);
         uploadFileDto.setPermanent(true);
-        return UploadEntity.builder().storage(properties.getStorage().name()).fileId(uploadFileDto.getFileId()).url(uploadFileService.getUrl(uploadFileDto)).build() ;
+        return UploadEntity.builder()
+                .storage(properties.getStorage().name())
+                .fileId(uploadFileDto.getFileId())
+                .url(uploadFileService.getUrl(uploadFileDto))
+                .thumbUrl(uploadFileService.getThumbUrl(uploadFileDto))
+                .build() ;
     }
 
     @Override
