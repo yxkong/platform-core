@@ -1,5 +1,6 @@
 package com.github.platform.core.file.adapter.api.controller;
 
+import com.github.platform.core.auth.annotation.RequiredLogin;
 import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.file.adapter.api.command.FileInfoCmd;
@@ -70,6 +71,7 @@ public class SysUploadFileController extends BaseController{
      *     可用对象替代字段       @ModelAttribute SysUploadFileCmd
     * @return 操作结果
     */
+    @RequiredLogin
     @OptLog(module="uploadFile",title="新增上传文件表",optType = LogOptTypeEnum.add)
     @Operation(summary = "新增上传文件表",tags = {"sysUploadFile"})
     @PostMapping("/add")
@@ -98,12 +100,13 @@ public class SysUploadFileController extends BaseController{
      *     可用对象替代字段       @ModelAttribute SysUploadFileCmd
      * @return 操作结果
      */
+    @RequiredLogin
     @OptLog(module="uploadFile",title="新增上传文件表",optType = LogOptTypeEnum.add)
     @Operation(summary = "新增上传文件表",tags = {"sysUploadFile"})
     @PostMapping("/upload")
     public ResultBean<List<UploadEntity>> upload(@RequestBody SysUploadFileCmd cmd) {
         if (CollectionUtil.isEmpty(cmd.getFiles())){
-            exception(ResultStatusEnum.PARAM_EMPTY);
+            throw exception(ResultStatusEnum.PARAM_EMPTY);
         }
         List<UploadEntity> rst = new ArrayList<>();
         InputStream fileInputStream = null;
@@ -122,6 +125,7 @@ public class SysUploadFileController extends BaseController{
     * @param id 主键id
     * @return 单条记录
     */
+    @RequiredLogin
     @Operation(summary = "根据id查询上传文件表明细",tags = {"uploadFile"})
     @PostMapping("/detail")
     public ResultBean<SysUploadFileDto> detail(@Validated @RequestBody StrIdReq id) {
