@@ -8,6 +8,7 @@
 		<id column="biz_type" property="bizType" />
 		<id column="current_status" property="currentStatus" />
 		<id column="target_status" property="targetStatus" />
+		<id column="default_target_status" property="defaultTargetStatus" />
 		<id column="status" property="status" />
 		<id column="create_by" property="createBy" />
 		<id column="create_time" property="createTime" />
@@ -21,6 +22,7 @@
 		t.biz_type,
 		t.current_status,
 		t.target_status,
+		t.default_target_status,
 		t.status,
 		t.create_by,
 		t.create_time,
@@ -36,6 +38,7 @@
 			<if test="bizType != null  and bizType != ''">biz_type,</if>
 			<if test="currentStatus != null  and currentStatus != ''">current_status,</if>
 			<if test="targetStatus != null  and targetStatus != ''">target_status,</if>
+			<if test="defaultTargetStatus != null  and defaultTargetStatus != ''">default_target_status,</if>
 			<if test="status != null ">status,</if>
 			<if test="createBy != null  and createBy != ''">create_by,</if>
 			<if test="createTime != null ">create_time,</if>
@@ -48,6 +51,7 @@
 			<if test="bizType != null  and bizType != ''">#{bizType},</if>
 			<if test="currentStatus != null  and currentStatus != ''">#{currentStatus},</if>
 			<if test="targetStatus != null  and targetStatus != ''">#{targetStatus},</if>
+			<if test="defaultTargetStatus != null  and defaultTargetStatus != ''">#{defaultTargetStatus},</if>
 			<if test="status != null ">#{status},</if>
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
 			<if test="createTime != null ">#{createTime},</if>
@@ -63,6 +67,7 @@
 			<if test="bizType != null  and bizType != ''">biz_type = #{bizType},</if>
 			<if test="currentStatus != null  and currentStatus != ''">current_status = #{currentStatus},</if>
 			<if test="targetStatus != null  and targetStatus != ''">target_status = #{targetStatus},</if>
+			<if test="defaultTargetStatus != null  and defaultTargetStatus != ''">default_target_status = #{defaultTargetStatus},</if>
 			<if test="status != null ">status = #{status},</if>
 			<if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
 			<if test="createTime != null ">create_time = #{createTime},</if>

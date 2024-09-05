@@ -26,4 +26,7 @@ public class SysFlowRuleBase extends BaseAdminEntity   {
     /** 目标可选状态 */
     @Schema(description = "目标可选状态")
     protected String targetStatus;
+    /**默认状态*/
+    @Schema(description = "默认状态")
+    protected String defaultTargetStatus;
 }

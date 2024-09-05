@@ -153,6 +153,9 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
                 childrenList.add(children);
                 router.setChildren(childrenList);
             }
+            if (!menu.isTopMenu()){
+                router.setComponent(null);
+            }
             //有子节点
             if (CollectionUtil.isNotEmpty(menu.getChildren()) ) {
                 //如果有子节点不是目录

@@ -24,14 +24,12 @@ import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,7 +49,8 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
     @Resource
     private IGatewayRouteConditionGateway gatewayRouteConditionGateway;
 
-    @Resource(name = SpringBeanNameConstant.REDIS_PUBLISH_SERVICE)
+    @Autowired(required = false)
+    @Qualifier(SpringBeanNameConstant.REDIS_PUBLISH_SERVICE)
     private IPublishService publishService;
     /**
     * 查询网关路由列表
@@ -100,7 +99,11 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
         dto.setSourceService("gatewayAdmin");
         dto.setLoginName(LoginUserInfoUtil.getLoginName());
         dto.setData(JsonUtils.toJson(RouteInfoUtil.getResult(context.getRouteBasic(), context.getConditions())));
-        return publishService.publish(dto);
+        if (Objects.nonNull(publishService)){
+            return publishService.publish(dto);
+        }
+        log.error("未找到{},请配置platform.publish.enabled 为true开启redis订阅发布功能",SpringBeanNameConstant.REDIS_PUBLISH_SERVICE);
+        return false;
     }
     /**
     * 根据id查询网关路由明细
