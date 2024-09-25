@@ -1,6 +1,5 @@
 package com.github.platform.core.loadbalancer;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.nacos.client.naming.utils.Chooser;
 import com.alibaba.nacos.client.naming.utils.Pair;
 import com.github.platform.core.loadbalancer.holder.RequestHeaderHolder;
@@ -12,6 +11,7 @@ import org.springframework.cloud.client.loadbalancer.*;
 import org.springframework.cloud.loadbalancer.core.NoopServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBalancer;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Mono;
 
@@ -38,17 +38,14 @@ public class GrayLoadBalancer implements ReactorServiceInstanceLoadBalancer {
     private ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
     //普通server轮训器
     private AtomicInteger nextServerCyclicCounter;
-    //灰度轮训器
-    private AtomicInteger nextGrayServerCyclicCounter;
-    /**
-     * nacos配置信息
-     */
-    private  NacosDiscoveryProperties nacosDiscoveryProperties;
+    private final Environment environment;
 
     public GrayLoadBalancer( ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider
-            , String serviceId) {
+            , String serviceId, Environment environment) {
         this.serviceId = serviceId;
         this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
+        this.environment = environment;
+        this.nextServerCyclicCounter = new AtomicInteger(0);
     }
 
     @Override
@@ -75,32 +72,25 @@ public class GrayLoadBalancer implements ReactorServiceInstanceLoadBalancer {
             log.warn("No servers available for service: " + this.serviceId);
             return new EmptyResponse();
         }
-        String label = null;
-        if(headers == null || StringUtils.isEmpty(headers.getFirst(RequestHeaderHolder.LABEL_KEY)) ){
-            //标签为空，则随机有效列表
-            if (log.isDebugEnabled()){
-                log.debug("header or label is null , ");
-            }
-            label = RequestHeaderHolder.getLabel();
-        }else {
-            label = headers.getFirst(RequestHeaderHolder.LABEL_KEY);
+        String label = headers != null ? headers.getFirst(RequestHeaderHolder.LABEL_KEY) : RequestHeaderHolder.getLabel();
+
+        if (StringUtils.isEmpty(label)) {
+            // 如果没有灰度标签，走普通的负载均衡逻辑
+            return getInstanceByDefault(serviceInstances);
         }
-        if(StringUtils.isEmpty(label)){
-            return getInstanceByWeight(serviceInstances);
-        }
-        //过滤指定label的实例
-        String finalLabel = label;
-        if (log.isDebugEnabled()){
-            log.debug("label is {}",label);
-        }
+
+        // 根据灰度标签进行过滤
         List<ServiceInstance> instancesFilter = serviceInstances.stream()
-                .filter(instance -> finalLabel.equals(instance.getMetadata().get(RequestHeaderHolder.LABEL_KEY)))
+                .filter(instance -> label.equals(instance.getMetadata().get(RequestHeaderHolder.LABEL_KEY)))
                 .collect(Collectors.toList());
 
-        if (instancesFilter.size() > 0) {
-            serviceInstances = instancesFilter;
+        if (instancesFilter.isEmpty()) {
+            log.warn("No servers available for gray label: " + label);
+            return new EmptyResponse();
         }
-        return getInstanceByWeight(serviceInstances);
+
+        // 根据权重选择灰度实例
+        return getInstanceByWeight(instancesFilter);
     }
 
     /**
@@ -112,21 +102,45 @@ public class GrayLoadBalancer implements ReactorServiceInstanceLoadBalancer {
     private Response<ServiceInstance> getInstanceByWeight(List<ServiceInstance> instances){
         List<Pair<ServiceInstance>> hostsWithWeight = new ArrayList<>();
         for (ServiceInstance instance : instances) {
-            hostsWithWeight.add(new Pair<>(instance,Double.parseDouble(instance.getMetadata().get("nacos.weight"))));
+            // 兼容Nacos和Eureka的权重字段
+            String weightStr = instance.getMetadata().getOrDefault("nacos.weight",
+                    instance.getMetadata().getOrDefault("eureka.weight", "1.0"));
+            double weight = Double.parseDouble(weightStr);
+            hostsWithWeight.add(new Pair<>(instance, weight));
         }
         Chooser<String, ServiceInstance> vipChooser = new Chooser<>(this.serviceId);
         vipChooser.refresh(hostsWithWeight);
-        return new DefaultResponse(vipChooser.randomWithWeight()) ;
+        return new DefaultResponse(vipChooser.randomWithWeight());
     }
+    /**
+     * 根据配置选择默认负载均衡策略
+     */
+    private Response<ServiceInstance> getInstanceByDefault(List<ServiceInstance> instances) {
+        String strategy = environment.getProperty("loadbalancer.default-strategy", "random");
+        switch (strategy.toLowerCase()) {
+            case "round-robin":
+                return getInstanceByRoundRobin(instances);
+            case "random":
+            default:
+                return getInstanceByRandom(instances);
+        }
+    }
+
     /**
      * 轮训的方式获取（不均匀，）
      * 参考 org.springframework.cloud.loadbalancer.core.RoundRobinLoadBalancer#getInstanceResponse
      * @param instances
      * @return
      */
-    private Response<ServiceInstance> getInstanceByRibbon(List<ServiceInstance> instances){
+    private Response<ServiceInstance> getInstanceByRoundRobin(List<ServiceInstance> instances){
         int pos = Math.abs(this.nextServerCyclicCounter.incrementAndGet());
-        ServiceInstance instance = instances.get(pos &(instances.size()-1));
+        // 考虑灰度实例和非灰度实例的权重差异
+        ServiceInstance instance = instances.get(pos % instances.size());
+        // 防止溢出，当达到Integer.MAX_VALUE时，尝试重置为0
+        if (pos >= Integer.MAX_VALUE - 1) {
+            // 只有一个线程能够成功重置，避免并发问题
+            this.nextServerCyclicCounter.compareAndSet(Integer.MAX_VALUE, 0);
+        }
         return new DefaultResponse(instance);
     }
 

@@ -68,6 +68,8 @@ public class UploadProperties {
     public static class OssProperties {
         /**云的endpoint*/
         private String endpoint;
+        /**云的cname*/
+        private String cname;
         /**云的accessId*/
         private String accessId;
         /**云的accessKey*/

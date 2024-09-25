@@ -12,7 +12,8 @@ import javax.annotation.Resource;
 import java.util.Objects;
 
 /**
- * api系统token操作
+ * api系统token操作，
+ * <p> 这个实现有限制，要求业务h和网关使用一套redis，限制比较大</p>
  * @author: yxkong
  * @date: 2024/4/29 13:42
  * @version: 1.0

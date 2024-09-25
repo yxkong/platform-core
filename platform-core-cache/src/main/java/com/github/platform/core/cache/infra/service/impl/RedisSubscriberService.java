@@ -45,17 +45,17 @@ public class RedisSubscriberService implements IRedisReceiveMessageService {
         String handlerBean = dto.getHandlerBean();
         String xx = redisSubscribeProperties.getEvents().stream().filter(event -> handlerBean.startsWith(event)).findAny().orElse(null);
         if (Objects.isNull(xx)){
-            log.error("事件类型:{} ,事件详情:{}", handlerBean,JsonUtils.toJson(dto));
+            log.warn("事件类型:{}  不在处理范围内,事件详情:{}", handlerBean,JsonUtils.toJson(dto));
             return Pair.of(false,"事件不在处理范围内，:"+handlerBean);
         }
 
         if (!ApplicationContextHolder.containsBean(handlerBean)){
-            log.error("未找到bean:{} ,事件详情:{}", handlerBean,JsonUtils.toJson(dto));
+            log.error("未找到订阅对应的bean:{} ,事件详情:{}", handlerBean,JsonUtils.toJson(dto));
             return Pair.of(false,"未找到bean:"+handlerBean);
         }
         IEventHandlerService eventHandlerService = ApplicationContextHolder.getBean(handlerBean, IEventHandlerService.class);
 
-        Pair result = eventHandlerService.handler(dto);
+        Pair<Boolean,String> result = eventHandlerService.handler(dto);
         if (log.isWarnEnabled()){
             log.warn("bean:{}  处理事件：{} ,结果：{}/{} ",handlerBean,message,result.getKey(),result.getValue());
         }

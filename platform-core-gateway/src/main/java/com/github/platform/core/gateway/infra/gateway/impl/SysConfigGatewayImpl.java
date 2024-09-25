@@ -1,7 +1,7 @@
 package com.github.platform.core.gateway.infra.gateway.impl;
 
 import com.github.platform.core.auth.configuration.properties.AuthProperties;
-import com.github.platform.core.gateway.domain.gateway.ConfigGateway;
+import com.github.platform.core.gateway.domain.gateway.IConfigGateway;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Service("sysConfigGateway")
 @Slf4j
-public class SysConfigGatewayImpl implements ConfigGateway {
+public class SysConfigGatewayImpl implements IConfigGateway {
     @Resource
     private AuthProperties authProperties;
     @Override

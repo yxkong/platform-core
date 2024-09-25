@@ -9,6 +9,7 @@ import com.github.platform.core.gateway.admin.domain.gateway.IGatewayRouteCondit
 import com.github.platform.core.gateway.admin.domain.gateway.IGatewayRouteGateway;
 import com.github.platform.core.gateway.admin.infra.util.RouteInfoUtil;
 import com.github.platform.core.gateway.domain.gateway.RouteDataGateway;
+import com.github.platform.core.gateway.infra.configuration.properties.PlatformGatewayProperties;
 import com.github.platform.core.gateway.infra.gateway.dto.RouteDto;
 import com.github.platform.core.gateway.infra.service.IRouteOperatorService;
 import com.github.platform.core.standard.constant.StatusEnum;
@@ -20,7 +21,6 @@ import java.util.Map;
 
 /**
  * 网关动态路由mysql实现
- * TODO 待实现
  * @author: yxkong
  * @date: 2021/12/7 8:00 PM
  * @version: 1.0
@@ -30,15 +30,17 @@ public class MysqlDynamicRouteGatewayImpl implements RouteDataGateway {
     private IRouteOperatorService routeOperatorService;
     private IGatewayRouteGateway gatewayRouteGateway;
     private IGatewayRouteConditionGateway gatewayRouteConditionGateway;
-    public MysqlDynamicRouteGatewayImpl(IRouteOperatorService routeOperatorService,IGatewayRouteGateway gatewayRouteGateway,IGatewayRouteConditionGateway gatewayRouteConditionGateway) {
+    private PlatformGatewayProperties gatewayProperties;
+    public MysqlDynamicRouteGatewayImpl(IRouteOperatorService routeOperatorService, IGatewayRouteGateway gatewayRouteGateway, IGatewayRouteConditionGateway gatewayRouteConditionGateway, PlatformGatewayProperties gatewayProperties) {
         this.routeOperatorService = routeOperatorService;
         this.gatewayRouteGateway = gatewayRouteGateway;
         this.gatewayRouteConditionGateway = gatewayRouteConditionGateway;
+        this.gatewayProperties = gatewayProperties;
     }
 
     @Override
     public void initAll() {
-        List<GatewayRouteDto> routes = gatewayRouteGateway.findBy(GatewayRouteContext.builder().status(StatusEnum.ON.getStatus()).build());
+        List<GatewayRouteDto> routes = gatewayRouteGateway.findBy(GatewayRouteContext.builder().gateway(gatewayProperties.getName()).status(StatusEnum.ON.getStatus()).build());
         RouteDto routeDto = new RouteDto();
         if (CollectionUtil.isNotEmpty(routes)){
             routes.forEach(route->{
@@ -50,12 +52,10 @@ public class MysqlDynamicRouteGatewayImpl implements RouteDataGateway {
         }
         if (CollectionUtil.isNotEmpty(routeDto.getRoutes())){
             routeOperatorService.refresh(routeDto.getRoutes());
-            log.warn("初始化网关完成");
+            log.warn("初始化Mysql网关完成:{}",JsonUtils.toJson(routeDto.getRoutes()));
         } else {
             log.warn("未找到可初始化的网关配置");
         }
-
-
     }
 
     @Override

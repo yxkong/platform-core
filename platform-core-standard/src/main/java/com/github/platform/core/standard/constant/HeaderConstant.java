@@ -20,26 +20,26 @@ public interface HeaderConstant {
     /**header中的默认token*/
     String DEFAULT_TOKEN = "token";
     /**header中的系统名称*/
-    String SYS = "x-sys";
+    String SYS_NAME = "sysName";
     /**header中的接口版本号*/
-    String VERSION = "x-version";
+    String VERSION = "version";
     /**header中的租户信息*/
-    String TENANT_ID = "x-tenant-id";
+    String TENANT_ID = "tenantId";
     /**header中解析出来的用户登录信息，经过网关以后必须携带的信息*/
-    String LOGIN_INFO = "x-login-info";
-    /**header中的source来源*/
-    String SOURCE = "x-source";
+    String LOGIN_INFO = "loginInfo";
+
     /**header中的时间戳*/
-    String T = "x-t";
+    String T = "t";
     /**header中的tag，用于后续的灰度*/
-    String TAG = "x-tag";
+    String TAG = "tag";
     /**header中的页面启动的uuid*/
-    String PAGE_UUID = "x-page-uuid";
+    String PAGE_UUID = "pageUuid";
     /**header中的app启动的uuid*/
-    String APP_UUID = "x-app-uuid";
+    String APP_UUID = "appUuid";
 
     /**网关来源关键字*/
-    String REQUEST_FROM = "gateway";
+    /**header中的source来源*/
+    String REQUEST_FROM = "source";
     String REQUEST_FROM_SOURCE = "gateway";
     String TRACE_ID = "traceId";
     String IP_UNKNOWN = "unknown";

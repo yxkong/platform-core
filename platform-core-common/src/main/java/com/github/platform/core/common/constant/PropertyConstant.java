@@ -54,6 +54,9 @@ public interface PropertyConstant {
     String DATA_WORKFLOW = "platform.workflow";
     /**网关路由nacos的配置*/
     String DATA_GATEWAY_ROUTE_NACOS = "platform.gateway.route.nacos";
+
+    /**网关配置*/
+    String DATA_GATEWAY = "platform.gateway";
     /**灰度开关*/
     String CON_GATEWAY_GRAY_ENABLED = "platform.gray.enabled";
     /**网关路由类型*/
@@ -72,8 +75,10 @@ public interface PropertyConstant {
     /**项目配置*/
     String DATA_PM = "platform.pm";
     String FEIGN = "feign";
-    /**redis订阅发布开关*/
+    /**redis发布开关*/
     String CON_REDIS_PUBLISH_ENABLED = "platform.redis.publish.enabled";
+    /**redis订阅开关*/
     String CON_REDIS_SUBSCRIBE_ENABLED = "platform.redis.subscribe.enabled";
+    /**redis订阅配置*/
     String DATA_REDIS_SUBSCRIBE = "platform.redis.subscribe";
 }

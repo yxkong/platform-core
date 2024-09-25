@@ -1,22 +1,19 @@
 package com.github.platform.core.gateway.infra.filter;
 
 import com.github.platform.core.auth.configuration.properties.AuthProperties;
-import com.github.platform.core.auth.constants.AuthTypeEnum;
 import com.github.platform.core.auth.entity.LoginUserInfo;
-import com.github.platform.core.auth.service.ITokenService;
+import com.github.platform.core.auth.service.IGatewayTokenService;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
-import com.github.platform.core.common.constant.SpringBeanOrderConstant;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
-import com.github.platform.core.gateway.domain.gateway.ConfigGateway;
+import com.github.platform.core.gateway.domain.gateway.IConfigGateway;
 import com.github.platform.core.gateway.infra.utils.WebUtil;
 import com.github.platform.core.standard.constant.HeaderConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.core.Ordered;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.server.ServerWebExchange;
@@ -27,6 +24,7 @@ import java.util.Objects;
 
 /**
  * 后端管理系统权限校验
+ *  要先重写完url再进来，不能添加order排序，由数据库配置控制排序
  *  实现：
  *  1，鉴权
  *  2，信息透传
@@ -35,12 +33,12 @@ import java.util.Objects;
  * @version: 1.0
  */
 @Slf4j
-public class SysAuthFilter extends GatewayFilterBase implements GatewayFilter, Ordered {
+public class SysAuthFilter extends GatewayFilterBase implements GatewayFilter {
 
-    private ConfigGateway configGateway;
-    private ITokenService tokenService;
+    private IConfigGateway configGateway;
+    private IGatewayTokenService tokenService;
     private AuthProperties authProperties;
-    public SysAuthFilter(ConfigGateway configGateway, ITokenService tokenService, AuthProperties authProperties) {
+    public SysAuthFilter(IConfigGateway configGateway, IGatewayTokenService tokenService, AuthProperties authProperties) {
         this.configGateway = configGateway;
         this.tokenService = tokenService;
         this.authProperties = authProperties;
@@ -136,10 +134,5 @@ public class SysAuthFilter extends GatewayFilterBase implements GatewayFilter, O
             log.debug("host:{}  url:{} 走鉴权 ",host,url);
         }
         return Boolean.FALSE;
-    }
-
-    @Override
-    public int getOrder() {
-        return SpringBeanOrderConstant.GATEWAY_AUTH_SYS;
     }
 }

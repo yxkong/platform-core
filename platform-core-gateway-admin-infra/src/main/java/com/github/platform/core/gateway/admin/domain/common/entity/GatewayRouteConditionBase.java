@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Objects;
+
 /**
  * 网关路由条件模型实体
  * @website <a href="https://www.5ycode.com/">5ycode</a>
@@ -29,4 +31,13 @@ public class GatewayRouteConditionBase extends BaseAdminEntity   {
     /** 参数 */
     @Schema(description = "参数")
     protected String args;
+    @Schema(description = "路由顺序，数值越小优先级越高")
+    protected Integer sort;
+
+    public Integer getSort() {
+        if (Objects.isNull(this.sort)){
+            return 0;
+        }
+        return sort;
+    }
 }

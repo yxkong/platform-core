@@ -1,7 +1,7 @@
 package com.github.platform.core.gateway.infra.gateway.impl;
 
 import com.github.platform.core.auth.configuration.properties.AuthProperties;
-import com.github.platform.core.gateway.domain.gateway.ConfigGateway;
+import com.github.platform.core.gateway.domain.gateway.IConfigGateway;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -13,7 +13,7 @@ import javax.annotation.Resource;
  * @version: 1.0
  */
 @Service("apiConfigGateway")
-public class ApiConfigGatewayImpl implements ConfigGateway {
+public class ApiConfigGatewayImpl implements IConfigGateway {
     @Resource
     private AuthProperties authProperties;
     @Override

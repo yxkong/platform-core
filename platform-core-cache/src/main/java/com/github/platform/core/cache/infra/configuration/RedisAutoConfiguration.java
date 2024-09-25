@@ -17,6 +17,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 /**
+ * 主redis 服务，使用系统自带的redis
  * @author: yxkong
  * @date: 2021/6/9 10:40 上午
  * @version: 1.0

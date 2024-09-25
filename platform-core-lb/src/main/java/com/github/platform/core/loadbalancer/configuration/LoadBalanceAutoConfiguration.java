@@ -23,8 +23,8 @@ public class LoadBalanceAutoConfiguration {
     public ReactorLoadBalancer<ServiceInstance> reactorServiceInstanceLoadBalancer(Environment environment, LoadBalancerClientFactory loadBalancerClientFactory) {
         String serviceId = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
         ObjectProvider<ServiceInstanceListSupplier> provider = loadBalancerClientFactory.getLazyProvider(serviceId, ServiceInstanceListSupplier.class);
-        return new GrayLoadBalancer(provider,serviceId);
+        // 使用 GrayLoadBalancer 实现灰度负载均衡
+        return new GrayLoadBalancer(provider,serviceId,environment);
     }
-
 
 }

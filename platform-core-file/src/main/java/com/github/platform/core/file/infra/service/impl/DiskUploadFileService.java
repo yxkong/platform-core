@@ -6,7 +6,6 @@ import com.github.platform.core.file.infra.configuration.properties.UploadProper
 import com.github.platform.core.file.infra.convert.SysUploadFileInfraConvert;
 import com.github.platform.core.persistence.mapper.file.SysUploadFileMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.*;
 
@@ -69,8 +68,13 @@ public class DiskUploadFileService extends AbstractUploadFileService {
     }
 
     @Override
+    protected UploadProperties.OssProperties getOssProperties() {
+        return null;
+    }
+
+    @Override
     public String getUrl(SysUploadFileDto dto) {
         //需要nginx去做转发
-        return properties.getDisk().getFileUrl() + File.separator +dto.getFilePath()  + File.separator + dto.getFileId();
+        return properties.getDisk().getFileUrl() + File.separator +dto.getFilePath() ;
     }
 }

@@ -31,12 +31,8 @@
         </dependency>
         <dependency>
             <groupId>com.github.platform</groupId>
-            <artifactId>platform-core-auth-sys</artifactId>
+            <artifactId>platform-core-auth</artifactId>
             <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>javax.servlet-api</artifactId>
-                </exclusion>
                 <exclusion>
                     <artifactId>platform-core-web</artifactId>
                     <groupId>com.github.platform</groupId>
@@ -44,20 +40,6 @@
                 <exclusion>
                     <artifactId>spring-boot-starter-web</artifactId>
                     <groupId>org.springframework.boot</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.github.platform</groupId>
-            <artifactId>platform-core-auth-api</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>javax.servlet-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>platform-core-web</artifactId>
-                    <groupId>com.github.platform</groupId>
                 </exclusion>
             </exclusions>
         </dependency>

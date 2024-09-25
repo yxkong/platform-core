@@ -16,6 +16,7 @@ import java.util.Optional;
 
 /**
  * admin后端实现
+ * <p> 这个实现有限制，要求业务h和网关使用一套redis，限制比较大</p>
  * @author: yxkong
  * @date: 2024/4/29 21:36
  * @version: 1.0

@@ -1,18 +1,15 @@
 package com.github.platform.core.gateway.infra.filter;
 
-import com.github.platform.core.auth.service.ITokenService;
-import com.github.platform.core.auth.util.LoginInfoUtil;
-import com.github.platform.core.common.constant.SpringBeanOrderConstant;
+import com.github.platform.core.auth.service.IGatewayTokenService;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
-import com.github.platform.core.gateway.domain.gateway.ConfigGateway;
+import com.github.platform.core.gateway.domain.gateway.IConfigGateway;
 import com.github.platform.core.gateway.infra.utils.WebUtil;
 import com.github.platform.core.standard.constant.HeaderConstant;
 import com.github.platform.core.standard.entity.common.LoginInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.core.Ordered;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.server.ServerWebExchange;
@@ -22,6 +19,7 @@ import java.util.Objects;
 
 /**
  * c端api权限校验
+ *  要先重写完url再进来，不能添加order排序，由数据库配置控制排序
  *  实现：
  *  1，鉴权
  *  2，将用户的登录信息后传
@@ -30,12 +28,12 @@ import java.util.Objects;
  * @version: 1.0
  */
 @Slf4j
-public class ApiAuthFilter extends GatewayFilterBase implements GatewayFilter, Ordered {
+public class ApiAuthFilter extends GatewayFilterBase implements GatewayFilter {
 
-    private ConfigGateway configGateway;
+    private IConfigGateway configGateway;
 
-    private ITokenService tokenService;
-    public ApiAuthFilter(ConfigGateway configGateway, ITokenService tokenService) {
+    private IGatewayTokenService tokenService;
+    public ApiAuthFilter(IConfigGateway configGateway, IGatewayTokenService tokenService) {
         this.configGateway = configGateway;
         this.tokenService = tokenService;
     }
@@ -68,10 +66,10 @@ public class ApiAuthFilter extends GatewayFilterBase implements GatewayFilter, O
             return authFail(exchange, Boolean.TRUE);
         }
         LoginInfo loginInfo = JsonUtils.fromJson(loginInfoStr,LoginInfo.class);
-        LoginInfoUtil.setLoginInfo(loginInfo);
+//        LoginInfoUtil.setLoginInfo(loginInfo);
         ServerHttpRequest request = exchange.getRequest().mutate()
                 //将请求登录信息放入请求头
-                .header(HeaderConstant.LOGIN_INFO, Base64Utils.encodeToUrlSafeString(JsonUtils.toJson(loginInfo).getBytes()))
+                .header(HeaderConstant.LOGIN_INFO, Base64Utils.encodeToUrlSafeString(loginInfoStr.getBytes()))
                 .header(HeaderConstant.TOKEN, token)
                 //将用户的真实ip放入到请求头
                 .header(HeaderConstant.IP_HEADER_X_FORWARDED_FOR, requestIp)
@@ -80,7 +78,7 @@ public class ApiAuthFilter extends GatewayFilterBase implements GatewayFilter, O
                 //添加租户标记
                 .header(HeaderConstant.TENANT_ID, loginInfo.getTenantId()+"")
                 .build();
-        LoginInfoUtil.clearContext();
+//        LoginInfoUtil.clearContext();
         return chain.filter(corsConfig(exchange).mutate().request(request).build());
     }
 
@@ -103,10 +101,5 @@ public class ApiAuthFilter extends GatewayFilterBase implements GatewayFilter, O
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
-    }
-
-    @Override
-    public int getOrder() {
-        return SpringBeanOrderConstant.GATEWAY_AUTH_API;
     }
 }

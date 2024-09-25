@@ -115,9 +115,9 @@ public class AuthProperties {
     @NoArgsConstructor
     public static class BaseProperties {
         /**可以直接转发的host*/
-        private List<String> hosts = new ArrayList<>();
+        protected List<String> hosts = new ArrayList<>();
         /**可以直接转发的url*/
-        private List<String> urls = new ArrayList<>();
+        protected List<String> urls = new ArrayList<>();
     }
     /**登录相关配置*/
     @Data

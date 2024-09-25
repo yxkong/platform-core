@@ -9,7 +9,7 @@ import java.util.List;
  * @date: 2021/12/6 11:47 AM
  * @version: 1.0
  */
-public interface ConfigGateway {
+public interface IConfigGateway {
     /**
      * 判断host是否在放行列表里，用于后端请求时，只是添加白名单放行
      * @param hosts

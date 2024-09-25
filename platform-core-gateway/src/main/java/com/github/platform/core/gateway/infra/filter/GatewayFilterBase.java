@@ -23,13 +23,14 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 public class GatewayFilterBase {
-    byte[] tokenNull = "{\"status\":\"1008\",\"message\":\"token无效,请重新登录\"}".getBytes(StandardCharsets.UTF_8);
-    byte[] tokenError = "{\"status\":\"1004\",\"message\":\"无数据权限，请联系管理员!\"}".getBytes(StandardCharsets.UTF_8);
+    byte[] tokenNull = "{\"status\":\"1008\",\"message\":\"网关拦截，token无效,请重新登录！\"}".getBytes(StandardCharsets.UTF_8);
+    byte[] tokenError = "{\"status\":\"1004\",\"message\":\"网关拦截，无数据权限，请联系开发人员!\"}".getBytes(StandardCharsets.UTF_8);
     private static final String ALLOWED_HEADERS = "*";
     private static final String ALLOWED_METHODS = "*";
     private static final String ALLOWED_ORIGIN = "*";
     private static final String ALLOWED_Expose = "*";
     private static final String MAX_AGE = "18000L";
+    protected static final String UTF_8 = "utf-8";
     protected void printHeader(ServerHttpRequest request) {
         if (log.isDebugEnabled()){
             log.debug("请求地址:{},header:{}",request.getURI().getPath(),request.getHeaders().toString());

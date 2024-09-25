@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.Objects;
 
 /**
- * 条件枚举
+ * 条件枚举，有些配置没有验证过，需要后续w完善验证
  * @Author: yxkong
  * @Date: 2024/8/21
  * @version: 1.0
@@ -28,6 +28,7 @@ public enum ConditionEnum {
     RedirectTo("RedirectTo","filter",2, SymbolConstant.comma,"status","url"),
     RewriteResponseHeader("RewriteResponseHeader","filter",2, SymbolConstant.comma,"header","regexp"),
     SetResponseStatusCode("SetResponseStatusCode","filter",1, null,"status","null"),
+    CUSTOM("Custom","filter",2, SymbolConstant.comma,"name","args"),
 
     // predicates
     Path("Path","predicate",1, null,"pattern",""),

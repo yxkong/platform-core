@@ -55,29 +55,32 @@ public class WebSocketSessionManager {
         }
     }
     /**
-     * 删除 session,会返回删除的 session
+     * 删除本地或远程
      *
      * @param key
      * @return
      */
-    public WebSocketSession remove(String key) {
+    public void removeAndCloseWithRemote(String key) {
         /**从内存中移除*/
-        WebSocketSession session = sessionMap.remove(key);
-        cacheService.zRem(CacheConstant.onlineUsers,key);
+        if (sessionMap.containsKey(key)) {
+            removeAndCloseWithLocal(key);
+        }
         //TODO 发送广播，清除其他机器上残留的session
         if (log.isDebugEnabled()){
             log.info("链接断开，key为：{} ,当前在线人数为：{}",key,getOnlineCount());
         }
-        return session;
     }
 
     /**
-     * 删除并同步关闭连接
-     *
+     * 删除并关闭本地连接
      * @param key
      */
-    public void removeAndClose(String key) {
-        WebSocketSession session = remove(key);
+    public void removeAndCloseWithLocal(String key) {
+        if (!sessionMap.containsKey(key)) {
+            return ;
+        }
+        WebSocketSession session = sessionMap.remove(key);
+        cacheService.zRem(CacheConstant.onlineUsers,key);
         if (session != null) {
             try {
                 // 关闭连接

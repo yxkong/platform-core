@@ -114,6 +114,6 @@ public class OnLineUserHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         String key = (String) session.getAttributes().get("key");
-        sessionManager.remove(key);
+        sessionManager.removeAndCloseWithLocal(key);
     }
 }

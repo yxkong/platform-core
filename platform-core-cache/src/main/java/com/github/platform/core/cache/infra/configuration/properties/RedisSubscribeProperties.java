@@ -20,6 +20,6 @@ import java.util.List;
 public class RedisSubscribeProperties {
     /**开关*/
     private boolean enabled = false;
-    /**订阅事件*/
+    /**订阅事件，匹配以xx开头的事件*/
     private List<String> events = new ArrayList<>();
 }

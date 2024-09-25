@@ -10,6 +10,7 @@ import com.github.platform.core.gateway.admin.domain.gateway.IGatewayRouteCondit
 import com.github.platform.core.gateway.admin.domain.gateway.IGatewayRouteGateway;
 import com.github.platform.core.gateway.domain.gateway.RouteDataGateway;
 import com.github.platform.core.gateway.infra.configuration.properties.NacosRouteProperties;
+import com.github.platform.core.gateway.infra.configuration.properties.PlatformGatewayProperties;
 import com.github.platform.core.gateway.infra.filter.GrayReactiveLoadBalancerFilter;
 import com.github.platform.core.gateway.infra.gateway.impl.MysqlDynamicRouteGatewayImpl;
 import com.github.platform.core.gateway.infra.gateway.impl.NacosDynamicRouteGatewayImpl;
@@ -23,6 +24,7 @@ import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 
 /**
  * 网关初始化配置
@@ -47,8 +49,8 @@ public class GatewayConfiguration {
     }
     @Bean
     @ConditionalOnProperty(name = PropertyConstant.CON_GATEWAY_GRAY_ENABLED,havingValue = "true",matchIfMissing = false)
-    public GlobalFilter grayReactiveLoadBalancerFilter(LoadBalancerClientFactory clientFactory, IGrayRuleQueryGateway grayRuleService){
-        return new GrayReactiveLoadBalancerFilter(clientFactory,grayRuleService);
+    public GlobalFilter grayReactiveLoadBalancerFilter(LoadBalancerClientFactory clientFactory, IGrayRuleQueryGateway grayRuleService, Environment environment){
+        return new GrayReactiveLoadBalancerFilter(clientFactory,grayRuleService,environment);
     }
 
     @Bean(name = SpringBeanNameConstant.ROUTE_DATA_GATEWAY)
@@ -60,11 +62,9 @@ public class GatewayConfiguration {
     @Bean(name = SpringBeanNameConstant.ROUTE_DATA_GATEWAY)
     @ConditionalOnMissingBean(name = SpringBeanNameConstant.ROUTE_DATA_GATEWAY)
     @ConditionalOnProperty(name = PropertyConstant.CON_GATEWAY_ROUTE_TYPE,havingValue = "mysql",matchIfMissing = false)
-    public RouteDataGateway mysqlDynamicRouteGateway( IRouteOperatorService routeOperatorService,IGatewayRouteGateway gatewayRouteGateway,IGatewayRouteConditionGateway gatewayRouteConditionGateway){
-        return new MysqlDynamicRouteGatewayImpl(routeOperatorService,gatewayRouteGateway,gatewayRouteConditionGateway);
+    public RouteDataGateway mysqlDynamicRouteGateway(IRouteOperatorService routeOperatorService, IGatewayRouteGateway gatewayRouteGateway, IGatewayRouteConditionGateway gatewayRouteConditionGateway, PlatformGatewayProperties gatewayProperties){
+        return new MysqlDynamicRouteGatewayImpl(routeOperatorService,gatewayRouteGateway,gatewayRouteConditionGateway,gatewayProperties);
     }
-
-
 
 
 //    @Bean

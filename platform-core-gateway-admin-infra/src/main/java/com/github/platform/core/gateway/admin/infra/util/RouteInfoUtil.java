@@ -4,6 +4,7 @@ import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.gateway.admin.domain.common.entity.GatewayRouteBase;
 import com.github.platform.core.gateway.admin.domain.common.entity.GatewayRouteConditionBase;
 import com.github.platform.core.gateway.admin.domain.constant.ConditionEnum;
+import com.github.platform.core.standard.constant.SymbolConstant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class RouteInfoUtil {
      * @return
      */
     public static Map<String, Object> getResult(GatewayRouteBase basic, List<? extends GatewayRouteConditionBase> conditions) {
-        Map<String, Object> rst = new HashMap<>();
+        LinkedHashMap<String, Object> rst = new LinkedHashMap<>();
         rst.put("id",basic.getRouteId());
         rst.put("uri", URI.create(basic.getUri()));
         rst.put("order",basic.getSort());
@@ -39,18 +40,31 @@ public class RouteInfoUtil {
         List<RouteCondition> filters = new ArrayList<>();
         // 处理 predicates
         List<RouteCondition> predicates = new ArrayList<>();
+        // 对 conditions 按 sort 字段进行排序
+        conditions.sort(Comparator.comparing(GatewayRouteConditionBase::getSort));
         conditions.forEach(condition -> {
-                    Map<String, String> map = new HashMap<>();
+                    Map<String, String> map = new LinkedHashMap<>();
                     ConditionEnum anEnum = ConditionEnum.getByName(condition.getName());
                     if (Objects.isNull(anEnum)){
                         return;
                     }
-                    if (anEnum.getLength() == 1){
+                    //针对自定义filter特殊处理
+                    if (anEnum.equals(ConditionEnum.CUSTOM)){
+                        String[] splits = condition.getArgs().split(anEnum.getSplit());
+                        condition.setName(splits[0]);
+                        map.put(anEnum.getSplit0(), splits[0]);
+                        for (int i = 1; i < splits.length ; i++) {
+                            if (splits[i].contains(SymbolConstant.colon)){
+                                String[] args = splits[i].split(SymbolConstant.colon);
+                                map.put(args[0], args[1]);
+                            }
+                        }
+                    } else if (anEnum.getLength() == 1){
                         map.put(anEnum.getSplit0(),condition.getArgs());
-                    } else if (anEnum.getLength() == 2){
-                        String[] split = condition.getArgs().split(anEnum.getSplit());
-                        map.put(anEnum.getSplit0(), split[0]);
-                        map.put(anEnum.getSplit1(), split[1]);
+                    } else if (anEnum.getLength() >= 2){
+                        String[] splits = condition.getArgs().split(anEnum.getSplit());
+                        map.put(anEnum.getSplit0(), splits[0]);
+                        map.put(anEnum.getSplit1(), splits[1]);
                     }
                     if (anEnum.isFilter()){
                         filters.add(new RouteCondition(condition.getName(), map));

@@ -6,13 +6,13 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.file.domain.dto.SysUploadFileDto;
 import com.github.platform.core.file.infra.configuration.properties.UploadProperties;
 import com.github.platform.core.file.infra.convert.SysUploadFileInfraConvert;
 import com.github.platform.core.persistence.mapper.file.SysUploadFileMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -36,8 +36,10 @@ public class CTYunFileUploadService extends AbstractUploadFileService  {
         this.oosClient = oosClient;
         this.convert = convert;
     }
-    private UploadProperties.OssProperties getCtyun(){
-        return properties.getCtyun();
+
+    @Override
+    protected UploadProperties.OssProperties getOssProperties() {
+        return this.properties.getCtyun();
     }
 
     /**
@@ -52,7 +54,7 @@ public class CTYunFileUploadService extends AbstractUploadFileService  {
     public String upload(String module, String bizNo, final String uploadFileName, InputStream is) {
         try {
             String objectName = getObjectName(module, getDatePath(), bizNo,uploadFileName);
-            PutObjectRequest request = new PutObjectRequest(getCtyun().getBucketName(),objectName, is, new ObjectMetadata());
+            PutObjectRequest request = new PutObjectRequest(getOssProperties().getBucketName(),objectName, is, new ObjectMetadata());
             oosClient.putObject(request);
             return objectName;
         } catch (AmazonServiceException as){
@@ -66,12 +68,15 @@ public class CTYunFileUploadService extends AbstractUploadFileService  {
 
     @Override
     public String getUrl(SysUploadFileDto dto) {
-        String bucketName = getCtyun().getBucketName();
-
-        GeneratePresignedUrlRequest shareUrlRequest = new GeneratePresignedUrlRequest(bucketName, dto.getFilePath());
+        String cnameUrl = getCnameUrl(dto);
+        if (StringUtils.isNotEmpty(cnameUrl)){
+            return cnameUrl;
+        }
+        String bucketName = getOssProperties().getBucketName();
+        GeneratePresignedUrlRequest shareUrlRequest = new GeneratePresignedUrlRequest(bucketName,dto.getFilePath());
 
         // 失效时间如果没有配置，则默认30分钟
-        int activeMinutes = Objects.isNull(getCtyun().getLinkExpireMinutes()) ? 30 : getCtyun().getLinkExpireMinutes();
+        int activeMinutes = Objects.isNull(getOssProperties().getLinkExpireMinutes()) ? 30 : getOssProperties().getLinkExpireMinutes();
         shareUrlRequest.setExpiration(DateUtils.addMinutes(new Date(), activeMinutes));
         URL url = oosClient.generatePresignedUrl(shareUrlRequest);
         return url.toString();

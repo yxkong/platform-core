@@ -1,9 +1,8 @@
 package com.github.platform.core.gateway.infra.filter;
-import com.github.platform.core.common.constant.SpringBeanOrderConstant;
-import org.springframework.cloud.sleuth.Span;
+
 import brave.Tracing;
-import org.springframework.cloud.sleuth.Tracer;
 import com.alibaba.fastjson2.JSONObject;
+import com.github.platform.core.common.constant.SpringBeanOrderConstant;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.gateway.infra.constants.SkipHeaderEnum;
@@ -16,12 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.sleuth.CurrentTraceContext;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.cloud.sleuth.instrument.web.WebFluxSleuthOperators;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -67,7 +67,6 @@ public class GatewayTracingFilter implements GlobalFilter, Ordered {
         }
         processRequest(exchange,request);
         String token = exchange.getRequest().getHeaders().getFirst(HeaderConstant.TOKEN);
-        String host = exchange.getRequest().getURI().toString();
         String url = exchange.getRequest().getPath().toString();
         if (isTracing(request)) {
             DataBufferFactory dataBufferFactory = exchange.getResponse().bufferFactory();

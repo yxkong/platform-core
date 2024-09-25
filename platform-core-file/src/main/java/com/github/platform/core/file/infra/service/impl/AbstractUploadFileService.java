@@ -9,7 +9,6 @@ import com.github.platform.core.file.infra.service.IUploadFileService;
 import com.github.platform.core.persistence.mapper.file.SysUploadFileMapper;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
-import com.github.platform.core.standard.util.MD5Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -32,6 +31,22 @@ public abstract class AbstractUploadFileService implements IUploadFileService {
     protected SysUploadFileMapper uploadFileMapper;
     protected UploadProperties properties;
     protected SysUploadFileInfraConvert convert;
+    /**获取云的配置*/
+    protected abstract UploadProperties.OssProperties getOssProperties();
+
+    /**
+     * 获cnamed的对应的t图片url
+     * @param dto
+     * @return
+     */
+    protected String getCnameUrl(SysUploadFileDto dto){
+        if (StringUtils.isEmpty(getOssProperties().getCname())){
+            return null;
+        }
+        //如果配置了cname，则直接返回cname的d地址
+        return getOssProperties().getCname() + SymbolConstant.divide + getOssProperties().getBucketName() +
+                SymbolConstant.divide + dto.getFilePath();
+    }
 
     @Override
     public SysUploadFileDto uploadAndSave(String module, String bizNo, String fileName, Long fileSize, InputStream is) {

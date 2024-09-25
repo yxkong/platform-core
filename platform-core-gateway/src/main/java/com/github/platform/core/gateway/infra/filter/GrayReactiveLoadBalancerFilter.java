@@ -22,6 +22,7 @@ import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.Environment;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import com.github.platform.core.common.utils.CollectionUtil;
 import org.springframework.web.server.ServerWebExchange;
@@ -47,10 +48,12 @@ public class GrayReactiveLoadBalancerFilter implements GlobalFilter, Ordered {
     private static final String LB = "lb";
     private  LoadBalancerClientFactory clientFactory;
     private IGrayRuleQueryGateway grayRuleService;
+    private Environment environment;
 
-    public GrayReactiveLoadBalancerFilter(LoadBalancerClientFactory clientFactory, IGrayRuleQueryGateway grayRuleService) {
+    public GrayReactiveLoadBalancerFilter(LoadBalancerClientFactory clientFactory, IGrayRuleQueryGateway grayRuleService, Environment environment) {
         this.clientFactory = clientFactory;
         this.grayRuleService = grayRuleService;
+        this.environment = environment;
     }
 
     @Override
@@ -198,7 +201,7 @@ public class GrayReactiveLoadBalancerFilter implements GlobalFilter, Ordered {
 
     private Mono<Response<ServiceInstance>> choose(ServerWebExchange exchange) {
         URI uri = exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR);
-        GrayLoadBalancer loadBalancer = new GrayLoadBalancer(clientFactory.getLazyProvider(uri.getHost(), ServiceInstanceListSupplier.class), uri.getHost());
+        GrayLoadBalancer loadBalancer = new GrayLoadBalancer(clientFactory.getLazyProvider(uri.getHost(), ServiceInstanceListSupplier.class), uri.getHost(),environment);
         return loadBalancer.choose(this.createRequest(exchange));
     }
 

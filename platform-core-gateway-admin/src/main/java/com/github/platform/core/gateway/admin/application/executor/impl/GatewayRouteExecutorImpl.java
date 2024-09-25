@@ -49,6 +49,7 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
     @Resource
     private IGatewayRouteConditionGateway gatewayRouteConditionGateway;
 
+
     @Autowired(required = false)
     @Qualifier(SpringBeanNameConstant.REDIS_PUBLISH_SERVICE)
     private IPublishService publishService;
@@ -95,7 +96,7 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
         dto.setModule("gateway");
         dto.setNode(optEnum.getOpt());
         dto.setSendTime(LocalDateTimeUtil.dateTime());
-        dto.setTargetService("gateway");
+        dto.setTargetService(context.getRouteBasic().getGateway());
         dto.setSourceService("gatewayAdmin");
         dto.setLoginName(LoginUserInfoUtil.getLoginName());
         dto.setData(JsonUtils.toJson(RouteInfoUtil.getResult(context.getRouteBasic(), context.getConditions())));
