@@ -31,11 +31,11 @@ public enum InstanceStatusEnum {
     public static boolean isRun(Integer status){
         return InstanceStatusEnum.ACTIVE.getStatus().equals(status) || InstanceStatusEnum.INIT.getStatus().equals(status);
     }
-    public static boolean isHangUp(Integer status){
+    public static boolean isSuspend(Integer status){
         return InstanceStatusEnum.SUSPEND.getStatus().equals(status);
     }
-    public boolean isHangUp(){
-        return isHangUp(status);
+    public boolean isSuspend(){
+        return isSuspend(status);
     }
     public static boolean isComplete(Integer status){
         return InstanceStatusEnum.COMPLETED.getStatus().equals(status);
