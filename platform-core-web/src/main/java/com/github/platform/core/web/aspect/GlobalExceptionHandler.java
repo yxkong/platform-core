@@ -18,6 +18,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -29,11 +30,13 @@ import java.util.Objects;
 
 /**
  * 全局的的异常拦截器（拦截所有的控制器）（带有@RequestMapping注解的方法上都会拦截）
- *
+ * fixed:
+ * 1, 解决api调用api时，底层api将异常信息设置到data中，前面api如果使用feign并且添加了类型，无法转换
  * @author yxkong
  * @date 2019/5/24-17:08
  */
 @RestControllerAdvice
+//@ControllerAdvice
 @Order(SpringBeanOrderConstant.GLOBAL_EXCEPTION)
 @Slf4j
 public class GlobalExceptionHandler extends ExceptionHandlerBase{
@@ -126,7 +129,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerBase{
         if (Objects.nonNull(e.getThrowable())){
             log("feignException",e.getMessage(),e.getThrowable());
         }
-        return ResultBeanUtil.result(e);
+        return ResultBeanUtil.result(e,null);
     }
 
 
@@ -135,7 +138,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerBase{
         if (Objects.nonNull(e.getThrowable())){
             log("noAuth",e.getMessage(),e.getThrowable());
         }
-        return ResultBeanUtil.result(e);
+        return ResultBeanUtil.result(e,null);
     }
 
     @ExceptionHandler(NoLoginException.class)
@@ -143,7 +146,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerBase{
         if (Objects.nonNull(e.getThrowable())){
             log("noLogin",e.getMessage(),e.getThrowable());
         }
-        return ResultBeanUtil.result(e);
+        return ResultBeanUtil.result(e,null);
     }
 
     @ExceptionHandler(ParamsRuntimeException.class)
@@ -151,7 +154,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerBase{
         if (Objects.nonNull(e.getThrowable())){
             log("notFount",e.getMessage(),e.getThrowable());
         }
-        return ResultBeanUtil.result(e);
+        return ResultBeanUtil.result(e,null);
     }
 
     @ExceptionHandler(AdapterException.class)
@@ -159,7 +162,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerBase{
         if (Objects.nonNull(e.getThrowable())){
             log("adapterException",e.getMessage(),e.getThrowable());
         }
-        return ResultBeanUtil.result(e);
+        return ResultBeanUtil.result(e,null);
     }
 
     @ExceptionHandler(ApplicationException.class)
@@ -167,7 +170,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerBase{
         if (Objects.nonNull(e.getThrowable())){
             log("applicationException",e.getMessage(),e.getThrowable());
         }
-        return ResultBeanUtil.result(e);
+        return ResultBeanUtil.result(e,null);
     }
 
     @ExceptionHandler(DomainException.class)
@@ -175,7 +178,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerBase{
         if (Objects.nonNull(e.getThrowable())){
             log("domainException",e.getMessage(),e.getThrowable());
         }
-        return ResultBeanUtil.result(e);
+        return ResultBeanUtil.result(e,null);
     }
 
     @ExceptionHandler(InfrastructureException.class)
@@ -183,7 +186,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerBase{
         if (Objects.nonNull(e.getThrowable())){
             log("infrastructureException",e.getMessage(),e.getThrowable());
         }
-        return ResultBeanUtil.result(e);
+        return ResultBeanUtil.result(e,null);
     }
     /**
      * 拦截未知的运行时异常
@@ -191,7 +194,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerBase{
     @ExceptionHandler(RuntimeException.class)
     public ResultBean<?> notFount(RuntimeException e) {
         log("RuntimeException",e);
-        return ResultBeanUtil.fail();
+        return ResultBeanUtil.fail(e.getMessage());
     }
 
 
@@ -213,7 +216,7 @@ public class GlobalExceptionHandler extends ExceptionHandlerBase{
     @ExceptionHandler(Exception.class)
     public ResultBean<?> exception(Exception e) {
         log("exception",e);
-        return ResultBeanUtil.fail("未知异常", e.getMessage());
+        return ResultBeanUtil.fail(e.getMessage() );
     }
 
 

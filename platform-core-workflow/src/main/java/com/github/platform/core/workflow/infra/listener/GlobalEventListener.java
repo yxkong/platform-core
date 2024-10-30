@@ -161,7 +161,8 @@ public class GlobalEventListener extends AbstractFlowableEngineEventListener {
         Integer version = (Integer) variables.get(FlwConstant.PROCESS_VERSION);
         // 获取拆分角色
         List<SequenceFlow> outgoingFlows = BpmnModelUtils.getElementOutgoingFlows(flowElement);
-//        log.info("任务task：{} executionId={}, flowElement={} variables:{}",eventType, executionId, JsonUtils.toJson(flowElement), JsonUtils.toJson(variables));
+        String formKey = BpmnModelUtils.getFormKey(flowElement);
+        log.info("任务task：{} executionId={}, flowElement={} variables:{}",eventType, executionId, JsonUtils.toJson(flowElement), JsonUtils.toJson(variables));
         WorkflowTaskEntity taskEntity = WorkflowTaskEntity.builder()
                 .executionId(executionId).taskId(entity.getId()).taskKey(entity.getTaskDefinitionKey()).taskName(name)
                 .eventType(eventType)
@@ -170,6 +171,7 @@ public class GlobalEventListener extends AbstractFlowableEngineEventListener {
                 .sendTime(LocalDateTimeUtil.dateTime()).currentActivityId(flowElement.getId())
                 .outgoingFlows(outgoingFlows)
                 .currentActivityId(flowElement.getId())
+                .formKey(formKey)
                 .build();
         applicationContext.publishEvent(new WorkFlowTaskEvent(taskEntity));
     }

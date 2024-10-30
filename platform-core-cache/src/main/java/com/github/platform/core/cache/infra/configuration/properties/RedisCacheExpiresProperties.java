@@ -3,6 +3,7 @@ package com.github.platform.core.cache.infra.configuration.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author: yxkong
@@ -18,6 +19,10 @@ public class RedisCacheExpiresProperties {
     }
 
     public void setCacheExpires(Map<String, Long> cacheExpires) {
+        String tokenKey  = "pst";
+        if (Objects.nonNull(cacheExpires) && cacheExpires.containsKey(tokenKey)){
+            cacheExpires.put("p:s:t",cacheExpires.get(tokenKey));
+        }
         this.cacheExpires = cacheExpires;
     }
 }

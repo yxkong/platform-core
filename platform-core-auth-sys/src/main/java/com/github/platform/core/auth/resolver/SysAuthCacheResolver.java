@@ -1,6 +1,7 @@
 package com.github.platform.core.auth.resolver;
 
 import com.github.platform.core.auth.configuration.properties.AuthProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.interceptor.CacheOperationInvocationContext;
@@ -15,6 +16,7 @@ import java.util.Collections;
  * @Date: 2024/8/12
  * @version: 1.0
  */
+@Slf4j
 public class SysAuthCacheResolver implements CacheResolver {
     private final CacheManager cacheManager;
     private final AuthProperties authProperties;

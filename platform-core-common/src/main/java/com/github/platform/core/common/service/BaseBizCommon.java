@@ -24,6 +24,9 @@ public class BaseBizCommon {
     protected ResultBean buildFailResp() {
         return ResultBeanUtil.fail("操作失败", null);
     }
+    protected ResultBean buildFailResp(String msg) {
+        return ResultBeanUtil.fail(msg, null);
+    }
     protected <T> ResultBean<T> buildSucResp(T data) {
         return ResultBeanUtil.success(data);
     }

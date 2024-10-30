@@ -136,11 +136,23 @@ public class ResultBeanUtil {
 
     /**
      * 根据CommonException 返回结果
+     * api调用api 因为将y异常转为字符串可能会导致feignw无法解析，导致转换异常
      * @param e
      * @return
      */
     public static ResultBean result(CommonException e){
         return result(e.getStatus(),e.getMessage(),ExceptionUtil.getMessage(e.getThrowable()));
+    }
+
+    /**
+     * 自定义data，
+     * fixed : api调用api 返回值类型不一致，导致转换异常
+     * @param e
+     * @param data
+     * @return
+     */
+    public static <T>ResultBean<T> result(CommonException e,T data){
+        return result(e.getStatus(),e.getMessage(),data);
     }
     /**
      *  根据BaseResult返回结果

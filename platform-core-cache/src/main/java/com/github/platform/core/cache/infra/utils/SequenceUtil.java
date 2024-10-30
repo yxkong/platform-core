@@ -58,7 +58,7 @@ public class SequenceUtil {
             return sb.append(suffix).toString();
         } catch (Exception e){
             log.error("序列号" + sequenceName + "获取失败",e);
-            // TODO 如果redis中获取不到，需要从数据库中获取
+            // TODO 如果redis中获取不到，需要从数据库中获取并自增
 //            Long dbSequenceNum = null;
 //            return sb.append(dbSequenceNum).toString();
 

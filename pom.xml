@@ -61,6 +61,7 @@
         <module>platform-core-dingtalk</module>
         <module>platform-core-gateway-admin</module>
         <module>platform-core-gateway-admin-infra</module>
+        <module>platform-core-message</module>
     </modules>
     <dependencies>
         <dependency>

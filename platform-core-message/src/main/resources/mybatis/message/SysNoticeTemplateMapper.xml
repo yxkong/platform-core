@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.platform.core.persistence.mapper.message.SysNoticeTemplateMapper">
+
+	<!--数据库字段与属性映射-->
+	<resultMap type="com.github.platform.core.message.domain.common.entity.SysNoticeTemplateBase" id="BaseResultMap">
+		<id column="id" property="id" />
+		<id column="temp_no" property="tempNo" />
+		<id column="notice_type" property="noticeType" />
+		<id column="biz_module" property="bizModule" />
+		<id column="event_name" property="eventName" />
+		<id column="title" property="title" />
+		<id column="context" property="context" />
+		<id column="recipient" property="recipient" />
+		<id column="carbon_copy" property="carbonCopy" />
+		<id column="status" property="status" />
+		<id column="create_by" property="createBy" />
+		<id column="create_time" property="createTime" />
+		<id column="update_by" property="updateBy" />
+		<id column="update_time" property="updateTime" />
+		<id column="remark" property="remark" />
+	</resultMap>
+	<!--通用查询字段封装-->
+	<sql id="BaseColumnList">
+		t.id,
+		t.temp_no,
+		t.notice_type,
+		t.biz_module,
+		t.event_name,
+		t.title,
+		t.context,
+		t.recipient,
+		t.carbon_copy,
+		t.status,
+		t.create_by,
+		t.create_time,
+		t.update_by,
+		t.update_time,
+		t.remark
+	</sql>
+
+	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.message.domain.common.entity.SysNoticeTemplateBase">
+		insert into t_sys_notice_template
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null ">id,</if>
+			<if test="tempNo != null  and tempNo != ''">temp_no,</if>
+			<if test="noticeType != null  and noticeType != ''">notice_type,</if>
+			<if test="bizModule != null  and bizModule != ''">biz_module,</if>
+			<if test="eventName != null  and eventName != ''">event_name,</if>
+			<if test="title != null  and title != ''">title,</if>
+			<if test="context != null  and context != ''">context,</if>
+			<if test="recipient != null  and recipient != ''">recipient,</if>
+			<if test="carbonCopy != null  and carbonCopy != ''">carbon_copy,</if>
+			<if test="status != null ">status,</if>
+			<if test="createBy != null  and createBy != ''">create_by,</if>
+			<if test="createTime != null ">create_time,</if>
+			<if test="updateBy != null  and updateBy != ''">update_by,</if>
+			<if test="updateTime != null ">update_time,</if>
+			<if test="remark != null  and remark != ''">remark,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null ">#{id},</if>
+			<if test="tempNo != null  and tempNo != ''">#{tempNo},</if>
+			<if test="noticeType != null  and noticeType != ''">#{noticeType},</if>
+			<if test="bizModule != null  and bizModule != ''">#{bizModule},</if>
+			<if test="eventName != null  and eventName != ''">#{eventName},</if>
+			<if test="title != null  and title != ''">#{title},</if>
+			<if test="context != null  and context != ''">#{context},</if>
+			<if test="recipient != null  and recipient != ''">#{recipient},</if>
+			<if test="carbonCopy != null  and carbonCopy != ''">#{carbonCopy},</if>
+			<if test="status != null ">#{status},</if>
+			<if test="createBy != null  and createBy != ''">#{createBy},</if>
+			<if test="createTime != null ">#{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+			<if test="updateTime != null ">#{updateTime},</if>
+			<if test="remark != null  and remark != ''">#{remark},</if>
+		</trim>
+	</insert>
+
+	<update id="updateById" parameterType="com.github.platform.core.message.domain.common.entity.SysNoticeTemplateBase">
+		update t_sys_notice_template
+		<set>
+			<if test="tempNo != null  and tempNo != ''">temp_no = #{tempNo},</if>
+			<if test="noticeType != null  and noticeType != ''">notice_type = #{noticeType},</if>
+			<if test="bizModule != null  and bizModule != ''">biz_module = #{bizModule},</if>
+			<if test="eventName != null  and eventName != ''">event_name = #{eventName},</if>
+			<if test="title != null  and title != ''">title = #{title},</if>
+			<if test="context != null  and context != ''">context = #{context},</if>
+			<if test="recipient != null  and recipient != ''">recipient = #{recipient},</if>
+			<if test="carbonCopy != null  and carbonCopy != ''">carbon_copy = #{carbonCopy},</if>
+			<if test="status != null ">status = #{status},</if>
+			<if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+			<if test="createTime != null ">create_time = #{createTime},</if>
+			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+			<if test="updateTime != null ">update_time = #{updateTime},</if>
+			<if test="remark != null  and remark != ''">remark = #{remark},</if>
+		</set>
+		where id = #{id}
+	</update>
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_sys_notice_template t where t.id=#{id}
+	</select>
+	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select <include refid="BaseColumnList" /> from t_sys_notice_template t
+		<where>
+			<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+				#{id}
+			</foreach>
+		</where>
+		limit 200
+	</select>
+	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.message.domain.common.entity.SysNoticeTemplateBase">
+		select
+		<include refid="BaseColumnList" />
+		from t_sys_notice_template t
+		<where>
+			<if test="tempNo != null  and tempNo != ''"> and t.temp_no = #{tempNo}</if>
+			<if test="noticeType != null  and noticeType != ''"> and t.notice_type = #{noticeType}</if>
+			<if test="bizModule != null  and bizModule != ''"> and t.biz_module = #{bizModule}</if>
+			<if test="eventName != null  and eventName != ''"> and t.event_name = #{eventName}</if>
+			<if test="title != null  and title != ''"> and t.title = #{title}</if>
+			<if test="status != null "> and t.status = #{status}</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<select id="findListByCount" resultType="java.lang.Long"  parameterType="com.github.platform.core.message.domain.common.entity.SysNoticeTemplateBase">
+		select count(t.id) from t_sys_notice_template t
+		<where>
+			<if test="tempNo != null  and tempNo != ''"> and t.temp_no = #{tempNo}</if>
+			<if test="noticeType != null  and noticeType != ''"> and t.notice_type = #{noticeType}</if>
+			<if test="bizModule != null  and bizModule != ''"> and t.biz_module = #{bizModule}</if>
+			<if test="eventName != null  and eventName != ''"> and t.event_name = #{eventName}</if>
+			<if test="title != null  and title != ''"> and t.title = #{title}</if>
+			<if test="status != null "> and t.status = #{status}</if>
+			<if test="searchStartTime != null">
+				and t.create_time <![CDATA[>=]]> #{searchStartTime}
+			</if>
+			<if test="searchEndTime != null">
+				and t.create_time <![CDATA[<=]]> #{searchEndTime}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from t_sys_notice_template where id = #{id}
+	</delete>
+	<delete id="deleteByIds" parameterType="java.lang.Long">
+		<!--没有传入数据抛异常，不会全删-->
+		<if test="ids != null and ids.length>0">
+			delete from t_sys_notice_template
+			<where>
+				<foreach item="id"  collection="ids" open="id  in (" separator="," close=")" >
+					#{id}
+				</foreach>
+			</where>
+		</if>
+	</delete>
+</mapper>

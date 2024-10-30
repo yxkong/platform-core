@@ -19,6 +19,9 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange">
     <!-- 自定义内容 -->
+      <template #isOrNoSlot="{ row, column }">
+        <dict-tag :options="sys_isOrNo" :value="row[column.prop]" />
+      </template>
     <#if listColumns??>
     <#list listColumns as column>
       <#if column.dictName??>
@@ -36,7 +39,7 @@
       </template>
     </ComTable>
     <!-- 添加或修改对话框 如果需要一行多列，加上 inline-->
-    <el-dialog :title="title"  v-model="open" width="600"  append-to-body  destroy-on-close  align-center center>
+    <el-dialog :title="dialogTitle"  v-model="open" width="600"  append-to-body  destroy-on-close  align-center center>
       <ComForm ref="dialogRef"  v-model="dialogForm" :fields="dialogformFields" :inline="false" label-width="140"/>
       <template #footer>
         <div class="dialog-footer">
@@ -46,8 +49,18 @@
       </template>
     </el-dialog>
     <!-- 查看话框 如果需要一行多列，加上 inline-->
-    <el-dialog :title="title"  v-model="isViewOpen"  width="600"  append-to-body destroy-on-close  align-center  center>
-      <ShowData :formFields="showFields" :data="showObject" />
+    <el-dialog :title="dialogTitle"  v-model="isViewOpen"  width="600"  append-to-body destroy-on-close  align-center  center>
+      <ShowData :formFields="showFields" :data="showObject" >
+        <#if listColumns??>
+          <#list listColumns as column>
+            <#if column.dictName??>
+              <template #${column.lowerColumnName}Slot="scope">
+                <dict-tag :options="${column.dictName}" :value="scope.row.${column.lowerColumnName}" />
+              </template>
+            </#if>
+          </#list>
+        </#if>
+      </ShowData>
     </el-dialog>
   </div>
 </template>
@@ -64,13 +77,14 @@
     } from "@/api/${moduleName!"sys"}/${lowerEntityName}";
     import { useTable } from "@/composition/table";
     const { proxy } = getCurrentInstance();
+    import { sys_isOrNo } from "@/api/common";
     <#if dicts??>
     const {
         <#list dicts as item>${item},</#list>
     } = proxy.useDict(<#list dicts as item>"${item}",</#list>);
     </#if>
     const open = ref(false);
-    const title = ref("");
+    const dialogTitle = ref("");
     const isViewOpen = ref(false);
     // 初始化数据
     const {
@@ -178,6 +192,9 @@
       {
         name: "${column.lowerColumnName}",
         label: "${column.remark}",
+        <#if column.dictName??>
+        slot: "${column.lowerColumnName}Slot",
+        </#if>
       },
       </#if>
       </#list>
@@ -219,7 +236,7 @@
             </#if>
         });
         open.value = true;
-        title.value = "修改${apiAlias}";
+        dialogTitle.value = "修改${apiAlias}";
     }
 
     const cancel = () => {
@@ -238,13 +255,13 @@
     const handleAdd = () => {
         reset();
         open.value = true;
-        title.value = "添加${apiAlias}";
+        dialogTitle.value = "添加${apiAlias}";
     };
     const handleView = (row) => {
       reset();
       showObject.value = row;
       isViewOpen.value = true;
-      title.value = "查看${apiAlias}详情";
+      dialogTitle.value = "查看${apiAlias}详情";
     };
     /** 重置操作表单 */
     function reset() {

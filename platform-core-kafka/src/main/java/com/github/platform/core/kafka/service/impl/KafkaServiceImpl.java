@@ -1,6 +1,5 @@
 package com.github.platform.core.kafka.service.impl;
 
-import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.kafka.service.IKafkaService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +32,8 @@ public class KafkaServiceImpl implements IKafkaService {
         } else {
             listenableFuture = kafkaTemplate.send(topic, key, data);
         }
-        listenableFuture.addCallback((t) -> log.info("推送成功数据到topic={}.msg={},offset:{}", topic, data,t.getRecordMetadata().hasOffset()),
-                throwable -> log.error("推送失败数据到topic={}.,msg={}", topic, data, throwable));
+        listenableFuture.addCallback((t) -> log.info("推送成功数据到topic={},msg={},offset:{}", topic, data,t.getRecordMetadata().hasOffset()),
+                throwable -> log.error("推送失败数据到topic={},msg={}", topic, data, throwable));
     }
 
     @Override

@@ -9,7 +9,6 @@ import org.flowable.bpmn.model.SequenceFlow;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -51,6 +50,8 @@ public class WorkflowTaskEntity {
     private String currentActivityId;
     /**下一节点id*/
     private String nextActivityId;
+    /**当前节点表单key*/
+    private String formKey;
 //    /**
 //     * 流程变量map
 //     */
