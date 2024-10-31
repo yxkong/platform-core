@@ -57,23 +57,23 @@ public class SysUserController extends BaseController {
     @OptLog(module="user",title="根据条件查询用户",persistent = false)
     @Operation(summary = "根据条件查询",tags = {"user"})
     @PostMapping(value = "/users")
-    public ResultBean<List<OptionsDto>> users(@RequestBody SysUserQuery userQuery) {
-        SysUserQueryContext query = convert.toQuery(userQuery);
-        List<OptionsDto> data = userExecutor.queryUsers(query);
+    public ResultBean<List<OptionsDto>> users(@RequestBody SysUserQuery query) {
+        SysUserQueryContext queryContext = convert.toQuery(query);
+        List<OptionsDto> data = userExecutor.queryUsers(queryContext);
         return ResultBeanUtil.succ(data);
     }
     /**
      * 用户列表查询
      *
-     * @param userQuery
+     * @param query
      * @return
      */
     @OptLog(module="user",title="用户列表查询",persistent = false)
     @Operation(summary = "用户列表查询",tags = {"user"})
     @PostMapping(value = "/query")
-    public ResultBean<PageBean<SysUserDto>> query(@RequestBody @Validated SysUserQuery userQuery) {
-        SysUserQueryContext userQueryContext = convert.toQuery(userQuery);
-        PageBean<SysUserDto> data = userExecutor.query(userQueryContext);
+    public ResultBean<PageBean<SysUserDto>> query(@RequestBody @Validated SysUserQuery query) {
+        SysUserQueryContext queryContext = convert.toQuery(query);
+        PageBean<SysUserDto> data = userExecutor.query(queryContext);
         return buildSucResp(data);
     }
 
@@ -81,9 +81,9 @@ public class SysUserController extends BaseController {
     @Operation(summary = "根据角色查询",tags = {"user"})
     @PostMapping(value = "/roleQuery")
     @Deprecated
-    public ResultBean<PageBean<SysUserDto>> roleQuery(@RequestBody @Validated SysUserQuery userQuery) {
-        SysUserQueryContext userQueryContext = convert.toQuery(userQuery);
-        PageBean<SysUserDto> data = userExecutor.query(userQueryContext);
+    public ResultBean<PageBean<SysUserDto>> roleQuery(@RequestBody @Validated SysUserQuery query) {
+        SysUserQueryContext queryContext = convert.toQuery(query);
+        PageBean<SysUserDto> data = userExecutor.query(queryContext);
         return buildSucResp(data);
     }
 
@@ -91,9 +91,9 @@ public class SysUserController extends BaseController {
     @Operation(summary = "根据条件查询，可角色可部门",tags = {"user"})
     @PostMapping(value = "/queryByDept")
     @ResponseBody
-    public ResultBean<PageBean<SysUserDto>> queryBy(@RequestBody SysUserQuery userQuery) {
-        SysUserQueryContext userQueryContext = convert.toQuery(userQuery);
-        PageBean<SysUserDto> data = userExecutor.query(userQueryContext);
+    public ResultBean<PageBean<SysUserDto>> queryBy(@RequestBody SysUserQuery query) {
+        SysUserQueryContext queryContext = convert.toQuery(query);
+        PageBean<SysUserDto> data = userExecutor.query(queryContext);
         return buildSucResp(data);
     }
     /**
@@ -108,13 +108,13 @@ public class SysUserController extends BaseController {
     @PostMapping(value = "/add")
     public ResultBean add(@RequestBody @Validated SysUserCmd cmd) {
         cmd.setLoginName(cmd.getLoginName().toLowerCase());
-        RegisterContext registerContext = convert.toRegister(cmd);
-        if (Objects.isNull(registerContext.getTenantId())){
-            registerContext.setTenantId(LoginUserInfoUtil.getTenantId());
+        RegisterContext context = convert.toRegister(cmd);
+        if (Objects.isNull(context.getTenantId())){
+            context.setTenantId(LoginUserInfoUtil.getTenantId());
         }
-        registerContext.setChannel(UserChannelEnum.add);
-        registerContext.setLogBizTypeEnum(UserLogBizTypeEnum.add_user);
-        userExecutor.insert(registerContext);
+        context.setChannel(UserChannelEnum.add);
+        context.setLogBizTypeEnum(UserLogBizTypeEnum.add_user);
+        userExecutor.insert(context);
         return buildSucResp();
     }
     /**
@@ -132,8 +132,8 @@ public class SysUserController extends BaseController {
         if (UserConstant.SUPER_ADMIN.equals(cmd.getLoginName()) && !Objects.equals(LoginUserInfoUtil.getLoginName(),cmd.getLoginName())){
             throw exception(SysAdapterResultEnum.dont_allow_opt);
         }
-        RegisterContext registerContext = convert.toRegister(cmd);
-        userExecutor.update(registerContext);
+        RegisterContext context = convert.toRegister(cmd);
+        userExecutor.update(context);
         return buildSucResp();
     }
     @RepeatSubmit

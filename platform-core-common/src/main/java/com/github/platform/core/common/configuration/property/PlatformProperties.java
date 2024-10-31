@@ -32,6 +32,8 @@ public class PlatformProperties {
     private boolean demoMode;
     /**日志级别*/
     private String logLevel;
+    /**默认租户ID*/
+    private Integer defaultTenantId;
 
     public Set<String> getIncludeHeaders() {
         if (CollectionUtil.isNotEmpty(includeHeaders)){

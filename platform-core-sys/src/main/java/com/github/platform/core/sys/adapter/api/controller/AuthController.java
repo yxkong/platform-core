@@ -6,6 +6,7 @@ import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.auth.service.ITokenService;
 import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.cache.infra.annotation.RepeatSubmit;
+import com.github.platform.core.common.configuration.property.PlatformProperties;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * 用户认证接口
@@ -59,8 +61,8 @@ public class AuthController extends BaseController {
     private IAuthExecutor authExecutor;
     @Resource(name = CacheConstant.sysTokenService)
     private ITokenService tokenService;
-
-
+    @Resource
+    private PlatformProperties platformProperties;
     /**
      * 获取图形验证码
      *
@@ -98,7 +100,15 @@ public class AuthController extends BaseController {
 //        context.setProId(smsCmd.getProId());
 //        return smsExecutor.sendBySlidingBlock(context);
 //    }
-
+    /**
+     * 设置mo默认租户id
+     * @param context
+     */
+    protected void setDefaultTenantId(LoginContext context) {
+        if (Objects.isNull(context.getTenantId())){
+            context.setTenantId(platformProperties.getDefaultTenantId());
+        }
+    }
     /**
      *ldap登录
      * @param cmd
@@ -114,6 +124,7 @@ public class AuthController extends BaseController {
         LoginContext context = convert.toLogin(cmd);
         context.setLoginWay(LoginWayEnum.ldap);
         context.setVerifyType(VerifyTypeEnum.CAPTCHA);
+        setDefaultTenantId(context);
         LoginResult login = authExecutor.login(context);
         return buildSucResp("登录成功！",login);
     }
@@ -132,9 +143,12 @@ public class AuthController extends BaseController {
         LoginContext context = convert.toLogin(cmd);
         context.setLoginWay(LoginWayEnum.normal);
         context.setVerifyType(VerifyTypeEnum.CAPTCHA);
+        setDefaultTenantId(context);
         LoginResult login = authExecutor.login(context);
         return buildSucResp(login);
     }
+
+
 
     /**
      * 短信验证码登陆
@@ -150,6 +164,7 @@ public class AuthController extends BaseController {
         LoginContext context = convert.toLogin(cmd);
         context.setVerifyType(VerifyTypeEnum.SMS);
         context.setLoginWay(LoginWayEnum.sms);
+        setDefaultTenantId(context);
         LoginResult login = authExecutor.login(context);
         return buildSucResp(login);
     }
@@ -197,7 +212,7 @@ public class AuthController extends BaseController {
     public ResultBean<?> modifyPwd(@RequestBody @Validated ModifyPwdCmd modifyPwdCmd) {
         ModifyPwdContext modifyPwdContext = convert.toModifyPwd(modifyPwdCmd);
         if (!StringUtils.isPwdPattern(modifyPwdCmd.getNewPwd())) {
-            exception(SysInfraResultEnum.PWD_WARN);
+            throw exception(SysInfraResultEnum.PWD_WARN);
         }
         authExecutor.modifyPwd(modifyPwdContext);
         return buildSucResp();

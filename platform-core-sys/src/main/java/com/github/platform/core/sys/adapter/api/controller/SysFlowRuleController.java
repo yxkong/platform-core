@@ -1,6 +1,7 @@
 package com.github.platform.core.sys.adapter.api.controller;
 
 import com.github.platform.core.auth.annotation.RequiredLogin;
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.log.infra.annotation.OptLog;
 import com.github.platform.core.common.entity.StrIdReq;
@@ -9,6 +10,7 @@ import com.github.platform.core.sys.adapter.api.command.SysFlowRuleCmd;
 import com.github.platform.core.sys.adapter.api.command.SysFlowRuleQuery;
 import com.github.platform.core.sys.adapter.api.convert.SysFlowRuleAdapterConvert;
 import com.github.platform.core.sys.application.executor.ISysFlowRuleExecutor;
+import com.github.platform.core.sys.domain.context.SysFlowRuleContext;
 import com.github.platform.core.sys.domain.context.SysFlowRuleQueryContext;
 import com.github.platform.core.sys.domain.dto.SysFlowRuleDto;
 import com.github.platform.core.standard.entity.dto.PageBean;
@@ -23,6 +25,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 状态机配置规则
@@ -80,7 +83,12 @@ public class SysFlowRuleController extends BaseController{
     @Operation(summary = "新增状态机配置规则",tags = {"sysFlowRule"})
     @PostMapping("/add")
     public ResultBean<String> add(@Validated @RequestBody SysFlowRuleCmd cmd) {
-        String id = sysFlowRuleExecutor.insert(sysFlowRuleConvert.toContext(cmd));
+        SysFlowRuleContext context = sysFlowRuleConvert.toContext(cmd);
+        if (Objects.isNull(context.getTenantId())){
+            context.setTenantId(LoginUserInfoUtil.getTenantId());
+        }
+        String id = sysFlowRuleExecutor.insert(context);
+
         return buildSucResp(id);
     }
 

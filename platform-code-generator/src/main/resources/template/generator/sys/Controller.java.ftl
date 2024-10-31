@@ -58,7 +58,11 @@ public class ${entityName}Controller extends BaseController{
     @Operation(summary = "新增${apiAlias}",tags = {"${lowerEntityName}"})
     @PostMapping("/add")
     public ResultBean<String> add(@Validated @RequestBody ${entityName}Cmd cmd) {
-        String id = ${lowerEntityName}Executor.insert(${lowerEntityName}Convert.toContext(cmd));
+        ${entityName}Context context= ${lowerEntityName}Convert.toContext(cmd);
+        if (Objects.isNull(context.getTenantId())){
+            context.setTenantId(LoginUserInfoUtil.getTenantId());
+        }
+        String id = ${lowerEntityName}Executor.insert(context);
         return buildSucResp(id);
     }
 

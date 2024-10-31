@@ -40,6 +40,7 @@ public class LdapLoginGatewayImpl extends BaseGatewayImpl implements ISysLoginGa
     private ISysUserGateway userGateway;
     @Resource(name = "normalLoginGateway")
     private ISysLoginGateway loginGateway;
+
     @Override
     public UserEntity login(LoginContext context)throws InfrastructureException {
         List<String> innerUsers = properties.getSys().getInnerUsers();

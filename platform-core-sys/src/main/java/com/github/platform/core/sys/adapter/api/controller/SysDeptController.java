@@ -2,6 +2,7 @@ package com.github.platform.core.sys.adapter.api.controller;
 
 
 import com.github.platform.core.auth.annotation.RequiredLogin;
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;
@@ -51,14 +52,14 @@ public class SysDeptController extends BaseController {
     /**
      * 部门列表查询
      *
-     * @param deptQuery
+     * @param query
      * @return
      */
     @OptLog(module = "dept",title = "部门查询",persistent = false)
     @Operation(summary = "部门查询",tags = {"dept"})
     @PostMapping("/query")
-    public ResultBean<List<SysDeptDto>> query(@RequestBody SysDeptQuery deptQuery) {
-        SysDeptQueryContext deptContext = convert.toQuery(deptQuery);
+    public ResultBean<List<SysDeptDto>> query(@RequestBody SysDeptQuery query) {
+        SysDeptQueryContext deptContext = convert.toQuery(query);
         List<SysDeptDto> list = deptExecutor.query(deptContext);
         return buildSucResp(list);
     }
@@ -66,32 +67,35 @@ public class SysDeptController extends BaseController {
     /**
      * 新增部门
      *
-     * @param deptCmd
+     * @param cmd
      * @return
      */
     @OptLog(module="dept",title="新增部门",optType = LogOptTypeEnum.add)
     @Operation(summary = "新增部门",tags = {"dept"})
     @PostMapping("/add")
-    public ResultBean add(@RequestBody @Validated SysDeptCmd deptCmd) {
-        SysDeptContext deptContext = convert.toContext(deptCmd);
-        deptExecutor.insert(deptContext);
+    public ResultBean add(@RequestBody @Validated SysDeptCmd cmd) {
+        SysDeptContext context = convert.toContext(cmd);
+        if (Objects.isNull(context.getTenantId())){
+            context.setTenantId(LoginUserInfoUtil.getTenantId());
+        }
+        deptExecutor.insert(context);
         return buildSucResp();
     }
 
     /**
      * 修改部门
      *
-     * @param deptCmd
+     * @param cmd
      * @return
      */
     @OptLog(module="dept",title="修改部门",optType = LogOptTypeEnum.modify)
     @Operation(summary = "修改部门",tags = {"dept"})
     @PostMapping("/modify")
-    public ResultBean modify(@RequestBody @Validated SysDeptCmd deptCmd) {
-        if (Objects.isNull(deptCmd.getId())){
+    public ResultBean modify(@RequestBody @Validated SysDeptCmd cmd) {
+        if (Objects.isNull(cmd.getId())){
             return ResultBeanUtil.fail("部门id不能为空",null);
         }
-        SysDeptContext deptContext = convert.toContext(deptCmd);
+        SysDeptContext deptContext = convert.toContext(cmd);
         deptExecutor.modify(deptContext);
         return buildSucResp();
     }

@@ -65,7 +65,7 @@ public class DictTypeGatewayImpl extends BaseGatewayImpl implements ISysDictType
     @CacheEvict(cacheNames = CACHE_NAME, key = "#root.target.PREFIX", cacheManager = CacheConstant.cacheManager)
     public void insert(SysDictTypeContext context) {
         SysDictTypeBase record = typeInfraConvert.toSysDictTypeBase(context);
-        if (sysDictTypeMapper.isExistDictTypeInsert(context.getName(), context.getType())>0) {
+        if (sysDictTypeMapper.isExistDictTypeInsert(context.getType(),context.getName())>0) {
             throw exception(SysInfraResultEnum.DICT_EXIST_KEY);
         }
         sysDictTypeMapper.insert(record);
