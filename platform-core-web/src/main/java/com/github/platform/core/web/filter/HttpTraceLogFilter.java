@@ -46,25 +46,31 @@ public class HttpTraceLogFilter extends PlatformOncePerRequestFilter {
         Pair<Boolean, ContentCachingResponseWrapper> p2 = getResponseWrapper(response);
         ContentCachingResponseWrapper responseWrapper = p2.getRight();
         StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        Boolean intercept = false;
         try {
             // 如果不需要日志记录，接着往下走
-            if (isIntercept(requestWrapper)){
+            intercept = isIntercept(requestWrapper);
+            if (intercept){
                 filterChain.doFilter(requestWrapper, responseWrapper);
                 return;
             }
-            stopWatch.start();
             filterChain.doFilter(requestWrapper, responseWrapper);
-            stopWatch.stop();
         } finally {
-            HttpTraceLog traceLog = getHttpTraceLog(request, response, stopWatch, requestWrapper, responseWrapper);
-            // 记录日志
-            if (log.isWarnEnabled() && platformProperties.isWarn()){
-                log.warn("Http trace log: {}", JsonUtils.toJson(traceLog));
-            } else if (platformProperties.isInfo() && log.isInfoEnabled()){
-                log.info("Http trace log: {}", JsonUtils.toJson(traceLog));
-            } else {
-                log.debug("Http trace log: {}", JsonUtils.toJson(traceLog));
+            stopWatch.stop();
+            if (!intercept){
+                HttpTraceLog traceLog = getHttpTraceLog(request, response, stopWatch, requestWrapper, responseWrapper);
+                // 记录日志
+                String jsonLog = JsonUtils.toJson(traceLog);
+                if (log.isWarnEnabled() && platformProperties.isWarn()){
+                    log.warn("Http trace log: {}", jsonLog);
+                } else if (platformProperties.isInfo() && log.isInfoEnabled()){
+                    log.info("Http trace log: {}", jsonLog);
+                } else {
+                    log.debug("Http trace log: {}", jsonLog);
+                }
             }
+
             if (p2.getLeft()){
                 responseWrapper.copyBodyToResponse();
             }
