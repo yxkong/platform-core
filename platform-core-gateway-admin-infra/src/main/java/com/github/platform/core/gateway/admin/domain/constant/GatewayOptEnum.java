@@ -1,5 +1,6 @@
 package com.github.platform.core.gateway.admin.domain.constant;
 
+import com.github.platform.core.standard.constant.OptTypeEnum;
 import lombok.Getter;
 
 /**
@@ -11,18 +12,18 @@ import lombok.Getter;
 @Getter
 public enum GatewayOptEnum {
     //新增路由
-    ROUTE_ADD("routeAdd","routeAddEventHandler"),
+    ROUTE_ADD(OptTypeEnum.ADD,"routeAddEventHandler"),
     //更新路由
-    ROUTE_UPDATE("routeUpdate","routeUpdateEventHandler"),
+    ROUTE_UPDATE(OptTypeEnum.UPDATE,"routeUpdateEventHandler"),
     //删除路由
-    ROUTE_DELETE("routeDelete","routeDeleteEventHandler"),
+    ROUTE_DELETE(OptTypeEnum.DELETE,"routeDeleteEventHandler"),
     ;
 
-    GatewayOptEnum(String opt, String handlerBeanName) {
-        this.opt = opt;
+    GatewayOptEnum(OptTypeEnum optType, String handlerBeanName) {
+        this.optType = optType;
         this.handlerBeanName = handlerBeanName;
     }
 
-    private final String opt;
+    private final OptTypeEnum optType;
     private final String handlerBeanName;
 }

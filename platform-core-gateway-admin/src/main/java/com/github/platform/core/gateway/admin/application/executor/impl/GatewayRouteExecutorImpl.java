@@ -94,7 +94,8 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
         CommonPublishDto dto = new CommonPublishDto();
         dto.setHandlerBean(optEnum.getHandlerBeanName());
         dto.setModule("gateway");
-        dto.setNode(optEnum.getOpt());
+        dto.setNode("route");
+        dto.setOptType(optEnum.getOptType());
         dto.setSendTime(LocalDateTimeUtil.dateTime());
         dto.setTargetService(context.getRouteBasic().getGateway());
         dto.setSourceService("gatewayAdmin");

@@ -1,5 +1,6 @@
 package com.github.platform.core.standard.entity.dto;
 
+import com.github.platform.core.standard.constant.OptTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +28,8 @@ public class CommonPublishDto<T> implements Serializable {
     private String module;
     /**消息节点，比如用户：login,register 等*/
     private String node;
+    /**操作类型*/
+    private OptTypeEnum optType;
     /**事件处理器，最后事件由哪个处理器处理*/
     private String handlerBean;
     /**发送时间*/

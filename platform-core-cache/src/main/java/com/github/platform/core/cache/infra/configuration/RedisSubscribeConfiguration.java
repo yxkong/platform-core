@@ -1,6 +1,5 @@
 package com.github.platform.core.cache.infra.configuration;
 
-import com.github.platform.core.cache.infra.service.impl.RedisMessageListenerService;
 import com.github.platform.core.cache.infra.service.impl.RedisSubscriberService;
 import com.github.platform.core.common.constant.PropertyConstant;
 import com.github.platform.core.standard.constant.SendTypeEnum;
@@ -49,8 +48,8 @@ public class RedisSubscribeConfiguration {
         container.addMessageListener(messageListener(), new PatternTopic(SendTypeEnum.REDIS.getChannel()));
         return container;
     }
-    @Bean
-    public RedisMessageListenerService redisMessageListenerService(RedisMessageListenerContainer redisMessageListenerContainer){
-        return new RedisMessageListenerService(redisMessageListenerContainer);
-    }
+//    @Bean
+//    public RedisMessageListenerService redisMessageListenerService(RedisMessageListenerContainer redisMessageListenerContainer){
+//        return new RedisMessageListenerService(redisMessageListenerContainer);
+//    }
 }

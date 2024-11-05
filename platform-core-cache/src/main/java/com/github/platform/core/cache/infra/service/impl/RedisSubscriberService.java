@@ -43,8 +43,8 @@ public class RedisSubscriberService implements IRedisReceiveMessageService {
         }
         //添加配置，用于配置处理哪些事件
         String handlerBean = dto.getHandlerBean();
-        String xx = redisSubscribeProperties.getEvents().stream().filter(event -> handlerBean.startsWith(event)).findAny().orElse(null);
-        if (Objects.isNull(xx)){
+        String handleEvent = redisSubscribeProperties.getEvents().stream().filter(event -> handlerBean.startsWith(event)).findAny().orElse(null);
+        if (Objects.isNull(handleEvent)){
             log.warn("事件类型:{}  不在处理范围内,事件详情:{}", handlerBean,JsonUtils.toJson(dto));
             return Pair.of(false,"事件不在处理范围内，:"+handlerBean);
         }
