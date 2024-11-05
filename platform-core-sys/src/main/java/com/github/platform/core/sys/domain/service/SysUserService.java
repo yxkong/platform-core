@@ -11,6 +11,7 @@ import com.github.platform.core.sys.domain.constant.UserLogBizTypeEnum;
 import com.github.platform.core.sys.domain.context.RegisterContext;
 import com.github.platform.core.sys.domain.context.SysThirdUserContext;
 import com.github.platform.core.sys.domain.dto.SysThirdUserDto;
+import com.github.platform.core.sys.domain.dto.SysUserDto;
 import com.github.platform.core.sys.domain.gateway.ISysUserGateway;
 import com.github.platform.core.sys.domain.gateway.IThirdUserGateway;
 import com.github.platform.core.sys.domain.model.user.ThirdUserEntity;
@@ -54,11 +55,11 @@ public class SysUserService extends DomainBaseService {
     public UserEntity addUser(RegisterContext context) {
         UserEntity userEntity = userGateway.findByLoginName(context.getLoginName(),context.getTenantId());
         if (Objects.nonNull(userEntity)) {
-            exception(SysInfraResultEnum.REGISTERED);
+            throw exception(SysInfraResultEnum.REGISTERED);
         }
-        userEntity = userGateway.findByMobile(context.getMobile());
+        userEntity = userGateway.findByMobile(context.getMobile(),context.getTenantId());
         if (Objects.nonNull(userEntity)) {
-            exception(SysInfraResultEnum.MOBILE_REGISTERED);
+            throw exception(SysInfraResultEnum.MOBILE_REGISTERED);
         }
         return userGateway.addUser(context);
     }
@@ -87,7 +88,7 @@ public class SysUserService extends DomainBaseService {
      * @return
      */
     public UserEntity quietSysUerWithMobile(ThirdUserEntity thirdUserEntity){
-        UserEntity userEntity = userGateway.findByMobile(thirdUserEntity.getMobile());
+        UserEntity userEntity = userGateway.findByMobile(thirdUserEntity.getMobile(),thirdUserEntity.getTenantId());
         if (Objects.isNull(userEntity)){
             userEntity = userGateway.addUser(thirdToRegisterContext(thirdUserEntity));
         }
@@ -131,23 +132,34 @@ public class SysUserService extends DomainBaseService {
      * @return
      */
     public void editUser(RegisterContext context) {
-        UserEntity userEntity = userGateway.findByLoginName(context.getLoginName(),context.getTenantId());
-        if (Objects.isNull(userEntity)) {
-            exception(SysInfraResultEnum.NOT_FOUND_USER);
+        SysUserDto sysUserDto = userGateway.findByUserId(context.getId());
+        if (Objects.isNull(sysUserDto)) {
+            throw exception(SysInfraResultEnum.NOT_FOUND_USER);
         }
-        UserEntity userEntityByMobile = userGateway.findByMobile(context.getMobile());
-        if (Objects.nonNull(userEntityByMobile) && !userEntityByMobile.getLoginName().equals(context.getLoginName())) {
-            exception(SysInfraResultEnum.MOBILE_REGISTERED);
+        // 登录名不相同的时候，判断新修改的是否已经存在
+        if (!sysUserDto.getLoginName().equals(context.getLoginName())){
+            UserEntity userEntity = userGateway.findByLoginName(context.getLoginName(),context.getTenantId());
+            if (Objects.nonNull(userEntity)) {
+                throw exception(SysInfraResultEnum.EXIST_USER);
+            }
         }
-        if (StringUtils.isNotEmpty(context.getSecretKey()) && !context.getSecretKey().equals(userEntity.getSecretKey())){
+        // 如果手机号不相同的时候，判断新修改的是否已经存在
+        if (!sysUserDto.getMobile().equals(context.getMobile())){
+            UserEntity userEntityByMobile = userGateway.findByMobile(context.getMobile(),context.getTenantId());
+            if (Objects.nonNull(userEntityByMobile)) {
+                throw exception(SysInfraResultEnum.MOBILE_REGISTERED);
+            }
+        }
+
+        if (StringUtils.isNotEmpty(context.getSecretKey()) && !context.getSecretKey().equals(sysUserDto.getSecretKey())){
             //修改的时候，需要保持唯一性
             UserEntity secretKeyUser = userGateway.findBySecretKey(context.getSecretKey());
             // 查到以后 如果和修改的用户名不一样，则终止
             if (Objects.nonNull(secretKeyUser) && !secretKeyUser.getLoginName().equals(context.getLoginName())){
-                exception(SysInfraResultEnum.SECRET_KEY_NOT_UNIQ);
+                throw exception(SysInfraResultEnum.SECRET_KEY_NOT_UNIQ);
             }
         }
-        context.setId(userEntity.getId());
+        context.setId(sysUserDto.getId());
         userGateway.editUser(context);
     }
 

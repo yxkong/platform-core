@@ -67,7 +67,7 @@ public interface ISysUserGateway {
      * @param mobile
      * @return
      */
-    UserEntity findByMobile(String mobile);
+    UserEntity findByMobile(String mobile,Integer tenantId);
 
     /**
      * 通过密钥查询用户

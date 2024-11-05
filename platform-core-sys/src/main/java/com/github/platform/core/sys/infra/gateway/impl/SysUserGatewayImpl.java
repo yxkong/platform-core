@@ -258,12 +258,12 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     }
 
     @Override
-    @Cacheable(cacheNames = CACHE_NAME, key =  "#root.target.PREFIX_COLON +'m:'+ #mobile", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
-    public UserEntity findByMobile(String mobile) {
+    @Cacheable(cacheNames = CACHE_NAME, key =  "#root.target.PREFIX_COLON +'m:'+ #mobile+#tenantId", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
+    public UserEntity findByMobile(String mobile,Integer tenantId) {
         if (StringUtils.isEmpty(mobile)){
             return null;
         }
-        SysUserBase sysUser = sysUserMapper.findByMobile(mobile,null);
+        SysUserBase sysUser = sysUserMapper.findByMobile(mobile,tenantId);
         return getUserEntity(sysUser);
     }
     @Override

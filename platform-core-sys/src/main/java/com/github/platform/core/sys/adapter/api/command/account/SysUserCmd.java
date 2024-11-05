@@ -1,5 +1,7 @@
 package com.github.platform.core.sys.adapter.api.command.account;
 
+import com.github.platform.core.common.utils.SignUtil;
+import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.sys.adapter.api.command.TenantBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -19,6 +21,10 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 public class SysUserCmd extends TenantBase {
+    @Schema(description ="用户id")
+    private String strId;
+    private Long id;
+
     /**
      * 登陆名称
      */
@@ -71,5 +77,12 @@ public class SysUserCmd extends TenantBase {
      */
     @Schema(description ="用户角色")
     private String[] roleKeys;
+
+    public Long getId(){
+        if (StringUtils.isEmpty(this.strId)){
+            return SignUtil.getLongId(strId);
+        }
+        return this.id;
+    }
 
 }
