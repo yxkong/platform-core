@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRouteExecutor {
     @Resource
-    private IGatewayRouteGateway gatewayRoutesGateway;
+    private IGatewayRouteGateway gatewayRouteGateway;
     @Resource
     private IGatewayRouteConditionGateway gatewayRouteConditionGateway;
 
@@ -60,7 +60,7 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
     */
     @Override
     public PageBean<GatewayRouteDto> query(GatewayRouteQueryContext context){
-        return gatewayRoutesGateway.query(context);
+        return gatewayRouteGateway.query(context);
     };
     /**
     * 新增网关路由
@@ -71,7 +71,7 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
     public String insertInfo(GatewayRouteInfoContext context){
 
         GatewayRouteContext routeBasic = context.getRouteBasic();
-        GatewayRouteDto record = gatewayRoutesGateway.insert(routeBasic);
+        GatewayRouteDto record = gatewayRouteGateway.insert(routeBasic);
         if (Objects.isNull(record.getId())){
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
@@ -114,7 +114,7 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
     */
     @Override
     public GatewayRouteDto findById(Long id) {
-        return gatewayRoutesGateway.findById(id);
+        return gatewayRouteGateway.findById(id);
     }
     /**
     * 修改网关路由
@@ -124,12 +124,17 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
     @Transactional(rollbackFor = Exception.class)
     public void updateInfo(GatewayRouteInfoContext context) {
         GatewayRouteContext routeBasic = context.getRouteBasic();
-        Pair<Boolean, GatewayRouteDto> update = gatewayRoutesGateway.update(routeBasic);
+        GatewayRouteDto routeDto = gatewayRouteGateway.findById(routeBasic.getId());
+        Pair<Boolean, GatewayRouteDto> update = gatewayRouteGateway.update(routeBasic);
         if (!update.getKey()){
             throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
         handlerConditions(context.getConditions(), routeBasic.getId());
         sendRedisEvent(context, GatewayOptEnum.ROUTE_UPDATE);
+        //如果修改了路由id，则需要将原来的路由删除
+        if (!routeDto.getRouteId().equals(routeBasic.getRouteId())){
+            sendDeleteEvent(getGatewayRouteContext(routeDto));
+        }
     }
     private void handlerConditions(List<GatewayRouteConditionContext> list,Long routeId) {
         LocalDateTime now = LocalDateTimeUtil.dateTime();
@@ -190,27 +195,36 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
     @Override
     public void delete(Long id) {
         /**此处是为了再gateway上做多条件缓存，如果有必要，先查，后设置值*/
-        GatewayRouteDto routeDto = gatewayRoutesGateway.findById(id);
+        GatewayRouteDto routeDto = gatewayRouteGateway.findById(id);
         if (Objects.isNull(routeDto)){
             throw exception(ResultStatusEnum.NO_DATA);
         }
-        GatewayRouteContext context = GatewayRouteContext.builder()
-                .id(id).routeId(routeDto.getRouteId())
-                .uri(routeDto.getUri())
-                .sort(routeDto.getSort())
-                .build();
-        int d = gatewayRoutesGateway.delete(context);
+        GatewayRouteContext context = getGatewayRouteContext(routeDto);
+        int d = gatewayRouteGateway.delete(context);
         if (d <=0 ){
             throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
+        sendDeleteEvent(context);
+    }
+
+    private void sendDeleteEvent(GatewayRouteContext context) {
         GatewayRouteInfoContext routeInfoContext = new GatewayRouteInfoContext();
         routeInfoContext.setRouteBasic(context);
         sendRedisEvent(routeInfoContext, GatewayOptEnum.ROUTE_DELETE);
     }
 
+    private GatewayRouteContext getGatewayRouteContext(GatewayRouteDto routeDto) {
+        return GatewayRouteContext.builder()
+                .id(routeDto.getId()).routeId(routeDto.getRouteId())
+                .uri(routeDto.getUri())
+                .sort(routeDto.getSort())
+                .gateway(routeDto.getGateway())
+                .build();
+    }
+
     @Override
     public GatewayRouteInfoDto findRouteInfo(Long id) {
-        GatewayRouteDto route = gatewayRoutesGateway.findById(id);
+        GatewayRouteDto route = gatewayRouteGateway.findById(id);
         List<GatewayRouteConditionDto> list = gatewayRouteConditionGateway.findByRouteId(id);
         return new GatewayRouteInfoDto(route,list);
     }
