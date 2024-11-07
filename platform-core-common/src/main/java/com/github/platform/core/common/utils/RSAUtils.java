@@ -7,7 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 /**
  * RSA加解密工具类
@@ -17,6 +19,12 @@ public class RSAUtils {
 
     private static final String RSA = "RSA";
     private static final String SIGNATURE_ALGORITHM = "SHA256withRSA";
+    // 密钥长度
+    private static final int RSA_KEY_SIZE = 2048;
+    // RSA最大加密块大小 (2048位密钥)
+    private static final int MAX_ENCRYPT_BLOCK_SIZE = 245;
+    // RSA最大解密块大小 (2048位密钥)
+    private static final int MAX_DECRYPT_BLOCK_SIZE = 256;
 
     /**
      * 生成密钥对
@@ -50,7 +58,7 @@ public class RSAUtils {
      * @throws GeneralSecurityException 当加密失败时抛出
      */
     public static String encrypt(String data, PublicKey publicKey) throws GeneralSecurityException {
-        return base64Encode(processData(Cipher.ENCRYPT_MODE, data.getBytes(StandardCharsets.UTF_8), publicKey));
+        return base64Encode(processDataInBlocks(Cipher.ENCRYPT_MODE, data.getBytes(StandardCharsets.UTF_8), publicKey, MAX_ENCRYPT_BLOCK_SIZE));
     }
     /**
      * 私钥解密
@@ -72,10 +80,32 @@ public class RSAUtils {
      * @throws GeneralSecurityException 当解密失败时抛出
      */
     public static String decrypt(String encryptedData, PrivateKey privateKey) throws GeneralSecurityException {
-        byte[] decryptedBytes = processData(Cipher.DECRYPT_MODE, base64Decode(encryptedData), privateKey);
+        byte[] decryptedBytes = processDataInBlocks(Cipher.DECRYPT_MODE, base64Decode(encryptedData), privateKey, MAX_DECRYPT_BLOCK_SIZE);
         return new String(decryptedBytes, StandardCharsets.UTF_8);
     }
 
+    /**
+     * 处理数据（加密/解密）并按块分割
+     */
+    private static byte[] processDataInBlocks(int mode, byte[] data, Key key, int maxBlockSize) throws GeneralSecurityException {
+        Cipher cipher = Cipher.getInstance(RSA);
+        cipher.init(mode, key);
+
+        List<Byte> output = new ArrayList<>();
+        for (int i = 0; i < data.length; i += maxBlockSize) {
+            int blockSize = Math.min(maxBlockSize, data.length - i);
+            byte[] block = cipher.doFinal(data, i, blockSize);
+            for (byte b : block) {
+                output.add(b);
+            }
+        }
+
+        byte[] result = new byte[output.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = output.get(i);
+        }
+        return result;
+    }
     /**
      * 统一处理加密和解密的逻辑
      *
@@ -194,7 +224,7 @@ public class RSAUtils {
         return keyFactory.generatePrivate(spec);
     }
     public static void main(String[] args) throws Exception {
-        KeyPair keyPair = generateKeyPair(2048);
+        KeyPair keyPair = generateKeyPair(RSA_KEY_SIZE);
         PublicKey publicKey = keyPair.getPublic();
         PrivateKey privateKey = keyPair.getPrivate();
         String strPublicKey = base64Encode(publicKey.getEncoded());
