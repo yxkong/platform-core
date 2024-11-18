@@ -79,7 +79,8 @@ public class SysJobGatewayImpl implements ISysJobGateway {
     @Override
     public SysJobDto jobUnique(SysJobContext context) {
         log.info(JsonUtils.toJson(context));
-        if (Objects.isNull(context.getId())){
+        //非回调的添加才会去校验是否唯一
+        if (Objects.isNull(context.getId()) && !context.isCallBack()){
             SysJobBase jobBase = SysJobBase.builder().beanName(context.getBeanName()).tenantId(context.getTenantId()).build();
             List<SysJobBase> list = sysJobMapper.findListBy(jobBase);
             if (CollectionUtil.isEmpty(list)){

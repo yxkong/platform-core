@@ -71,8 +71,9 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addJob(SysJobContext context) {
+        //TODO  需要注意使用的quartz 是数据库集群，如果单机，并且有多节点
         vlidateSchedule();
-        if (context.isCallBack() && StringUtils.isEmpty(context.getBeanName())){
+        if (context.isCallBack()){
             //先临时保存，添加任务成功以后更新
             context.setBeanName("callBackUrlJobHandler");
         }
@@ -82,14 +83,14 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
         if (Objects.isNull(sysJobDto.getId())){
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
-        // 回调处理
+        // 远程任务会更新beanName,因为设置唯一索引
         if (context.isCallBack()){
             sysJobDto.setBeanName("callBackUrlJobHandler:"+sysJobDto.getId());
-        }
-        try {
-            scheduleManager.addOrUpdateJob(sysJobDto);
-        } catch (SchedulerException e) {
-            throw exception(JobApplicationEnum.ADD_ERROR);
+            try {
+                scheduleManager.addOrUpdateJob(sysJobDto);
+            } catch (SchedulerException e) {
+                throw exception(JobApplicationEnum.ADD_ERROR);
+            }
         }
         SysJobDto updateJob = SysJobDto.builder().id(sysJobDto.getId()).jobStatus(JobStatusEnum.NORMAL.getStatus()).beanName(sysJobDto.getBeanName()).build();
         boolean update = gateway.update(updateJob);
