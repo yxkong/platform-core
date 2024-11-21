@@ -1,5 +1,6 @@
 package com.github.platform.core.schedule.application.executor.impl;
 
+import com.github.platform.core.auth.util.LoginInfoUtil;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.service.IPublishService;
 import com.github.platform.core.common.utils.StringUtils;
@@ -117,7 +118,7 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
     public void triggerJob(Long id) throws SchedulerException {
         vlidateSchedule();
         SysJobDto jobDto = validateJobExist(id);
-        scheduleManager.triggerJob(id,jobDto.getBeanName(),jobDto.getHandlerParam());
+        scheduleManager.triggerJob(id,jobDto.getBeanName(),jobDto.getHandlerParam(), LoginInfoUtil.getLoginName(),null,jobDto.getCronExpression(),jobDto.getRetryCount(), jobDto.getRetryInterval());
     }
     private void validateCronExpression(String cronExpression) {
         if (!CronUtil.isValid(cronExpression)) {

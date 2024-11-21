@@ -21,156 +21,115 @@ import java.util.Objects;
 @Slf4j
 public class ScheduleManager {
 
-    private Scheduler scheduler;
+    private final Scheduler scheduler;
 
     public ScheduleManager(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
-    private static volatile Object lock = new Object();
+    private static final Object LOCK = new Object();
 
     /**
-     * 添加或更新job，使用SysJobBase及其子类作为入参
-     * @param job
-     * @param <T>
-     * @throws SchedulerException
+     * 添加或更新 Job，支持 SysJobBase 子类
      */
     public <T extends SysJobBase> void addOrUpdateJob(T job) throws SchedulerException {
-        Date startDate = new Date();
-        if (Objects.nonNull(job.getStartDate())){
-            startDate = LocalDateTimeUtil.localDateTimeToDate(job.getStartDate());
-        }
-        Date endDate = LocalDateTimeUtil.localDateTimeToDate(job.getEndDate());
-        this.addOrUpdateJob(job.getId(),job.getName(),job.getBeanName(),job.getHandlerParam(),job.getCronExpression(),job.getStatus(), job.getRetryCount(), job.getRetryInterval(),startDate,endDate);
+        Date startAt = Objects.nonNull(job.getStartDate())
+                ? LocalDateTimeUtil.localDateTimeToDate(job.getStartDate())
+                : new Date();
+        Date endAt = LocalDateTimeUtil.localDateTimeToDate(job.getEndDate());
+
+        addOrUpdateJob(
+                job.getId(),
+                job.getName(),
+                job.getBeanName(),
+                job.getHandlerParam(),
+                job.getCronExpression(),
+                job.getStatus(),
+                job.getRetryCount(),
+                job.getRetryInterval(),
+                startAt,
+                endAt
+        );
     }
 
     /**
-     * 添加或更新 quartz中的job
-     * @param id 任务id
-     * @param name  任务名称
-     * @param handlerName 处理器bean名称
-     * @param handlerParam 处理器的参数
-     * @param cronExpression 表达式
-     * @param status 状态
-     * @param retryCount 重试次数
-     * @param retryInterval 重试间隔
-     * @param startAt 任务执行的开始时间
-     * @param endAt 任务执行的结束时间
-     * @throws SchedulerException
+     * 添加或更新 Quartz 中的 Job
      */
-    public void addOrUpdateJob(Long id, String name, String handlerName, String handlerParam, String cronExpression ,Integer status, Integer retryCount, Integer retryInterval, Date startAt,Date endAt) throws SchedulerException {
-        /**判断任务是否在schedule中*/
-        TriggerKey triggerKey = new TriggerKey(handlerName);
+    public void addOrUpdateJob(Long id, String name, String handlerName, String handlerParam,
+                               String cronExpression, Integer status, Integer retryCount,
+                               Integer retryInterval, Date startAt, Date endAt) throws SchedulerException {
+
+        TriggerKey triggerKey = getTriggerKey(handlerName);
         CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
-        if (Objects.isNull(trigger)){
-            /**新增任务，Trigger 对象
-             *  添加 .withMisfireHandlingInstructionDoNothing() 表示不执行之前漏掉的任务，直接执行下一个任务。需要配置 org.quartz.jobStore.misfireThreshold = 1000 大于10000 不起作用
-             * */
-            trigger = TriggerBuilder.newTrigger()
-                    .withIdentity(handlerName)
-                    .withDescription(name)
-                    .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression).withMisfireHandlingInstructionDoNothing())
-                    .usingJobData(JobDataEnum.HANDLER_PARAM.getKey(), handlerParam)
-                    .usingJobData(JobDataEnum.RETRY_COUNT.getKey(), retryCount)
-                    .usingJobData(JobDataEnum.RETRY_INTERVAL.getKey(), retryInterval)
-                    .startAt(startAt)
-                    .endAt(endAt)
-                    .build();
 
-            /** 构建JobDetail对象*/
-            JobDetail jobDetail = JobBuilder.newJob(JobHandlerExecutor.class)
-                    .usingJobData(JobDataEnum.ID.getKey(), id)
-                    .usingJobData(JobDataEnum.HANDLER_NAME.getKey(), handlerName)
-                    .withIdentity(handlerName)
-                    .withDescription(name)
-                    .build();
-            /**新增任务*/
-            scheduler.scheduleJob(jobDetail,trigger);
-            if (StatusEnum.OFF.getStatus().equals(status)){
-                // 暂停任务
-                scheduler.pauseJob(jobDetail.getKey());
-            }
-            if (log.isWarnEnabled()){
-                log.warn("添加定时任务：{}  cron:{}",handlerName,cronExpression);
-            }
+        if (trigger == null) {
+            // 新增任务
+            createJob(id, name, handlerName, handlerParam, cronExpression, retryCount, retryInterval, startAt, endAt, status);
         } else {
-            trigger = trigger.getTriggerBuilder()
-                    .withIdentity(triggerKey)
-                    .withDescription(name)
-                    .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression).withMisfireHandlingInstructionDoNothing())
-                    .usingJobData(JobDataEnum.HANDLER_PARAM.getKey(), handlerParam)
-                    .usingJobData(JobDataEnum.RETRY_COUNT.getKey(), retryCount)
-                    .usingJobData(JobDataEnum.RETRY_INTERVAL.getKey(), retryInterval)
-                    .startAt(startAt)
-                    .endAt(endAt)
-                    .build();
-            /**更新任务*/
-            scheduler.rescheduleJob(triggerKey,trigger);
-            if (log.isWarnEnabled()){
-                log.warn("更新定时任务：{}  cron:{}",handlerName,cronExpression);
-            }
+            // 更新任务
+            updateTrigger(triggerKey, name, cronExpression, handlerParam, retryCount, retryInterval, startAt, endAt);
+            log.warn("更新定时任务：{} cron: {}", handlerName, cronExpression);
         }
     }
 
-
     /**
-     * 判断任务是否存在
-     * @param handlerName
-     * @return
-     * @throws SchedulerException
+     * 创建任务
      */
-    private Boolean isExist(String handlerName) throws SchedulerException {
-        return Objects.nonNull(scheduler.getTrigger(new TriggerKey(handlerName)));
+    private void createJob(Long id, String name, String handlerName, String handlerParam,
+                           String cronExpression, Integer retryCount, Integer retryInterval,
+                           Date startAt, Date endAt, Integer status) throws SchedulerException {
+
+        // 构建 Trigger
+        CronTrigger trigger = TriggerBuilder.newTrigger()
+                .withIdentity(handlerName)
+                .withDescription(name)
+                .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression).withMisfireHandlingInstructionDoNothing())
+                .usingJobData(JobDataEnum.HANDLER_PARAM.getKey(), handlerParam)
+                .usingJobData(JobDataEnum.RETRY_COUNT.getKey(), retryCount)
+                .usingJobData(JobDataEnum.RETRY_INTERVAL.getKey(), retryInterval)
+                .startAt(startAt)
+                .endAt(endAt)
+                .build();
+
+        // 构建 JobDetail
+        JobDetail jobDetail = JobBuilder.newJob(JobHandlerExecutor.class)
+                .withIdentity(handlerName)
+                .withDescription(name)
+                .usingJobData(JobDataEnum.ID.getKey(), id)
+                .usingJobData(JobDataEnum.HANDLER_NAME.getKey(), handlerName)
+                .build();
+
+        // 添加任务到调度器
+        scheduler.scheduleJob(jobDetail, trigger);
+        if (StatusEnum.OFF.getStatus().equals(status)) {
+            scheduler.pauseJob(jobDetail.getKey());
+        }
+        log.warn("添加定时任务：{} cron: {}", handlerName, cronExpression);
     }
 
     /**
-     * 返回任务的状态
-     * @param jobClass
-     * @param jobGroupName
-     * @return
-     *      NONE：Trigger已经完成，且不会在执行，或者找不到该触发器，或者Trigger已经被删除
-            NORMAL:正常状态
-            PAUSED：暂停状态
-            COMPLETE：触发器完成，但是任务可能还正在执行中
-            BLOCKED：线程阻塞状态
-            ERROR：出现错误
+     * 更新 Trigger
      */
-    public Trigger.TriggerState taskState(String jobClass,String jobGroupName){
-        try {
-            TriggerKey triggerKey = TriggerKey.triggerKey(jobClass, jobGroupName);
-            return scheduler.getTriggerState(triggerKey);
-        } catch (SchedulerException e) {
-            log.error("返回任务状态异常",e);
-        }
-        return null;
-    }
+    private void updateTrigger(TriggerKey triggerKey, String name, String cronExpression,
+                               String handlerParam, Integer retryCount, Integer retryInterval,
+                               Date startAt, Date endAt) throws SchedulerException {
 
-    public String taskState(String handlerName){
-        try {
-            TriggerKey triggerKey = TriggerKey.triggerKey(handlerName);
-            return scheduler.getTriggerState(triggerKey).name();
-        } catch (SchedulerException e) {
-            log.error("返回任务状态异常",e);
-        }
-        return null;
-    }
-    /**
-     * 存在，不在执行
-     * @param state
-     * @return
-     */
-    public Boolean isException(Trigger.TriggerState state){
-        if (Trigger.TriggerState.PAUSED == state || Trigger.TriggerState.BLOCKED == state
-                || Trigger.TriggerState.ERROR == state){
-            return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
+        CronTrigger newTrigger = TriggerBuilder.newTrigger()
+                .withIdentity(triggerKey)
+                .withDescription(name)
+                .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression).withMisfireHandlingInstructionDoNothing())
+                .usingJobData(JobDataEnum.HANDLER_PARAM.getKey(), handlerParam)
+                .usingJobData(JobDataEnum.RETRY_COUNT.getKey(), retryCount)
+                .usingJobData(JobDataEnum.RETRY_INTERVAL.getKey(), retryInterval)
+                .startAt(startAt)
+                .endAt(endAt)
+                .build();
+
+        scheduler.rescheduleJob(triggerKey, newTrigger);
     }
 
     /**
-     * 为空
-     * @param state
-     * @return
+     * 立即触发任务
      */
     public Boolean isNone(Trigger.TriggerState state){
         if (Trigger.TriggerState.NONE == state){
@@ -224,21 +183,48 @@ public class ScheduleManager {
      * @param handlerParam 处理器的参数
      * @throws SchedulerException
      */
-    public void triggerJob(Long id, String handlerName, String handlerParam)
+    public void triggerJob(Long id, String handlerName, String handlerParam,String executeUser,String executeId,String cronExpression, Integer retryCount, Integer retryInterval)
             throws SchedulerException {
-        this.triggerJob(id,handlerName,handlerParam,LoginInfoUtil.getLoginName(),null);
-    }
-    public void triggerJob(Long id, String handlerName, String handlerParam,String executeUser,String executeId)
-            throws SchedulerException {
-        // 无需重试，所以不设置 retryCount 和 retryInterval
+
         JobDataMap data = new JobDataMap();
         data.put(JobDataEnum.ID.getKey(), id);
         data.put(JobDataEnum.HANDLER_NAME.getKey(), handlerName);
         data.put(JobDataEnum.HANDLER_PARAM.getKey(), handlerParam);
         data.put(JobDataEnum.EXECUTE_USER.getKey(), executeUser);
         data.put(JobDataEnum.EXECUTE_ID.getKey(), executeId);
-        /**触发任务*/
+
+        if (!isExist(handlerName)) {
+            log.warn("任务 [{}] 不存在，创建新任务", handlerName);
+            createJob(id, handlerName, handlerName, handlerParam, cronExpression, retryCount, retryInterval, new Date(), null, StatusEnum.ON.getStatus());
+        }
         scheduler.triggerJob(getJobKey(handlerName), data);
     }
 
+    /**
+     * 判断任务是否存在
+     */
+    private boolean isExist(String handlerName) throws SchedulerException {
+        return scheduler.checkExists(getTriggerKey(handlerName));
+    }
+
+    /**
+     * 封装 TriggerKey 生成
+     */
+    private TriggerKey getTriggerKey(String handlerName) {
+        return TriggerKey.triggerKey(handlerName);
+    }
+
+
+    /**
+     * 获取任务状态
+     */
+    public String taskState(String handlerName) {
+        try {
+            return scheduler.getTriggerState(getTriggerKey(handlerName)).name();
+        } catch (SchedulerException e) {
+            log.error("获取任务状态异常", e);
+        }
+        return null;
+    }
 }
+

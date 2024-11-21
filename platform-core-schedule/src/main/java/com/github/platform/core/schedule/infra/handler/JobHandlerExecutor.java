@@ -18,11 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.quartz.*;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import org.springframework.util.Assert;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 /**
  * 任务执行器 IJobMonitorHandler 的执行器
@@ -38,187 +35,156 @@ import java.util.Objects;
 @Slf4j
 public class JobHandlerExecutor extends QuartzJobBean {
     private static final String PARENT = "parent";
+
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         ISysJobLogGateway sysJobLogGateway = ApplicationContextHolder.getBean(ISysJobLogGateway.class);
         ISysJobGateway sysJobGateway = ApplicationContextHolder.getBean(ISysJobGateway.class);
-        //获取执行任务的相关数据
+
         Long jobId = context.getMergedJobDataMap().getLong(JobDataEnum.ID.getKey());
-        SysJobDto jobDto = sysJobGateway.findById(jobId);
-        if (!StatusEnum.ON.getStatus().equals(jobDto.getStatus())){
-            if (log.isWarnEnabled()){
-                log.warn("jobId:{} handlerName:{} 已经禁用",jobId,jobDto.getBeanName());
-            }
-            return;
-        }
-        boolean between = LocalDateTimeUtil.isBetween(jobDto.getStartDate(), jobDto.getEndDate());
-        if (!between){
-            if (log.isWarnEnabled()){
-                log.warn("jobId:{} handlerName:{} 不在执行时间 startDate:{}  和  endDate:{} 之间",jobId,jobDto.getHandlerParam(),jobDto.getStartDate(),jobDto.getEndDate());
-            }
-            return;
-        }
         String executeUser = context.getMergedJobDataMap().getString(JobDataEnum.EXECUTE_USER.getKey());
-        //执行id，每次都会更新,到秒级
-        String executeId = getExecuteId(jobId,context);
-        Long logId = null;
-        Pair<Boolean, String> pair = null;
-        Exception exception = null;
-        if (StringUtils.isEmpty(executeUser)){
-            executeUser = JobConstant.DEFAULT_USER;
-        }
+        executeUser = StringUtils.isEmpty(executeUser) ? JobConstant.DEFAULT_USER : executeUser;
+
+        SysJobDto jobDto = sysJobGateway.findById(jobId);
+        if (!isJobExecutable(jobDto)) return;
+
+        String executeId = getExecuteId(jobId, context);
+        Long logId = createExecutionLog(sysJobLogGateway, jobId, jobDto, executeUser, executeId, context.getRefireCount());
+
+        Long startTime = System.currentTimeMillis();
+        Pair<Boolean, String> executionResult = null;
+        Exception executionException = null;
+
         try {
-            /**日志生成失败，不影响业务*/
-            SysJobLogDto jobLogDto = sysJobLogGateway.insert(buildLogContext(jobId,jobDto.getBeanName(), jobDto.getHandlerParam(), executeUser,executeId, context.getRefireCount()));
-            logId = jobLogDto.getId();
-        }catch (Exception e){
-            log.error("任务:{} 插入执行日志失败",jobDto.getBeanName(),e);
+            IJobMonitorHandler jobHandler = resolveJobHandler(jobDto);
+            executionResult = jobHandler.execute(jobDto);
+        } catch (Exception e) {
+            executionException = e;
         }
-        Long  start  = System.currentTimeMillis();
 
-        // 根据执行器，执行人物
+        updateLogResultAsync(sysJobLogGateway, logId, jobDto.getBeanName(), executionException, executionResult, executeUser, startTime);
+        handleException(executionException, context.getRefireCount(), jobDto.getRetryCount(), jobDto.getRetryInterval());
+        handleSubTasks(sysJobGateway, jobDto.getSubJobIds(), executionResult, executeUser, executeId);
+    }
+
+    private boolean isJobExecutable(SysJobDto jobDto) {
+        if (!StatusEnum.ON.getStatus().equals(jobDto.getStatus())) {
+            log.warn("任务已禁用: jobId={}, handlerName={}", jobDto.getId(), jobDto.getBeanName());
+            return false;
+        }
+
+        boolean isInExecutionPeriod = LocalDateTimeUtil.isBetween(jobDto.getStartDate(), jobDto.getEndDate());
+        if (!isInExecutionPeriod) {
+            log.warn("任务不在有效时间范围内: jobId={}, handlerName={}, startDate={}, endDate={}",
+                    jobDto.getId(), jobDto.getBeanName(), jobDto.getStartDate(), jobDto.getEndDate());
+            return false;
+        }
+
+        return true;
+    }
+
+    private IJobMonitorHandler resolveJobHandler(SysJobDto jobDto) {
+        if (jobDto.isCallBack()) {
+            return ApplicationContextHolder.getBean(CallBackUrlJobHandler.class);
+        }
+        return ApplicationContextHolder.getBean(jobDto.getBeanName(), IJobMonitorHandler.class);
+    }
+
+    private Long createExecutionLog(ISysJobLogGateway sysJobLogGateway, Long jobId, SysJobDto jobDto, String executeUser, String executeId, int refireCount) {
         try {
-            IJobMonitorHandler scheduleHandler = null;
-            if (jobDto.isCallBack()){
-                scheduleHandler =  ApplicationContextHolder.getBean(CallBackUrlJobHandler.class);
-            } else {
-                scheduleHandler = ApplicationContextHolder.getBean(jobDto.getBeanName(), IJobMonitorHandler.class);
-            }
-            Assert.notNull(scheduleHandler, jobDto.getBeanName()+" scheduleHandler 为空，请排查是否实现");
-            pair = scheduleHandler.execute(jobDto);
-        } catch (Exception e){
-            exception = e;
+            SysJobLogDto logDto = sysJobLogGateway.insert(
+                    SysJobLogContext.builder()
+                            .jobId(jobId)
+                            .beanName(jobDto.getBeanName())
+                            .handlerParam(jobDto.getHandlerParam())
+                            .executeId(executeId)
+                            .executeNum(refireCount + 1)
+                            .createBy(executeUser)
+                            .startTime(LocalDateTimeUtil.dateTime())
+                            .createTime(LocalDateTimeUtil.dateTime())
+                            .build()
+            );
+            return logDto.getId();
+        } catch (Exception e) {
+            log.error("记录任务日志失败: jobName={}", jobDto.getBeanName(), e);
+            return null;
         }
-        updateLogResultAsync(sysJobLogGateway,logId,jobDto.getBeanName(), exception, pair,executeUser, start);
-        handlerException(exception, context.getRefireCount(), jobDto.getRetryCount(), jobDto.getRetryInterval());
-        handlerSubTask(sysJobGateway,jobDto.getSubJobIds(),pair, executeUser,executeId);
-
     }
 
-    /**
-     * 处理子任务
-     * @param sysJobGateway
-     * @param subJobIds
-     * @param pair
-     * @param executeUser
-     * @param executeId
-     */
-    private Pair<Boolean,String> handlerSubTask(ISysJobGateway sysJobGateway,String subJobIds, Pair<Boolean, String> pair, String executeUser, String executeId) {
-        if (StringUtils.isEmpty(subJobIds) ){
-            return Pair.of(false,"无子任务");
-        }
-        if (!pair.getKey()){
-            return Pair.of(false,"父任务执行失败");
-        }
-        String[] ids = subJobIds.split(SymbolConstant.comma);
-        if (StringUtils.isNotEmpty(executeUser) && !executeUser.contains(JobConstant.PARENT)){
-            executeUser = executeUser+SymbolConstant.colon+JobConstant.PARENT;
-        }
-        for (String strId:ids){
-            try {
-                // TODO  父子任务是否需依赖执行结果，目前只是驱动执行，不做其他的处理，父子任务的executeId相同
-                SysJobDto jobDto = sysJobGateway.findById(Long.valueOf(strId));
-                if (Objects.isNull(jobDto)){
-                    continue;
-                }
-                ScheduleManager scheduleManager = ApplicationContextHolder.getBean(ScheduleManager.class);
-                /**触发任务*/
-                scheduleManager.triggerJob(jobDto.getId(),jobDto.getBeanName(),jobDto.getHandlerParam(),executeUser,executeId);
-            } catch (SchedulerException e) {
-            }
-        }
-        return Pair.of(true,"");
-    }
-    private static String getExecuteId(Long jobId,JobExecutionContext context) {
-        String executeId = context.getMergedJobDataMap().getString(JobDataEnum.EXECUTE_ID.getKey());
-        if (StringUtils.isEmpty(executeId)){
-            executeId = jobId + SymbolConstant.colon +LocalDateTimeUtil.dateTime(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        }
-        // 第一次执行，将ExecuteId 放入上下文
-        int refireCount  = context.getRefireCount();
-        if (refireCount == 0){
-            context.getMergedJobDataMap().put(JobDataEnum.EXECUTE_ID.getKey(),executeId);
-        }
-        return executeId;
-    }
-
-    /**
-     * 异常处理，抛JobExecutionException 异常，会重试
-     * @param exception
-     * @param refireCount
-     * @param retryCount
-     * @param retryInterval
-     * @throws JobExecutionException
-     */
-    private static void handlerException(Exception exception, int refireCount, int retryCount, int retryInterval) throws JobExecutionException {
-        // 情况一：没有异常，直接中断
-        if (exception == null) {
+    private void handleSubTasks(ISysJobGateway sysJobGateway, String subJobIds, Pair<Boolean, String> result, String executeUser, String executeId) {
+        if (StringUtils.isEmpty(subJobIds) || !result.getKey()) {
             return;
         }
-        // 情况二：如果到达重试上限，则直接抛出异常即可
+        log.warn("触发执行子任务: subJobIds={}, ", subJobIds);
+        String[] ids = subJobIds.split(SymbolConstant.comma);
+        executeUser = StringUtils.isNotEmpty(executeUser) && !executeUser.contains(JobConstant.PARENT)
+                ? executeUser + SymbolConstant.colon + JobConstant.PARENT
+                : executeUser;
+
+        for (String id : ids) {
+            try {
+                SysJobDto subJob = sysJobGateway.findById(Long.valueOf(id));
+                if (subJob != null) {
+                    ScheduleManager scheduleManager = ApplicationContextHolder.getBean(ScheduleManager.class);
+                    scheduleManager.triggerJob(subJob.getId(), subJob.getBeanName(), subJob.getHandlerParam(), executeUser, executeId,subJob.getCronExpression(),subJob.getRetryCount(),subJob.getRetryInterval());
+                }
+            } catch (SchedulerException e) {
+                log.error("子任务触发失败: id={}", id, e);
+            }
+        }
+    }
+
+    private void handleException(Exception exception, int refireCount, int retryCount, int retryInterval) throws JobExecutionException {
+        if (exception == null) return;
+
         if (refireCount >= retryCount) {
             throw new JobExecutionException(exception);
         }
-        // 情况二：如果未到达重试上限，则 sleep 一定间隔时间，然后重试
-        // 这里使用 sleep 来实现，主要还是希望实现比较简单。因为，同一时间，不会存在大量失败的 Job。
+
         if (retryInterval > 0) {
             try {
                 Thread.sleep(retryInterval);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
-        // 第二个参数，refireImmediately = true，表示立即重试
+
         throw new JobExecutionException(exception, true);
     }
 
-    private void updateLogResultAsync(ISysJobLogGateway sysJobLogGateway,Long logId,String handlerName, Exception exception, Pair<Boolean, String> pair,String executeUser, Long start) {
-        int status = 0;
-        String result = null;
+    private static String getExecuteId(Long jobId, JobExecutionContext context) {
+        String executeId = context.getMergedJobDataMap().getString(JobDataEnum.EXECUTE_ID.getKey());
+        if (StringUtils.isEmpty(executeId)) {
+            executeId = jobId + SymbolConstant.colon + LocalDateTimeUtil.dateTime(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        }
+
+        if (context.getRefireCount() == 0) {
+            context.getMergedJobDataMap().put(JobDataEnum.EXECUTE_ID.getKey(), executeId);
+        }
+
+        return executeId;
+    }
+
+    private void updateLogResultAsync(ISysJobLogGateway sysJobLogGateway, Long logId, String handlerName, Exception exception, Pair<Boolean, String> result, String executeUser, Long startTime) {
+        if (logId == null) return;
+
         try {
-            if (Objects.isNull(logId)){
-                return;
-            }
-            if (Objects.nonNull(exception)){
-                result = ExceptionUtil.getMessage(exception);
-            } else {
-                status = pair.getKey() ? 1 : 0;
-                result = pair.getValue();
-            }
-            Long duration = System.currentTimeMillis()- start;
-            LocalDateTime dateTime = LocalDateTimeUtil.dateTime();
+            int status = (exception == null && result != null && result.getKey()) ? 1 : 0;
+            String resultMessage = (exception != null) ? ExceptionUtil.getMessage(exception) : (result != null ? result.getValue() : "未知结果");
+
             SysJobLogContext context = SysJobLogContext.builder()
-                    .id(logId).status(status)
-                    .result(result)
-                    .executeTime(duration.intValue()).endDate(dateTime)
-                    .updateBy(executeUser).updateTime(dateTime)
+                    .id(logId)
+                    .status(status)
+                    .result(resultMessage)
+                    .executeTime((int) (System.currentTimeMillis() - startTime))
+                    .endDate(LocalDateTimeUtil.dateTime())
+                    .updateBy(executeUser)
+                    .updateTime(LocalDateTimeUtil.dateTime())
                     .build();
+
             sysJobLogGateway.updateAsync(context);
         } catch (Exception e) {
-            log.error("handlerName:{} 更新日志失败({}/{})！",handlerName,start,result,e);
+            log.error("更新任务日志失败: handlerName={}, logId={}", handlerName, logId, e);
         }
     }
-
-    /**
-     * 构建执行日志上下文
-     * @param jobId
-     * @param beanName
-     * @param handlerParam
-     * @param executeUser
-     * @param executeId
-     * @param refireCount
-     * @return
-     */
-    private SysJobLogContext buildLogContext(Long jobId , String beanName, String handlerParam,String executeUser,String executeId, int refireCount){
-        return SysJobLogContext.builder()
-                .jobId(jobId)
-                .beanName(beanName)
-                .executeId(executeId)
-                .handlerParam(handlerParam)
-                .executeNum(refireCount+1)
-                .createBy(executeUser)
-                .startTime(LocalDateTimeUtil.dateTime())
-                .createTime(LocalDateTimeUtil.dateTime())
-                .build();
-    }
-
 }
+
