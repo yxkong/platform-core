@@ -15,6 +15,7 @@ import com.github.platform.core.sys.domain.context.SysThirdUserQueryContext;
 import com.github.platform.core.sys.domain.context.ThirdApproveContext;
 import com.github.platform.core.sys.domain.dto.SysThirdUserDto;
 import com.github.platform.core.sys.domain.gateway.ISysRoleGateway;
+import com.github.platform.core.sys.domain.gateway.ISysUserRoleGateway;
 import com.github.platform.core.sys.domain.gateway.IThirdUserGateway;
 import com.github.platform.core.sys.domain.model.user.ThirdUserEntity;
 import com.github.platform.core.sys.infra.convert.SysThirdUserInfraConvert;
@@ -44,6 +45,8 @@ public class ThirdUserGatewayImpl implements IThirdUserGateway {
     private SysThirdUserInfraConvert convert;
     @Resource
     private SysThirdUserMapper thirdUserMapper;
+    @Resource
+    private ISysUserRoleGateway sysUserRoleGateway;
     
     @Override
     public PageBean<SysThirdUserDto> query(SysThirdUserQueryContext context) {
@@ -91,7 +94,7 @@ public class ThirdUserGatewayImpl implements IThirdUserGateway {
 
         SysUserBase sysUser = SysUserBase.builder().id(context.getUserId()).deptId(context.getDeptId()).status(context.getStatus()).build();
         sysUserMapper.updateById(sysUser);
-        roleGateway.addUserRole(context.getUserId(),thirdUser.getTenantId(), Arrays.stream(context.getRoleKeys()).collect(Collectors.toSet()));
+        sysUserRoleGateway.addUserRole(context.getUserId(),thirdUser.getTenantId(), Arrays.stream(context.getRoleKeys()).collect(Collectors.toSet()));
     }
 
     @Override

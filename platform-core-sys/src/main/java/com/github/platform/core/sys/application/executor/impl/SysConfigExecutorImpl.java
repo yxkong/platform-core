@@ -1,7 +1,6 @@
 package com.github.platform.core.sys.application.executor.impl;
 
-import com.github.platform.core.auth.util.LoginUserInfoUtil;
-import com.github.platform.core.common.service.BaseExecutor;
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.entity.dto.PageBean;
@@ -23,20 +22,23 @@ import java.util.Objects;
  * @version: 1.0
  */
 @Service
-public class SysConfigExecutorImpl extends BaseExecutor implements ISysConfigExecutor {
+public class SysConfigExecutorImpl extends SysExecutor implements ISysConfigExecutor {
     @Resource
     private ISysConfigGateway gateway;
     @Override
     public PageBean<SysConfigDto> query(SysConfigQueryContext context) {
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     }
 
     @Override
     public void insert(SysConfigContext context) {
+        context.setTenantId(getTenantId(context));
         gateway.insert(context);
     }
     @Override
     public void update(SysConfigContext context) {
+        context.setTenantId(getTenantId(context));
         gateway.update(context);
     }
 
@@ -50,13 +52,15 @@ public class SysConfigExecutorImpl extends BaseExecutor implements ISysConfigExe
     }
 
     @Override
-    public SysConfigDto getConfig( Integer tenantId,String key) {
-        return gateway.getConfig(tenantId,key);
+    public SysConfigDto getConfig(SysConfigQueryContext context) {
+        context.setTenantId(getTenantId(context));
+        return gateway.getConfig(context.getTenantId(),context.getKey());
     }
 
     @Override
-    public void reload(String key) {
-        Integer tenantId = LoginUserInfoUtil.getTenantId();
+    public void reload(SysConfigQueryContext context) {
+        String key = context.getKey();
+        Integer tenantId = getTenantId(context);
         if (StringUtils.isNotEmpty(key)){
             gateway.deleteCache(tenantId,key);
             gateway.getConfig(tenantId,key);

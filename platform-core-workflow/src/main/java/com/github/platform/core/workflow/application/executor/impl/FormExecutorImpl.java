@@ -1,5 +1,6 @@
 package com.github.platform.core.workflow.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.utils.CollectionUtil;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 */
 @Service
 @Slf4j
-public class FormExecutorImpl extends BaseExecutor implements IFormExecutor {
+public class FormExecutorImpl extends SysExecutor implements IFormExecutor {
     @Resource
     private IFormGateway gateway;
     @Resource
@@ -44,6 +45,7 @@ public class FormExecutorImpl extends BaseExecutor implements IFormExecutor {
 
     @Override
     public PageBean<FormDto> query(FormQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     };
     @Override
@@ -51,6 +53,7 @@ public class FormExecutorImpl extends BaseExecutor implements IFormExecutor {
         FormContext basic = context.getBasic();
         String formNo = SequenceUtil.nextSequenceNum(WorkFlowSequenceEnum.FORM);
         basic.setFormNo(formNo);
+        basic.setTenantId(getTenantId(basic));
         FormDto record = gateway.insert(basic);
         if (Objects.isNull(record.getId())){
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
@@ -75,6 +78,7 @@ public class FormExecutorImpl extends BaseExecutor implements IFormExecutor {
         FormContext basic = context.getBasic();
         String formNo = basic.getFormNo();
         basic.setFormNo(null);
+        basic.setTenantId(getTenantId(basic));
         Pair<Boolean, FormDto> update = gateway.update(basic);
         if (!update.getKey()){
             throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);

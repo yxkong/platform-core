@@ -73,7 +73,7 @@ public class SysSmsServiceProviderController extends BaseController{
         SysSmsServiceProviderContext context = convert.toContext(cmd);
         // 密码加密
         String pwd = cmd.getPwd();
-        Pair<String, String> pair = EncryptUtil.me.md5Pwd(pwd);
+        Pair<String, String> pair = EncryptUtil.getInstance().md5(pwd);
         context.setSalt(pair.getKey());
         context.setEncryptPwd(pair.getValue());
         executor.insert(context);

@@ -132,6 +132,10 @@ public interface ISysUserGateway {
     UserEntity addUser(RegisterContext context);
 
     /**
+     * 删除用户缓存
+     */
+    void deleteCache(String loginName,String mobile,String secretKey,Integer tenantId);
+    /**
      * 修改用户信息
      *
      * @param context

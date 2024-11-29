@@ -1,6 +1,6 @@
 package com.github.platform.core.sys.application.executor.impl;
 
-import com.github.platform.core.common.service.BaseExecutor;
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.sys.application.executor.ILoginLogExecutor;
 import com.github.platform.core.sys.domain.context.SysLoginLogQueryContext;
 import com.github.platform.core.sys.domain.dto.SysLoginLogDto;
@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 */
 @Service
 @Slf4j
-public class LoginLogExecutorImpl extends BaseExecutor implements ILoginLogExecutor {
+public class LoginLogExecutorImpl extends SysExecutor implements ILoginLogExecutor {
     @Resource
     private ILoginLogGateway gateway;
     /**
@@ -30,6 +30,7 @@ public class LoginLogExecutorImpl extends BaseExecutor implements ILoginLogExecu
 
     @Override
     public PageBean<SysLoginLogDto> query(SysLoginLogQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     };
 

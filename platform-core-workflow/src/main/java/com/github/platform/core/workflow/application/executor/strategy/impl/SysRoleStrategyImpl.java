@@ -23,7 +23,10 @@ public class SysRoleStrategyImpl implements RoleStrategy {
     private ISysRoleGateway roleGateway;
     @Override
     public List<OptionsDto> roles(FlwRoleQueryContext context) {
-        SysRoleQueryContext sysRoleQueryContext = SysRoleQueryContext.builder().name(context.getName()).status(StatusEnum.ON.getStatus()).build();
+        SysRoleQueryContext sysRoleQueryContext = SysRoleQueryContext.builder()
+                .name(context.getName()).status(StatusEnum.ON.getStatus())
+                .tenantId(context.getTenantId())
+                .build();
         return roleGateway.roles(sysRoleQueryContext);
     }
 }

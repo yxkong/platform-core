@@ -1,8 +1,6 @@
 package com.github.platform.core.workflow.application.executor.impl;
 
-import com.github.platform.core.auth.util.AuthUtil;
-import com.github.platform.core.auth.util.LoginUserInfoUtil;
-import com.github.platform.core.common.service.BaseExecutor;
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.constant.SymbolConstant;
@@ -46,7 +44,7 @@ import java.util.stream.Collectors;
 */
 @Service
 @Slf4j
-public class ProcessExecutorImpl extends BaseExecutor implements IProcessExecutor {
+public class ProcessExecutorImpl extends SysExecutor implements IProcessExecutor {
     @Resource(name = "flowableProcessInstanceService")
     private IProcessInstanceService processInstanceService ;
 
@@ -67,9 +65,7 @@ public class ProcessExecutorImpl extends BaseExecutor implements IProcessExecuto
     @Override
     public PageBean<ProcessDto> queryTodo(ProcessQueryContext context) {
         List<ProcessDto> list = new ArrayList<>();
-        if (!AuthUtil.isSuperAdmin()){
-            context.setAssignee(LoginUserInfoUtil.getLoginName());
-        }
+        context.setTenantId(getTenantId(context));
         Pair<Long,List<Task>> pair = processInstanceService.queryTodo(context);
         if (Objects.isNull(pair.getKey()) || PageBean.EMPTY_TOTAL_SIZE.equals(pair.getKey())){
             return new PageBean<>(PageBean.EMPTY_PAGE_NUM, PageBean.EMPTY_TOTAL_SIZE,PageBean.EMPTY_PAGE_SIZE,list) ;
@@ -94,6 +90,9 @@ public class ProcessExecutorImpl extends BaseExecutor implements IProcessExecuto
             dto.setVersion("V"+getValue(variables,FlwConstant.PROCESS_VERSION));
             //发起人
             dto.setInitiator(getValue(variables,FlwConstant.ASSIGNEE_INITIATOR));
+            if (StringUtils.isNotEmpty(s.getTenantId())){
+                 dto.setTenantId(Integer.parseInt(s.getTenantId()));
+            }
             list.add(dto);
         });
         return new PageBean<>(context.getPageNum(),pair.getKey(),context.getPageSize(),list) ;

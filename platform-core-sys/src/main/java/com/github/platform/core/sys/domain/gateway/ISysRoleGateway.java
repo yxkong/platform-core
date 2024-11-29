@@ -3,6 +3,7 @@ package com.github.platform.core.sys.domain.gateway;
 import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
+import com.github.platform.core.sys.domain.common.entity.SysRoleBase;
 import com.github.platform.core.sys.domain.constant.SysCacheKeyPrefix;
 import com.github.platform.core.sys.domain.context.SysRoleContext;
 import com.github.platform.core.sys.domain.context.SysRoleQueryContext;
@@ -27,17 +28,10 @@ public interface ISysRoleGateway {
     PageBean<SysRoleDto> query(SysRoleQueryContext context);
 
     /**
-     * 查询列表
-     * @param context
-     * @return
-     */
-    List<SysRoleDto> findListBy(SysRoleQueryContext context);
-
-    /**
      * 新增角色
      * @param context
      */
-    void add(SysRoleContext context);
+    SysRoleDto insert(SysRoleContext context);
 
     /**
      * 删除角色
@@ -51,7 +45,14 @@ public interface ISysRoleGateway {
      * @return
      */
     SysRoleDto findById(Long roleId);
-
+	/**
+	 * 根据角色名称h或key 在指定租户中查询
+	 * @param name 角色名称
+	 * @param key 角色key
+	 * @param tenantId 租户id
+	 * @return 角色信息
+	 */
+    SysRoleDto findByNameOrKeyAndTenant(String name,String key, Integer tenantId);
     /**
      * 根据角色key查询
      * @param roleKey
@@ -77,7 +78,7 @@ public interface ISysRoleGateway {
      * 更新角色
      * @param context
      */
-    void update(SysRoleContext context);
+    SysRoleDto updateById(SysRoleContext context);
 
 
     /**
@@ -88,28 +89,6 @@ public interface ISysRoleGateway {
     List<SysRoleDto> findRoleByUserId(Long userId);
 
     /**
-     * 删除用户角色
-     * @param userId 用户id
-     */
-    void deleteUserRoleByUserId(Long userId);
-
-    /**
-     * 新增用户角色
-     * @param userId
-     * @param tenantId
-     * @param roleKeys
-     */
-    void addUserRole(Long userId,Integer tenantId, Set<String> roleKeys);
-
-    /**
-     * 根据角色id查询菜单id
-     * @param roleId 角色id
-     * @return
-     */
-    Set<Long> queryMenuIds(Long roleId);
-
-
-    /**
      * 查询角色
      * @param context  查询上下文
      * @return
@@ -117,4 +96,5 @@ public interface ISysRoleGateway {
     List<OptionsDto> roles(SysRoleQueryContext context);
 
 
+    SysRoleDto findByExist(Long id, String roleName, String key, Integer tenantId);
 }

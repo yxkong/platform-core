@@ -49,10 +49,6 @@ public class DeptGatewayImpl extends BaseGatewayImpl implements ISysDeptGateway 
     @Override
     public List<SysDeptDto> queryList(SysDeptQueryContext context) {
         SysDeptBase sysDept = convert.toSysDeptBase(context);
-        //系统管理员默认查询全部,非管理默认只能查自己租户下的
-        if (!AuthUtil.isSuperAdmin()) {
-            sysDept.setTenantId(LoginUserInfoUtil.getTenantId());
-        }
         sysDept.setIdGtZero(true);
         List<SysDeptBase> list = sysDeptMapper.findListBy(sysDept);
         return convert.toDtos(list);
@@ -122,7 +118,7 @@ public class DeptGatewayImpl extends BaseGatewayImpl implements ISysDeptGateway 
     @Override
     @Cacheable(cacheNames = {CACHE_NAME}, key = "#root.target.PREFIX", cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
     public List<TreeSelectDto> deptTree() {
-        SysDeptBase sysDept = SysDeptBase.builder().status(StatusEnum.ON.getStatus()).build();
+        SysDeptBase sysDept = SysDeptBase.builder().status(StatusEnum.ON.getStatus()).tenantId(LoginUserInfoUtil.getTenantId()).build();
         /**暂时不实现租户*/
 //        if (!AuthUtil.isAdmin()) {
 //            //非管理员只取租户

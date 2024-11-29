@@ -84,9 +84,6 @@ public class SysFlowRuleController extends BaseController{
     @PostMapping("/add")
     public ResultBean<String> add(@Validated @RequestBody SysFlowRuleCmd cmd) {
         SysFlowRuleContext context = sysFlowRuleConvert.toContext(cmd);
-        if (Objects.isNull(context.getTenantId())){
-            context.setTenantId(LoginUserInfoUtil.getTenantId());
-        }
         String id = sysFlowRuleExecutor.insert(context);
 
         return buildSucResp(id);

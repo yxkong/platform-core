@@ -5,7 +5,6 @@ import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.sys.domain.context.SysRoleContext;
 import com.github.platform.core.sys.domain.context.SysRoleQueryContext;
 import com.github.platform.core.sys.domain.dto.SysRoleDto;
-import com.github.platform.core.sys.domain.dto.resp.RoleDetailDto;
 
 import java.util.List;
 
@@ -31,11 +30,28 @@ public interface IRoleExecutor {
      */
     List<OptionsDto> select(SysRoleQueryContext context);
 
+    /**
+     * 添加角色
+     * @param roleContext
+     */
     void addRole(SysRoleContext roleContext);
 
+    /**
+     * 删除角色
+     * @param roleId
+     */
     void deleteById(Long roleId);
 
-    void editRole(SysRoleContext roleContext);
+    /**
+     * 修改角色
+     * @param roleContext
+     */
+    void update(SysRoleContext roleContext);
 
-    RoleDetailDto queryDetail(Long id);
+    /**
+     * 查询角色详情
+     * @param id
+     * @return
+     */
+    SysRoleDto findById(Long id);
 }

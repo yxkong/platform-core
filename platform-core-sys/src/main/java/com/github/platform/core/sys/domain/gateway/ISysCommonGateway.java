@@ -30,14 +30,14 @@ public interface ISysCommonGateway {
      * @param dictType
      * @return
      */
-    Map<String,String> getDictMap(String dictType);
+    Map<String,String> getDictMap(String dictType,Integer tenantId);
 
     /**
      * 根据字典类型获取字典
      * @param dictType
      * @return
      */
-    List<SysDictDto> getDict(String dictType);
+    List<SysDictDto> getDict(String dictType,Integer tenantId);
 
     /**
      * 根据字典名称
@@ -45,7 +45,7 @@ public interface ISysCommonGateway {
      * @return
      */
 
-    List<OptionsDto> getOptionsByType(String dictType);
+    List<OptionsDto> getOptionsByType(String dictType,Integer tenantId);
 
     /**
      * 根据配置key获取配置

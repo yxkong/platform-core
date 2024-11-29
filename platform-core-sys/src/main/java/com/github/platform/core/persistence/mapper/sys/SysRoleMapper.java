@@ -62,32 +62,30 @@ public interface SysRoleMapper  {
 	/**
 	* 通过主键id 删除
 	* @param id
-	* @return
 	*/
 	int deleteById(Long id);
 	/**
 	* 批量删除
 	* @param ids
-	* @return
 	*/
 	int deleteByIds(@Param("ids")Long[] ids);
 
 	/**
-	 * 根据角色名称和租户查询
-	 * @param roleName
-	 * @param key
-	 * @param tenantId
-	 * @return
+	 * 根据角色名称h或key 在指定租户中查询
+	 * @param name 角色名称
+	 * @param key 角色key
+	 * @param tenantId 租户id
+	 * @return 角色信息
 	 */
-    SysRoleBase findByNameOrKeyAndTenant(@Param("name") String roleName,@Param("key") String key, @Param("tenantId") Integer tenantId);
+    SysRoleBase findByNameOrKeyAndTenant(@Param("name") String name,@Param("key") String key, @Param("tenantId") Integer tenantId);
 
 	/**
-	 *
+	 * 根据角色id + （角色名称，或者角色key）在指定z租户中查询 角色信息
 	 * @param id
-	 * @param roleName
-	 * @param key
-	 * @param tenantId
+	 * @param name 角色名称
+	 * @param key 角色key
+	 * @param tenantId 租户id
 	 * @return
 	 */
-	SysRoleBase findByExist(@Param("id") Long id, @Param("name") String roleName, @Param("key") String key,  @Param("tenantId")Integer tenantId);
+	SysRoleBase findByExist(@Param("id") Long id, @Param("name") String name, @Param("key") String key,  @Param("tenantId")Integer tenantId);
 }

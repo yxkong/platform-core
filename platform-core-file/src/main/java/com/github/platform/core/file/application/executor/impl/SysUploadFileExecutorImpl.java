@@ -1,5 +1,6 @@
 package com.github.platform.core.file.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.file.application.executor.ISysUploadFileExecutor;
@@ -24,13 +25,14 @@ import java.util.Objects;
 */
 @Service
 @Slf4j
-public class SysUploadFileExecutorImpl extends BaseExecutor implements ISysUploadFileExecutor {
+public class SysUploadFileExecutorImpl extends SysExecutor implements ISysUploadFileExecutor {
     @Resource
     private ISysUploadFileGateway gateway;
     @Resource
     private IUploadFileExecutor uploadFileExecutor;
     @Override
     public PageBean<SysUploadFileDto> query(SysUploadFileQueryContext context){
+        context.setTenantId(getTenantId(context));
         PageBean<SysUploadFileDto> page = gateway.query(context);
         if (Objects.nonNull(page) && CollectionUtil.isNotEmpty(page.getData())){
             page.getData().forEach(s->{
@@ -42,6 +44,7 @@ public class SysUploadFileExecutorImpl extends BaseExecutor implements ISysUploa
     };
     @Override
     public void insert(SysUploadFileContext context){
+        context.setTenantId(getTenantId(context));
          gateway.insert(context);
     }
     @Override
@@ -50,6 +53,7 @@ public class SysUploadFileExecutorImpl extends BaseExecutor implements ISysUploa
     }
     @Override
     public void update(SysUploadFileContext context) {
+        context.setTenantId(getTenantId(context));
         gateway.update(context);
     }
     @Override

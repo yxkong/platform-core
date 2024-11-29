@@ -1,18 +1,18 @@
 package com.github.platform.core.sys.application.executor.impl;
 
-import com.github.platform.core.common.service.BaseExecutor;
+import com.github.platform.core.auth.application.executor.SysExecutor;
+import com.github.platform.core.standard.constant.ResultStatusEnum;
+import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.sys.application.executor.ISysFlowRuleExecutor;
 import com.github.platform.core.sys.domain.context.SysFlowRuleContext;
 import com.github.platform.core.sys.domain.context.SysFlowRuleQueryContext;
 import com.github.platform.core.sys.domain.dto.SysFlowRuleDto;
 import com.github.platform.core.sys.domain.gateway.ISysFlowRuleGateway;
-import com.github.platform.core.standard.constant.ResultStatusEnum;
-import com.github.platform.core.standard.entity.dto.PageBean;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 /**
@@ -24,7 +24,7 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
-public class SysFlowRuleExecutorImpl extends BaseExecutor implements ISysFlowRuleExecutor{
+public class SysFlowRuleExecutorImpl extends SysExecutor implements ISysFlowRuleExecutor{
     @Resource
     private ISysFlowRuleGateway sysFlowRuleGateway;
     /**
@@ -34,6 +34,7 @@ public class SysFlowRuleExecutorImpl extends BaseExecutor implements ISysFlowRul
     */
     @Override
     public PageBean<SysFlowRuleDto> query(SysFlowRuleQueryContext context){
+        context.setTenantId(getTenantId(context));
         return sysFlowRuleGateway.query(context);
     }
 
@@ -48,6 +49,7 @@ public class SysFlowRuleExecutorImpl extends BaseExecutor implements ISysFlowRul
     */
     @Override
     public String insert(SysFlowRuleContext context){
+        context.setTenantId(getTenantId(context));
         SysFlowRuleDto record = sysFlowRuleGateway.insert(context);
         if (Objects.isNull(record.getId())){
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
@@ -69,6 +71,7 @@ public class SysFlowRuleExecutorImpl extends BaseExecutor implements ISysFlowRul
     */
     @Override
     public void update(SysFlowRuleContext context) {
+        context.setTenantId(getTenantId(context));
         Pair<Boolean, SysFlowRuleDto> update = sysFlowRuleGateway.update(context);
         if (!update.getKey()){
             throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);

@@ -8,6 +8,7 @@ import ${domainPackage}.dto.${entityName}Dto;
 import ${domainPackage}.gateway.I${entityName}Gateway;
 import com.github.platform.core.standard.constant.ResultStatusEnum;
 import com.github.platform.core.standard.entity.dto.PageBean;
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
-public class ${entityName}ExecutorImpl extends BaseExecutor implements I${entityName}Executor{
+public class ${entityName}ExecutorImpl extends SysExecutorImpl implements I${entityName}Executor{
     @Resource
     private I${entityName}Gateway ${lowerEntityName}Gateway;
     /**
@@ -32,6 +33,7 @@ public class ${entityName}ExecutorImpl extends BaseExecutor implements I${entity
     */
     @Override
     public PageBean<${entityName}Dto> query(${entityName}QueryContext context){
+        context.setTenantId(getTenantId(context));
         return ${lowerEntityName}Gateway.query(context);
     };
     /**
@@ -40,6 +42,7 @@ public class ${entityName}ExecutorImpl extends BaseExecutor implements I${entity
     */
     @Override
     public String insert(${entityName}Context context){
+        context.setTenantId(getTenantId(context));
         ${entityName}Dto record = ${lowerEntityName}Gateway.insert(context);
         if (Objects.isNull(record.getId())){
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
@@ -61,6 +64,7 @@ public class ${entityName}ExecutorImpl extends BaseExecutor implements I${entity
     */
     @Override
     public void update(${entityName}Context context) {
+        context.setTenantId(getTenantId(context));
         Pair<Boolean, ${entityName}Dto> update = ${lowerEntityName}Gateway.update(context);
         if (!update.getKey()){
             throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);

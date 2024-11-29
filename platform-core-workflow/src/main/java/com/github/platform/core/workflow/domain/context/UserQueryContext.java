@@ -1,5 +1,6 @@
 package com.github.platform.core.workflow.domain.context;
 
+import com.github.platform.core.common.utils.StringUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -29,4 +30,7 @@ public class UserQueryContext {
     private String processType;
     /**实例id*/
     private  String instanceId;
+    /**租户id*/
+    private Integer tenantId;
+
 }

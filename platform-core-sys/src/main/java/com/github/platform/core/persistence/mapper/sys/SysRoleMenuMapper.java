@@ -3,7 +3,7 @@ package com.github.platform.core.persistence.mapper.sys;
 import com.github.platform.core.sys.domain.common.entity.SysRoleMenuBase;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
-import java.util.Map;
+
 /**
  * @author 自定义代码生成器
  * @time 2023-04-02 12:13:46
@@ -12,37 +12,20 @@ import java.util.Map;
  **/
 public interface SysRoleMenuMapper  {
 
-	/**
-	 * 插入实体
-	 * @param record
-	 * @return
-	 */
-	int insert(SysRoleMenuBase record);
-	/**
-	* 通过主键id 更新实体
-	* @param record
-	* @return 1成功  其它失败
-	*/
-	int updateById(SysRoleMenuBase record);
+
 	/**
 	 * 通过主键id 获取实体对象
 	 * @param id
 	 * @return
 	 */
-	SysRoleMenuBase findById(Long id);
+	List<SysRoleMenuBase> findByRoleId(Long id);
 
 	/**
 	* 通过主键ids 获取多个实体对象(最多200条)
 	* @param ids
 	* @return
 	*/
-	List<SysRoleMenuBase> findByIds(@Param("ids") Long[] ids);
-	/**
-	* 通过实体查询
-	* @param record
-	* @return List<SysRoleMenuBase>
-	*/
-	List<SysRoleMenuBase> findListBy(SysRoleMenuBase record);
+	List<SysRoleMenuBase> findByRoleIds(@Param("ids") Long[] ids);
 
 	/**
 	 * 通过实体查询

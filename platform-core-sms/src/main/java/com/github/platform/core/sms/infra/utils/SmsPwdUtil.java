@@ -32,7 +32,7 @@ public class SmsPwdUtil {
      */
     public Pair<String,String> encode(String pwd){
         String salt = StringUtils.randomStr(4, 6);
-        String encryptPwd = EncryptUtil.me.aesEncode(pwd, salt);
+        String encryptPwd = EncryptUtil.getInstance().aesEncode(pwd, salt);
         return Pair.of(salt,encryptPwd);
     }
 
@@ -43,7 +43,7 @@ public class SmsPwdUtil {
      * @return
      */
     public String decode(String encryptPwd,String salt){
-        return EncryptUtil.me.aesDecode(encryptPwd,salt);
+        return EncryptUtil.getInstance().aesDecode(encryptPwd,salt);
     }
 
 }

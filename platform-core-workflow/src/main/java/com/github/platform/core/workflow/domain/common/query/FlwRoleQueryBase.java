@@ -33,4 +33,7 @@ public class FlwRoleQueryBase {
     @Schema(description = "角色名称")
     @ApiModelProperty(value = "角色名称",required=false)
     private String name;
+    @Schema(description = "租户id")
+    @ApiModelProperty(value = "租户id",required=false)
+    private Integer tenantId;
 }

@@ -1,6 +1,6 @@
 package com.github.platform.core.sys.application.executor.impl;
 
-import com.github.platform.core.common.service.BaseExecutor;
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.sys.application.executor.IMenuExecutor;
 import com.github.platform.core.sys.domain.constant.MenuConstant;
 import com.github.platform.core.sys.domain.context.SysMenuContext;
@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class SysMenuExecutorImpl extends BaseExecutor implements IMenuExecutor {
+public class SysMenuExecutorImpl extends SysExecutor implements IMenuExecutor {
     @Resource
     private ISysMenuGateway menuGateway;
 
@@ -63,6 +63,7 @@ public class SysMenuExecutorImpl extends BaseExecutor implements IMenuExecutor {
     }
     @Override
     public void insert(SysMenuContext context) {
+        context.setTenantId(getTenantId(context));
         menuGateway.insert(context);
     }
     @Override
@@ -75,6 +76,7 @@ public class SysMenuExecutorImpl extends BaseExecutor implements IMenuExecutor {
     }
     @Override
     public void update(SysMenuContext context) {
+        context.setTenantId(getTenantId(context));
         menuGateway.update(context);
     }
     @Override

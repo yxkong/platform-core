@@ -43,14 +43,14 @@ public interface ISysConfigExecutor {
 
     /**
      * 获取配置
-     * @param key
+     * @param context
      * @return
      */
-    SysConfigDto getConfig(Integer tenantId,String key);
+    SysConfigDto getConfig(SysConfigQueryContext context);
 
     /**
      * 重载配置，为空重载全部
-     * @param key
+     * @param context
      */
-    void reload(String key);
+    void reload(SysConfigQueryContext context);
 }

@@ -1,5 +1,6 @@
 package com.github.platform.core.sms.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.sms.application.executor.ISysSmsTemplateStatusExecutor;
 import com.github.platform.core.sms.domain.context.SysSmsTemplateStatusContext;
@@ -24,18 +25,20 @@ import java.util.Objects;
 */
 @Service
 @Slf4j
-public class SysSmsTemplateStatusExecutorImpl extends BaseExecutor implements ISysSmsTemplateStatusExecutor {
+public class SysSmsTemplateStatusExecutorImpl extends SysExecutor implements ISysSmsTemplateStatusExecutor {
     @Resource
     private ISysSmsTemplateStatusGateway gateway;
     @Override
     public PageBean<SysSmsTemplateStatusDto> query(SysSmsTemplateStatusQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     };
     @Override
     public String insert(SysSmsTemplateStatusContext context){
+        context.setTenantId(getTenantId(context));
         SysSmsTemplateStatusDto record = gateway.insert(context);
         if (Objects.isNull(record.getId())){
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
         return record.getStrId();
     }
@@ -45,18 +48,19 @@ public class SysSmsTemplateStatusExecutorImpl extends BaseExecutor implements IS
     }
     @Override
     public void update(SysSmsTemplateStatusContext context) {
+        context.setTenantId(getTenantId(context));
         context.setProNo(null);
         context.setTempNo(null);
         Pair<Boolean, SysSmsTemplateStatusDto> update = gateway.update(context);
         if (!update.getKey()){
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
     }
     @Override
     public void delete(Long id) {
         int delete = gateway.delete(id);
         if (delete <=0 ){
-            exception(ResultStatusEnum.COMMON_DELETE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
     }
 }

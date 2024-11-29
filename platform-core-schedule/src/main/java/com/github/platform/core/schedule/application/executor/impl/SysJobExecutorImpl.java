@@ -1,17 +1,16 @@
 package com.github.platform.core.schedule.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.auth.util.LoginInfoUtil;
-import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.service.IPublishService;
-import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.schedule.application.constant.JobApplicationEnum;
 import com.github.platform.core.schedule.application.executor.ISysJobExecutor;
+import com.github.platform.core.schedule.domain.constant.JobStatusEnum;
 import com.github.platform.core.schedule.domain.context.SysJobContext;
 import com.github.platform.core.schedule.domain.context.SysJobQueryContext;
 import com.github.platform.core.schedule.domain.dto.SysJobDto;
 import com.github.platform.core.schedule.domain.gateway.ISysJobGateway;
 import com.github.platform.core.schedule.infra.configuration.ScheduleManager;
-import com.github.platform.core.schedule.domain.constant.JobStatusEnum;
 import com.github.platform.core.schedule.infra.util.CronUtil;
 import com.github.platform.core.standard.constant.ResultStatusEnum;
 import com.github.platform.core.standard.constant.StatusEnum;
@@ -36,7 +35,7 @@ import java.util.Objects;
 */
 @Service
 @Slf4j
-public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor {
+public class SysJobExecutorImpl extends SysExecutor implements ISysJobExecutor {
     @Resource
     private ISysJobGateway gateway;
     @Autowired(required = false)
@@ -45,6 +44,7 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
     private IPublishService publishService;
     @Override
     public PageBean<SysJobDto> query(SysJobQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     };
     @Override
@@ -80,6 +80,7 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
         }
         validateCronExpression(context.getCronExpression());
         validateJobUnique(context);
+        context.setTenantId(getTenantId(context));
         SysJobDto sysJobDto = gateway.insert(context);
         if (Objects.isNull(sysJobDto.getId())){
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
@@ -107,6 +108,7 @@ public class SysJobExecutorImpl extends BaseExecutor implements ISysJobExecutor 
         validateCronExpression(context.getCronExpression());
         validateJobExist(context.getId());
         validateJobUnique(context);
+        context.setTenantId(getTenantId(context));
         Pair<Boolean, SysJobDto> update = gateway.update(context);
         if (!update.getKey()){
             throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);

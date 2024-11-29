@@ -26,7 +26,7 @@ public class SysUserStrategyImpl implements UserStrategy {
     @Override
     public List<OptionsDto> users(UserQueryContext userQuery) {
         List<OptionsDto> rst = new ArrayList<>();
-        List<SysUserDto> userList = userGateway.findByRoleKeys(userQuery.getRoles(), LoginUserInfoUtil.getTenantId());
+        List<SysUserDto> userList = userGateway.findByRoleKeys(userQuery.getRoles(), userQuery.getTenantId());
         if (CollectionUtil.isEmpty(userList)){
             return rst;
         }

@@ -1,6 +1,7 @@
 package com.github.platform.core.sys.application.executor.impl;
 
-import com.github.platform.core.common.service.BaseExecutor;
+import com.github.platform.core.auth.application.executor.SysExecutor;
+import com.github.platform.core.sys.application.constant.SysAppResultEnum;
 import com.github.platform.core.sys.application.executor.ISysDeptExecutor;
 import com.github.platform.core.sys.domain.context.SysDeptContext;
 import com.github.platform.core.sys.domain.context.SysDeptQueryContext;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 部门执行器
@@ -22,24 +24,30 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class SysDeptExecutorImpl extends BaseExecutor implements ISysDeptExecutor {
+public class SysDeptExecutorImpl extends SysExecutor implements ISysDeptExecutor {
     @Resource
     private ISysDeptGateway deptGateway;
 
     @Override
     public List<SysDeptDto> query(SysDeptQueryContext context) {
+        context.setTenantId(getTenantId(context));
+        if (Objects.isNull(context.getTenantId())){
+            throw exception(SysAppResultEnum.NO_TENANT);
+        }
         return deptGateway.queryList(context);
     }
 
 
     @Override
-    public void insert(SysDeptContext deptContext) {
-        deptGateway.insert(deptContext);
+    public void insert(SysDeptContext context) {
+        context.setTenantId(getTenantId(context));
+        deptGateway.insert(context);
     }
 
     @Override
-    public void modify(SysDeptContext deptContext) {
-        deptGateway.update(deptContext);
+    public void modify(SysDeptContext context) {
+        context.setTenantId(getTenantId(context));
+        deptGateway.update(context);
     }
 
 

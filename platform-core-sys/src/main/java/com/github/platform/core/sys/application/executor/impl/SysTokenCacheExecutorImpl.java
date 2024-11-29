@@ -1,5 +1,6 @@
 package com.github.platform.core.sys.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.auth.gateway.ITokenCacheGateway;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.standard.entity.dto.PageBean;
@@ -21,7 +22,7 @@ import javax.annotation.Resource;
  */
 @Service
 @Slf4j
-public class SysTokenCacheExecutorImpl extends BaseExecutor implements ISysTokenCacheExecutor{
+public class SysTokenCacheExecutorImpl extends SysExecutor implements ISysTokenCacheExecutor{
     @Resource
     private ISysTokenCacheGateway sysTokenCacheGateway;
     @Resource
@@ -32,6 +33,7 @@ public class SysTokenCacheExecutorImpl extends BaseExecutor implements ISysToken
     * @return 分页结果
     */
     public PageBean<SysTokenCacheDto> query(SysTokenCacheQueryContext context){
+        context.setTenantId(getTenantId(context));
         return sysTokenCacheGateway.query(context);
     };
 

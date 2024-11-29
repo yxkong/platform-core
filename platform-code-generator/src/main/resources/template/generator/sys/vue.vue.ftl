@@ -140,7 +140,7 @@
     </#if>
     ]);
     // 列表字段映射
-    const tableColumns = [
+    const tableColumns = ref([
     <#if listColumns??>
         <#list listColumns as column>
         <#if column.lowerColumnName!=pkLowerColumnName>
@@ -161,7 +161,7 @@
             width: "200",
         },
     </#if>
-    ];
+    ]);
     const dialogformFields = ref([
     <#if formColumns??>
         <#list formColumns as column>

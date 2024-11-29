@@ -75,10 +75,10 @@
  		 </set>
      where role_id = #{roleId}
 	</update>
-	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	<select id="findByRoleId" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select <include refid="BaseColumnList" /> from t_sys_role_menu t where t.role_id=#{roleId}
 	</select>
-	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	<select id="findByRoleIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select <include refid="BaseColumnList" /> from t_sys_role_menu
 		<where>
 			<foreach item="id"  collection="ids" open="role_id  in (" separator="," close=")" >

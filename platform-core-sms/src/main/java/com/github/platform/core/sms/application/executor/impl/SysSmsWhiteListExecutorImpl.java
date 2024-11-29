@@ -1,5 +1,6 @@
 package com.github.platform.core.sms.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.sms.application.executor.ISysSmsWhiteListExecutor;
 import com.github.platform.core.sms.domain.context.SysSmsWhiteListContext;
@@ -24,18 +25,20 @@ import java.util.Objects;
 */
 @Service
 @Slf4j
-public class SysSmsWhiteListExecutorImpl extends BaseExecutor implements ISysSmsWhiteListExecutor {
+public class SysSmsWhiteListExecutorImpl extends SysExecutor implements ISysSmsWhiteListExecutor {
     @Resource
     private ISysSmsWhiteListGateway gateway;
     @Override
     public PageBean<SysSmsWhiteListDto> query(SysSmsWhiteListQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     };
     @Override
     public void insert(SysSmsWhiteListContext context){
+        context.setTenantId(getTenantId(context));
         SysSmsWhiteListDto record = gateway.insert(context);
         if (Objects.isNull(record.getId())){
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
     }
     @Override
@@ -44,16 +47,17 @@ public class SysSmsWhiteListExecutorImpl extends BaseExecutor implements ISysSms
     }
     @Override
     public void update(SysSmsWhiteListContext context) {
+        context.setTenantId(getTenantId(context));
         Pair<Boolean, SysSmsWhiteListDto> update = gateway.update(context);
         if (!update.getKey()){
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
     }
     @Override
     public void delete(Long id) {
         int delete = gateway.delete(id);
         if (delete <=0 ){
-            exception(ResultStatusEnum.COMMON_DELETE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
     }
 }

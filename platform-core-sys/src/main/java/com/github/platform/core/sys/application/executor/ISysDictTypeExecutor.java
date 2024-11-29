@@ -40,7 +40,7 @@ public interface ISysDictTypeExecutor {
 
     /**
      * 重载缓存，为空重载全部
-     * @param type
+     * @param context 重载上下文
      */
-    void reload(String type);
+    void reload(SysDictTypeQueryContext context);
 }

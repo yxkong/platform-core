@@ -287,18 +287,6 @@
  			<if test="parentId != null">
  				and t.parent_id = #{parentId}
  			</if>
- 			<if test="sort != null">
- 				and t.sort = #{sort}
- 			</if>
- 			<if test="path != null">
- 				and t.path = #{path}
- 			</if>
- 			<if test="component != null">
- 				and t.component = #{component}
- 			</if>
- 			<if test="query != null">
- 				and t.query = #{query}
- 			</if>
  			<if test="frame != null">
  				and t.frame = #{frame}
  			</if>
@@ -314,33 +302,10 @@
 			<if test="giveTenant != null">
  				and t.give_tenant = #{giveTenant}
  			</if>
- 			<if test="perms != null">
- 				and t.perms = #{perms}
- 			</if>
- 			<if test="icon != null">
- 				and t.icon = #{icon}
- 			</if>
-			<if test="tenantId != null">
-				and t.tenant_id = #{tenantId}
-			</if>
  			<if test="status != null">
  				and t.status = #{status}
  			</if>
- 			<if test="createBy != null">
- 				and t.create_by = #{createBy}
- 			</if>
- 			<if test="createTime != null">
- 				and t.create_time = #{createTime}
- 			</if>
- 			<if test="updateBy != null">
- 				and t.update_by = #{updateBy}
- 			</if>
- 			<if test="updateTime != null">
- 				and t.update_time = #{updateTime}
- 			</if>
- 			<if test="remark != null">
- 				and t.remark = #{remark}
- 			</if>
+
 		</where>
 		order by t.parent_id, t.sort;
 	</select>
@@ -367,9 +332,6 @@
 			</if>
 			<if test="visible != null">
 				and t.visible = #{visible}
-			</if>
-			<if test="tenantId != null">
-				and t.tenant_id = #{tenantId}
 			</if>
 			<if test="status != null">
 				and t.status = #{status}

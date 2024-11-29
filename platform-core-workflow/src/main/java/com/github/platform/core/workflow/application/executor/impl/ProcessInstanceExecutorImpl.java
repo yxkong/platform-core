@@ -1,5 +1,7 @@
 package com.github.platform.core.workflow.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
+import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.common.service.BaseExecutor;
@@ -39,7 +41,7 @@ import java.util.Objects;
 */
 @Service
 @Slf4j
-public class ProcessInstanceExecutorImpl extends BaseExecutor implements IProcessInstanceExecutor {
+public class ProcessInstanceExecutorImpl extends SysExecutor implements IProcessInstanceExecutor {
     @Resource
     private IProcessInstanceGateway gateway;
     @Resource
@@ -57,9 +59,10 @@ public class ProcessInstanceExecutorImpl extends BaseExecutor implements IProces
     };
     @Override
     public void insert(ProcessInstanceContext context){
+        context.setTenantId(getTenantId(context));
         ProcessInstanceDto record = gateway.insert(context);
         if (Objects.isNull(record.getId())){
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
     }
     @Override
@@ -80,7 +83,7 @@ public class ProcessInstanceExecutorImpl extends BaseExecutor implements IProces
         int d = gateway.delete(id);
         processInstanceService.delete(dto.getInstanceId(), LoginUserInfoUtil.getLoginName()+"删除流程实例！");
         if (d <=0 ){
-            exception(ResultStatusEnum.COMMON_DELETE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
     }
 
@@ -94,8 +97,15 @@ public class ProcessInstanceExecutorImpl extends BaseExecutor implements IProces
         formDataGateway.insertList(formdataList,instanceNo);
     }
 
+    private Integer getTenantId(ProcessRunContext context) {
+        if (AuthUtil.isSuperAdmin() ){
+            return Objects.nonNull(context)?context.getTenantId():null;
+        }
+        return LoginUserInfoUtil.getTenantId();
+    }
     @Override
     public void createProcessInstance(ProcessRunContext context){
+        context.setTenantId(getTenantId(context));
         if (log.isDebugEnabled()){
             log.debug("流程启动参数：{}", JsonUtils.toJson(context));
         }
@@ -142,7 +152,7 @@ public class ProcessInstanceExecutorImpl extends BaseExecutor implements IProces
                 processInstanceService.delete(instanceId,"创建流程实例失败删除流程！");
             }
             updateInstance(dto.getId(), null,context.getBizNo(),InstanceStatusEnum.ERROR);
-            exception(WorkflowApplicationEnum.PROCESS_INSTANCE_ADD_FAIL,e);
+            throw exception(WorkflowApplicationEnum.PROCESS_INSTANCE_ADD_FAIL,e);
         }
     }
 
@@ -195,14 +205,14 @@ public class ProcessInstanceExecutorImpl extends BaseExecutor implements IProces
     private ProcessInstanceDto getProcessInstanceDto(String bizNo) {
         ProcessInstanceDto dto = gateway.findByBizNoAndProcessNo(bizNo,null);
         if (Objects.isNull(dto)){
-            exception(WorkflowApplicationEnum.PROCESS_INSTANCE_NO_FOUND);
+            throw exception(WorkflowApplicationEnum.PROCESS_INSTANCE_NO_FOUND);
         }
         return dto;
     }
     private ProcessInstanceDto getProcessInstanceDto(Long id) {
         ProcessInstanceDto dto = gateway.findById(id);
         if (Objects.isNull(dto)){
-            exception(WorkflowApplicationEnum.PROCESS_INSTANCE_NO_FOUND);
+            throw exception(WorkflowApplicationEnum.PROCESS_INSTANCE_NO_FOUND);
         }
         return dto;
     }

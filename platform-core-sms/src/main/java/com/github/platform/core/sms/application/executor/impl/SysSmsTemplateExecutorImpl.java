@@ -1,5 +1,6 @@
 package com.github.platform.core.sms.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.sms.application.executor.ISysSmsTemplateExecutor;
@@ -26,17 +27,19 @@ import java.util.Objects;
 */
 @Service
 @Slf4j
-public class SysSmsTemplateExecutorImpl extends BaseExecutor implements ISysSmsTemplateExecutor {
+public class SysSmsTemplateExecutorImpl extends SysExecutor implements ISysSmsTemplateExecutor {
     @Resource
     private ISysSmsTemplateGateway gateway;
     @Override
     public PageBean<SysSmsTemplateDto> query(SysSmsTemplateQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     };
     @Override
     public void insert(SysSmsTemplateContext context){
         String tempNo = SequenceUtil.nextSequenceNum(SmsSequenceEnum.MSS_SMS_TEMPLATE);
         context.setTempNo(tempNo);
+        context.setTenantId(getTenantId(context));
         SysSmsTemplateDto record = gateway.insert(context);
         if (Objects.isNull(record.getId())){
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
@@ -49,6 +52,7 @@ public class SysSmsTemplateExecutorImpl extends BaseExecutor implements ISysSmsT
     @Override
     public void update(SysSmsTemplateContext context) {
         context.setTempNo(null);
+        context.setTenantId(getTenantId(context));
         Pair<Boolean, SysSmsTemplateDto> update = gateway.update(context);
         if (!update.getKey()){
             throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);

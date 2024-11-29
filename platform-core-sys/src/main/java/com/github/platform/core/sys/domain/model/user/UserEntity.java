@@ -104,7 +104,7 @@ public class UserEntity implements Serializable {
      */
     @JsonIgnore
     public boolean login(String userPwd){
-        return EncryptUtil.me.verifyPwd(this.salt,userPwd,this.md5Pwd);
+        return EncryptUtil.getInstance().verifyPwd(this.salt,userPwd,this.md5Pwd);
     }
 
     /**

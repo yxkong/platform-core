@@ -1,6 +1,6 @@
 package com.github.platform.core.sys.application.executor.impl;
 
-import com.github.platform.core.common.service.BaseExecutor;
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.sys.application.executor.ISysDictExecutor;
 import com.github.platform.core.sys.domain.constant.DictConstant;
@@ -27,13 +27,14 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
-public class SysDictExecutorImpl extends BaseExecutor implements ISysDictExecutor {
+public class SysDictExecutorImpl extends SysExecutor implements ISysDictExecutor {
     @Resource
     private ISysDictGateway dictGateway;
     @Resource
     private ISysDictTypeGateway dictTypeGateway;
     @Override
     public PageBean<SysDictDto> query(SysDictQueryContext context) {
+        context.setTenantId(getTenantId(context));
         return dictGateway.query(context);
     }
 
@@ -49,6 +50,7 @@ public class SysDictExecutorImpl extends BaseExecutor implements ISysDictExecuto
 
     @Override
     public void update(SysDictContext context) {
+        context.setTenantId(getTenantId(context));
         dictGateway.update(context);
     }
     @Override
@@ -61,11 +63,11 @@ public class SysDictExecutorImpl extends BaseExecutor implements ISysDictExecuto
     }
 
     @Override
-    public List<SysDictDto> findByType(SysDictQueryContext queryContext) {
-        if (Objects.equals(DictConstant.ALL_DICT,queryContext.getDictType())){
+    public List<SysDictDto> findByType(SysDictQueryContext context) {
+        if (Objects.equals(DictConstant.ALL_DICT,context.getDictType())){
             return dictTypeGateway.findAllType();
         }
-        return dictGateway.findByType(queryContext.getDictType());
+        return dictGateway.findByType(context.getDictType(), getTenantId(context));
     }
 
 

@@ -95,7 +95,8 @@ public class FormInfoGatewayImpl extends BaseGatewayImpl implements IFormInfoGat
         list.forEach(s->{
             FormInfoDto dto = convert.toFormView(s,null);
             if (s.isOption()){
-                dto.setOptions(sysCommonGateway.getOptionsByType(s.getOptionName()));
+                //TODO 租户处理
+                dto.setOptions(sysCommonGateway.getOptionsByType(s.getOptionName(),s.getTenantId()));
             }
             rst.add(dto);
         });

@@ -7,6 +7,7 @@
 		<id column="name" property="name" />
 		<id column="expression" property="expression" />
 		<id column="processType" property="processType" />
+		<id column="tenantId" property="tenantId" />
 		<id column="status" property="status" />
 		<id column="createTime" property="createTime" />
 		<id column="updateTime" property="updateTime" />
@@ -20,6 +21,7 @@
 		t.expression,
 		t.process_type as processType,
 		t.status,
+		t.tenant_id as tenantId,
 		t.create_time as createTime,
 		t.update_time as updateTime,
 		t.update_by as updateBy,
@@ -41,6 +43,9 @@
 			</if>
 			<if test="processType != null  and processType != ''">
 				process_type,
+			</if>
+			<if test="tenantId != null">
+				tenant_id,
 			</if>
 			<if test="status != null ">
 				status,
@@ -73,6 +78,9 @@
 			</if>
 			<if test="processType != null  and processType != ''">
 				#{processType},
+			</if>
+			<if test="tenantId != null">
+				#{tenantId},
 			</if>
 			<if test="status != null ">
 				#{status},
@@ -107,6 +115,9 @@
 			<if test="processType != null  and processType != ''">
 				process_type = #{processType},
 			</if>
+			<if test="tenantId != null">
+				tenant_id = #{tenantId},
+			</if>
 			<if test="status != null ">
 				status = #{status},
 			</if>
@@ -140,40 +151,6 @@
 		</where>
 		limit 200
 	</select>
-	<select id="findList" resultMap="BaseResultMap" parameterType="java.util.Map">
-		select 
-		<include refid="BaseColumnList" />
-		from t_flw_process_condition t
-		<where>
-			<if test="id != null ">
-				and t.id = #{id}
-			</if>
-			<if test="name != null  and name != ''">
-				and t.name = #{name}
-			</if>
-			<if test="expression != null  and expression != ''">
-				and t.expression = #{expression}
-			</if>
-			<if test="processType != null  and processType != ''">
-				and t.process_type = #{processType}
-			</if>
-			<if test="status != null ">
-				and t.status = #{status}
-			</if>
-			<if test="updateBy != null  and updateBy != ''">
-				and t.update_by = #{updateBy}
-			</if>
-			<if test="createBy != null  and createBy != ''">
-				and t.create_by = #{createBy}
-			</if>
-			<if test="searchStartTime != null">
-				and t.create_time <![CDATA[>=]]> #{searchStartTime}
-			</if>
-			<if test="searchEndTime != null">
-				and t.create_time <![CDATA[<=]]> #{searchEndTime}
-			</if>
-		</where>
-	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.workflow.domain.common.entity.ProcessConditionBase">
 		select 
 		<include refid="BaseColumnList" />
@@ -185,61 +162,20 @@
 			<if test="name != null  and name != ''">
 				and t.name = #{name}
 			</if>
-			<if test="expression != null  and expression != ''">
-				and t.expression = #{expression}
-			</if>
 			<if test="processType != null  and processType != ''">
 				and t.process_type = #{processType}
 			</if>
+			<if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
 			<if test="status != null ">
 				and t.status = #{status}
-			</if>
-			<if test="updateBy != null  and updateBy != ''">
-				and t.update_by = #{updateBy}
-			</if>
-			<if test="createBy != null  and createBy != ''">
-				and t.create_by = #{createBy}
 			</if>
 			<if test="searchStartTime != null">
 				and t.create_time <![CDATA[>=]]> #{searchStartTime}
 			</if>
 			<if test="searchEndTime != null">
 				and t.create_time <![CDATA[<=]]> #{searchEndTime}
-			</if>
-		</where>
-	</select>
-	<select id="findListCount" resultType="java.lang.Long"  parameterType="java.util.Map">
-		select count(t.id) from t_flw_process_condition t
-		<where>
-			<if test="id != null ">
-				and t.id = #{id}
-			</if>
-			<if test="name != null  and name != ''">
-				and t.name = #{name}
-			</if>
-			<if test="expression != null  and expression != ''">
-				and t.expression = #{expression}
-			</if>
-			<if test="processType != null  and processType != ''">
-				and t.process_type = #{processType}
-			</if>
-			<if test="status != null ">
-				and t.status = #{status}
-			</if>
-			<if test="createTime != null ">
-				and t.create_time = #{createTime}
-			</if>
-			<if test="updateTime != null ">
-				and t.update_time = #{updateTime}
-			</if>
-			<if test="updateBy != null  and updateBy != ''">
-				and t.update_by = #{updateBy}
-			</if>
-			<if test="createBy != null  and createBy != ''">
-				and t.create_by = #{createBy}
-			</if>
-			<if test="remark != null  and remark != ''">
-				and t.remark = #{remark}
 			</if>
 		</where>
 	</select>
@@ -252,26 +188,14 @@
 			<if test="name != null  and name != ''">
 				and t.name = #{name}
 			</if>
-			<if test="expression != null  and expression != ''">
-				and t.expression = #{expression}
-			</if>
 			<if test="processType != null  and processType != ''">
 				and t.process_type = #{processType}
 			</if>
+		    <if test="tenantId != null">
+				and t.tenant_id = #{tenantId}
+			</if>
 			<if test="status != null ">
 				and t.status = #{status}
-			</if>
-			<if test="createTime != null ">
-				and t.create_time = #{createTime}
-			</if>
-			<if test="updateTime != null ">
-				and t.update_time = #{updateTime}
-			</if>
-			<if test="updateBy != null  and updateBy != ''">
-				and t.update_by = #{updateBy}
-			</if>
-			<if test="createBy != null  and createBy != ''">
-				and t.create_by = #{createBy}
 			</if>
 			<if test="remark != null  and remark != ''">
 				and t.remark = #{remark}

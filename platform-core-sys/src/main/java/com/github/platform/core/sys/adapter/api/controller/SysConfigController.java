@@ -1,7 +1,6 @@
 package com.github.platform.core.sys.adapter.api.controller;
 
 import com.github.platform.core.auth.annotation.RequiredLogin;
-import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.cache.domain.entity.ConfigEntity;
 import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.Objects;
 
 /**
  * 配置管理
@@ -58,7 +56,8 @@ public class SysConfigController extends BaseController {
     @OptLog(module = "config",title = "根据配置key查询",persistent = false)
     @Operation(summary = "根据配置key查询",tags = {"config"})
     public ResultBean<ConfigEntity> getConfig(@Validated({Query.class}) @RequestBody SysConfigQuery query) {
-        SysConfigDto config = executor.getConfig(LoginUserInfoUtil.getTenantId(),query.getKey());
+        SysConfigQueryContext context = convert.toQuery(query);
+        SysConfigDto config = executor.getConfig(context);
         return buildSucResp(convert.toEntity(config));
     }
 
@@ -67,9 +66,6 @@ public class SysConfigController extends BaseController {
     @PostMapping("/add")
     public ResultBean add(@RequestBody SysConfigCmd cmd) {
         SysConfigContext context = convert.toContext(cmd);
-        if (Objects.isNull(context.getTenantId())){
-            context.setTenantId(LoginUserInfoUtil.getTenantId());
-        }
         executor.insert(context);
         return buildSucResp();
     }
@@ -92,8 +88,9 @@ public class SysConfigController extends BaseController {
     @Operation(summary = "重载配置",tags = {"config"})
     @OptLog(module = "reload",title = "重载配置",optType = LogOptTypeEnum.modify)
     @PostMapping("/reload")
-    public ResultBean reload(@Validated({Query.class}) @RequestBody SysConfigQuery query) {
-        executor.reload(query.getKey());
+    public ResultBean reload(@RequestBody SysConfigQuery query) {
+        SysConfigQueryContext context = convert.toQuery(query);
+        executor.reload(context);
         return buildSucResp();
     }
 

@@ -1,5 +1,6 @@
 package com.github.platform.core.workflow.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.common.service.BaseExecutor;
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
 */
 @Service
 @Slf4j
-public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProcessDefinitionExecutor {
+public class ProcessDefinitionExecutorImpl extends SysExecutor implements IProcessDefinitionExecutor {
     @Resource
     private IProcessDefinitionGateway gateway;
     @Resource
@@ -62,13 +63,14 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
     public void insert(ProcessDefinitionContext context){
         context.setProcessNo(SequenceUtil.nextSequenceNum(WorkFlowSequenceEnum.FLW));
         //同一个租户下只允许一个类型的流程
-        ProcessDefinitionDto processManageDto = gateway.findByProcessNo(context.getProcessNo(), context.getTenantId(),null);
+        context.setTenantId(getTenantId(context));
+        ProcessDefinitionDto processManageDto = gateway.findByProcessNo(context.getProcessNo(), null,context.getTenantId());
         if (Objects.nonNull(processManageDto)){
-            exception(WorkflowApplicationEnum.PROCESS_DEFINITION_EXIST_PROCESS_TYPE);
+            throw exception(WorkflowApplicationEnum.PROCESS_DEFINITION_EXIST_PROCESS_TYPE);
         }
         ProcessDefinitionDto record = gateway.insert(context);
         if (Objects.isNull(record.getId())){
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
     }
     @Override
@@ -79,15 +81,15 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
     public void designAndUpdate(ProcessDefinitionContext context){
 
         if (!context.validateUpdateProcessFile()){
-            exception(WorkflowApplicationEnum.update_process_file_validate);
+            throw exception(WorkflowApplicationEnum.update_process_file_validate);
         }
         // 1.判断是否可编辑（根据审批流编号processNo，归属的租户，查询未删除且草稿的审批流）
         ProcessDefinitionDto processManageDto = gateway.findById(context.getId());
         if (processManageDto == null) {
-            exception(WorkflowApplicationEnum.bpmn_is_null);
+            throw exception(WorkflowApplicationEnum.bpmn_is_null);
         }
         if(!processManageDto.isDraft()){
-            exception(WorkflowApplicationEnum.cannot_modify);
+            throw exception(WorkflowApplicationEnum.cannot_modify);
         }
 
             // 2.判断文件是否合法
@@ -99,17 +101,17 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
     @Override
     public void update(ProcessDefinitionContext context) {
         context.setProcessFile(null);
-        context.setTenantId(LoginUserInfoUtil.getTenantId());
+        context.setTenantId(getTenantId(context));
         Pair<Boolean, ProcessDefinitionDto> update = gateway.update(context);
         if (!update.getKey()){
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
     }
     @Override
     public void delete(Long id) {
         ProcessDefinitionDto dto = gateway.findById(id);
         if (!dto.isDraft()){
-            exception(WorkflowApplicationEnum.delete_not_draft);
+            throw exception(WorkflowApplicationEnum.delete_not_draft);
         }
         ProcessDefinitionContext context = ProcessDefinitionContext.builder().id(id).tenantId(LoginUserInfoUtil.getTenantId()).deleted(DeleteEnum.YES.getStatus()).build();
         gateway.update(context);
@@ -119,11 +121,11 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
     public void startProcessById(Long id) {
         ProcessDefinitionDto dto = gateway.findById(id);
         if (dto.isOn()){
-            exception(WorkflowApplicationEnum.start_is_on);
+            throw exception(WorkflowApplicationEnum.start_is_on);
         }
         String xmlFile = processXmlFile(dto);
         if (StringUtils.isEmpty(xmlFile)){
-            exception(WorkflowApplicationEnum.start_file_illegality);
+            throw exception(WorkflowApplicationEnum.start_file_illegality);
         }
         ProcessDefinitionContext context = ProcessDefinitionContext.builder().id(id)
                 .status(ProcessStatusEnum.ON.getStatus())
@@ -196,7 +198,7 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
         // 2. process仅支持一个
         List<Process> processes = bpmnModel.getProcesses();
         if (CollectionUtil.isEmpty(processes)) {
-            exception(WorkflowApplicationEnum.bpmn_size_error);
+            throw exception(WorkflowApplicationEnum.bpmn_size_error);
         }
         // 开始节点相关校验
         validateStartEvent(bpmnModel);
@@ -208,29 +210,29 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
     private void validateStartEvent(BpmnModel bpmnModel) {
         Collection<StartEvent> startEvents = BpmnModelUtils.getAllStartEvent(bpmnModel);
         if (CollectionUtil.isEmpty(startEvents)) {
-            exception(WorkflowApplicationEnum.require_start);
+            throw exception(WorkflowApplicationEnum.require_start);
         }
         if (startEvents.size() > 1) {
-            exception(WorkflowApplicationEnum.require_start_only_one);
+            throw exception(WorkflowApplicationEnum.require_start_only_one);
         }
         // 开始节点只有一条流出线
         for (StartEvent startEvent : startEvents) {
             List<SequenceFlow> outgoingFlows = BpmnModelUtils.getElementOutgoingFlows(startEvent);
             if (outgoingFlows.size() != 1) {
-                exception(WorkflowApplicationEnum.require_start_only_out_one);
+                throw exception(WorkflowApplicationEnum.require_start_only_out_one);
             }
         }
     }
     private void validateEndEvent(BpmnModel bpmnModel) {
         Collection<EndEvent> endEvents = BpmnModelUtils.getAllEndEvent(bpmnModel);
         if (CollectionUtil.isEmpty(endEvents)) {
-            exception(WorkflowApplicationEnum.require_end_only_one);
+            throw exception(WorkflowApplicationEnum.require_end_only_one);
         }
         // 结束节点必须有流入线
         for (EndEvent endEvent : endEvents) {
             List<SequenceFlow> incomingFlows = BpmnModelUtils.getElementIncomingFlows(endEvent);
             if (incomingFlows.isEmpty()) {
-                exception(WorkflowApplicationEnum.require_end_only_in_one);
+                throw exception(WorkflowApplicationEnum.require_end_only_in_one);
             }
         }
     }
@@ -241,7 +243,7 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
     private void validateUserTasks(BpmnModel bpmnModel) {
         Collection<UserTask> userTasks = BpmnModelUtils.getAllUserTaskEvent(bpmnModel);
         if (CollectionUtil.isEmpty(userTasks)) {
-            exception(WorkflowApplicationEnum.bpmn_user_task_error);
+            throw exception(WorkflowApplicationEnum.bpmn_user_task_error);
         }
         for (UserTask userTask : userTasks) {
             if (userTask.getAttributes().get(FlwConstant.ASSIGNEE_TYPE) == null){
@@ -253,32 +255,32 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
                 //approverType="USERS" flowable:candidateUsers="test01,xxx" flowable:text="测试,xxx"
                 // 当为多用户时 assignee 值是 ${assignee} 且 candidateUsers至少有数据。否则，assignee应为具体用户
                 if (StringUtils.isBlank(userTask.getAssignee()) ||(FlwConstant.USER_TASK_ASSIGNEE.equals(userTask.getAssignee())&& userTask.getCandidateUsers().size() == 0)) {
-                    exception(WorkflowApplicationEnum.bpmn_assignee_error1).format(userTask.getName());
+                    throw exception(WorkflowApplicationEnum.bpmn_assignee_error1).format(userTask.getName());
                 }
             } else if (FlwConstant.ASSIGNEE_ROLES.equals(assigneeType.getValue())){
                 //approverType="ROLES" flowable:assignee="${assignee}" flowable:candidateGroups="ROLE8,ROLE5">
                 if (FlwConstant.USER_TASK_ASSIGNEE.equals(userTask.getAssignee()) && userTask.getCandidateGroups().size() == 0){
-                    exception(WorkflowApplicationEnum.bpmn_assignee_error2).format(userTask.getName());
+                    throw exception(WorkflowApplicationEnum.bpmn_assignee_error2).format(userTask.getName());
                 }
             } else if (FlwConstant.ASSIGNEE_DEPT.equals(assigneeType.getValue())){
                 if (FlwConstant.USER_TASK_ASSIGNEE.equals(userTask.getAssignee()) && userTask.getCandidateGroups().size() == 0){
-                    exception(WorkflowApplicationEnum.bpmn_assignee_error3);
+                    throw exception(WorkflowApplicationEnum.bpmn_assignee_error3);
                 }
             } else if (FlwConstant.ASSIGNEE_INITIATOR.equals(assigneeType.getValue())){
                 if (FlwConstant.USER_TASK_ASSIGNEE.equals(userTask.getAssignee()) && userTask.getCandidateGroups().size() == 0){
-                    exception(WorkflowApplicationEnum.bpmn_assignee_error4).format(userTask.getName());
+                    throw exception(WorkflowApplicationEnum.bpmn_assignee_error4).format(userTask.getName());
                 }
             }
 
             // 流入线检查
             List<SequenceFlow> incomingFlows = BpmnModelUtils.getElementIncomingFlows(userTask);
             if (CollectionUtil.isEmpty(incomingFlows)) {
-                exception(WorkflowApplicationEnum.incoming_flows).format(userTask.getId());
+                throw exception(WorkflowApplicationEnum.incoming_flows).format(userTask.getId());
             }
             // 流出线检查
             List<SequenceFlow> outgoingFlows = BpmnModelUtils.getElementOutgoingFlows(userTask);
             if (outgoingFlows.size() <= 0 ) {
-                exception(WorkflowApplicationEnum.outgoing_flows).format(userTask.getId());
+                throw exception(WorkflowApplicationEnum.outgoing_flows).format(userTask.getId());
             }
         }
     }
@@ -294,11 +296,11 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
         for (ExclusiveGateway gateway : gateways) {
             Collection<SequenceFlow> outgoings = BpmnModelUtils.getElementOutgoingFlows(gateway);
             if (outgoings.size() < 2) {
-                exception(WorkflowApplicationEnum.require_exclusive_gateway);
+                throw exception(WorkflowApplicationEnum.require_exclusive_gateway);
             }
             for (SequenceFlow sequenceFlow : outgoings) {
                 if (StringUtils.isEmpty(sequenceFlow.getConditionExpression())) {
-                    exception(WorkflowApplicationEnum.sequence_not_null);
+                    throw exception(WorkflowApplicationEnum.sequence_not_null);
                 }
             }
         }
@@ -318,12 +320,12 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
         //1. xml字符串转BpmnModel
         BpmnModel bpmnModel = getBpmnModel(dto.getProcessFile());
         if (Objects.isNull(bpmnModel)) {
-            exception(WorkflowApplicationEnum.start_file_illegality1);
+            throw exception(WorkflowApplicationEnum.start_file_illegality1);
         }
         //2. 审批流更改id及name
         List<Process> processes = bpmnModel.getProcesses();
         if (CollectionUtils.isEmpty(processes) || processes.size() > 1) {
-            exception(WorkflowApplicationEnum.start_file_illegality2);
+            throw exception(WorkflowApplicationEnum.start_file_illegality2);
         }
         Process process = processes.get(0);
         process.setId(dto.getProcessNo());
@@ -333,7 +335,7 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
         // 4. EndEvent 结束事件新增executionListener
         Collection<EndEvent> endEvents = BpmnModelUtils.getAllEndEvent(bpmnModel);
         if (null == endEvents) {
-            exception(WorkflowApplicationEnum.start_file_illegality6);
+            throw exception(WorkflowApplicationEnum.start_file_illegality6);
         }
         endEvents.forEach(endEvent -> {
             //给结束节点添加监听
@@ -354,7 +356,7 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
             if (FlwConstant.ASSIGNEE_USERS.equals(assigneeType.getValue())){
                 // 当为多用户时 assignee 值是 ${assignee} 且 candidateUsers至少有数据。否则，assignee应为具体用户
                 if (StringUtils.isEmpty(userTask.getAssignee())) {
-                    exception(WorkflowApplicationEnum.start_file_illegality3).format(userTask.getName());
+                    throw exception(WorkflowApplicationEnum.start_file_illegality3).format(userTask.getName());
                 }
                 //approverType="USERS" flowable:candidateUsers="test01,xxx" flowable:text="测试,xxx"
                 // 当为多用户时 assignee 值是 ${assignee} 且 candidateUsers至少有数据。否则，assignee应为具体用户
@@ -364,14 +366,14 @@ public class ProcessDefinitionExecutorImpl extends BaseExecutor implements IProc
                     if (length > FlwConstant.USER_TASK_CANDIDATEUSERS_LENGTH){
                         log.error("流程：{} 名称:{} 多用户设置过多，导致长度过长,直接拦截", dto.getProcessNo(), dto.getProcessName());
                     }
-                    exception(WorkflowApplicationEnum.start_file_illegality4).format(userTask.getName());
+                    throw exception(WorkflowApplicationEnum.start_file_illegality4).format(userTask.getName());
                 }
                 //给用户任务添加监听
 //                userTask.setTaskListeners(addFlowableListener(userTask.getTaskListeners(),  ProcessListenerEnum.USER_TASK_CREATE));
             } else if (FlwConstant.ASSIGNEE_ROLES.equals(assigneeType.getValue())){
                 //dataType="ROLES" flowable:assignee="${assignee}" flowable:candidateGroups="ROLE8,ROLE5">
                 if (userTask.getCandidateGroups().size() == 0){
-                    exception(WorkflowApplicationEnum.start_file_illegality5).format(userTask.getName());
+                    throw exception(WorkflowApplicationEnum.start_file_illegality5).format(userTask.getName());
                 }
             }
             //添加监听

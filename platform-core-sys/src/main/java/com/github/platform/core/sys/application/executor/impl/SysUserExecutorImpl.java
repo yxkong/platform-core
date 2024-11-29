@@ -1,9 +1,9 @@
 package com.github.platform.core.sys.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
-import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.SignUtil;
 import com.github.platform.core.common.utils.StringUtils;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  * @desc SysUserExecutorImpl
  */
 @Service
-public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecutor {
+public class SysUserExecutorImpl extends SysExecutor implements ISysUserExecutor {
     @Resource
     private ISysUserGateway userGateway;
     @Resource
@@ -50,6 +50,7 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
 
     @Override
     public PageBean<SysUserDto> query(SysUserQueryContext context) {
+        context.setTenantId(getTenantId(context));
         PageBean<SysUserDto> pageBean = userGateway.query(context);
         dealData(pageBean);
         return pageBean;
@@ -84,8 +85,15 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
      */
     @Override
     public UserEntity insert(RegisterContext context) {
+        context.setTenantId(getTenantId(context));
         SysUserService userService = new SysUserService(userGateway);
         return userService.addUser(context);
+    }
+    private Integer getTenantId(RegisterContext context) {
+        if (AuthUtil.isSuperAdmin() ){
+            return Objects.nonNull(context)?context.getTenantId():null;
+        }
+        return LoginUserInfoUtil.getTenantId();
     }
 
     /**
@@ -98,6 +106,7 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
     public void update(RegisterContext context) {
         SysUserService userService = new SysUserService(userGateway);
         //修改用户信息
+        context.setTenantId(getTenantId(context));
         userService.editUser(context);
 
         userGateway.reloadToken(context.getUserName(),context.getTenantId());
@@ -176,10 +185,11 @@ public class SysUserExecutorImpl extends BaseExecutor implements ISysUserExecuto
     public List<OptionsDto> queryUsers(SysUserQueryContext query) {
         List<OptionsDto> rst = new ArrayList<>();
         List<SysUserDto> users = null;
+        query.setTenantId(getTenantId(query));
         if (StringUtils.isNotEmpty(query.getRoleKey())){
             List<String> roles = new ArrayList<>();
             roles.add(query.getRoleKey());
-            users = userGateway.findByRoleKeys(roles,LoginUserInfoUtil.getTenantId());
+            users = userGateway.findByRoleKeys(roles,query.getTenantId());
         }else if (Objects.nonNull(query.getDeptId())){
             users = userGateway.findListBy(query);
         }

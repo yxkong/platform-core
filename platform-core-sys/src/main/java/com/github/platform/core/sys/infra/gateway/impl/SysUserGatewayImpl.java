@@ -86,6 +86,8 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     private ISysDeptGateway deptGateway;
     @Resource
     private AuthProperties authProperties;
+    @Resource
+    private ISysUserRoleGateway sysUserRoleGateway;
 
     @Override
     public PageBean<SysUserDto> query(SysUserQueryContext context) {
@@ -105,7 +107,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     }
     @Override
     public PageBean<SysUserDto> queryByDept(SysUserQueryContext context) {
-        //获取所有的部门
+        //获取所有的子部门
         List<SysDeptDto> deptDtos= deptGateway.findAllDept(context.getDeptId());
         Set<Long> deptIds = deptDtos.stream().map(SysDeptDto::getId).collect(Collectors.toSet());
         PageHelper.startPage(context.getPageNum(), context.getPageSize());
@@ -126,12 +128,6 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     public UserEntity addUser(RegisterContext context) {
         Pair<String, PwdResult> pair = initPwd(context.getLoginName(),context.getPwd());
         SysUserBase sysUser = userInfraConvert.of(context, pair.getKey(), pair.getValue().getMd5Pwd());
-
-        if (!AuthUtil.isSuperAdmin()) {
-            //非系统管理员的租户，以操作人的租户为准
-            sysUser.setTenantId(LoginUserInfoUtil.getTenantId());
-        }
-
         int insert = sysUserMapper.insert(sysUser);
         SysUserLogBase sysUserLog = userInfraConvert.of(context, sysUser.getCreateBy(), context.getLogBizTypeEnum());
         String ip = WebUtil.getIpAddress();
@@ -139,7 +135,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
         sysUserLog.setTenantId(sysUser.getTenantId());
         int log = sysUserLogMapper.insert(sysUserLog);
         //级联保存用户角色关系
-        roleGateway.addUserRole(sysUser.getId(),sysUser.getTenantId() ,context.getRoleKeys());
+        sysUserRoleGateway.addUserRole(sysUser.getId(),sysUser.getTenantId() ,context.getRoleKeys());
         return userInfraConvert.target(sysUser, null);
     }
 
@@ -159,8 +155,20 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
             pwd = getDefaultPwd();
         }
         //加密密码
-        Pair<String, String> pair = EncryptUtil.me.md5Pwd(pwd);
+        Pair<String, String> pair = EncryptUtil.getInstance().md5(pwd);
         return Pair.of(pair.getKey(),new PwdResult(loginName,pwd,pair.getValue()));
+    }
+
+    @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'l:'+ #loginName+#tenantId",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'m:'+ #mobile+#tenantId",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'s:'+ #secretKey",cacheManager = CacheConstant.cacheManager)
+            }
+    )
+    public void deleteCache(String loginName, String mobile,String secretKey, Integer tenantId) {
+
     }
 
     /**
@@ -173,15 +181,16 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'l:'+ #context.loginName",cacheManager = CacheConstant.cacheManager),
-                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'m:'+ #context.mobile",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'id:'+ #context.id",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'l:'+ #context.loginName+#context.tenantId",cacheManager = CacheConstant.cacheManager),
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'m:'+ #context.mobile+#context.tenantId",cacheManager = CacheConstant.cacheManager),
                     @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON +'s:'+ #context.secretKey",cacheManager = CacheConstant.cacheManager)
             }
     )
     public void editUser(RegisterContext context) {
         SysUserBase sysUser = userInfraConvert.of(context, "", "");
         int rows = sysUserMapper.updateById(sysUser);
-        roleGateway.addUserRole(sysUser.getId(), sysUser.getTenantId(), context.getRoleKeys());
+        sysUserRoleGateway.addUserRole(sysUser.getId(), sysUser.getTenantId(), context.getRoleKeys());
         //禁用以后，清除用户登录信息
         if (StatusEnum.OFF.getStatus().equals(context.getStatus())) {
             tokenService.expireByLoginName(context.getTenantId(),context.getLoginName());
@@ -199,13 +208,13 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     public PwdResult resetPwd(ResetPwdContext context) {
         String salt = RandomStringUtils.randomAlphabetic(6);
         String defaultPwd = getDefaultPwd();
-        String md5Pwd = MD5Utils.md5Salt(defaultPwd, salt);
-        SysUserBase sysUser = userInfraConvert.of(context, salt, md5Pwd);
+        Pair<String, String> pair = EncryptUtil.getInstance().md5(defaultPwd);
+        SysUserBase sysUser = userInfraConvert.of(context, pair.getKey(), pair.getValue());
         sysUser.setLastModifyPwdTime(null);
         int rows = sysUserMapper.modifyPwd(sysUser);
         //清除
         tokenService.expireByLoginName(context.getTenantId(),context.getLoginName());
-        return new PwdResult(context.getLoginName(), defaultPwd,md5Pwd);
+        return new PwdResult(context.getLoginName(), defaultPwd, pair.getValue());
     }
 
     /**
@@ -283,6 +292,7 @@ public class SysUserGatewayImpl extends BaseGatewayImpl implements ISysUserGatew
     }
 
     @Override
+    @Cacheable(cacheNames = CACHE_NAME, key =  "#root.target.PREFIX_COLON +'id:'+ #id", cacheManager = CacheConstant.cacheManager, unless = "#result == null")
     public SysUserDto findByUserId(Long id) {
         SysUserBase record = sysUserMapper.findById(id);
         return userInfraConvert.toDto(record);

@@ -5,13 +5,15 @@ import com.github.platform.core.standard.util.MD5Utils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 
@@ -45,7 +47,7 @@ public class EncryptUtil {
      * AES
      */
     public static final int KEYSIZEAES = 128;
-    public static EncryptUtil me = new EncryptUtil();
+    private static final EncryptUtil me = new EncryptUtil();
 
     private EncryptUtil() {
         //单例
@@ -185,26 +187,49 @@ public class EncryptUtil {
     }
 
     /**
-     * MD5加密
-     *
-     * @param str 明文
-     * @return 密文
+     * 通用md5加密
+     * @param text
+     * @param salt
+     * @return
      */
-    public String md5(String str) {
-        return messageDigest(str, MD5);
-    }
-    /**
-     * md5加密密码，返回盐值
-     * @param pwd
-     * @return 盐值和加密密码，需要用户保存盐值
-     */
-    public Pair<String,String> md5Pwd(String pwd){
-        Assert.notNull(pwd,"密码为空！");
-        // 随机生成盐值（一个账户，落库以后盐值不变）
-        String salt = StringUtils.randomStr(6);
+    public String md5(String text,String salt){
         //加密密码
-        String md5Pwd = MD5Utils.md5Salt(pwd, salt);
-        return Pair.of(salt,md5Pwd);
+        return md5(text,salt,false);
+    }
+
+    /**
+     * md5加密
+     * @param text 文本
+     * @param salt 盐值
+     * @param flag true 将一些特殊符号移除  false 返回t通用jie结果
+     */
+    public String md5(String text,String salt,Boolean flag){
+        String md5Str = MD5Utils.md5Salt(text, salt);
+        if (flag){
+            return md5Str.replaceAll("/", "").replaceAll("\\\\", "").replaceAll("\\+", "").replaceAll("=", "");
+        }
+        return md5Str;
+    }
+
+    /**
+     * md5加密文本，返回盐值(已将特殊f符号移除)
+     * @param text 加密文本
+     * @return 盐值和加密结果
+     */
+    public Pair<String,String> md5(String text){
+        return md5(text,6);
+    }
+
+
+    /**
+     * md5加密文本，返回盐值
+     * @param text 加密文本
+     * @param length 盐值长度
+     */
+    public Pair<String,String> md5(String text,Integer length){
+        // 随机生成盐值（一个账户，落库以后盐值不变）
+        String salt = StringUtils.randomStr(length);
+        return Pair.of(salt,md5(text,salt,true));
     }
 
     /**
@@ -219,16 +244,33 @@ public class EncryptUtil {
         return StringUtils.equals(md5Pwd,newMd5Pwd);
     }
 
-
     /**
-     * MD5 加密
-     *
-     * @param str 明文
-     * @param key 盐值
-     * @return 密文
+     *  文件hash 码获取加密
+     * @param fis
+     * @return
+     * @throws Exception
      */
-    public String md5(String str, String key) {
-        return keyGeneratorMac(str, HmacMD5, key);
+    public String md5FileHash(InputStream fis) {
+        try {
+             // 使用指定的哈希算法 (MD5, SHA-1, SHA-256)
+            MessageDigest digest = MessageDigest.getInstance(MD5);
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                digest.update(buffer, 0, bytesRead);
+            }
+            byte[] hashBytes = digest.digest();
+
+            // 转换为十六进制字符串
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        }catch (Exception e){
+
+        }
+        return null;
     }
 
     /**
@@ -339,4 +381,13 @@ public class EncryptUtil {
         return str ^ key.hashCode();
     }
 
+    public static void main(String[] args) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(new File("D:\\test.txt"));
+            String s = EncryptUtil.getInstance().md5FileHash(fileInputStream);
+            System.out.printf(s);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

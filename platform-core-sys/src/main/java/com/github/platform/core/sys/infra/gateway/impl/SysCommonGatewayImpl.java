@@ -43,22 +43,22 @@ public class SysCommonGatewayImpl implements ISysCommonGateway {
     }
 
     @Override
-    public Map<String, String> getDictMap(String dictType) {
-        List<SysDictDto> dictDtos = sysDictGateway.findByType(dictType);
+    public Map<String, String> getDictMap(String dictType,Integer tenantId) {
+        List<SysDictDto> dictDtos = sysDictGateway.findByType(dictType,tenantId);
         return Optional.ofNullable(dictDtos)
                 .map(list -> list.stream().collect(Collectors.toMap(SysDictDto::getKey, SysDictDto::getLabel)))
                 .orElseGet(Collections::emptyMap);
     }
 
     @Override
-    public List<SysDictDto> getDict(String dictType) {
-        return sysDictGateway.findByType(dictType);
+    public List<SysDictDto> getDict(String dictType,Integer tenantId) {
+        return sysDictGateway.findByType(dictType,tenantId);
     }
 
     @Override
-    public List<OptionsDto> getOptionsByType(String dictType) {
+    public List<OptionsDto> getOptionsByType(String dictType,Integer tenantId) {
         List<OptionsDto> rst = new ArrayList<>();
-        List<SysDictDto> dictDtos = sysDictGateway.findByType(dictType);
+        List<SysDictDto> dictDtos = sysDictGateway.findByType(dictType,tenantId);
         if (CollectionUtil.isEmpty(dictDtos)){
             return rst;
         }

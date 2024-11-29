@@ -1,5 +1,6 @@
 package com.github.platform.core.gateway.admin.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.constant.SpringBeanNameConstant;
 import com.github.platform.core.common.service.BaseExecutor;
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRouteExecutor {
+public class GatewayRouteExecutorImpl extends SysExecutor implements IGatewayRouteExecutor {
     @Resource
     private IGatewayRouteGateway gatewayRouteGateway;
     @Resource
@@ -60,6 +61,7 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
     */
     @Override
     public PageBean<GatewayRouteDto> query(GatewayRouteQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gatewayRouteGateway.query(context);
     };
     /**
@@ -71,6 +73,7 @@ public class GatewayRouteExecutorImpl extends BaseExecutor implements IGatewayRo
     public String insertInfo(GatewayRouteInfoContext context){
 
         GatewayRouteContext routeBasic = context.getRouteBasic();
+        routeBasic.setTenantId(getTenantId(routeBasic));
         GatewayRouteDto record = gatewayRouteGateway.insert(routeBasic);
         if (Objects.isNull(record.getId())){
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);

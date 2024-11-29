@@ -39,9 +39,9 @@ public enum SysInfraResultEnum implements BaseResult {
     CONFIG_NOT_UPDATE_KEY("2324","更新配置时，不允许修改配置key" ),
     MENU_RELOAD_PERMISSION_EMPTY("2325", "重新加载租户管理员菜单权限数据为空！"),
 
-    ROLE_ALREADY_EXIST("2330","该角色名或角色标识在该租户中已存在,请核验"),
-    FORBID_DELETE_ROLE("2331","该角色下存在用户，无法删除，请核验"),
-    ROLE_NOT_FIND("2332","角色未找到"),
+//    ROLE_ALREADY_EXIST("2330","该角色名或角色标识在该租户中已存在,请核验"),
+//    FORBID_DELETE_ROLE("2331","该角色下存在用户，无法删除，请核验"),
+    ROLE_NOT_FIND("2332","对应租户中未找到对应的角色"),
 
     DEPT_ADD_FAIL("2340", "新增部门失败，非管理员不能创建顶级部门！"),
     DEPT_EXIST("2341","部门名称已存在" ),

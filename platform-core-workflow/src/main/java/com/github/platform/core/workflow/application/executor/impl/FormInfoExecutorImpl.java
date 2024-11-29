@@ -1,5 +1,6 @@
 package com.github.platform.core.workflow.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.workflow.application.executor.IFormInfoExecutor;
 import com.github.platform.core.workflow.domain.context.FormInfoContext;
@@ -23,18 +24,20 @@ import java.util.Objects;
 */
 @Service
 @Slf4j
-public class FormInfoExecutorImpl extends BaseExecutor implements IFormInfoExecutor {
+public class FormInfoExecutorImpl extends SysExecutor implements IFormInfoExecutor {
     @Resource
     private IFormInfoGateway gateway;
     @Override
     public PageBean<FormInfoDto> query(FormInfoQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     };
     @Override
     public void insert(FormInfoContext context){
+        context.setTenantId(getTenantId(context));
         FormInfoDto record = gateway.insert(context);
         if (Objects.isNull(record.getId())){
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
     }
     @Override
@@ -43,16 +46,17 @@ public class FormInfoExecutorImpl extends BaseExecutor implements IFormInfoExecu
     }
     @Override
     public void update(FormInfoContext context) {
+        context.setTenantId(getTenantId(context));
         Pair<Boolean, FormInfoDto> update = gateway.update(context);
         if (!update.getKey()){
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
     }
     @Override
     public void delete(Long id) {
         int d = gateway.delete(id);
         if (d <=0 ){
-            exception(ResultStatusEnum.COMMON_DELETE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
     }
 

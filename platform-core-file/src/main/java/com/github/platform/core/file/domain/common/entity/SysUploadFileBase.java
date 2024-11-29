@@ -35,6 +35,9 @@ public class SysUploadFileBase extends BaseAdminEntity   {
     /** 文件唯一标识 */
     @Schema(description = "文件唯一标识")
     protected String fileId;
+    /** 文件hash标识 */
+    @Schema(description = "文件hash标识")
+    protected String fileHash;
     /** 文件路径 */
     @Schema(description = "文件路径")
     protected String filePath;

@@ -21,10 +21,11 @@ import com.github.platform.core.sys.domain.dto.resp.MetaDto;
 import com.github.platform.core.sys.domain.dto.resp.RouterDto;
 import com.github.platform.core.sys.domain.dto.resp.TreeSelectDto;
 import com.github.platform.core.sys.domain.gateway.ISysMenuGateway;
+import com.github.platform.core.sys.domain.gateway.ISysRoleMenuGateway;
+import com.github.platform.core.sys.domain.gateway.ISysUserRoleGateway;
 import com.github.platform.core.sys.infra.constant.SysInfraResultEnum;
 import com.github.platform.core.sys.infra.convert.SysMenuInfraConvert;
 import com.github.platform.core.sys.infra.convert.SysRoleInfraConvert;
-import com.github.platform.core.sys.infra.service.sys.ISysRoleMenuService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,7 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
     @Resource
     private SysMenuInfraConvert infraConvert;
     @Resource
-    private ISysRoleMenuService sysRoleMenuService;
+    private ISysRoleMenuGateway sysRoleMenuGateway;
 
 
     @Override
@@ -241,7 +242,7 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
             throw exception(SysInfraResultEnum.MENU_RELOAD_PERMISSION_EMPTY);
         }
         //清空租户管理员所有权限数据
-        sysRoleMenuService.deleteByRoleKey(RoleConstant.TENANT_ADMIN_ROLE_KEY);
+        sysRoleMenuGateway.deleteByRoleKey(RoleConstant.TENANT_ADMIN_ROLE_KEY);
         addTenantMenu(menuIds);
     }
     private void addTenantMenu(List<Long> menuIds) {
@@ -251,7 +252,7 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
         }
         //为租户管理赋予权限
         roles.forEach(s->{
-            sysRoleMenuService.insertList(menuIds,roleInfraConvert.toDto(s),s.getTenantId());
+            sysRoleMenuGateway.insertList(menuIds,roleInfraConvert.toDto(s),s.getTenantId());
         });
     }
 
@@ -274,11 +275,11 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
             throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
         if (sourceMenu.isGiveTenantMenu() && !sysMenuBase.isGiveTenantMenu()){
-            //删除所有角色关联关系
-            sysRoleMenuService.deleteByRolesAndMenuId(new String[]{RoleConstant.TENANT_ADMIN_ROLE_KEY}, context.getId());
+            //原来授权给租户了，现在取消，删除所有角色关联关系
+            sysRoleMenuGateway.deleteByRolesAndMenuId(new String[]{RoleConstant.TENANT_ADMIN_ROLE_KEY}, context.getId());
         } else if(!sourceMenu.isGiveTenantMenu() && sysMenuBase.isGiveTenantMenu()){
             //删除所有角色关联关系（兼容处理，后续需要去掉）
-            sysRoleMenuService.deleteByRolesAndMenuId(new String[]{RoleConstant.TENANT_ADMIN_ROLE_KEY}, context.getId());
+            sysRoleMenuGateway.deleteByRolesAndMenuId(new String[]{RoleConstant.TENANT_ADMIN_ROLE_KEY}, context.getId());
             //更新角色菜单关联数据
             insertRoleMenu(context, context.getId());
         }
@@ -290,7 +291,7 @@ public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway 
         if (count) {
             throw exception(SysInfraResultEnum.MENU_EXIST_SUB_MENU);
         }
-        boolean exist = sysRoleMenuService.checkMenuExistRole(id);
+        boolean exist = sysRoleMenuGateway.checkMenuExistRole(id);
         if (exist) {
             throw  exception(SysInfraResultEnum.MENU_ASSIGNED);
         }

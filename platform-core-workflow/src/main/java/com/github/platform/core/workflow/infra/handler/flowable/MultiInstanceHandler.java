@@ -1,8 +1,10 @@
 package com.github.platform.core.workflow.infra.handler.flowable;
 
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.utils.ApplicationContextHolder;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.JsonUtils;
+import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.workflow.application.executor.strategy.UserStrategy;
 import com.github.platform.core.workflow.domain.constant.FlwConstant;
@@ -52,6 +54,10 @@ public class MultiInstanceHandler{
         String instanceNo = (String) delegate.getVariable(FlwConstant.INSTANCE_NO);
         String bizNo = (String) delegate.getVariable(FlwConstant.BIZ_NO);
         String processType = (String) delegate.getVariable(FlwConstant.PROCESS_TYPE);
+        Integer tenantId = (Integer) delegate.getVariable(FlwConstant.TENANT_ID);
+        if (Objects.isNull(tenantId)){
+            tenantId = LoginUserInfoUtil.getTenantId();
+        }
         if (log.isDebugEnabled()){
             log.debug("MultiInstanceHandler instanceId:{} instanceNo:{} bizNo:{} flowElement:{}",instanceId,instanceNo,bizNo, JsonUtils.toJson(flowElement));
         }
@@ -60,7 +66,7 @@ public class MultiInstanceHandler{
         }
         UserTask userTask = (UserTask)flowElement;
 
-        getUsers(userTask, instanceNo, candidateUsers, processType, bizNo, instanceId);
+        getUsers(userTask, instanceNo, candidateUsers, processType, bizNo, instanceId,tenantId);
 
         if (CollectionUtil.isEmpty(candidateUsers)){
             List<String> fallbackUsers = workflowProperties.getFallbackUsers();
@@ -81,7 +87,7 @@ public class MultiInstanceHandler{
         return candidateUsers;
     }
 
-    private void getUsers(UserTask userTask, String instanceNo, Set<String> candidateUsers, String processType, String bizNo, String instanceId) {
+    private void getUsers(UserTask userTask, String instanceNo, Set<String> candidateUsers, String processType, String bizNo, String instanceId,Integer tenantId) {
         String assigneeType = userTask.getAttributeValue(BpmnXMLConstants.FLOWABLE_EXTENSIONS_NAMESPACE, FlwConstant.ASSIGNEE_TYPE);
         if (FlwConstant.ASSIGNEE_USERS.equals(assigneeType) && CollectionUtil.isNotEmpty(userTask.getCandidateUsers())) {
             // 添加候选用户id
@@ -113,6 +119,7 @@ public class MultiInstanceHandler{
                     .bizNo(bizNo)
                     .processType(processType)
                     .instanceId(instanceId)
+                    .tenantId(tenantId)
                     .build();
             List<OptionsDto> users = userStrategy.users(userQueryContext);
             if (CollectionUtil.isNotEmpty(users)){

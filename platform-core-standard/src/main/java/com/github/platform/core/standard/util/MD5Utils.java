@@ -1,6 +1,7 @@
 package com.github.platform.core.standard.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
+
 public class MD5Utils {
 
 	/**

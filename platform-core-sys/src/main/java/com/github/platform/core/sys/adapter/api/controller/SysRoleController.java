@@ -1,7 +1,6 @@
 package com.github.platform.core.sys.adapter.api.controller;
 
 import com.github.platform.core.auth.annotation.RequiredLogin;
-import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.groups.Default;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 角色相关接口
@@ -53,15 +51,15 @@ public class SysRoleController extends BaseController {
     /**
      * 角色列表查询
      *
-     * @param roleQuery
+     * @param query
      * @return
      */
     @RequiredLogin
     @OptLog(module="role",title="角色列表",persistent = false)
     @Operation(summary = "角色列表",tags = {"role"})
     @PostMapping("/query")
-    public ResultBean<PageBean<SysRoleDto>> query(@RequestBody SysRoleQuery roleQuery) {
-        SysRoleQueryContext roleQueryContext = convert.toQuery(roleQuery);
+    public ResultBean<PageBean<SysRoleDto>> query(@RequestBody SysRoleQuery query) {
+        SysRoleQueryContext roleQueryContext = convert.toQuery(query);
         PageBean<SysRoleDto> pageBean = roleExecutor.query(roleQueryContext);
         return buildSucResp(pageBean);
     }
@@ -75,11 +73,8 @@ public class SysRoleController extends BaseController {
     @OptLog(module="role",title="新增角色",optType = LogOptTypeEnum.add)
     @Operation(summary = "新增角色",tags = {"role"})
     @PostMapping("/add")
-    public ResultBean<Void> add(@Validated @RequestBody SysRoleCmd cmd) {
+    public ResultBean add(@Validated @RequestBody SysRoleCmd cmd) {
         SysRoleContext context = convert.toContext(cmd);
-        if (Objects.isNull(context.getTenantId())){
-            context.setTenantId(LoginUserInfoUtil.getTenantId());
-        }
         roleExecutor.addRole(context);
         return buildSucResp();
     }
@@ -93,9 +88,9 @@ public class SysRoleController extends BaseController {
     @OptLog(module="role",title="修改角色",optType = LogOptTypeEnum.modify)
     @Operation(summary = "修改角色",tags = {"role"})
     @PostMapping("/modify")
-    public ResultBean<Void> modify(@Validated({Modify.class, Default.class}) @RequestBody SysRoleCmd cmd) {
+    public ResultBean modify(@Validated({Modify.class, Default.class}) @RequestBody SysRoleCmd cmd) {
         SysRoleContext context = convert.toContext(cmd);
-        roleExecutor.editRole(context);
+        roleExecutor.update(context);
         return buildSucResp();
     }
 
@@ -124,7 +119,20 @@ public class SysRoleController extends BaseController {
     @Operation(summary = "角色下拉框",tags = {"role"})
     @PostMapping("/select")
     public ResultBean<List<OptionsDto>> select() {
-        List<OptionsDto> list = roleExecutor.select(null);
+        List<OptionsDto> list = roleExecutor.select(new SysRoleQueryContext());
         return buildSucResp(list);
+    }
+
+    /**
+     * 查询j角色详情
+     * @param idReq
+     * @return
+     */
+    @OptLog(module="role",title="查询角色详情",persistent = false)
+    @Operation(summary = "查询角色详情",tags = {"role"})
+    @PostMapping("detail")
+    public ResultBean<SysRoleDto> detail(@RequestBody @Validated StrIdReq idReq) {
+        SysRoleDto roleDto = roleExecutor.findById(idReq.getId());
+        return buildSucResp(roleDto);
     }
 }

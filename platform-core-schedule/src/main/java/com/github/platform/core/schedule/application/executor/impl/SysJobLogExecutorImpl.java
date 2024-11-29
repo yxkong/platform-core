@@ -1,5 +1,6 @@
 package com.github.platform.core.schedule.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.schedule.application.executor.ISysJobLogExecutor;
 import com.github.platform.core.schedule.domain.context.SysJobLogQueryContext;
@@ -19,11 +20,12 @@ import javax.annotation.Resource;
 */
 @Service
 @Slf4j
-public class SysJobLogExecutorImpl extends BaseExecutor implements ISysJobLogExecutor {
+public class SysJobLogExecutorImpl extends SysExecutor implements ISysJobLogExecutor {
     @Resource
     private ISysJobLogGateway gateway;
     @Override
     public PageBean<SysJobLogDto> query(SysJobLogQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     };
     @Override

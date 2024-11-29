@@ -70,9 +70,10 @@ public interface ISysDictGateway {
      * 根据字典类型获取数据
      * 将字符串和int类型区分
      *
-     * @param dictType
+     * @param dictType 字典类型
+     * @param tenantId 租户
      * @return
      */
 
-    List<SysDictDto> findByType(String dictType);
+    List<SysDictDto> findByType(String dictType,Integer tenantId);
 }

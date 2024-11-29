@@ -1,5 +1,6 @@
 package com.github.platform.core.sms.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.sms.application.executor.ISysSmsServiceProviderExecutor;
@@ -27,7 +28,7 @@ import java.util.Objects;
 */
 @Service
 @Slf4j
-public class SysSmsServiceProviderExecutorImpl extends BaseExecutor implements ISysSmsServiceProviderExecutor {
+public class SysSmsServiceProviderExecutorImpl extends SysExecutor implements ISysSmsServiceProviderExecutor {
     @Resource
     private ISysSmsServiceProviderGateway gateway;
     @Override
@@ -38,7 +39,7 @@ public class SysSmsServiceProviderExecutorImpl extends BaseExecutor implements I
     public void insert(SysSmsServiceProviderContext context){
         String proNo = SequenceUtil.nextSequenceNum(SmsSequenceEnum.MSS_SMS_SP);
         context.setProNo(proNo);
-
+        context.setTenantId(getTenantId(context));
 
         SysSmsServiceProviderDto record = gateway.insert(context);
         if (Objects.isNull(record.getId())){

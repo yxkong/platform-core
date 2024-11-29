@@ -1,15 +1,16 @@
 package com.github.platform.core.sys.application.executor.impl;
 
-import com.github.platform.core.common.service.BaseExecutor;
+import com.github.platform.core.auth.application.executor.SysExecutor;
+import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.sys.application.executor.ISysThirdUserExecutor;
 import com.github.platform.core.sys.domain.context.SysThirdUserContext;
 import com.github.platform.core.sys.domain.context.SysThirdUserQueryContext;
 import com.github.platform.core.sys.domain.context.ThirdApproveContext;
 import com.github.platform.core.sys.domain.dto.SysThirdUserDto;
 import com.github.platform.core.sys.domain.gateway.IThirdUserGateway;
-import com.github.platform.core.standard.entity.dto.PageBean;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 
 /*
@@ -22,7 +23,7 @@ import javax.annotation.Resource;
 */
 @Service
 @Slf4j
-public class SysThirdUserExecutorImpl extends BaseExecutor implements ISysThirdUserExecutor {
+public class SysThirdUserExecutorImpl extends SysExecutor implements ISysThirdUserExecutor {
     @Resource
     private IThirdUserGateway gateway;
     /**
@@ -32,6 +33,7 @@ public class SysThirdUserExecutorImpl extends BaseExecutor implements ISysThirdU
     */
     @Override
     public PageBean<SysThirdUserDto> query(SysThirdUserQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     };
     /**
@@ -41,6 +43,7 @@ public class SysThirdUserExecutorImpl extends BaseExecutor implements ISysThirdU
     */
     @Override
     public void update(SysThirdUserContext context) {
+        context.setTenantId(getTenantId(context));
         gateway.update(context);
     }
     /**

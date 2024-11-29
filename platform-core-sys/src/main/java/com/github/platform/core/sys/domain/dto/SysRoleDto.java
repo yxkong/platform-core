@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
+
 /**
 * 系统角色传输实体
 * @website <a href="https://www.5ycode.com/">5ycode</a>
@@ -18,5 +21,5 @@ import lombok.experimental.SuperBuilder;
 @Schema(description = "系统角色传输实体")
 public class SysRoleDto extends SysRoleBase{
     @Schema(description ="权限id列表")
-    private Long[] menuIds;
+    private List<Long> menuIds;
 }

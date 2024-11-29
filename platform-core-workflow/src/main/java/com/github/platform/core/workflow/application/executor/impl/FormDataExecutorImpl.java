@@ -1,7 +1,7 @@
 package com.github.platform.core.workflow.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
-import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.standard.constant.ResultStatusEnum;
 import com.github.platform.core.standard.entity.dto.PageBean;
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,17 +37,19 @@ import java.util.stream.Collectors;
 */
 @Service
 @Slf4j
-public class FormDataExecutorImpl extends BaseExecutor implements IFormDataExecutor {
+public class FormDataExecutorImpl extends SysExecutor implements IFormDataExecutor {
     @Resource
     private IFormDataGateway gateway;
     @Resource
     private Map<String,ICustomFormDataGateway> formDataGatewayMap;
     @Override
     public PageBean<FormDataDto> query(FormDataQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     };
     @Override
     public void insert(FormDataContext context){
+        context.setTenantId(getTenantId(context));
         FormDataDto record = gateway.insert(context);
         if (Objects.isNull(record.getId())){
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
@@ -60,6 +61,7 @@ public class FormDataExecutorImpl extends BaseExecutor implements IFormDataExecu
     }
     @Override
     public void update(FormDataContext context) {
+        context.setTenantId(getTenantId(context));
         Pair<Boolean, FormDataDto> update = gateway.update(context);
         if (!update.getKey()){
             throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);

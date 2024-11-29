@@ -284,7 +284,7 @@ public class SignUtil {
      * @return
      * @desc: 将参数自动排序后验证签名
      */
-    public static boolean veryfy(Map<String, String> params, String secretKey) {
+    public static boolean verify(Map<String, String> params, String secretKey) {
         //获取签名结果
         String sign = "";
         if (params != null && params.get("sign") != null) {
@@ -293,54 +293,6 @@ public class SignUtil {
         String newSign = getSign(params, secretKey);
         //获得签名验证结果
         return sign.equals(newSign);
-    }
-
-    /**
-     * 获取用户加密的md5密码
-     *
-     * @param pwd
-     * @return
-     * @author yxkong
-     * @createDate 2016年5月27日
-     * @updateDate
-     */
-    public static String getMd5Pwd(String pwd) {
-        String str = EncryptUtil.getInstance().md5(pwd, SignUtil.OPEN_SALT);
-        return str.replaceAll("/", "").replaceAll("\\\\", "").replaceAll("\\+", "").replaceAll("=", "");
-    }
-    
-    /**
-     * 将手机号MD5加密
-     * @param mobile
-     * @return
-     */
-    public static String getMd5Mobile(String mobile) {
-    	return md5(mobile, MD5_SALT);
-    }
-    
-    /**
-     * 自带md5与mysql函数md5一致
-     * @param md5Str
-     * @param salt
-     * @return
-     */
-    public static String md5(String md5Str, String salt) {
-    	if(StringUtils.isNull(md5Str)) {
-    		return null;
-    	}
-    	return DigestUtils.md5Hex(md5Str + salt);
-    }
-    
-    /**
-     * 自带md5与mysql函数md5一致
-     * @param md5Str
-     * @return
-     */
-    public static String md5(String md5Str) {
-    	if(StringUtils.isNull(md5Str)) {
-    		return null;
-    	}
-    	return DigestUtils.md5Hex(md5Str);
     }
 
 }

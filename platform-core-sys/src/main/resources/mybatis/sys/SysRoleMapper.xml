@@ -133,13 +133,7 @@
  			 <if test="status != null">
  				status = #{status},
  			 </if>
- 			 <if test="createBy != null">
- 				create_by = #{createBy},
- 			 </if>
- 			 <if test="createTime != null">
- 				create_time = #{createTime},
- 			 </if>
- 			 <if test="updateBy != null">
+ 			 <if test="updateBy != null and updateBy != ''">
  				update_by = #{updateBy},
  			 </if>
  			 <if test="updateTime != null">
@@ -200,9 +194,6 @@
 			</if>
 			<if test="key != null">
 				and t.key = #{key}
-			</if>
-			<if test="sort != null">
-				and t.sort = #{sort}
 			</if>
 			<if test="dataScope != null">
 				and t.data_scope = #{dataScope}

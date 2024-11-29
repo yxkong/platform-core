@@ -96,6 +96,8 @@ public interface FlwConstant {
      * 流程编号
      */
     String PROCESS_NO = "processNo";
+    /**租户id*/
+    String TENANT_ID = "tenantId";
     /**
      * 流程版本
      */

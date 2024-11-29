@@ -1,5 +1,6 @@
 package com.github.platform.core.file.infra.service.impl;
 
+import com.github.platform.core.common.utils.EncryptUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.file.domain.common.entity.SysUploadFileBase;
 import com.github.platform.core.file.domain.dto.SysUploadFileDto;
@@ -50,12 +51,13 @@ public abstract class AbstractUploadFileService implements IUploadFileService {
 
     @Override
     public SysUploadFileDto uploadAndSave(String module, String bizNo, String fileName, Long fileSize, InputStream is) {
-        //生成文件id，TODO 后续在文件中添加校验码，用于文件的唯一性校验。
         String fileId = generateFieldId();
         String fileType = getFileType(fileName);
         // 获取上传文件名称
         String uploadFileName = getUploadFileName(fileId, fileType);
+        String fileHash = EncryptUtil.getInstance().md5FileHash(is);
         String relativeFile = this.upload(module, bizNo,uploadFileName, is);
+
         if (log.isWarnEnabled()){
             log.warn("module:{} bizNo:{} fileName:{} relativeFile:{} uploadName:{}",module,bizNo,fileName,relativeFile,uploadFileName);
         }
@@ -66,6 +68,7 @@ public abstract class AbstractUploadFileService implements IUploadFileService {
                 .fileName(fileName)
                 .filePath(relativeFile)
                 .fileId(fileId)
+                .fileHash(fileHash)
                 .fileType(fileType)
                 .fileSize((Objects.nonNull(fileSize) ? fileSize : countBytes(is)))
                 .storage(properties.getStorage().name())

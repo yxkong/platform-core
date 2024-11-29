@@ -60,6 +60,9 @@ public class ProcessDto {
     /** 流程发起人 */
     @Schema(description = "流程发起人")
     protected String initiator;
+    /** 租户id */
+    @Schema(description = "租户id")
+    protected Integer tenantId;
     /**
      * 任务创建时间
      */

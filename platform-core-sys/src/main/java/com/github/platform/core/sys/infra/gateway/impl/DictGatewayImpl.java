@@ -96,11 +96,11 @@ public class DictGatewayImpl extends BaseGatewayImpl implements ISysDictGateway 
     }
 
     @Override
-    @Cacheable(cacheNames =CACHE_NAME, key = "#root.target.ALL_PREFIX_COLON + #dictType", cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
-    public List<SysDictDto> findByType(String dictType) {
+    @Cacheable(cacheNames =CACHE_NAME, key = "#root.target.ALL_PREFIX_COLON + #dictType+#tenantId", cacheManager = CacheConstant.cacheManager, unless = "#result == null || #result.isEmpty()")
+    public List<SysDictDto> findByType(String dictType,Integer tenantId) {
         if (StringUtils.isEmpty(dictType)){
             return null;
         }
-        return sysDictMapper.findDtoListBy(SysDictBase.builder().dictType(dictType).status(StatusEnum.ON.getStatus()).build());
+        return sysDictMapper.findDtoListBy(SysDictBase.builder().dictType(dictType).tenantId(tenantId).status(StatusEnum.ON.getStatus()).build());
     }
 }

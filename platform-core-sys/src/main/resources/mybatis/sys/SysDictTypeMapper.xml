@@ -8,7 +8,7 @@
 		  <id column="type" property="type" />
 		  <id column="classify" property="classify" />
 		  <id column="charType" property="charType" />
-		  <id column="tenant_id" property="tenantId" />
+		  <id column="tenantId" property="tenantId" />
 		  <id column="status" property="status" />
 		  <id column="createBy" property="createBy" />
 		  <id column="createTime" property="createTime" />
@@ -186,21 +186,6 @@
 			</if>
  			<if test="status != null">
  				and t.status = #{status}
- 			</if>
- 			<if test="createBy != null">
- 				and t.create_by = #{createBy}
- 			</if>
- 			<if test="createTime != null">
- 				and t.create_time = #{createTime}
- 			</if>
- 			<if test="updateBy != null">
- 				and t.update_by = #{updateBy}
- 			</if>
- 			<if test="updateTime != null">
- 				and t.update_time = #{updateTime}
- 			</if>
- 			<if test="remark != null">
- 				and t.remark = #{remark}
  			</if>
 			<if test="searchStartTime != null and searchStartTime != ''"><!-- 开始时间检索 -->
 				and t.create_time <![CDATA[>=]]>  #{searchStartTime}

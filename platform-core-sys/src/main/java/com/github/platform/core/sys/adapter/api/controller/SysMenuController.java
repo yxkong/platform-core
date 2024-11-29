@@ -91,9 +91,6 @@ public class SysMenuController extends BaseController {
     @PostMapping("/add")
     public ResultBean add(@RequestBody @Validated SysMenuCmd cmd) {
         SysMenuContext context = convert.toContext(cmd);
-        if (Objects.isNull(context.getTenantId())){
-            context.setTenantId(LoginUserInfoUtil.getTenantId());
-        }
         menuExecutor.insert(context);
         return buildSucResp();
     }

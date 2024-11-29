@@ -1,5 +1,6 @@
 package com.github.platform.core.workflow.application.executor.impl;
 
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.workflow.application.executor.IProcessApprovalRecordExecutor;
 import com.github.platform.core.workflow.domain.context.ProcessApprovalRecordContext;
@@ -22,18 +23,20 @@ import java.util.Objects;
 */
 @Service
 @Slf4j
-public class ProcessApprovalRecordExecutorImpl extends BaseExecutor implements IProcessApprovalRecordExecutor {
+public class ProcessApprovalRecordExecutorImpl extends SysExecutor implements IProcessApprovalRecordExecutor {
     @Resource
     private IProcessApprovalRecordGateway gateway;
     @Override
     public PageBean<ProcessApprovalRecordDto> query(ProcessApprovalRecordQueryContext context){
+        context.setTenantId(getTenantId(context));
         return gateway.query(context);
     };
     @Override
     public void insert(ProcessApprovalRecordContext context){
+        context.setTenantId(getTenantId(context));
         ProcessApprovalRecordDto record = gateway.insert(context);
         if (Objects.isNull(record.getId())){
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
     }
     @Override
@@ -42,16 +45,17 @@ public class ProcessApprovalRecordExecutorImpl extends BaseExecutor implements I
     }
     @Override
     public void update(ProcessApprovalRecordContext context) {
+        context.setTenantId(getTenantId(context));
         Pair<Boolean, ProcessApprovalRecordDto> update = gateway.update(context);
         if (!update.getKey()){
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
     }
     @Override
     public void delete(Long id) {
         int d = gateway.delete(id);
         if (d <=0 ){
-            exception(ResultStatusEnum.COMMON_DELETE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
     }
 }

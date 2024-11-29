@@ -8,12 +8,15 @@ import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;
+import com.github.platform.core.standard.entity.KeyReq;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.entity.dto.ResultBean;
-import com.github.platform.core.standard.entity.KeyReq;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.standard.util.ResultBeanUtil;
-import com.github.platform.core.sys.adapter.api.command.account.*;
+import com.github.platform.core.sys.adapter.api.command.account.ResetPwdCmd;
+import com.github.platform.core.sys.adapter.api.command.account.SysUserCmd;
+import com.github.platform.core.sys.adapter.api.command.account.SysUserQuery;
+import com.github.platform.core.sys.adapter.api.command.account.UserProfileCmd;
 import com.github.platform.core.sys.adapter.api.constant.SysAdapterResultEnum;
 import com.github.platform.core.sys.adapter.api.convert.SysUserAdapterConvert;
 import com.github.platform.core.sys.application.executor.ISysUserExecutor;
@@ -109,9 +112,6 @@ public class SysUserController extends BaseController {
     public ResultBean add(@RequestBody @Validated SysUserCmd cmd) {
         cmd.setLoginName(cmd.getLoginName().toLowerCase());
         RegisterContext context = convert.toRegister(cmd);
-        if (Objects.isNull(context.getTenantId())){
-            context.setTenantId(LoginUserInfoUtil.getTenantId());
-        }
         context.setChannel(UserChannelEnum.add);
         context.setLogBizTypeEnum(UserLogBizTypeEnum.add_user);
         userExecutor.insert(context);

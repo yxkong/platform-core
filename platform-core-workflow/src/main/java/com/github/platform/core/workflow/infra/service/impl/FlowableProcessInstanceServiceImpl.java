@@ -69,6 +69,7 @@ public class FlowableProcessInstanceServiceImpl implements IProcessInstanceServi
         //设置启动人
         Authentication.setAuthenticatedUserId(context.getInitiator());
         context.putParam(BpmnXMLConstants.ATTRIBUTE_EVENT_START_INITIATOR, context.getInitiator());
+        context.putParam(FlwConstant.TENANT_ID,context.getTenantId());
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(context.getProcessNo(),context.getBizNo(),context.getVariables());
         String processInstanceId = processInstance.getId();
         if (log.isWarnEnabled()){

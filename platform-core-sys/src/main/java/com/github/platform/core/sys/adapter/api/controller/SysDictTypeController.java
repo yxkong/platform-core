@@ -1,7 +1,6 @@
 package com.github.platform.core.sys.adapter.api.controller;
 
 
-import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.Objects;
 
 /**
  * 字典类型信息
@@ -51,14 +49,14 @@ public class SysDictTypeController extends BaseController {
     /**
      * 字典类型查询
      *
-     * @param dictTypeQuery
+     * @param query
      * @return
      */
     @OptLog(module = "dict",title = "字典类型查询",persistent = false)
     @Operation(summary = "字典类型查询",tags = {"dict"})
     @PostMapping("/query")
-    public ResultBean<PageBean<SysDictTypeDto>> query(@RequestBody SysDictTypeQuery dictTypeQuery) {
-        SysDictTypeQueryContext context = convert.toQuery(dictTypeQuery);
+    public ResultBean<PageBean<SysDictTypeDto>> query(@RequestBody SysDictTypeQuery query) {
+        SysDictTypeQueryContext context = convert.toQuery(query);
         PageBean<SysDictTypeDto> pageBean = dictTypeExecutor.query(context);
         return buildSucResp(pageBean);
     }
@@ -74,9 +72,6 @@ public class SysDictTypeController extends BaseController {
     @PostMapping("/add")
     public ResultBean<Void> add(@RequestBody @Validated SysDictTypeCmd cmd) {
         SysDictTypeContext context = convert.toContext(cmd);
-        if (Objects.isNull(context.getTenantId())){
-            context.setTenantId(LoginUserInfoUtil.getTenantId());
-        }
         dictTypeExecutor.insert(context);
         return buildSucResp();
     }
@@ -114,8 +109,8 @@ public class SysDictTypeController extends BaseController {
     @Operation(summary = "重载字典",tags = {"dict"})
     @PostMapping("/reload")
     public ResultBean reload(@RequestBody SysDictTypeQuery query) {
-        String type = query.getType();
-        dictTypeExecutor.reload(type);
+        SysDictTypeQueryContext context = convert.toQuery(query);
+        dictTypeExecutor.reload(context);
         return buildSucResp();
     }
 }

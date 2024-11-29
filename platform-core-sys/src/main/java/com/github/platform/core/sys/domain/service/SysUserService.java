@@ -132,6 +132,7 @@ public class SysUserService extends DomainBaseService {
      * @return
      */
     public void editUser(RegisterContext context) {
+        //获取用户信息
         SysUserDto sysUserDto = userGateway.findByUserId(context.getId());
         if (Objects.isNull(sysUserDto)) {
             throw exception(SysInfraResultEnum.NOT_FOUND_USER);
@@ -160,6 +161,7 @@ public class SysUserService extends DomainBaseService {
             }
         }
         context.setId(sysUserDto.getId());
+        userGateway.deleteCache(sysUserDto.getLoginName(),sysUserDto.getMobile(),sysUserDto.getSecretKey(),sysUserDto.getTenantId());
         userGateway.editUser(context);
     }
 
