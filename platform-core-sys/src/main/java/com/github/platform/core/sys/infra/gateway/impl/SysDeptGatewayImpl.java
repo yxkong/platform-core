@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class DeptGatewayImpl extends BaseGatewayImpl implements ISysDeptGateway {
+public class SysDeptGatewayImpl extends BaseGatewayImpl implements ISysDeptGateway {
     @Resource
     private SysDeptMapper sysDeptMapper;
     @Resource

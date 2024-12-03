@@ -30,6 +30,8 @@ public class TreeSelectDto implements Serializable {
 
     /** 节点名称 */
     private String label;
+    /**节点编码*/
+    private String code;
 
     /** 子节点 */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

@@ -22,7 +22,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +30,7 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
-public class DictGatewayImpl extends BaseGatewayImpl implements ISysDictGateway {
+public class SysDictGatewayImpl extends BaseGatewayImpl implements ISysDictGateway {
 
 
     @Resource

@@ -14,6 +14,8 @@ public interface SysCacheConstant {
     String DICT_PREFIX = "p:s:dc";
     /**部门前缀*/
     String DEPT_PREFIX = "p:s:d";
+    /**级联前缀*/
+    String CASCADE_PREFIX = "p:s:cc";
     /**配置前缀*/
     String CONFIG_PREFIX = "p:s:c";
     /**角色前缀*/

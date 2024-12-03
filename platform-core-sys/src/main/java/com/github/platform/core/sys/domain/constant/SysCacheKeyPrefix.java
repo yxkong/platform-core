@@ -16,6 +16,7 @@ public enum SysCacheKeyPrefix implements BaseCacheKeyPrefix {
     DICT(SysCacheConstant.DICT_PREFIX),
     DICT_TYPE(SysCacheConstant.DICT_TYPE_PREFIX),
     DEPT(SysCacheConstant.DEPT_PREFIX),
+    CASCADE(SysCacheConstant.CASCADE_PREFIX),
     CONFIG(SysCacheConstant.CONFIG_PREFIX),
     ROLE(SysCacheConstant.ROLE_PREFIX),
     TOKEN_CACHE(SysCacheConstant.TOKEN_CACHE_PREFIX),

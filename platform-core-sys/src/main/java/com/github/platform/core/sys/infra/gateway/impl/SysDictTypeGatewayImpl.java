@@ -16,7 +16,6 @@ import com.github.platform.core.sys.domain.context.SysDictTypeContext;
 import com.github.platform.core.sys.domain.context.SysDictTypeQueryContext;
 import com.github.platform.core.sys.domain.dto.SysDictDto;
 import com.github.platform.core.sys.domain.dto.SysDictTypeDto;
-import com.github.platform.core.sys.domain.gateway.ISysDictGateway;
 import com.github.platform.core.sys.domain.gateway.ISysDictTypeGateway;
 import com.github.platform.core.sys.infra.constant.SysInfraResultEnum;
 import com.github.platform.core.sys.infra.convert.SysDictTypeInfraConvert;
@@ -39,7 +38,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class DictTypeGatewayImpl extends BaseGatewayImpl implements ISysDictTypeGateway {
+public class SysDictTypeGatewayImpl extends BaseGatewayImpl implements ISysDictTypeGateway {
     @Resource
     private SysDictTypeInfraConvert typeInfraConvert;
     @Resource

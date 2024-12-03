@@ -71,6 +71,10 @@ public interface CacheConstant {
     Long distributeLockTime_30 = 30L;
     /**分布式锁时间，10秒*/
     Long distributeLockTime_10 = 10L;
+    /**分布式锁时间，1秒*/
+    Long distributeLockTime_1 = 1L;
+    /**分布式锁时间，2秒*/
+    Long distributeLockTime_2 = 2L;
 
     /**
      * 获取后缀

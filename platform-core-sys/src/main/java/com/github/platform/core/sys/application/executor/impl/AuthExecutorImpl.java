@@ -87,9 +87,10 @@ public class AuthExecutorImpl extends BaseExecutor implements IAuthExecutor {
                 loginUserInfo = initLoginInfo(context.getLoginName(),context.getLoginWay(),ce.getStatus(),ce.getMessage());
                 throw e;
             } else {
-                loginUserInfo = initLoginInfo(context.getLoginName(),context.getLoginWay(), ResultStatusEnum.ERROR.getStatus(), ExceptionUtil.getMessage(e));
-                exception(SysAppResultEnum.LOGIN_ERROR,e);
+                loginUserInfo = initLoginInfo(context.getLoginName(), context.getLoginWay(), ResultStatusEnum.ERROR.getStatus(), ExceptionUtil.getMessage(e));
+                exception(SysAppResultEnum.LOGIN_ERROR, e);
             }
+            loginUserInfo.setTenantId(context.getTenantId());
         }finally {
             LoginUserInfoUtil.setLoginUserInfo(loginUserInfo);
             strategy.finish(verifyEntity);

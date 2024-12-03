@@ -7,7 +7,6 @@ import com.github.platform.core.common.gateway.BaseGatewayImpl;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.persistence.mapper.sys.SysRoleMapper;
-import com.github.platform.core.persistence.mapper.sys.SysUserMapper;
 import com.github.platform.core.persistence.mapper.sys.SysUserRoleMapper;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
@@ -21,7 +20,6 @@ import com.github.platform.core.sys.infra.convert.SysRoleInfraConvert;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +34,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway {
+public class SysRoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway {
     @Resource
     private SysRoleMapper sysRoleMapper;
 
@@ -45,8 +43,7 @@ public class RoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGateway 
 
     @Resource
     private SysUserRoleMapper sysUserRoleMapper;
-    @Resource
-    private SysUserMapper sysUserMapper;
+
 
     @Override
     public PageBean<SysRoleDto> query(SysRoleQueryContext context) {

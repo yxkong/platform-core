@@ -6,6 +6,8 @@ import com.github.platform.core.auth.entity.TokenCacheEntity;
 import com.github.platform.core.auth.gateway.ITokenCacheGateway;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
+import com.github.platform.core.cache.domain.constant.CacheConstant;
+import com.github.platform.core.cache.infra.service.ICacheService;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
@@ -44,6 +46,9 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
     private  long getSeconds(){
         return TimeoutUtils.toSeconds(authProperties.getSys().getExpire(), TimeUnit.MINUTES);
     }
+
+    @Resource
+    private ICacheService cacheService;
     @Override
     public TokenCacheEntity findByToken(String token) {
         //查询缓存或数据库
@@ -63,8 +68,9 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
 
     @Override
     public TokenCacheEntity saveOrUpdate(Integer tenantId, String token, String loginName,String optUser, String loginInfo ,boolean isLogin) {
-        LoginUserInfo userInfo = JsonUtils.fromJson(loginInfo,LoginUserInfo.class);
         SysTokenCacheDto cacheDto =  sysTokenCacheGateway.findByToken(token);
+        LoginUserInfo userInfo = JsonUtils.fromJson(loginInfo,LoginUserInfo.class);
+
         LocalDateTime localDateTime = LocalDateTimeUtil.dateTime();
         SysTokenCacheContext context = SysTokenCacheContext.builder()
                 .token(token)
@@ -80,12 +86,26 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
         }
         SysTokenCacheDto tokenCacheDto =  null;
         if (Objects.isNull(cacheDto)){
-            context.setCreateBy(optUser);
-            context.setCreateTime(localDateTime);
-            context.setLoginWay(userInfo.getLoginWay());
-            context.setTenantId(userInfo.getTenantId());
-            tokenCacheDto = sysTokenCacheGateway.insert(context);
-        } else {
+            String lockKey = CacheConstant.getDistributeKey("token",token);
+            String lockId = cacheService.getLock(lockKey, CacheConstant.distributeLockTime_1);
+            try{
+                //再次查询
+                tokenCacheDto = sysTokenCacheGateway.findByToken(token);
+                if (Objects.nonNull(tokenCacheDto)){
+                    cacheDto = tokenCacheDto;
+                }
+                if (StringUtils.isNotEmpty(lockId) && Objects.isNull(tokenCacheDto)){
+                    context.setCreateBy(optUser);
+                    context.setCreateTime(localDateTime);
+                    context.setLoginWay(userInfo.getLoginWay());
+                    context.setTenantId(userInfo.getTenantId());
+                    tokenCacheDto = sysTokenCacheGateway.insert(context);
+                }
+            } finally {
+                cacheService.releaseLock(lockKey,lockId);
+            }
+        }
+        if (Objects.nonNull(cacheDto)){
             context.setId(cacheDto.getId());
             context.setUpdateBy(optUser);
             context.setUpdateTime(localDateTime);

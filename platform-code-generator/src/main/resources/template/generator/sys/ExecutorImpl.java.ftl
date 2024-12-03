@@ -1,6 +1,5 @@
 package ${applicationPackage}.executor.impl;
 
-import com.github.platform.core.common.service.BaseExecutor;
 import ${applicationPackage}.executor.I${entityName}Executor;
 import ${domainPackage}.context.${entityName}Context;
 import ${domainPackage}.context.${entityName}QueryContext;
@@ -23,7 +22,7 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
-public class ${entityName}ExecutorImpl extends SysExecutorImpl implements I${entityName}Executor{
+public class ${entityName}ExecutorImpl extends SysExecutor implements I${entityName}Executor{
     @Resource
     private I${entityName}Gateway ${lowerEntityName}Gateway;
     /**
@@ -35,7 +34,7 @@ public class ${entityName}ExecutorImpl extends SysExecutorImpl implements I${ent
     public PageBean<${entityName}Dto> query(${entityName}QueryContext context){
         context.setTenantId(getTenantId(context));
         return ${lowerEntityName}Gateway.query(context);
-    };
+    }
     /**
     * 新增${apiAlias}
     * @param context 新增上下文

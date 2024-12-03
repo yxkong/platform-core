@@ -54,12 +54,12 @@ public class ConfigGatewayImpl extends BaseGatewayImpl implements ISysConfigGate
     public void insert(SysConfigContext context) {
         SysConfigBase record = this.findByKey(context.getTenantId(),context.getKey());
         if (Objects.nonNull(record)){
-            exception(SysInfraResultEnum.CONFIG_ADD_EXIST);
+            throw exception(SysInfraResultEnum.CONFIG_ADD_EXIST);
         }
         record = convert.toSysConfigBase(context);
         int insert = sysConfigMapper.insert(record);
         if (insert<=0){
-            exception(ResultStatusEnum.COMMON_INSERT_ERROR);
+            throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
     }
     private SysConfigBase findByKey(Integer tenantId, String key) {
@@ -104,12 +104,12 @@ public class ConfigGatewayImpl extends BaseGatewayImpl implements ISysConfigGate
     public void delete(Long id,Integer tenantId,String key) {
         SysConfigBase record = sysConfigMapper.findById(id);
         if (Objects.isNull(record)){
-            exception(ResultStatusEnum.NO_DATA);
+            throw exception(ResultStatusEnum.NO_DATA);
         }
         //删除字典
         int row = sysConfigMapper.deleteById(id);
         if ( row <= 0) {
-            exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
+            throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);
         }
     }
 

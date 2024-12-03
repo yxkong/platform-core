@@ -153,7 +153,7 @@ public class AuthorizeAspect {
 //        MDC.put(HeaderConstant.TRACE_ID,getTraceId());
         LoginUserInfoUtil.setLoginUserInfo(loginInfo);
         //不包含登出的时候
-        if (!uri.contains("api/sys/token/expire") && StringUtils.isNotEmpty(token) && loginInfo.isSuc()){
+        if (!uri.contains("sys/token/expire") && StringUtils.isNotEmpty(token) && loginInfo.isSuc()){
             //续租
             tokenService.saveOrUpdate(null, token,loginInfo.getLoginName(),loginInfo.getLoginName(),loginStr,false);
         }

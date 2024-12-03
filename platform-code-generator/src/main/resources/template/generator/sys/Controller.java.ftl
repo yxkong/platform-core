@@ -6,6 +6,7 @@ import ${adapterPackage}.api.command.${entityName}Cmd;
 import ${adapterPackage}.api.command.${entityName}Query;
 import ${adapterPackage}.api.convert.${entityName}AdapterConvert;
 import ${applicationPackage}.executor.I${entityName}Executor;
+import ${domainPackage}.context.${entityName}Context;
 import ${domainPackage}.context.${entityName}QueryContext;
 import ${domainPackage}.dto.${entityName}Dto;
 import com.github.platform.core.standard.entity.dto.PageBean;

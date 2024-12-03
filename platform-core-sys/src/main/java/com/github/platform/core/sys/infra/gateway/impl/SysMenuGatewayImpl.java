@@ -22,7 +22,6 @@ import com.github.platform.core.sys.domain.dto.resp.RouterDto;
 import com.github.platform.core.sys.domain.dto.resp.TreeSelectDto;
 import com.github.platform.core.sys.domain.gateway.ISysMenuGateway;
 import com.github.platform.core.sys.domain.gateway.ISysRoleMenuGateway;
-import com.github.platform.core.sys.domain.gateway.ISysUserRoleGateway;
 import com.github.platform.core.sys.infra.constant.SysInfraResultEnum;
 import com.github.platform.core.sys.infra.convert.SysMenuInfraConvert;
 import com.github.platform.core.sys.infra.convert.SysRoleInfraConvert;
@@ -43,7 +42,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class MenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway {
+public class SysMenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGateway {
     @Resource
     private SysMenuMapper sysMenuMapper;
     @Resource
