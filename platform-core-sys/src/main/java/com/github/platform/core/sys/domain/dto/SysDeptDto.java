@@ -3,6 +3,7 @@ package com.github.platform.core.sys.domain.dto;
 import com.github.platform.core.sys.domain.common.entity.SysDeptBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "系统部门传输实体")
 public class SysDeptDto extends SysDeptBase{
     /**

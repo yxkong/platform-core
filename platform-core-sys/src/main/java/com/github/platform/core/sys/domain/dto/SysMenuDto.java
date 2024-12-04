@@ -6,6 +6,7 @@ import com.github.platform.core.sys.domain.common.entity.SysMenuBase;
 import com.github.platform.core.sys.domain.constant.MenuConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -22,6 +23,7 @@ import java.util.List;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "系统菜单传输实体")
 public class SysMenuDto extends SysMenuBase{
     /** 父菜单名称 */

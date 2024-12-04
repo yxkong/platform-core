@@ -4,7 +4,9 @@ import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.common.constant.PropertyConstant;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.standard.constant.SymbolConstant;
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -35,8 +37,10 @@ public class AuthProperties {
     @Data
     @SuperBuilder
     @NoArgsConstructor
+    @EqualsAndHashCode(callSuper=true)
     public static class Api extends BaseProperties {
         /**登录相关配置*/
+        @Builder.Default
         private Login login = new Login(CacheConstant.apiToken, CacheConstant.apiUserTokenMapping);
 
         /**
@@ -67,12 +71,16 @@ public class AuthProperties {
     @Data
     @SuperBuilder
     @NoArgsConstructor
+    @EqualsAndHashCode(callSuper=true)
     public static class Sys extends BaseProperties {
         /**登录相关配置*/
+        @Builder.Default
         private Login login = new Login(CacheConstant.sysToken, CacheConstant.sysUserTokenMapping);
         /**默认权限*/
+        @Builder.Default
         private List<String> defaultPerms = new ArrayList<>();
         /**内置用户名称（ldap的时候，有用）*/
+        @Builder.Default
         private List<String> innerUsers = new ArrayList<>();
         /**应用模式*/
         private String mode;
@@ -115,12 +123,15 @@ public class AuthProperties {
     @NoArgsConstructor
     public static class BaseProperties {
         /**可以直接转发的host*/
+        @Builder.Default
         protected List<String> hosts = new ArrayList<>();
         /**可以直接转发的url*/
+        @Builder.Default
         protected List<String> urls = new ArrayList<>();
     }
     /**登录相关配置*/
     @Data
+    @SuperBuilder
     public static class Login {
         public Login(String token, String userTokenMapping) {
             this.token = token;
@@ -129,6 +140,7 @@ public class AuthProperties {
         /**
          * 登陆过期时间 默认30分钟
          */
+        @Builder.Default
         private Long expire = CacheConstant.defaultExpire;
         /**
          * token缓存前缀登录redis 缓存前缀

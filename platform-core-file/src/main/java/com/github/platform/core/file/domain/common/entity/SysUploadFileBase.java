@@ -21,7 +21,7 @@ import java.io.File;
 */
 @Data
 @SuperBuilder
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=true)
 @NoArgsConstructor
 public class SysUploadFileBase extends BaseAdminEntity   {
     /** 模块名称 */

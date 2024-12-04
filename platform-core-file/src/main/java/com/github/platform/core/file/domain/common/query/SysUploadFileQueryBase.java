@@ -17,7 +17,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "上传文件表查询")
 public class SysUploadFileQueryBase extends PageQueryBaseEntity {
     /** 模块名称 */

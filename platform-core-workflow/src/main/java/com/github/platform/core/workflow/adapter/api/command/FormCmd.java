@@ -19,6 +19,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "表单配置增加或修改")
 public class FormCmd extends FormBase {
 

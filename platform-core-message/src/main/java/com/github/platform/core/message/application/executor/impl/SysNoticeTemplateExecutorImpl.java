@@ -1,6 +1,5 @@
 package com.github.platform.core.message.application.executor.impl;
 
-import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.message.application.executor.ISysNoticeTemplateExecutor;
 import com.github.platform.core.message.domain.context.SysNoticeTemplateContext;
 import com.github.platform.core.message.domain.context.SysNoticeTemplateQueryContext;
@@ -8,22 +7,22 @@ import com.github.platform.core.message.domain.dto.SysNoticeTemplateDto;
 import com.github.platform.core.message.domain.gateway.ISysNoticeTemplateGateway;
 import com.github.platform.core.standard.constant.ResultStatusEnum;
 import com.github.platform.core.standard.entity.dto.PageBean;
+import com.github.platform.core.auth.application.executor.SysExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.Objects;
 /**
  * 消息通知模板执行器
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author yxkong
- * @date 2024-10-10 10:51:10.862
+ * @date 2024-12-04 13:32:24.593
  * @version 1.0
  */
 @Service
 @Slf4j
-public class SysNoticeTemplateExecutorImpl extends BaseExecutor implements ISysNoticeTemplateExecutor{
+public class SysNoticeTemplateExecutorImpl extends SysExecutor implements ISysNoticeTemplateExecutor{
     @Resource
     private ISysNoticeTemplateGateway sysNoticeTemplateGateway;
     /**
@@ -33,14 +32,16 @@ public class SysNoticeTemplateExecutorImpl extends BaseExecutor implements ISysN
     */
     @Override
     public PageBean<SysNoticeTemplateDto> query(SysNoticeTemplateQueryContext context){
+        context.setTenantId(getTenantId(context));
         return sysNoticeTemplateGateway.query(context);
-    };
+    }
     /**
     * 新增消息通知模板
     * @param context 新增上下文
     */
     @Override
     public String insert(SysNoticeTemplateContext context){
+        context.setTenantId(getTenantId(context));
         SysNoticeTemplateDto record = sysNoticeTemplateGateway.insert(context);
         if (Objects.isNull(record.getId())){
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
@@ -62,6 +63,7 @@ public class SysNoticeTemplateExecutorImpl extends BaseExecutor implements ISysN
     */
     @Override
     public void update(SysNoticeTemplateContext context) {
+        context.setTenantId(getTenantId(context));
         Pair<Boolean, SysNoticeTemplateDto> update = sysNoticeTemplateGateway.update(context);
         if (!update.getKey()){
             throw exception(ResultStatusEnum.COMMON_UPDATE_ERROR);

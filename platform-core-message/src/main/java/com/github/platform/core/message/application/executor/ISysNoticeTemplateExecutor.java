@@ -1,14 +1,16 @@
 package com.github.platform.core.message.application.executor;
 
+import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.message.domain.context.SysNoticeTemplateContext;
 import com.github.platform.core.message.domain.context.SysNoticeTemplateQueryContext;
 import com.github.platform.core.message.domain.dto.SysNoticeTemplateDto;
 import com.github.platform.core.standard.entity.dto.PageBean;
+import org.apache.commons.lang3.tuple.Pair;
 /**
  * 消息通知模板执行器接口
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author yxkong
- * @date 2024-10-10 10:51:10.862
+ * @date 2024-12-04 13:32:24.593
  * @version 1.0
  */
 public interface ISysNoticeTemplateExecutor {

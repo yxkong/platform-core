@@ -6,6 +6,7 @@ import com.github.platform.core.workflow.domain.constant.InstanceStatusEnum;
 import com.github.platform.core.workflow.domain.constant.ProcessTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class ProcessInstanceBase extends BaseAdminEntity   {
     /** 业务编号 */
     @Schema(description = "业务编号")

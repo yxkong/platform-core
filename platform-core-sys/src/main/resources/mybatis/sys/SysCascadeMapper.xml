@@ -10,6 +10,7 @@
 		<id column="code" property="code" />
 		<id column="name" property="name" />
 		<id column="sort" property="sort" />
+		<id column="leaf" property="leaf" />
 		<id column="tenant_id" property="tenantId" />
 		<id column="status" property="status" />
 		<id column="create_by" property="createBy" />
@@ -26,6 +27,7 @@
 		t.code,
 		t.name,
 		t.sort,
+		t.leaf,
 		t.tenant_id,
 		t.status,
 		t.create_by,
@@ -44,6 +46,7 @@
 			<if test="code != null  and code != ''">code,</if>
 			<if test="name != null  and name != ''">name,</if>
 			<if test="sort != null ">sort,</if>
+			<if test="leaf != null ">leaf,</if>
 			<if test="tenantId != null ">tenant_id,</if>
 			<if test="status != null ">status,</if>
 			<if test="createBy != null  and createBy != ''">create_by,</if>
@@ -59,6 +62,7 @@
 			<if test="code != null  and code != ''">#{code},</if>
 			<if test="name != null  and name != ''">#{name},</if>
 			<if test="sort != null ">#{sort},</if>
+			<if test="leaf != null ">#{leaf},</if>
 			<if test="tenantId != null ">#{tenantId},</if>
 			<if test="status != null ">#{status},</if>
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
@@ -77,6 +81,7 @@
 			<if test="code != null  and code != ''">code = #{code},</if>
 			<if test="name != null  and name != ''">name = #{name},</if>
 			<if test="sort != null ">sort = #{sort},</if>
+			<if test="leaf != null ">leaf = #{leaf},</if>
 			<if test="tenantId != null ">tenant_id = #{tenantId},</if>
 			<if test="status != null ">status = #{status},</if>
 			<if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
@@ -91,7 +96,9 @@
 		select <include refid="BaseColumnList" /> from t_sys_cascade t where t.id=#{id}
 	</select>
 	<select id="findByCode" resultMap="BaseResultMap">
-		select <include refid="BaseColumnList" /> from t_sys_cascade t where t.code=#{code} and t.tenant_id = #{tenantId}
+		select <include refid="BaseColumnList" /> from t_sys_cascade t
+		        where t.code=#{code}
+		<if test="tenantId != null "> and t.tenant_id = #{tenantId}</if>
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select <include refid="BaseColumnList" /> from t_sys_cascade t
@@ -113,6 +120,7 @@
 			<if test="name != null  and name != ''"> and t.name = #{name}</if>
 			<if test="tenantId != null "> and t.tenant_id = #{tenantId}</if>
 			<if test="status != null "> and t.status = #{status}</if>
+			<if test="leaf != null "> and t.leaf = #{leaf}</if>
 			<if test="searchStartTime != null">
 				and t.create_time <![CDATA[>=]]> #{searchStartTime}
 			</if>
@@ -130,6 +138,7 @@
 			<if test="name != null  and name != ''"> and t.name = #{name}</if>
 			<if test="tenantId != null "> and t.tenant_id = #{tenantId}</if>
 			<if test="status != null "> and t.status = #{status}</if>
+			<if test="leaf != null "> and t.leaf = #{leaf}</if>
 			<if test="searchStartTime != null">
 				and t.create_time <![CDATA[>=]]> #{searchStartTime}
 			</if>

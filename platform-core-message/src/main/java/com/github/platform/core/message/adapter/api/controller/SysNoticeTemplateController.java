@@ -1,13 +1,11 @@
 package com.github.platform.core.message.adapter.api.controller;
 
-import com.github.platform.core.cache.infra.utils.SequenceUtil;
 import com.github.platform.core.log.infra.annotation.OptLog;
 import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.message.adapter.api.command.SysNoticeTemplateCmd;
 import com.github.platform.core.message.adapter.api.command.SysNoticeTemplateQuery;
 import com.github.platform.core.message.adapter.api.convert.SysNoticeTemplateAdapterConvert;
 import com.github.platform.core.message.application.executor.ISysNoticeTemplateExecutor;
-import com.github.platform.core.message.domain.constant.MessageSequenceEnum;
 import com.github.platform.core.message.domain.context.SysNoticeTemplateContext;
 import com.github.platform.core.message.domain.context.SysNoticeTemplateQueryContext;
 import com.github.platform.core.message.domain.dto.SysNoticeTemplateDto;
@@ -25,12 +23,12 @@ import org.springframework.web.bind.annotation.*;
  * 消息通知模板
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author yxkong
- * @date 2024-10-10 10:51:10.862
+ * @date 2024-12-04 13:32:24.593
  * @version 1.0
  */
 @RestController
 @Tag(name = "sysNoticeTemplate",description = "消息通知模板管理")
-@RequestMapping("api/sys/notice/template")
+@RequestMapping("api/message/notice/template")
 @Slf4j
 public class SysNoticeTemplateController extends BaseController{
     @Resource
@@ -61,10 +59,7 @@ public class SysNoticeTemplateController extends BaseController{
     @Operation(summary = "新增消息通知模板",tags = {"sysNoticeTemplate"})
     @PostMapping("/add")
     public ResultBean<String> add(@Validated @RequestBody SysNoticeTemplateCmd cmd) {
-        SysNoticeTemplateContext context = sysNoticeTemplateConvert.toContext(cmd);
-        // 新建需求
-        String tempNo = SequenceUtil.nextSequenceNum(MessageSequenceEnum.NT);
-        context.setTempNo(tempNo);
+        SysNoticeTemplateContext context= sysNoticeTemplateConvert.toContext(cmd);
         String id = sysNoticeTemplateExecutor.insert(context);
         return buildSucResp(id);
     }

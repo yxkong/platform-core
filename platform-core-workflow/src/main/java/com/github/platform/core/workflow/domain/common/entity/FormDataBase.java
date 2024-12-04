@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class FormDataBase extends BaseAdminEntity   {
 
     /** 表单编号 */

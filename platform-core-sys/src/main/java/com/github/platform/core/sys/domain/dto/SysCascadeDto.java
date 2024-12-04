@@ -1,5 +1,6 @@
 package com.github.platform.core.sys.domain.dto;
 
+import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.sys.domain.common.entity.SysCascadeBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -22,4 +23,8 @@ import lombok.experimental.SuperBuilder;
 @Schema(description = "级联表传输实体")
 public class SysCascadeDto extends SysCascadeBase{
     private Boolean hasChildren;
+
+    public boolean isParent() {
+        return !StatusEnum.OFF.getStatus().equals(this.getLeaf());
+    }
 }

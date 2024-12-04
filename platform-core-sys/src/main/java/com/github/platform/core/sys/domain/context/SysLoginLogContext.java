@@ -2,6 +2,7 @@ package com.github.platform.core.sys.domain.context;
 
 import com.github.platform.core.sys.domain.common.entity.SysLoginLogBase;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 /**
@@ -13,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 */
 @Data
 @SuperBuilder
+@EqualsAndHashCode(callSuper=true)
 @NoArgsConstructor
 public class SysLoginLogContext extends SysLoginLogBase {
 }

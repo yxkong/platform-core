@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
  * 消息通知模板网关层，隔离模型和实现
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author yxkong
- * @date 2024-10-10 10:51:10.862
+ * @date 2024-12-04 13:32:24.593
  * @version 1.0
  */
 public interface ISysNoticeTemplateGateway {

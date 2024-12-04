@@ -2,6 +2,7 @@ package com.github.platform.core.sys.adapter.api.controller;
 
 import com.github.platform.core.auth.annotation.RequiredLogin;
 import com.github.platform.core.common.entity.StrIdReq;
+import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.log.domain.constants.LogOptTypeEnum;
 import com.github.platform.core.log.infra.annotation.OptLog;
 import com.github.platform.core.standard.entity.dto.PageBean;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 级联表
@@ -54,6 +56,10 @@ public class SysCascadeController extends BaseController{
     @PostMapping("/query")
     public ResultBean<PageBean<SysCascadeDto>> query(@RequestBody SysCascadeQuery query){
         SysCascadeQueryContext context = sysCascadeConvert.toQuery(query);
+        //默认只查顶级节点
+        if (StringUtils.isEmpty(context.getCode()) && Objects.isNull(context.getParentId())){
+            context.setParentId(0L);
+        }
         PageBean<SysCascadeDto> pageBean = sysCascadeExecutor.query(context);
         return buildSucResp(pageBean);
     }
@@ -68,6 +74,10 @@ public class SysCascadeController extends BaseController{
     @PostMapping("/list")
     public ResultBean<List<SysCascadeDto>> list(@RequestBody SysCascadeQuery query){
         SysCascadeQueryContext context = sysCascadeConvert.toQuery(query);
+        //默认只查顶级节点
+        if (StringUtils.isEmpty(context.getCode()) && Objects.isNull(context.getParentId())){
+            context.setParentId(0L);
+        }
         List<SysCascadeDto> list = sysCascadeExecutor.list(context);
         return buildSucResp(list);
     }

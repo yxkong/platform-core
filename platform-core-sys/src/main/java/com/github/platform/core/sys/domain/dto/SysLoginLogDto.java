@@ -3,7 +3,9 @@ package com.github.platform.core.sys.domain.dto;
 import com.github.platform.core.sys.domain.common.entity.SysLoginLogBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 /**
 * 登录日志传输实体
@@ -15,6 +17,8 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "登录日志传输实体")
 public class SysLoginLogDto extends SysLoginLogBase{
 }

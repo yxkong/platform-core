@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class ProcessApprovalRecordBase extends BaseAdminEntity   {
     /** 实例名称 */
     @Schema(description = "实例名称")

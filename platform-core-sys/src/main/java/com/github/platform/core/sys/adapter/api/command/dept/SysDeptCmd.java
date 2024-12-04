@@ -3,6 +3,7 @@ package com.github.platform.core.sys.adapter.api.command.dept;
 import com.github.platform.core.sys.domain.common.entity.SysDeptBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 /**
@@ -15,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "系统部门增加或修改")
 public class SysDeptCmd extends SysDeptBase{
 }

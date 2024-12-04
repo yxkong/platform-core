@@ -3,6 +3,7 @@ package com.github.platform.core.sms.domain.common.query;
 import com.github.platform.core.common.entity.query.PageQueryBaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 /**
@@ -16,6 +17,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @Schema(description = "短信模板查询")
+@EqualsAndHashCode(callSuper=true)
 public class SysSmsTemplateQueryBase extends PageQueryBaseEntity {
     /** 模板编号 */
     @Schema(description = "模板编号")

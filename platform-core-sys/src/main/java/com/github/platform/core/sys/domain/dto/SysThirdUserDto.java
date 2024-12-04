@@ -5,6 +5,7 @@ import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.sys.domain.common.entity.SysThirdUserBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 /**
@@ -17,6 +18,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "三方用户传输实体")
 public class SysThirdUserDto extends SysThirdUserBase{
     /** 加密用户id */

@@ -3,6 +3,7 @@ package com.github.platform.core.sms.domain.common.entity;
 import com.github.platform.core.common.entity.BaseAdminEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysSmsTemplateStatusBase extends BaseAdminEntity   {
     /** 模板编号 */
     @Schema(description = "模板编号")

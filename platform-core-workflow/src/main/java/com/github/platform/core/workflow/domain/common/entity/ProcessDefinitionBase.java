@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class ProcessDefinitionBase extends BaseAdminEntity   {
     /** 流程定义编号 */
     @Schema(description = "流程定义编号")

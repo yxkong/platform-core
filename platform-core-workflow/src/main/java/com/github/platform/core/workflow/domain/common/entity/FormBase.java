@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class FormBase extends BaseAdminEntity   {
     /** 表单编号 */
     @Schema(description = "表单编号")

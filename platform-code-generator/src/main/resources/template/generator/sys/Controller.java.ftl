@@ -60,9 +60,6 @@ public class ${entityName}Controller extends BaseController{
     @PostMapping("/add")
     public ResultBean<String> add(@Validated @RequestBody ${entityName}Cmd cmd) {
         ${entityName}Context context= ${lowerEntityName}Convert.toContext(cmd);
-        if (Objects.isNull(context.getTenantId())){
-            context.setTenantId(LoginUserInfoUtil.getTenantId());
-        }
         String id = ${lowerEntityName}Executor.insert(context);
         return buildSucResp(id);
     }

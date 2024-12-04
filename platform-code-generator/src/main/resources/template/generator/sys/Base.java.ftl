@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class ${entityName}Base extends BaseAdminEntity   {
 <#if entityColumns??>
     <#list entityColumns as column>

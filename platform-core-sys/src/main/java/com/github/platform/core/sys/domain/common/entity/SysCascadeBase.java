@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysCascadeBase extends BaseAdminEntity   {
     /** 父级id */
     @Schema(description = "父级id")
@@ -32,4 +33,8 @@ public class SysCascadeBase extends BaseAdminEntity   {
     /** 当前层级顺序 */
     @Schema(description = "当前层级顺序")
     protected Integer sort;
+    /** 是否叶子节点 */
+    @Schema(description = "是否叶子节点")
+    protected Integer leaf;
+
 }

@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper=true)
 @ToString(callSuper = true)
 @Schema(description = "${apiAlias}传输实体")
 public class ${entityName}Dto extends ${entityName}Base{

@@ -3,6 +3,7 @@ package com.github.platform.core.workflow.domain.common.query;
 import com.github.platform.core.common.entity.query.PageQueryBaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @Schema(description = "流程查询")
+@EqualsAndHashCode(callSuper=true)
 public class ProcessQueryBase extends PageQueryBaseEntity {
     /**
      * 审批人

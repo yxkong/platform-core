@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
  * 消息通知模板增加或修改
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author yxkong
- * @date 2024-10-10 10:51:10.862
+ * @date 2024-12-04 13:32:24.593
  * @version 1.0
  */
 @Data

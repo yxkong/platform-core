@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class ProcessConditionBase extends BaseAdminEntity   {
     /** 条件名称 */
     @Schema(description = "条件名称")
