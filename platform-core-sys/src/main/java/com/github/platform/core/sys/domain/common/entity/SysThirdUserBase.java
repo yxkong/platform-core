@@ -3,6 +3,7 @@ package com.github.platform.core.sys.domain.common.entity;
 import com.github.platform.core.common.entity.BaseAdminEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysThirdUserBase extends BaseAdminEntity   {
     /** 绑定用户id，系统用户 */
     @Schema(description = "绑定用户id，系统用户")

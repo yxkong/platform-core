@@ -1,10 +1,7 @@
 package com.github.platform.core.sys.adapter.api.command;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
@@ -33,6 +30,7 @@ public class VerifyBase  extends TenantBase{
      * 验证类型,默认sms
      */
     @Schema(description ="验证类型,默认sms")
+    @Builder.Default
     private String verifyType = "sms";
 
     /**

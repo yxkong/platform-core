@@ -3,6 +3,7 @@ package com.github.platform.core.sys.adapter.api.command.role;
 import com.github.platform.core.sys.domain.common.entity.SysRoleBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -19,6 +20,7 @@ import java.util.Set;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "系统角色增加或修改")
 public class SysRoleCmd extends SysRoleBase{
     /**

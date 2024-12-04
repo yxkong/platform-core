@@ -3,6 +3,7 @@ package com.github.platform.core.monitor.adapter.api.command;
 import com.github.platform.core.monitor.domain.common.entity.SysOptLogBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 /**
@@ -15,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "操作日志增加或修改")
 public class SysOptLogCmd extends SysOptLogBase{
 }

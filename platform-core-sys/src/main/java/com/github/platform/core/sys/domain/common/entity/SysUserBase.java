@@ -4,6 +4,7 @@ import com.github.platform.core.common.entity.BaseAdminEntity;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysUserBase extends BaseAdminEntity   {
     /** 部门ID */
     @Schema(description = "部门ID")

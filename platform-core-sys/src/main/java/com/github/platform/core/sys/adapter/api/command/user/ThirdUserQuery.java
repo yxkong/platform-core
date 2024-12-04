@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "三方用户查询")
 public class ThirdUserQuery extends PageQueryBaseEntity {
     /** 三方唯一标识 */

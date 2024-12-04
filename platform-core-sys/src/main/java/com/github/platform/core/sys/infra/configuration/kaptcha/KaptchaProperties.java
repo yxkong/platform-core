@@ -5,6 +5,7 @@ import com.github.platform.core.common.constant.PropertyConstant;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Data
 @Configuration
+@EqualsAndHashCode(callSuper=true)
 @ConfigurationProperties(prefix = PropertyConstant.DATA_KAPTCHA)
 public class KaptchaProperties extends BaseKaptchaBaseProperties {
     public static final long DEFAULT_CAPTCHA_TIMEOUT = 5 * 60;

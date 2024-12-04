@@ -5,6 +5,7 @@ import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.sys.adapter.api.command.TenantBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
@@ -20,6 +21,7 @@ import javax.validation.constraints.NotBlank;
 @Schema(name = "AddUserCmd",title = "密码注册")
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysUserCmd extends TenantBase {
     @Schema(description ="用户id")
     private String strId;

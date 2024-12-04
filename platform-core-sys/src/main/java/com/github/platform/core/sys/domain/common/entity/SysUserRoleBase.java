@@ -3,6 +3,7 @@ package com.github.platform.core.sys.domain.common.entity;
 import com.github.platform.core.standard.entity.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -16,6 +17,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysUserRoleBase extends BaseEntity {
     /** 用户ID */
     @Schema(description = "用户ID")

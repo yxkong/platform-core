@@ -3,6 +3,7 @@ package com.github.platform.core.sys.adapter.api.command.thirduser;
 import com.github.platform.core.sys.domain.common.query.SysThirdUserQueryBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 /**
@@ -15,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "三方用户查询")
 public class SysThirdUserQuery extends SysThirdUserQueryBase {
 }

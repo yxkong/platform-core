@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysTokenCacheBase extends BaseAdminEntity   {
     /** 用户token */
     @Schema(description = "用户token")

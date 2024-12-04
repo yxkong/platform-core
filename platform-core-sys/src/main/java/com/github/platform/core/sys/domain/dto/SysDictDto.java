@@ -5,6 +5,7 @@ import com.github.platform.core.sys.domain.common.entity.SysDictBase;
 import com.github.platform.core.sys.domain.constant.DictConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -20,6 +21,7 @@ import java.util.Objects;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "字典数据传输实体")
 public class SysDictDto extends SysDictBase{
     /**

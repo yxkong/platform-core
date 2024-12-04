@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysFlowRuleBase extends BaseAdminEntity   {
     /** 业务类型 */
     @Schema(description = "业务类型")

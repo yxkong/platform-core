@@ -3,6 +3,7 @@ package com.github.platform.core.sys.adapter.api.command.account;
 import com.github.platform.core.sys.adapter.api.command.TenantBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
@@ -19,6 +20,7 @@ import javax.validation.constraints.NotEmpty;
 @Schema(name = "UserProfileCmd",title = "个人信息修改")
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class UserProfileCmd extends TenantBase {
 
     /**

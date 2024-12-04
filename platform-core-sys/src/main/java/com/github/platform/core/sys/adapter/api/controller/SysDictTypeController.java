@@ -85,7 +85,7 @@ public class SysDictTypeController extends BaseController {
             parameters = @Parameter(name = "dictTypeCmd", description = "DictTypeCmd对象", required = true,schema = @Schema(implementation = SysDictTypeCmd.class))
     )
     @PostMapping("modify")
-    public ResultBean<Void> modify(@RequestBody @Validated SysDictTypeCmd cmd) {
+    public ResultBean modify(@RequestBody @Validated SysDictTypeCmd cmd) {
         SysDictTypeContext context = convert.toContext(cmd);
         dictTypeExecutor.update(context);
         return buildSucResp();

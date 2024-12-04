@@ -5,6 +5,7 @@ import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.sys.domain.common.entity.SysMenuBase;
 import com.github.platform.core.sys.domain.constant.MenuConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class SysMenuDto extends SysMenuBase{
     private String parentName;
     /** 子菜单 */
     @Schema(description = "子菜单")
+    @Builder.Default
     private List<SysMenuDto> children = new ArrayList<>();
 
 }

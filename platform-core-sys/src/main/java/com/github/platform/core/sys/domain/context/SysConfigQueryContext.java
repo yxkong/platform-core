@@ -2,6 +2,7 @@ package com.github.platform.core.sys.domain.context;
 
 import com.github.platform.core.sys.domain.common.query.SysConfigQueryBase;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 /**
@@ -14,5 +15,6 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysConfigQueryContext extends SysConfigQueryBase {
 }

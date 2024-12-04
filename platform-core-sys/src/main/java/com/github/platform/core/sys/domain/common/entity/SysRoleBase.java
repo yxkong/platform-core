@@ -5,6 +5,7 @@ import com.github.platform.core.standard.validate.Add;
 import com.github.platform.core.standard.validate.Modify;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -20,6 +21,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysRoleBase extends BaseAdminEntity   {
     /** 角色名称 */
     @NotBlank(message = "角色名称不能为空", groups = {Add.class, Modify.class})

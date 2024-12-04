@@ -4,6 +4,7 @@ import com.github.platform.core.common.entity.query.PageQueryBaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -17,6 +18,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "在线用户查询")
 public class OnLineQuery extends PageQueryBaseEntity {
     /** 时间戳 */

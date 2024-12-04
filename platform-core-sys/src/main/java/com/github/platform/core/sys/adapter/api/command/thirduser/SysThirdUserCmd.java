@@ -3,6 +3,7 @@ package com.github.platform.core.sys.adapter.api.command.thirduser;
 import com.github.platform.core.sys.domain.common.entity.SysThirdUserBase;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "三方用户增加或修改")
 public class SysThirdUserCmd extends SysThirdUserBase{
     /** 加密用户id */

@@ -6,6 +6,7 @@ import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.sys.domain.constant.MenuConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -22,6 +23,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysMenuBase extends BaseAdminEntity   {
     /** 菜单名称 */
     @Schema(description = "菜单名称")
