@@ -11,6 +11,7 @@ import com.github.platform.core.sys.adapter.api.command.SysCascadeCmd;
 import com.github.platform.core.sys.adapter.api.command.SysCascadeQuery;
 import com.github.platform.core.sys.adapter.api.convert.SysCascadeAdapterConvert;
 import com.github.platform.core.sys.application.executor.ISysCascadeExecutor;
+import com.github.platform.core.sys.domain.constant.DeptConstant;
 import com.github.platform.core.sys.domain.context.SysCascadeContext;
 import com.github.platform.core.sys.domain.context.SysCascadeQueryContext;
 import com.github.platform.core.sys.domain.dto.SysCascadeDto;
@@ -99,10 +100,13 @@ public class SysCascadeController extends BaseController{
     @OptLog(module="sysCascade",title="新增级联表",optType = LogOptTypeEnum.add)
     @Operation(summary = "新增级联表",tags = {"sysCascade"})
     @PostMapping("/add")
-    public ResultBean<String> add(@Validated @RequestBody SysCascadeCmd cmd) {
+    public ResultBean<SysCascadeDto> add(@Validated @RequestBody SysCascadeCmd cmd) {
         SysCascadeContext context= sysCascadeConvert.toContext(cmd);
-        String id = sysCascadeExecutor.insert(context);
-        return buildSucResp(id);
+        if (Objects.isNull(context.getParentId())){
+            context.setParentId(DeptConstant.ROOT_ID);
+        }
+        SysCascadeDto dto = sysCascadeExecutor.insert(context);
+        return buildSucResp(dto);
     }
 
     /**

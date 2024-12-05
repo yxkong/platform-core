@@ -224,12 +224,27 @@ public class SysMenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGatew
             //如果parentId为空，则代表创建1级菜单    需要手动设置为0
             sysMenuBase.setParentId(MenuConstant.ROOT_ID);
         }
+        validatePath(sysMenuBase);
         int row = sysMenuMapper.insert(sysMenuBase);
         if ( row <= 0) {
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
         //添加角色菜单关联信息
         insertRoleMenu(context, sysMenuBase.getId());
+    }
+    private void validatePath(SysMenuBase menu){
+        if (StringUtils.isNotEmpty(menu.getPath())){
+            List<SysMenuBase> list = sysMenuMapper.findListBy(SysMenuBase.builder().path(menu.getPath()).build());
+            if (CollectionUtil.isEmpty(list)){
+                return;
+            }
+            if (Objects.isNull(menu.getId())){
+                throw exception(SysInfraResultEnum.MENU_PATH_IS_EXIST);
+            } else if(!menu.getId().equals(list.get(0).getId())) {
+                throw exception(SysInfraResultEnum.MENU_PATH_IS_EXIST);
+            }
+        }
+
     }
 
     @Override
@@ -267,6 +282,7 @@ public class SysMenuGatewayImpl extends BaseGatewayImpl implements ISysMenuGatew
     @Transactional(rollbackFor = Exception.class)
     public void update(SysMenuContext context) {
         SysMenuBase sysMenuBase = infraConvert.toSysMenuBase(context);
+        validatePath(sysMenuBase);
         SysMenuBase sourceMenu = sysMenuMapper.findById(sysMenuBase.getId());
         int row = sysMenuMapper.updateById(sysMenuBase);
         //只有当赋予租户改变的时候，才会重新授权给租户管理员

@@ -8,6 +8,7 @@ import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.sys.application.constant.SysAppResultEnum;
 import com.github.platform.core.sys.application.executor.ISysCascadeExecutor;
+import com.github.platform.core.sys.domain.constant.DeptConstant;
 import com.github.platform.core.sys.domain.context.SysCascadeContext;
 import com.github.platform.core.sys.domain.context.SysCascadeQueryContext;
 import com.github.platform.core.sys.domain.dto.SysCascadeDto;
@@ -133,11 +134,11 @@ public class SysCascadeExecutorImpl extends SysExecutor implements ISysCascadeEx
     * @param context 新增上下文
     */
     @Override
-    public String insert(SysCascadeContext context){
+    public SysCascadeDto insert(SysCascadeContext context){
         context.setTenantId(getTenantId(context));
         //默认为顶级节点
         String ancestors = "0";
-        if (context.getParentId() > 0L){
+        if (context.getParentId() > DeptConstant.ROOT_ID){
             SysCascadeDto dto = sysCascadeGateway.findById(context.getParentId());
             if (Objects.isNull(dto)){
                 throw exception(SysAppResultEnum.CASCADE_DONT_EXIST);
@@ -149,9 +150,7 @@ public class SysCascadeExecutorImpl extends SysExecutor implements ISysCascadeEx
         context.setAncestors(ancestors);
         //默认新增为叶子节点
         context.setLeaf(StatusEnum.ON.getStatus());
-        SysCascadeDto record = sysCascadeGateway.insert(context);
-
-        return record.getStrId();
+        return sysCascadeGateway.insert(context);
     }
     /**
     * 根据id查询级联表明细

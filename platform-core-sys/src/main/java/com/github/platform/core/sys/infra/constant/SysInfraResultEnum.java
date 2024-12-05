@@ -38,6 +38,7 @@ public enum SysInfraResultEnum implements BaseResult {
     CONFIG_ADD_EXIST("2323","数据库中已经存在对应的配置key，请核查" ),
     CONFIG_NOT_UPDATE_KEY("2324","更新配置时，不允许修改配置key" ),
     MENU_RELOAD_PERMISSION_EMPTY("2325", "重新加载租户管理员菜单权限数据为空！"),
+    MENU_PATH_IS_EXIST("2326", "路由地址已存在，请更换路由地址！"),
 
 //    ROLE_ALREADY_EXIST("2330","该角色名或角色标识在该租户中已存在,请核验"),
 //    FORBID_DELETE_ROLE("2331","该角色下存在用户，无法删除，请核验"),

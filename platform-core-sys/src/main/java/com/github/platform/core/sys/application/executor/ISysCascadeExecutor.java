@@ -41,7 +41,7 @@ public interface ISysCascadeExecutor {
     * 新增级联表
     * @param context 新增上下文
     */
-    String insert(SysCascadeContext context);
+    SysCascadeDto insert(SysCascadeContext context);
     /**
     * 根据id查询级联表明细
     * @param id 主键
