@@ -60,7 +60,7 @@
  				file_id,
  			</if>
 		    <if test="fileHash != null  and fileHash !=''">
- 				file_id,
+				file_hash,
  			</if>
  			<if test="filePath != null and filePath !=''">
  				file_path,

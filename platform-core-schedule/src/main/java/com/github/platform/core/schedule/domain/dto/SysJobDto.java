@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "任务管理传输实体")
 public class SysJobDto extends SysJobBase {
 }

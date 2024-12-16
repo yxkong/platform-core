@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysJobLogBase extends BaseAdminEntity {
     /** 任务id */
     @Schema(description = "任务id")

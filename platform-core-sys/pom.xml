@@ -3,27 +3,50 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>platform-core</artifactId>
         <groupId>com.github.platform</groupId>
+        <artifactId>platform-core</artifactId>
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <packaging>pom</packaging>
+    <groupId>com.github.platform.sys</groupId>
     <artifactId>platform-core-sys</artifactId>
-
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+    <modules>
+        <module>sys-domain</module>
+        <module>sys-infra</module>
+        <module>sys-admin</module>
+        <module>sys-application</module>
+    </modules>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.platform.sys</groupId>
+                <artifactId>sys-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.sys</groupId>
+                <artifactId>sys-infra</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.sys</groupId>
+                <artifactId>sys-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.sys</groupId>
+                <artifactId>sys-admin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>com.github.platform</groupId>
-            <artifactId>platform-core-mysql</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.platform</groupId>
-            <artifactId>platform-core-schedule</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>eu.bitwalker</groupId>
             <artifactId>UserAgentUtils</artifactId>

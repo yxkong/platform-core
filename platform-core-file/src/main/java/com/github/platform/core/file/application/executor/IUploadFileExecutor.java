@@ -2,10 +2,8 @@ package com.github.platform.core.file.application.executor;
 
 import com.github.platform.core.file.domain.dto.SysUploadFileDto;
 import com.github.platform.core.file.domain.entity.UploadEntity;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -23,10 +21,10 @@ public interface IUploadFileExecutor {
      * @param bizNo  业务唯一标识
      * @param path 路径，建议用年月日来区分,为null，内部按年月日划分
      * @param fileName  文件名称，带后缀
-     * @param is 文件流
+     * @param fileBytes 文件流
      * @return 上传成功，并插入成功，才算成功，否则返回null
      */
-    UploadEntity uploadAndSave(String module, String bizNo, String path, String fileName,Long fileSize, InputStream is);
+    UploadEntity uploadAndSave(String module, String bizNo, String path, String fileName,Long fileSize, byte[] fileBytes);
 
     /**
      * 根据模块和业务编号删除对应的文件

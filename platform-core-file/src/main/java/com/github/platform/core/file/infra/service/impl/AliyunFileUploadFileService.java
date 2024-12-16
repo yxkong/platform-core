@@ -58,6 +58,7 @@ public class AliyunFileUploadFileService extends AbstractUploadFileService{
 
     @Override
     public String getUrl(SysUploadFileDto dto) {
+        //这里，oss必须设置为外网可访问
         String cnameUrl = getCnameUrl(dto);
         if (StringUtils.isNotEmpty(cnameUrl)){
             return cnameUrl;
@@ -82,8 +83,7 @@ public class AliyunFileUploadFileService extends AbstractUploadFileService{
             req.setProcess(style);
         }
         URL url  = ossClient.generatePresignedUrl(req);
-
-        return url.toString();
+        return getThumbCnameUrl(url.toString(),getUrl(dto));
     }
 
     @Override

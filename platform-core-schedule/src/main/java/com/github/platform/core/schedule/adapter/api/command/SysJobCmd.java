@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 @Schema(description = "任务管理增加或修改")
 public class SysJobCmd extends SysJobBase{
 

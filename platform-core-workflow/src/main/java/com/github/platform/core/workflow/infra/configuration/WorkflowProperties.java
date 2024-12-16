@@ -44,9 +44,13 @@ public class WorkflowProperties {
         private Integer queueSize = 100;
         @Builder.Default
         private Integer keepAliveTime = 100;
+        @Builder.Default
         private String threadNamePrefix = "platform-workflow-";
+        @Builder.Default
         private Integer awaitTerminationMillis = 30;
+        @Builder.Default
         private Boolean waitForTasksToCompleteOnShutdown = true;
+        @Builder.Default
         private Boolean allowCoreThreadTimeOut = true;
     }
 }

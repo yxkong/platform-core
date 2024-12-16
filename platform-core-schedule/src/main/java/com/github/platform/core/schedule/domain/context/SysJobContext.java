@@ -12,5 +12,6 @@ import lombok.*;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class SysJobContext extends SysJobBase {
 }

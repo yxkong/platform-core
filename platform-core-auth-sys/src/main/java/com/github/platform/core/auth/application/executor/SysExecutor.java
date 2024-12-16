@@ -16,13 +16,31 @@ import java.util.Objects;
 public class SysExecutor extends BaseExecutor  {
     /**
      * 获取租户id,
-     *  只有管理员可以制定租户id，否则获取当前登录用的租户id
+     *  只有管理员可以指定租户id，否则获取当前登录用的租户id
      * @param entity
      * @param <T>
      */
     public <T extends BaseEntity> Integer getTenantId(T entity) {
-        if (AuthUtil.isSuperAdmin() ){
+        if (!AuthUtil.isLogin()){
+            return null;
+        }
+        if (AuthUtil.isSuperAdmin()){
             return Objects.nonNull(entity)?entity.getTenantId():null;
+        }
+        return LoginUserInfoUtil.getTenantId();
+    }
+    /**
+     * 获取租户id,
+     *  只有管理员可以指定租户id，否则获取当前登录用的租户id
+     * @param entity
+     * @param <T>
+     */
+    public <T extends BaseEntity> Integer getMustTenantId(T entity) {
+        if (!AuthUtil.isLogin()){
+            return null;
+        }
+        if (AuthUtil.isSuperAdmin() && Objects.nonNull(entity) && Objects.nonNull(entity.getTenantId())){
+            return entity.getTenantId();
         }
         return LoginUserInfoUtil.getTenantId();
     }

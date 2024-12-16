@@ -1,20 +1,19 @@
 package com.github.platform.core.auth.aspect;
 
+import com.github.platform.core.auth.annotation.DataScope;
+import com.github.platform.core.auth.constant.DataScopeEnum;
 import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.auth.util.AuthUtil;
 import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.entity.BaseAdminEntity;
-import com.github.platform.core.standard.entity.BaseDO;
+import com.github.platform.core.common.utils.CollectionUtil;
 import com.google.common.base.Joiner;
-import com.github.platform.core.auth.annotation.DataScope;
-import com.github.platform.core.auth.constant.DataScopeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
-import com.github.platform.core.common.utils.CollectionUtil;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -25,7 +24,7 @@ import static org.springframework.boot.autoconfigure.condition.ConditionalOnWebA
 /**
  * 数据过滤处理
  *
- * @author wangxiaozhou
+ * @author wangxiaozhous
  */
 @Slf4j
 @Aspect

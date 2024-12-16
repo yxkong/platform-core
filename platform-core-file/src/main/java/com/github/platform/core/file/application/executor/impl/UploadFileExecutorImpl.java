@@ -12,13 +12,15 @@ import com.github.platform.core.file.infra.convert.SysUploadFileInfraConvert;
 import com.github.platform.core.file.infra.service.IUploadFileService;
 import com.github.platform.core.standard.constant.ResultStatusEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class UploadFileExecutorImpl extends BaseExecutor implements IUploadFileE
     @Resource
     private SysUploadFileInfraConvert convert;
     @Override
-    public UploadEntity uploadAndSave(String module, String bizNo, String path, String fileName,Long fileSize, InputStream is) {
+    public UploadEntity uploadAndSave(String module, String bizNo, String path, String fileName,Long fileSize,  byte[] fileBytes) {
         if (log.isInfoEnabled()){
             log.info("module:{} bizNo:{} path:{} fileName:{} fileSize:{}",module,bizNo,path,fileName,fileSize);
         }
@@ -52,7 +54,7 @@ public class UploadFileExecutorImpl extends BaseExecutor implements IUploadFileE
             log.warn("未找到对应存储类型{}的实现",properties.getStorage());
             throw exception(ResultStatusEnum.NO_FOUND_IMPLEMENT);
         }
-        SysUploadFileDto uploadFileDto = uploadFileService.uploadAndSave(module, bizNo, fileName, fileSize, is);
+        SysUploadFileDto uploadFileDto = uploadFileService.uploadAndSave(module, bizNo, fileName, fileSize, fileBytes);
         uploadFileDto.setPermanent(true);
         return UploadEntity.builder()
                 .storage(properties.getStorage().name())
@@ -69,8 +71,15 @@ public class UploadFileExecutorImpl extends BaseExecutor implements IUploadFileE
 
     @Override
     public String uploadExcel(String fileName,String localPath) throws FileNotFoundException {
-        FileInputStream inputStream = new FileInputStream(localPath);
-        UploadEntity uploadEntity = this.uploadAndSave("excel", null, "download", fileName,null, inputStream);
+        byte[] fileBytes = null;
+        // 使用 try-with-resources 确保流被关闭
+        try (FileInputStream inputStream = new FileInputStream(new File(localPath))) {
+            fileBytes = IOUtils.toByteArray(inputStream);
+        } catch (IOException e) {
+            log.error("Failed to read input stream from path: " + localPath, e);
+            throw exception(ResultStatusEnum.ERROR.getStatus(),"上传文件io异常");
+        }
+        UploadEntity uploadEntity = this.uploadAndSave("excel", null, "download", fileName,null, fileBytes);
         return uploadEntity.getFileId();
     }
 

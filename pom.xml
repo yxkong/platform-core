@@ -3,21 +3,55 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.18</version>
+        <relativePath/>
+    </parent>
     <artifactId>platform-core</artifactId>
     <groupId>com.github.platform</groupId>
     <version>${revision}</version>
     <packaging>pom</packaging>
     <name>platform-core</name>
     <description>后台管理开发平台- 基于Spring Cloud，使用DDD实现的微服务架构</description>
+    <modules>
+        <module>platform-code-generator</module>
+        <module>platform-core-standard</module>
+        <module>platform-core-common</module>
+        <module>platform-core-log</module>
+        <module>platform-core-web</module>
+        <module>platform-core-cloud</module>
+        <module>platform-core-cache</module>
+        <module>platform-core-lb</module>
+        <module>platform-core-auth</module>
+        <module>platform-core-auth-sys</module>
+        <module>platform-core-auth-api</module>
+        <module>platform-core-mysql</module>
+        <module>platform-core-mybatis</module>
+        <module>platform-core-gateway</module>
+        <module>platform-core-kafka</module>
+        <module>platform-core-websocket</module>
+        <module>platform-core-sleuth</module>
+        <module>platform-core-prometheus</module>
+        <module>platform-core-lb-extend</module>
+        <module>platform-core-sys</module>
+        <module>platform-core-file</module>
+        <module>platform-core-sms</module>
+        <module>platform-core-schedule</module>
+        <module>platform-core-workflow</module>
+        <module>platform-core-message</module>
+        <module>platform-core-oauth2</module>
+    </modules>
     <properties>
-<!--        <revision>0.1.8-release</revision>-->
-        <revision>0.1.9-SNAPSHOT</revision>
+        <!--公共配置-->
+        <revision>0.2.1-SNAPSHOT</revision>
+        <argLine>-Dfile.encoding=UTF-8</argLine>
+        <java.version>8</java.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-        <lombok.version>1.18.26</lombok.version>
-        <mapstruct.version>1.5.1.Final</mapstruct.version>
-        <apache.commons.lang3.version>3.10</apache.commons.lang3.version>
+
         <!--maven plugin相关-->
         <maven.archetype.plugin.version>3.2.1</maven.archetype.plugin.version>
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
@@ -31,38 +65,105 @@
         <maven.clean.plugin.version>3.3.1</maven.clean.plugin.version>
         <maven.javadoc.plugin.version>3.5.0</maven.javadoc.plugin.version>
         <flatten.maven.plugin.version>1.6.0</flatten.maven.plugin.version>
+
+        <spring.boot.version>2.7.18</spring.boot.version>
+        <spring.cloud.version>2021.0.9</spring.cloud.version>
+        <spring.cloud.loadbalancer.version>3.1.8</spring.cloud.loadbalancer.version>
+        <spring.cloud.openfeign.version>3.1.9</spring.cloud.openfeign.version>
+        <spring.cloud.alibaba.version>2021.0.6.0</spring.cloud.alibaba.version>
+        <spring.cloud.zipkin.version>2.2.8.RELEASE</spring.cloud.zipkin.version>
+        <spring.boot.admin.version>2.6.9</spring.boot.admin.version>
+        <spring.security.version>2.6.6</spring.security.version>
+        <springdoc.openapi.version>1.6.8</springdoc.openapi.version>
+
+        <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+        <springfox.version>3.0.0</springfox.version>
+        <joda.time.version>2.10</joda.time.version>
+        <oos.sdk.version>6.5.0</oos.sdk.version>
+        <!--
+        毕业版本依赖关系
+        https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E
+        -->
+
+
+        <!--数据库相关-->
+        <mysql.connector.version>8.0.29</mysql.connector.version>
+        <postgresql.connector.version>42.4.1</postgresql.connector.version>
+        <druid.version>1.2.22</druid.version>
+        <flyway.version>5.2.1</flyway.version>
+        <mybatis.version>3.5.16</mybatis.version>
+        <mybaits.generator.version>3.4.1</mybaits.generator.version>
+        <pagehelper.boot.version>2.1.0</pagehelper.boot.version>
+        <mybatis.starter.version>2.3.2</mybatis.starter.version>
+        <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
+        <elastic.version>7.14.0</elastic.version>
+        <jsqlparser.version>4.9</jsqlparser.version>
+
+        <!-- apache相关-->
+        <apache.commons.codec.version>1.14</apache.commons.codec.version>
+        <apache.commons.lang3.version>3.10</apache.commons.lang3.version>
+        <apache.commons.text.version>1.9</apache.commons.text.version>
+        <apache.commons.pool2.version>2.11.1</apache.commons.pool2.version>
+        <apache.commons.collections4.version>4.4</apache.commons.collections4.version>
+        <apache.poi.version>5.2.3</apache.poi.version>
+        <commons.io.version>2.8.0</commons.io.version>
+
+        <!--日志相关-->
+        <log4j2.version>2.23.1</log4j2.version>
+        <sl4j.version>1.7.36</sl4j.version>
+        <!--4.0.0 是由jdk11编译的-->
+        <disruptor.version>3.4.4</disruptor.version>
+        <!--缓存相关-->
+        <redisson.version>3.17.0</redisson.version>
+        <redisson.starter.version>3.17.0</redisson.starter.version>
+        <lettuce.version>6.1.6.RELEASE</lettuce.version>
+        <jetcache.version>2.6.6</jetcache.version>
+        <jedis.version>4.4.8</jedis.version>
+        <google.guava.version>30.0-jre</google.guava.version>
+        <caffeine.version>3.0.6</caffeine.version>
+        <guava.version>31.1-jre</guava.version>
+
+        <!--效率工具相关-->
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <lombok.version>1.18.30</lombok.version>
+
+        <!--分布式与监控-->
+        <nacos.client.version>2.1.2</nacos.client.version>
+        <seata.version>1.5.2</seata.version>
+        <sentinel.version>1.8.3</sentinel.version>
+        <micrometer.version>1.9.14</micrometer.version>
+
+        <!--单元测试-->
+        <junit.version>5.7.2</junit.version>
+
+        <!--消息队列-->
+        <spring.kafka.version>2.9.13</spring.kafka.version>
+        <kafka.version>3.2.3</kafka.version>
+
+        <rocketmq.version>4.9.3</rocketmq.version>
+
+        <!-- 其他工具 -->
+        <swagger.version>2.1.2</swagger.version>
+        <aviator.version>5.3.0</aviator.version>
+        <fastjson.version>1.2.83</fastjson.version>
+        <fastjson2.version>2.0.38</fastjson2.version>
+        <gson.version>2.9.1</gson.version>
+        <easy.rules.version>4.1.0</easy.rules.version>
+        <freemarker.version>2.3.31</freemarker.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
+        <quartz.version>2.3.2</quartz.version>
+        <hutool.version>5.8.26</hutool.version>
+        <userAgent.version>1.21</userAgent.version>
+        <jsonPath.version>2.8.0</jsonPath.version>
+        <flowable.version>6.8.0</flowable.version>
+        <velocity.tools.version>3.1</velocity.tools.version>
+        <velocity.core.version>2.3</velocity.core.version>
+        <commons.csv.version>1.10.0</commons.csv.version>
+        <jsch.version>0.1.55</jsch.version>
+
+
+
     </properties>
-    <modules>
-        <module>platform-dependencies</module>
-        <module>platform-code-generator</module>
-        <module>platform-core-standard</module>
-        <module>platform-core-common</module>
-        <module>platform-core-log</module>
-        <module>platform-core-file</module>
-        <module>platform-core-sms</module>
-        <module>platform-core-schedule</module>
-        <module>platform-core-web</module>
-        <module>platform-core-cloud</module>
-        <module>platform-core-cache</module>
-        <module>platform-core-workflow</module>
-        <module>platform-core-lb</module>
-        <module>platform-core-auth</module>
-        <module>platform-core-auth-sys</module>
-        <module>platform-core-auth-api</module>
-        <module>platform-core-sys</module>
-        <module>platform-core-gateway</module>
-        <module>platform-core-kafka</module>
-        <module>platform-core-lb-extend</module>
-        <module>platform-core-websocket</module>
-        <module>platform-core-sleuth</module>
-        <module>platform-core-prometheus</module>
-	    <module>platform-core-mysql</module>
-	    <module>platform-core-db</module>
-        <module>platform-core-dingtalk</module>
-        <module>platform-core-gateway-admin</module>
-        <module>platform-core-gateway-admin-infra</module>
-        <module>platform-core-message</module>
-    </modules>
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -89,12 +190,659 @@
     </dependencies>
     <dependencyManagement>
         <dependencies>
+            <!--导入依赖的pom文件,顺序靠前，先被引入-->
             <dependency>
                 <groupId>com.github.platform</groupId>
-                <artifactId>platform-dependencies</artifactId>
+                <artifactId>platform-core-mysql</artifactId>
                 <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-mybatis</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-prometheus</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-sleuth</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-kafka</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-code-generator</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <!-- platform Core -->
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-standard</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-lb</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-lb-extend</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-common</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-file</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-workflow</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-log</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-sms</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-schedule</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-cache</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-gateway</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-gateway-admin</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-gateway-admin-infra</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-cloud</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-auth</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-auth-sys</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-auth-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform</groupId>
+                <artifactId>platform-core-web</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet-api.version}</version>
+            </dependency>
+            <!--组合包-->
+            <dependency>
+                <groupId>com.github.platform.sys</groupId>
+                <artifactId>sys-domain</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.sys</groupId>
+                <artifactId>sys-infra</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.sys</groupId>
+                <artifactId>sys-application</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.sys</groupId>
+                <artifactId>sys-admin</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.oauth2</groupId>
+                <artifactId>oauth2-domain</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.oauth2</groupId>
+                <artifactId>oauth2-infra</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.oauth2</groupId>
+                <artifactId>oauth2-application</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.oauth2</groupId>
+                <artifactId>oauth2-dingtalk</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.gateway</groupId>
+                <artifactId>gateway-infra</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.gateway</groupId>
+                <artifactId>gateway-admin</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.gateway</groupId>
+                <artifactId>gateway-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.message</groupId>
+                <artifactId>notice-domain</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.message</groupId>
+                <artifactId>notice-infra</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.message</groupId>
+                <artifactId>notice-application</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.message</groupId>
+                <artifactId>notice-admin</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.message</groupId>
+                <artifactId>dingtalk-service</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <!-- 微服务基础包 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-openfeign-dependencies</artifactId>
+                <version>${spring.cloud.openfeign.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring.cloud.alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- 负载均衡,由于springcloud2020弃用了Ribbon，因此Alibaba在2021版本nacos中删除了Ribbon的jar包，因此无法通过lb路由到指定微服务，出现了503情况-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-loadbalancer</artifactId>
+                <version>${spring.cloud.loadbalancer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+                <version>${spring.cloud.loadbalancer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-quartz</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-freemarker</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-zipkin</artifactId>
+                <version>${spring.cloud.zipkin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-dependencies</artifactId>
+                <version>${spring.boot.admin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--aviator 规则引擎-->
+            <dependency>
+                <groupId>com.googlecode.aviator</groupId>
+                <artifactId>aviator</artifactId>
+                <version>${aviator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.bitwalker</groupId>
+                <artifactId>UserAgentUtils</artifactId>
+                <version>${userAgent.version}</version>
+            </dependency>
+            <!--            <dependency>-->
+            <!--                <groupId>org.redisson</groupId>-->
+            <!--                <artifactId>redisson-spring-boot-starter</artifactId>-->
+            <!--                <version>${redisson.starter.version}</version>-->
+            <!--            </dependency>-->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>${disruptor.version}</version>
+            </dependency>
+
+            <!--            <dependency>-->
+            <!--                <groupId>com.fasterxml.jackson.datatype</groupId>-->
+            <!--                <artifactId>jackson-datatype-jsr310</artifactId>-->
+            <!--                <version>${jackson.version}</version>-->
+            <!--            </dependency>-->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache.commons.lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${apache.commons.text.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>${apache.commons.pool2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${apache.commons.collections4.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${apache.poi.version}</version>
+            </dependency>
+            <!--kafka start  -->
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+                <version>${spring.kafka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.penggle</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>${kaptcha.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${google.guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${apache.commons.codec.version}</version>
+            </dependency>
+            <!-- 升级log4j2,安全漏洞修复 -->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jcl</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jul</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <!--用于收集日志所在的ip-->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-spring-boot</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <!--sl4j 依赖-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${sl4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${sl4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${sl4j.version}</version>
+            </dependency>
+
+            <!-- pagehelper 分页插件 -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.boot.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>${jsqlparser.version}</version>
+            </dependency>
+            <!-- Druid -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <!-- MySql -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.connector.version}</version>
+            </dependency>
+            <!--Swagger-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-archetype-plugin</artifactId>
+                <version>${maven.archetype.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${maven.clean.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>${maven-install-plugin.version}</version>
+            </dependency>
+
+            <!--单独使用fastjons2-->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
+            </dependency>
+            <!--fastjson2用到spring里需要引入这个包-->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2-extension</artifactId>
+                <version>${fastjson2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alicp.jetcache</groupId>
+                <artifactId>jetcache-starter-redis</artifactId>
+                <version>${jetcache.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alicp.jetcache</groupId>
+                <artifactId>jetcache-starter-redis-springdata</artifactId>
+                <version>${jetcache.version}</version>
+            </dependency>
+
+            <!-- redisson -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+            <!-- lettuce-core -->
+            <dependency>
+                <groupId>io.lettuce</groupId>
+                <artifactId>lettuce-core</artifactId>
+                <version>${lettuce.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-acl</artifactId>
+                <version>${rocketmq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
+            <!-- SpringDoc -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc.openapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-webmvc-core</artifactId>
+                <version>${springdoc.openapi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz.version}</version>
+            </dependency>
+            <!--天翼云oos-sdk 需要的依赖-->
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda.time.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-core</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flowable</groupId>
+                <artifactId>flowable-spring-boot-starter</artifactId>
+                <version>${flowable.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flowable</groupId>
+                <artifactId>flowable-spring-boot-starter-process</artifactId>
+                <version>${flowable.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flowable</groupId>
+                <artifactId>flowable-spring-configurator</artifactId>
+                <version>${flowable.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${jsonPath.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity-engine-core</artifactId>
+                <version>${velocity.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.velocity.tools</groupId>
+                <artifactId>velocity-tools-generic</artifactId>
+                <version>${velocity.tools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jeasy</groupId>
+                <artifactId>easy-rules-core</artifactId>
+                <version>${easy.rules.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-csv</artifactId>
+                <version>${commons.csv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>${jsch.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

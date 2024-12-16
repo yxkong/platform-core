@@ -48,8 +48,8 @@ public class JobHandlerExecutor extends QuartzJobBean {
         SysJobDto jobDto = sysJobGateway.findById(jobId);
         if (!isJobExecutable(jobDto)) return;
 
-        String executeId = getExecuteId(jobId, context);
-        Long logId = createExecutionLog(sysJobLogGateway, jobId, jobDto, executeUser, executeId, context.getRefireCount());
+        String executeId = getExecuteId(jobDto.getId(), context);
+        Long logId = createExecutionLog(sysJobLogGateway, jobDto, executeUser, executeId, context.getRefireCount());
 
         Long startTime = System.currentTimeMillis();
         Pair<Boolean, String> executionResult = null;
@@ -90,15 +90,16 @@ public class JobHandlerExecutor extends QuartzJobBean {
         return ApplicationContextHolder.getBean(jobDto.getBeanName(), IJobMonitorHandler.class);
     }
 
-    private Long createExecutionLog(ISysJobLogGateway sysJobLogGateway, Long jobId, SysJobDto jobDto, String executeUser, String executeId, int refireCount) {
+    private Long createExecutionLog(ISysJobLogGateway sysJobLogGateway, SysJobDto jobDto, String executeUser, String executeId, int refireCount) {
         try {
             SysJobLogDto logDto = sysJobLogGateway.insert(
                     SysJobLogContext.builder()
-                            .jobId(jobId)
+                            .jobId(jobDto.getId())
                             .beanName(jobDto.getBeanName())
                             .handlerParam(jobDto.getHandlerParam())
                             .executeId(executeId)
                             .executeNum(refireCount + 1)
+                            .tenantId(jobDto.getTenantId())
                             .createBy(executeUser)
                             .startTime(LocalDateTimeUtil.dateTime())
                             .createTime(LocalDateTimeUtil.dateTime())

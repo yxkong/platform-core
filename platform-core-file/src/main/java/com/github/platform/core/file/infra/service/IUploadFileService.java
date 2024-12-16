@@ -23,10 +23,11 @@ public interface IUploadFileService {
      * @param module 业务模块
      * @param bizNo  业务唯一标识
      * @param fileName  文件名称，带后缀
-     * @param is 文件留
+     * @param fileSize 文件大小
+     * @param fileBytes 文件字节数组
      * @return 上传成功，并插入成功，才算成功，否则返回null
      */
-    SysUploadFileDto uploadAndSave(String module,String bizNo, String fileName,Long fileSize, InputStream is);
+    SysUploadFileDto uploadAndSave(String module,String bizNo, String fileName,Long fileSize,  byte[] fileBytes);
     /**
      * 文件上传（使用这个，需要自己记录是什么类型的存储方式）
      * @param module 模块名，以模块区分

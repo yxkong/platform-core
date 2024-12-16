@@ -1,5 +1,6 @@
 package com.github.platform.core.file.infra.service.impl;
 
+import com.github.platform.core.auth.util.LoginUserInfoUtil;
 import com.github.platform.core.common.utils.EncryptUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.file.domain.common.entity.SysUploadFileBase;
@@ -11,8 +12,10 @@ import com.github.platform.core.persistence.mapper.file.SysUploadFileMapper;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,22 +47,37 @@ public abstract class AbstractUploadFileService implements IUploadFileService {
         if (StringUtils.isEmpty(getOssProperties().getCname())){
             return null;
         }
-        //如果配置了cname，则直接返回cname的d地址
+        //如果配置了cname，则直接返回cname的地址
         return getOssProperties().getCname() + SymbolConstant.divide + getOssProperties().getBucketName() +
                 SymbolConstant.divide + dto.getFilePath();
     }
+    protected String getThumbCnameUrl(String thumbUrl,String url){
+        if (StringUtils.isEmpty(getOssProperties().getCname())){
+            return url;
+        }
+        return url+ thumbUrl.substring(thumbUrl.indexOf(SymbolConstant.question));
+    }
 
     @Override
-    public SysUploadFileDto uploadAndSave(String module, String bizNo, String fileName, Long fileSize, InputStream is) {
+    public SysUploadFileDto uploadAndSave(String module, String bizNo, String fileName, Long fileSize,  byte[] fileBytes) {
         String fileId = generateFieldId();
         String fileType = getFileType(fileName);
+        // 计算 MD5 哈希值
+        String fileHash = getFileHash(fileBytes);
+        // 获取文件大小
+        long actualFileSize = Objects.nonNull(fileSize) ? fileSize : fileBytes.length;
         // 获取上传文件名称
         String uploadFileName = getUploadFileName(fileId, fileType);
-        String fileHash = EncryptUtil.getInstance().md5FileHash(is);
-        String relativeFile = this.upload(module, bizNo,uploadFileName, is);
-
-        if (log.isWarnEnabled()){
-            log.warn("module:{} bizNo:{} fileName:{} relativeFile:{} uploadName:{}",module,bizNo,fileName,relativeFile,uploadFileName);
+        // 上传文件到对应的位置
+        String relativeFile;
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(fileBytes)) {
+            relativeFile = this.upload(module, bizNo, uploadFileName, bis);
+            if (log.isWarnEnabled()){
+                log.warn("module:{} bizNo:{} fileName:{} relativeFile:{} uploadName:{}",module,bizNo,fileName,relativeFile,uploadFileName);
+            }
+        } catch (Exception e) {
+            log.error("Failed to upload file to OSS.", e);
+            return null;
         }
         //记录上传日志
         SysUploadFileBase record = SysUploadFileBase.builder()
@@ -70,28 +88,29 @@ public abstract class AbstractUploadFileService implements IUploadFileService {
                 .fileId(fileId)
                 .fileHash(fileHash)
                 .fileType(fileType)
-                .fileSize((Objects.nonNull(fileSize) ? fileSize : countBytes(is)))
+                .fileSize(actualFileSize)
                 .storage(properties.getStorage().name())
+                .tenantId(LoginUserInfoUtil.getTenantId())
+                .createBy(LoginUserInfoUtil.getLoginName())
                 .createTime(LocalDateTimeUtil.dateTime())
                 .build();
         int num = uploadFileMapper.insert(record);
         if (num <= 0) {
             return null;
         }
+        // 关闭 ByteArrayInputStream
         return convert.toDto(record);
     }
-    int countBytes(InputStream is){
-        int size = 0;
-        try {
-            byte[] buffer = new byte[1024];
-            int n;
-            while ((n = is.read(buffer)) != -1) {
-                size += n;
-            }
-        } catch (IOException e) {
+
+    private String getFileHash(byte[] fileBytes) {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(fileBytes)) {
+            return EncryptUtil.getInstance().md5FileHash(bis);
+        } catch (Exception e) {
+            log.error("Failed to calculate file hash.", e);
         }
-        return size;
+        return null;
     }
+
     @Override
     public List<SysUploadFileBase> findBy(String bizNo, String module) {
         if (StringUtils.isEmpty(bizNo)) {
@@ -143,7 +162,7 @@ public abstract class AbstractUploadFileService implements IUploadFileService {
         if (StringUtils.isNotEmpty(bizNo)){
             sb.append(SymbolConstant.divide).append(bizNo);
         }
-        return sb.append(uploadFileName).toString();
+        return sb.append(SymbolConstant.divide).append(uploadFileName).toString();
     }
 
 

@@ -17,8 +17,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.platform</groupId>
-            <artifactId>platform-core-sys</artifactId>
+            <groupId>com.github.platform.sys</groupId>
+            <artifactId>sys-infra</artifactId>
         </dependency>
         <dependency>
             <groupId>org.flowable</groupId>

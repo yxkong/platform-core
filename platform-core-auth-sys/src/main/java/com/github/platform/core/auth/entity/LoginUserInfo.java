@@ -7,10 +7,7 @@ import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.entity.common.LoginInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -75,6 +72,7 @@ public class LoginUserInfo extends LoginInfo {
      * 数据权限列表
      */
     @Schema(description ="数据权限列表")
+    @Builder.Default
     private Set<DataScopeEnum> dataScopes = new HashSet<>();
 
     /**

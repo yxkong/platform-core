@@ -1,7 +1,6 @@
 package com.github.platform.core.file.application.executor.impl;
 
 import com.github.platform.core.auth.application.executor.SysExecutor;
-import com.github.platform.core.common.service.BaseExecutor;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.file.application.executor.ISysUploadFileExecutor;
 import com.github.platform.core.file.application.executor.IUploadFileExecutor;

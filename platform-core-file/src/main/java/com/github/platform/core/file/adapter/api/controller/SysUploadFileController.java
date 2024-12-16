@@ -22,12 +22,12 @@ import com.github.platform.core.web.web.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -83,12 +83,20 @@ public class SysUploadFileController extends BaseController{
         List<UploadEntity> rst = new ArrayList<>();
         InputStream fileInputStream = null;
         for (MultipartFile file:files){
+            byte[] fileBytes;
             try {
                 fileInputStream = file.getInputStream();
+                // 使用 try-with-resources 确保流被关闭
+                try (InputStream inputStream = fileInputStream) {
+                    fileBytes = IOUtils.toByteArray(inputStream);
+                } catch (IOException e) {
+                    log.error("Failed to read input stream.", e);
+                    return null;
+                }
             } catch (IOException e) {
                 throw exception(ResultStatusEnum.COMMON_UPLOAD_STREAM_EXCEPTION);
             }
-            UploadEntity uploadEntity = uploadFileExecutor.uploadAndSave(module, bizNo, null, file.getOriginalFilename(), file.getSize(), fileInputStream);
+            UploadEntity uploadEntity = uploadFileExecutor.uploadAndSave(module, bizNo, null, file.getOriginalFilename(), file.getSize(), fileBytes);
             rst.add(uploadEntity);
         }
 
@@ -109,11 +117,9 @@ public class SysUploadFileController extends BaseController{
             throw exception(ResultStatusEnum.PARAM_EMPTY);
         }
         List<UploadEntity> rst = new ArrayList<>();
-        InputStream fileInputStream = null;
         for (FileInfoCmd fileInfo:cmd.getFiles()){
             // 创建 ByteArrayInputStream 以将 byte[] 转换为 InputStream
-            fileInputStream = new ByteArrayInputStream(fileInfo.getRaw());
-            UploadEntity uploadEntity = uploadFileExecutor.uploadAndSave(cmd.getModule(), cmd.getBizNo(), null, fileInfo.getName(), fileInfo.getSize(), fileInputStream);
+            UploadEntity uploadEntity = uploadFileExecutor.uploadAndSave(cmd.getModule(), cmd.getBizNo(), null, fileInfo.getName(), fileInfo.getSize(), fileInfo.getRaw());
             rst.add(uploadEntity);
         }
 

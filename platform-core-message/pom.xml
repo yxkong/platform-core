@@ -6,9 +6,10 @@
     <parent>
         <groupId>com.github.platform</groupId>
         <artifactId>platform-core</artifactId>
-        <version>0.1.9-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
-
+    <packaging>pom</packaging>
+    <groupId>com.github.platform.message</groupId>
     <artifactId>platform-core-message</artifactId>
 
     <properties>
@@ -16,21 +17,41 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>com.github.platform</groupId>
-            <artifactId>platform-core-auth-sys</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                    <groupId>org.springframework.boot</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>notice-infra</module>
+        <module>notice-domain</module>
+        <module>notice-application</module>
+        <module>notice-admin</module>
+        <module>dingtalk-service</module>
+    </modules>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.platform.message</groupId>
+                <artifactId>notice-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.message</groupId>
+                <artifactId>notice-infra</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.message</groupId>
+                <artifactId>notice-application</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.message</groupId>
+                <artifactId>notice-admin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.platform.message</groupId>
+                <artifactId>dingtalk-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
