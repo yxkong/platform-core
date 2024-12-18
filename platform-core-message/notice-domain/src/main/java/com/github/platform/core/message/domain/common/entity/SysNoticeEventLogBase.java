@@ -33,12 +33,6 @@ public class SysNoticeEventLogBase extends BaseAdminEntity   {
     @Schema(description = "事件所处节点")
     @NotEmpty(message="事件所处节点（node）不能为空")
     protected String node;
-    /** 通知渠道,email,钉钉、飞书 */
-    @Schema(description = "通知渠道,email,钉钉、飞书")
-    protected String channelType;
-    /** 通知方式：work，群通知，webhook */
-    @Schema(description = "通知方式：work，群通知，webhook")
-    protected String noticeType;
     /** 事件内容 */
     @Schema(description = "事件内容")
     @NotEmpty(message="事件内容（payload）不能为空")

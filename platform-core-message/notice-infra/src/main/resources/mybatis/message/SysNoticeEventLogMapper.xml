@@ -9,8 +9,6 @@
 		<id column="event_type" property="eventType" />
 		<id column="module" property="module" />
 		<id column="node" property="node" />
-		<id column="channel_type" property="channelType" />
-		<id column="notice_type" property="noticeType" />
 		<id column="payload" property="payload" />
 		<id column="tenant_id" property="tenantId" />
 		<id column="status" property="status" />
@@ -27,8 +25,6 @@
 		t.event_type,
 		t.module,
 		t.node,
-		t.channel_type,
-		t.notice_type,
 		t.payload,
 		t.tenant_id,
 		t.status,
@@ -47,8 +43,6 @@
 			<if test="eventType != null  and eventType != ''">event_type,</if>
 			<if test="module != null  and module != ''">module,</if>
 			<if test="node != null  and node != ''">node,</if>
-			<if test="channelType != null  and channelType != ''">channel_type,</if>
-			<if test="noticeType != null  and noticeType != ''">notice_type,</if>
 			<if test="payload != null  and payload != ''">payload,</if>
 			<if test="tenantId != null ">tenant_id,</if>
 			<if test="status != null ">status,</if>
@@ -64,8 +58,6 @@
 			<if test="eventType != null  and eventType != ''">#{eventType},</if>
 			<if test="module != null  and module != ''">#{module},</if>
 			<if test="node != null  and node != ''">#{node},</if>
-			<if test="channelType != null  and channelType != ''">#{channelType},</if>
-			<if test="noticeType != null  and noticeType != ''">#{noticeType},</if>
 			<if test="payload != null  and payload != ''">#{payload},</if>
 			<if test="tenantId != null ">#{tenantId},</if>
 			<if test="status != null ">#{status},</if>
@@ -84,8 +76,6 @@
 			<if test="eventType != null  and eventType != ''">event_type = #{eventType},</if>
 			<if test="module != null  and module != ''">module = #{module},</if>
 			<if test="node != null  and node != ''">node = #{node},</if>
-			<if test="channelType != null  and channelType != ''">channel_type = #{channelType},</if>
-			<if test="noticeType != null  and noticeType != ''">notice_type = #{noticeType},</if>
 			<if test="payload != null  and payload != ''">payload = #{payload},</if>
 			<if test="tenantId != null ">tenant_id = #{tenantId},</if>
 			<if test="status != null ">status = #{status},</if>
@@ -99,6 +89,9 @@
 	</update>
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select <include refid="BaseColumnList" /> from t_sys_notice_event_log t where t.id=#{id}
+	</select>
+	<select id="findByMsgId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select <include refid="BaseColumnList" /> from t_sys_notice_event_log t where t.msg_id=#{msgId}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select <include refid="BaseColumnList" /> from t_sys_notice_event_log t
@@ -115,6 +108,8 @@
 		from t_sys_notice_event_log t
 		<where>
 			<if test="id != null "> and t.id = #{id}</if>
+			<if test="tenantId != null "> and t.tenant_id = #{tenantId}</if>
+			<if test="status != null "> and t.status = #{status}</if>
 			<if test="searchStartTime != null">
 				and t.create_time <![CDATA[>=]]> #{searchStartTime}
 			</if>
@@ -127,6 +122,8 @@
 		select count(t.id) from t_sys_notice_event_log t
 		<where>
 			<if test="id != null "> and t.id = #{id}</if>
+			<if test="tenantId != null "> and t.tenant_id = #{tenantId}</if>
+			<if test="status != null "> and t.status = #{status}</if>
 			<if test="searchStartTime != null">
 				and t.create_time <![CDATA[>=]]> #{searchStartTime}
 			</if>

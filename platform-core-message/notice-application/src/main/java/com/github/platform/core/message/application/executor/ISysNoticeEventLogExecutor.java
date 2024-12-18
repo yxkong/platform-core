@@ -40,4 +40,6 @@ public interface ISysNoticeEventLogExecutor {
     * @param id 主键
     */
     void delete(Long id);
+
+    void rePush(Long id);
 }

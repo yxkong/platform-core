@@ -13,6 +13,7 @@
 		<id column="context" property="context" />
 		<id column="recipient" property="recipient" />
 		<id column="carbon_copy" property="carbonCopy" />
+		<id column="tenant_id" property="tenantId" />
 		<id column="status" property="status" />
 		<id column="create_by" property="createBy" />
 		<id column="create_time" property="createTime" />
@@ -31,6 +32,7 @@
 		t.context,
 		t.recipient,
 		t.carbon_copy,
+		t.tenant_id,
 		t.status,
 		t.create_by,
 		t.create_time,
@@ -103,6 +105,12 @@
 	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select <include refid="BaseColumnList" /> from t_sys_notice_template t where t.id=#{id}
 	</select>
+	<select id="findByTempNo" resultMap="BaseResultMap">
+		select <include refid="BaseColumnList" /> from t_sys_notice_template t where t.tempNo=#{tempNo}
+	</select>
+	<select id="findEventType" resultMap="BaseResultMap">
+		select <include refid="BaseColumnList" /> from t_sys_notice_template t where t.event_type=#{eventType} and t.tenant_id = #{tenantId} limit 1
+	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select <include refid="BaseColumnList" /> from t_sys_notice_template t
 		<where>
@@ -121,6 +129,7 @@
 			<if test="channelType != null  and channelType != ''">and t.channel_type = #{channelType}</if>
 			<if test="eventType != null  and eventType != ''">and t.event_type = #{eventType}</if>
 			<if test="tenantId != null "> and t.tenant_id = #{tenantId}</if>
+			<if test="status != null "> and t.status = #{status}</if>
 			<if test="searchStartTime != null">
 				and t.create_time <![CDATA[>=]]> #{searchStartTime}
 			</if>
@@ -136,6 +145,7 @@
 			<if test="channelType != null  and channelType != ''">and t.channel_type = #{channelType}</if>
 			<if test="eventType != null  and eventType != ''">and t.event_type = #{eventType}</if>
 			<if test="tenantId != null "> and t.tenant_id = #{tenantId}</if>
+			<if test="status != null "> and t.status = #{status}</if>
 			<if test="searchStartTime != null">
 				and t.create_time <![CDATA[>=]]> #{searchStartTime}
 			</if>
@@ -144,7 +154,8 @@
 			</if>
 		</where>
 	</select>
-	<delete id="deleteById" parameterType="java.lang.Long">
+
+    <delete id="deleteById" parameterType="java.lang.Long">
 		delete from t_sys_notice_template where id = #{id}
 	</delete>
 	<delete id="deleteByIds" parameterType="java.lang.Long">

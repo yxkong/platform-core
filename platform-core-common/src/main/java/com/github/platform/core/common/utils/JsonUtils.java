@@ -39,6 +39,17 @@ public class JsonUtils {
     }
 
     /**
+     * 将任意对象转成 目标类型（主要用于泛型）
+     * @param object 任意对象
+     * @param clazz 目标类型
+     * @return
+     * @param <T>
+     */
+    public static <T> T convertValue(Object object,Class<T> clazz){
+        return OBJECT_MAPPER.convertValue(object,clazz);
+    }
+
+    /**
      * 将json转成对应的对象
      *
      * @param json

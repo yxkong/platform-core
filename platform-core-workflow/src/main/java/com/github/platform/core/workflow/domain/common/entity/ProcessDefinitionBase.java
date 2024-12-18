@@ -1,9 +1,14 @@
 package com.github.platform.core.workflow.domain.common.entity;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+
 import com.github.platform.core.common.entity.BaseAdminEntity;
-import javax.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
 * 流程定义模型实体

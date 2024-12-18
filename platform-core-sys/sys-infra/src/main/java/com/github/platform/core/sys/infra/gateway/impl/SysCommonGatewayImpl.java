@@ -2,11 +2,13 @@ package com.github.platform.core.sys.infra.gateway.impl;
 
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
-import com.github.platform.core.standard.constant.SendTypeEnum;
 import com.github.platform.core.standard.constant.UserChannelEnum;
 import com.github.platform.core.standard.entity.vue.OptionsDto;
 import com.github.platform.core.sys.domain.context.SysUserConfigContext;
-import com.github.platform.core.sys.domain.dto.*;
+import com.github.platform.core.sys.domain.dto.SysConfigDto;
+import com.github.platform.core.sys.domain.dto.SysDictDto;
+import com.github.platform.core.sys.domain.dto.SysThirdUserDto;
+import com.github.platform.core.sys.domain.dto.SysUserConfigDto;
 import com.github.platform.core.sys.domain.gateway.*;
 import com.github.platform.core.sys.domain.model.user.UserEntity;
 import org.springframework.stereotype.Service;
@@ -75,17 +77,10 @@ public class SysCommonGatewayImpl implements ISysCommonGateway {
 
     @Override
     public List<SysThirdUserDto> queryChannelUsers(List<String> users, UserChannelEnum channelEnum,Integer tenantId) {
-        List<SysThirdUserDto> rst = new ArrayList<>();
-        // 查到系统用户
-        List<SysUserDto> userList = sysUserGateway.queryByUsers(users,tenantId);
-        if (CollectionUtil.isEmpty(userList)){
-            return rst;
+        if (CollectionUtil.isEmpty(users)){
+            return Collections.emptyList();
         }
-        List<String> mobiles = userList.stream()
-                .map(SysUserDto::getMobile)
-                .distinct()
-                .collect(Collectors.toList());
-        return thirdUserGateway.queryUsersByMobile(channelEnum, mobiles,tenantId);
+        return thirdUserGateway.queryUsersByLoginName(channelEnum,users,tenantId);
     }
 
     @Override

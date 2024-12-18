@@ -13,7 +13,9 @@ import com.github.platform.core.message.infra.convert.SysNoticeChannelConfigInfr
 import com.github.platform.core.common.gateway.BaseGatewayImpl;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
@@ -62,6 +64,11 @@ public class SysNoticeChannelConfigGatewayImpl extends BaseGatewayImpl implement
         return sysNoticeChannelConfigConvert.toDto(record);
     }
     @Override
+    @Caching(
+        evict = {
+            @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.tenantId+':'+#context.channelType",cacheManager = CacheConstant.cacheManager),
+        }
+    )
     public Pair<Boolean, SysNoticeChannelConfigDto> update(SysNoticeChannelConfigContext context) {
         SysNoticeChannelConfigBase record = sysNoticeChannelConfigConvert.toSysNoticeChannelConfigBase(context);
         int flag = sysNoticeChannelConfigMapper.updateById(record);
@@ -69,6 +76,11 @@ public class SysNoticeChannelConfigGatewayImpl extends BaseGatewayImpl implement
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #context.tenantId+':'+#context.channelType",cacheManager = CacheConstant.cacheManager),
+            }
+    )
     public int delete(SysNoticeChannelConfigContext context) {
         return sysNoticeChannelConfigMapper.deleteById(context.getId());
     }

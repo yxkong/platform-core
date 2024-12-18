@@ -251,9 +251,29 @@
 			t.mobile as mobile
 			from t_sys_third_user t
 			where t.channel =  #{channel}
+			and t.tenant_id= #{tennantId}
 			and t.mobile IN
 			<foreach item="mobile" collection="mobiles" open="(" separator="," close=")">
 				#{mobile}
+			</foreach>
+		</if>
+	</select>
+	<select id="queryUsersByLoginName" resultType="com.github.platform.core.sys.domain.dto.SysThirdUserDto">
+		<!--没有传入数据抛异常-->
+		<if test="users != null and users.size() > 0">
+			select  t.id,
+			t.user_id as userId,
+			t.union_id as unionId,
+			t.open_id as openId ,
+			t.mobile as mobile,
+			u.login_name as loginName
+			from  t_sys_user u ,t_sys_third_user t where
+			u.id = t.user_id
+			and u.tenant_id= #{tenantId}
+			and t.channel =  #{channel}
+			and u.login_name IN
+			<foreach item="user" collection="users" open="(" separator="," close=")">
+				#{user}
 			</foreach>
 		</if>
 	</select>

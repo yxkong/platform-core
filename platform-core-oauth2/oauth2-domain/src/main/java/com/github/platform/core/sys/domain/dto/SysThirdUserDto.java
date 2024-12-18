@@ -23,6 +23,8 @@ import lombok.experimental.SuperBuilder;
 public class SysThirdUserDto extends SysThirdUserBase{
     /** 加密用户id */
     protected String strUserId;
+    /**登录名称*/
+    protected String loginName;
     @JsonIgnore
     public boolean isDisabled(){
         if(null == this.status || StatusEnum.OFF.getStatus().equals(this.status)){

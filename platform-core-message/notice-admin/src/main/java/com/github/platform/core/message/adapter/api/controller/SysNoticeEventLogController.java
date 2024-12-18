@@ -51,30 +51,16 @@ public class SysNoticeEventLogController extends BaseController{
     }
 
     /**
-    * 新增通知事件日志
-    * @param cmd 新增实体
+    * 重新推送通知
+    * @param id
     * @return 操作结果
     */
-    @OptLog(module="sysNoticeEventLog",title="新增通知事件日志",optType = LogOptTypeEnum.add)
-    @Operation(summary = "新增通知事件日志",tags = {"sysNoticeEventLog"})
-    @PostMapping("/add")
-    public ResultBean<String> add(@Validated @RequestBody SysNoticeEventLogCmd cmd) {
-        SysNoticeEventLogContext context= sysNoticeEventLogConvert.toContext(cmd);
-        String id = sysNoticeEventLogExecutor.insert(context);
-        return buildSucResp(id);
-    }
-
-    /**
-    * 根据id查询通知事件日志明细
-    * @param id 主键id
-    * @return 单条记录
-    */
-    @OptLog(module="sysNoticeEventLog",title="根据id查询通知事件日志明细",optType = LogOptTypeEnum.detail,persistent = false)
-    @Operation(summary = "根据id查询通知事件日志明细",tags = {"sysNoticeEventLog"})
-    @PostMapping("/detail")
-    public ResultBean<SysNoticeEventLogDto> detail(@Validated @RequestBody StrIdReq id) {
-        SysNoticeEventLogDto dto = sysNoticeEventLogExecutor.findById(id.getId());
-        return buildSucResp(dto);
+    @OptLog(module="sysNoticeEventLog",title="重新推送通知",optType = LogOptTypeEnum.mix)
+    @Operation(summary = "重新推送通知",tags = {"sysNoticeEventLog"})
+    @PostMapping("/rePush")
+    public ResultBean rePush(@Validated @RequestBody StrIdReq id) {
+        sysNoticeEventLogExecutor.rePush(id.getId());
+        return buildSucResp();
     }
 
     /**

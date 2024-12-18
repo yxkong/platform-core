@@ -34,6 +34,8 @@ public class PlatformProperties {
     private String logLevel;
     /**默认租户ID*/
     private Integer defaultTenantId;
+    /**通道类型*/
+    private String channelType;
 
     public Set<String> getIncludeHeaders() {
         if (CollectionUtil.isNotEmpty(includeHeaders)){

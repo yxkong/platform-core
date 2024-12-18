@@ -17,7 +17,7 @@ import org.springframework.cache.annotation.Cacheable;
  */
 public interface ISysNoticeChannelConfigGateway {
     /**缓存前缀加冒号*/
-    String PREFIX_COLON = "p:s:m:nc:";
+    String PREFIX_COLON = "p:m:nc:";
     /**缓存名称*/
     String CACHE_NAME = CacheConstant.c12h;
     /**

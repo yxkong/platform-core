@@ -33,6 +33,20 @@ public interface ISysNoticeTemplateGateway {
     */
     SysNoticeTemplateDto findById(Long id);
     /**
+     * 根据tempNo查询消息通知模板明细
+     * @param tempNo 模板编号
+     * @return 结果
+     */
+    SysNoticeTemplateDto findByTempNo(String tempNo);
+    /**
+     * 根据eventType 和 租户查询消息通知模板明细
+     * @param eventType 事件类型
+     * @param tenantId 租户
+     * @return 结果
+     */
+    SysNoticeTemplateDto findEventType(String eventType,Integer tenantId);
+
+    /**
     * 修改消息通知模板
     * @param context 修改上下文
     * @return 更新结果

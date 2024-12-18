@@ -13,6 +13,7 @@ public enum OptTypeEnum {
     ADD("add","新增"),
     UPDATE("update","修改"),
     DELETE("delete","删除"),
+    SELECT("delete","删除"),
         ;
     OptTypeEnum(String type, String desc) {
         this.type = type;

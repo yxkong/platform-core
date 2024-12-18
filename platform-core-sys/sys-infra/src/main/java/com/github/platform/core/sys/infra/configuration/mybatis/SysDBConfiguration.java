@@ -43,9 +43,9 @@ public class SysDBConfiguration {
         DataScopeInterceptor dataScopeInterceptor = new DataScopeInterceptor();
         factoryBean.setPlugins(shardingInterceptor, updateParamInterceptor,dataScopeInterceptor);
         factoryBean.setDataSource(dataSource);
-        //设置映射器资源位置
+        // 设置 Mapper 文件路径
         factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath*:mybatis/**/*Mapper.xml"));
-        //设置实体类别名包，告诉MyBatis去哪里查找实体类
+        // 设置类型别名包
         factoryBean.setTypeAliasesPackage("com.github..*.infra.domain.common.entity");
 
         return factoryBean.getObject();

@@ -75,8 +75,8 @@ public class SysNoticeChannelConfigExecutorImpl extends SysExecutor implements I
     */
     @Override
     public void delete(Long id) {
-        /**此处是为了再gateway上做多条件缓存，如果有必要，先查，后设置值*/
-        SysNoticeChannelConfigContext context = SysNoticeChannelConfigContext.builder().id(id).build();
+        SysNoticeChannelConfigDto dto = sysNoticeChannelConfigGateway.findById(id);
+        SysNoticeChannelConfigContext context = SysNoticeChannelConfigContext.builder().id(id).tenantId(dto.getTenantId()).channelType(dto.getChannelType()).build();
         int d = sysNoticeChannelConfigGateway.delete(context);
         if (d <=0 ){
             throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);

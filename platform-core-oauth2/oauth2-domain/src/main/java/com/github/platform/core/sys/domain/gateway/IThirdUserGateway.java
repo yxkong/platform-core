@@ -66,4 +66,11 @@ public interface IThirdUserGateway {
      * @return
      */
     List<SysThirdUserDto> queryUsersByMobile(UserChannelEnum channel,List<String> mobiles,Integer tenantId);
+    /**
+     * 根据渠道号+ 登录名查询用户
+     * @param channel
+     * @param users
+     * @return
+     */
+    List<SysThirdUserDto> queryUsersByLoginName(UserChannelEnum channel,List<String> users,Integer tenantId);
 }

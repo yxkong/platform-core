@@ -29,6 +29,13 @@ public interface SysNoticeEventLogMapper  {
     * @return 返回结果
     */
     SysNoticeEventLogBase findById(Long id);
+
+    /**
+     * 根据消息id查询
+     * @param msgId
+     * @return
+     */
+    SysNoticeEventLogBase findByMsgId(String msgId);
     /**
     * 通过主键ids 获取多个实体对象(最多200条)
     * @param ids 主键id
@@ -59,4 +66,5 @@ public interface SysNoticeEventLogMapper  {
     * @return 删除的条数
     */
     int deleteByIds(@Param("ids")Long[] ids);
+
 }

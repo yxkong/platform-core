@@ -17,6 +17,7 @@ import com.github.platform.core.sys.infra.convert.SysThirdUserInfraConvert;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -78,5 +79,10 @@ public class ThirdUserGatewayImpl implements IThirdUserGateway {
     public List<SysThirdUserDto> queryUsersByMobile(UserChannelEnum channel, List<String> mobiles,Integer tenantId) {
         List<SysThirdUserBase> list = thirdUserMapper.queryUsersByMobile(channel.getType(), mobiles,tenantId);
         return convert.toDtos(list);
+    }
+
+    @Override
+    public List<SysThirdUserDto> queryUsersByLoginName(UserChannelEnum channel, List<String> users, Integer tenantId) {
+        return  thirdUserMapper.queryUsersByLoginName(channel.getType(), users,tenantId);
     }
 }

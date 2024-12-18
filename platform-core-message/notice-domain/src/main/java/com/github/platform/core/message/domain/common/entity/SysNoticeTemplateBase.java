@@ -20,8 +20,8 @@ public class SysNoticeTemplateBase extends BaseAdminEntity   {
     /** 模板id,唯一编码 */
     @Schema(description = "模板id,唯一编码")
     protected String tempNo;
-    /** 通知渠道email,钉钉、飞书 */
-    @Schema(description = "通知渠道email,钉钉、飞书")
+    /** 默认通道 */
+    @Schema(description = "默认通道")
     protected String channelType;
     /** 事件类型 */
     @Schema(description = "事件类型")

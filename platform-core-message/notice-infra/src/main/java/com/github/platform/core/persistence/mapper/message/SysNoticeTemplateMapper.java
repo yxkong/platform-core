@@ -30,6 +30,20 @@ public interface SysNoticeTemplateMapper  {
     */
     SysNoticeTemplateBase findById(Long id);
     /**
+     * 根据模板编号查找通知模板
+     * @param tempNo
+     * @return
+     */
+    SysNoticeTemplateBase findByTempNo(String tempNo);
+
+    /**
+     * 根据事件类型和租户查找通知模板
+     * @param eventType
+     * @param tenantId
+     * @return
+     */
+    SysNoticeTemplateBase findEventType(String eventType, Integer tenantId);
+    /**
     * 通过主键ids 获取多个实体对象(最多200条)
     * @param ids 主键id
     * @return 返回列表
@@ -59,4 +73,6 @@ public interface SysNoticeTemplateMapper  {
     * @return 删除的条数
     */
     int deleteByIds(@Param("ids")Long[] ids);
+
+
 }

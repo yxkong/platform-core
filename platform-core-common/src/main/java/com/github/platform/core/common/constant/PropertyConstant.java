@@ -11,7 +11,9 @@ public interface PropertyConstant {
     /**通知类型*/
     String CON_NOTICE_TYPE = "platform.notice.type";
     /**钉钉通知配置*/
-    String DATA_NOTICE_DING_TALK = "platform.notice.ding-talk";
+    String DATA_NOTICE = "platform.notice";
+    /**领域事件*/
+    String DATA_DOMAIN_TYPE = "platform.domain-event";
     /**雪花算法*/
     String DATA_SNOWFLAKE = "platform.snowflake";
     String CON_SNOWFLAKE_ENABLED = "platform.snowflake.enabled";

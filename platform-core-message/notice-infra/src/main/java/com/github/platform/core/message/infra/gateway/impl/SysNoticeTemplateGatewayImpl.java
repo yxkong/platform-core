@@ -2,6 +2,7 @@ package com.github.platform.core.message.infra.gateway.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.message.domain.common.entity.SysNoticeTemplateBase;
 import com.github.platform.core.message.domain.context.SysNoticeTemplateContext;
 import com.github.platform.core.message.domain.context.SysNoticeTemplateQueryContext;
@@ -51,6 +52,21 @@ public class SysNoticeTemplateGatewayImpl extends BaseGatewayImpl implements ISy
             return null;
         }
         SysNoticeTemplateBase record = sysNoticeTemplateMapper.findById(id);
+        return sysNoticeTemplateConvert.toDto(record);
+    }
+
+    @Override
+    public SysNoticeTemplateDto findByTempNo(String tempNo) {
+        if (StringUtils.isEmpty(tempNo)){
+            return null;
+        }
+        SysNoticeTemplateBase record = sysNoticeTemplateMapper.findByTempNo(tempNo);
+        return sysNoticeTemplateConvert.toDto(record);
+    }
+
+    @Override
+    public SysNoticeTemplateDto findEventType(String eventType, Integer tenantId) {
+        SysNoticeTemplateBase record = sysNoticeTemplateMapper.findEventType(eventType,tenantId);
         return sysNoticeTemplateConvert.toDto(record);
     }
 

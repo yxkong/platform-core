@@ -61,7 +61,7 @@ public class SysRoleGatewayImpl extends BaseGatewayImpl implements ISysRoleGatew
     }
     @Override
     @Transactional(rollbackFor = Exception.class)
-     @Caching(
+    @Caching(
             evict = {
                     @CacheEvict(cacheNames = CACHE_NAME,key = "#root.target.PREFIX_COLON + #roleId",cacheManager = CacheConstant.cacheManager),
                     @CacheEvict(cacheNames =CacheConstant.c1h, key = "#root.target.ROLE_MENU_COLON +  #roleId",cacheManager = CacheConstant.cacheManager)

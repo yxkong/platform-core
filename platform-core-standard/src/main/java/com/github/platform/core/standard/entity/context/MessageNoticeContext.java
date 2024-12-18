@@ -1,6 +1,6 @@
 package com.github.platform.core.standard.entity.context;
 
-import com.github.platform.core.standard.constant.MessageNoticeChannelTypeEnum;
+import com.github.platform.core.standard.constant.NoticeTypeEnum;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,33 +22,30 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MessageNoticeContext  implements Serializable {
-    /**通道类型*/
-    private MessageNoticeChannelTypeEnum channelType;
     /**事件类型*/
     private String eventType;
     /**模板编号*/
     private String tempNo;
     /**消息标题*/
     private String title;
-    /**消息唯一id*/
-    private String msgId;
-    /**租户id*/
-    private Integer tenantId;
     /**接收人*/
     @Builder.Default
     private List<String> recipient = new ArrayList<>();
-    /**群id*/
-    private String groupId;
+    @Builder.Default
+    private NoticeChannelInfo noticeChannelInfo = new NoticeChannelInfo();
+
     /**发送时间*/
     @Builder.Default
     private LocalDateTime sendTime = LocalDateTimeUtil.dateTime();
-    /**操作用户*/
-    private String optUser;
 
     /**元数据*/
     @Builder.Default
     private Map<String,Object> metas = new HashMap<>();
 
+    public void addNoticeChannel(String groupId,String channelType){
+        this.noticeChannelInfo.groupId = groupId;
+        this.noticeChannelInfo.channelType = channelType;
+    }
     /**
      * 添加元数据
      * @param key 参数key
@@ -80,5 +77,18 @@ public class MessageNoticeContext  implements Serializable {
             metas = new HashMap<>();
         }
         return metas;
+    }
+    @Data
+    public static class NoticeChannelInfo{
+        /**群id*/
+        private String groupId;
+        /**通道类型*/
+        private String channelType;
+        public String getNoticeType(){
+            if (Objects.isNull(this.groupId) || "".equalsIgnoreCase(this.groupId)){
+                return NoticeTypeEnum.WORK.getType();
+            }
+            return NoticeTypeEnum.GROUP.getType();
+        }
     }
 }

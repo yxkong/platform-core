@@ -1,6 +1,7 @@
 package com.github.platform.core.persistence.mapper.sys;
 
 import com.github.platform.core.sys.domain.common.entity.SysThirdUserBase;
+import com.github.platform.core.sys.domain.dto.SysThirdUserDto;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -52,6 +53,15 @@ public interface SysThirdUserMapper {
      * @return
      */
     List<SysThirdUserBase> queryUsersByMobile(@Param("channel") String channel,@Param("mobiles") List<String> mobiles,@Param("tenantId") Integer tenantId);
+
+    /**
+     * 根据渠道+登录名查询
+     * @param channel
+     * @param users  登录名称
+     * @return
+     */
+    List<SysThirdUserDto> queryUsersByLoginName(@Param("channel") String channel, @Param("users") List<String> users, @Param("tenantId") Integer tenantId);
+
     /**
     * 通过实体查询
     * @param record

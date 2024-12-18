@@ -1,5 +1,6 @@
-package com.github.platform.core.common.utils;
+package com.github.platform.core.code.infra.utils;
 
+import com.github.platform.core.common.utils.StringUtils;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -10,19 +11,17 @@ import java.util.Map;
 
 /**
  * freemarker 模板工具类
+ * @author yxkong
  */
 public class FreemarkerUtils {
 	// 模版配置对象
 	private Configuration cfg;
-	private String basePackagePath;
 
-	public FreemarkerUtils(String basePackagePath) throws Exception {
-		this.basePackagePath = basePackagePath;
-		this.init();
-	}
-
-	private void init() throws Exception {
-		// 初始化FreeMarker配置
+	/**
+	 * 每次实例化都会重置
+	 * @param basePackagePath
+	 */
+	public FreemarkerUtils(String basePackagePath)  {
 		// 创建一个Configuration实例
 		cfg = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
 

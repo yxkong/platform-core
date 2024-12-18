@@ -1,5 +1,6 @@
 package com.github.platform.core.message.domain.gateway;
 
+import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.message.domain.context.SysNoticeEventLogContext;
 import com.github.platform.core.message.domain.context.SysNoticeEventLogQueryContext;
 import com.github.platform.core.message.domain.dto.SysNoticeEventLogDto;
@@ -14,6 +15,10 @@ import org.apache.commons.lang3.tuple.Pair;
  * @version 1.0
  */
 public interface ISysNoticeEventLogGateway {
+    /**缓存前缀加冒号*/
+    String PREFIX_COLON = "p:m:nel:";
+    /**缓存名称*/
+    String CACHE_NAME = CacheConstant.c1h;
     /**
     * 查询通知事件日志列表
     * @param context 查询上下文
@@ -44,4 +49,11 @@ public interface ISysNoticeEventLogGateway {
     * @return 删除结果
     */
     int delete(SysNoticeEventLogContext context);
+
+    /**
+     * 根据消息id查询记录，去重
+     * @param msgId
+     * @return
+     */
+    SysNoticeEventLogDto findByMsgId(String msgId);
 }

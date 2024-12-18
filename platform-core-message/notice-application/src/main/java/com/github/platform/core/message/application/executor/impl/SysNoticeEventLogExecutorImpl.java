@@ -1,5 +1,7 @@
 package com.github.platform.core.message.application.executor.impl;
 
+import com.github.platform.core.common.utils.JsonUtils;
+import com.github.platform.core.message.application.executor.IMessageNoticeExecutor;
 import com.github.platform.core.message.application.executor.ISysNoticeEventLogExecutor;
 import com.github.platform.core.message.domain.context.SysNoticeEventLogContext;
 import com.github.platform.core.message.domain.context.SysNoticeEventLogQueryContext;
@@ -8,6 +10,7 @@ import com.github.platform.core.message.domain.gateway.ISysNoticeEventLogGateway
 import com.github.platform.core.standard.constant.ResultStatusEnum;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.auth.application.executor.SysExecutor;
+import com.github.platform.core.standard.entity.event.DomainEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,8 @@ import java.util.Objects;
 public class SysNoticeEventLogExecutorImpl extends SysExecutor implements ISysNoticeEventLogExecutor{
     @Resource
     private ISysNoticeEventLogGateway sysNoticeEventLogGateway;
+    @Resource
+    private IMessageNoticeExecutor messageNoticeExecutor;
     /**
     * 查询通知事件日志列表
     * @param context 查询上下文
@@ -81,5 +86,15 @@ public class SysNoticeEventLogExecutorImpl extends SysExecutor implements ISysNo
         if (d <=0 ){
             throw exception(ResultStatusEnum.COMMON_DELETE_ERROR);
         }
+    }
+
+    @Override
+    public void rePush(Long id) {
+        SysNoticeEventLogDto dto = sysNoticeEventLogGateway.findById(id);
+        if (Objects.isNull(dto)){
+            throw exception(ResultStatusEnum.NO_DATA);
+        }
+        DomainEvent domainEvent = JsonUtils.fromJson(dto.getPayload(), DomainEvent.class);
+        messageNoticeExecutor.execute(domainEvent);
     }
 }

@@ -4,7 +4,6 @@ import com.github.platform.core.code.domain.constant.CodeTypeEnum;
 import com.github.platform.core.code.domain.dto.ColumnDto;
 import com.github.platform.core.code.domain.dto.GenConfigDto;
 import com.github.platform.core.common.utils.CollectionUtil;
-import com.github.platform.core.common.utils.FreemarkerUtils;
 import com.github.platform.core.common.utils.JsonUtils;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.constant.SymbolConstant;

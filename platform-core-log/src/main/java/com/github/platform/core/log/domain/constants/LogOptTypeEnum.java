@@ -19,7 +19,7 @@ public enum LogOptTypeEnum {
     modify("modify",2,"修改日志"),
     delete("delete",2,"删除日志"),
     trigger("trigger",2,"触发日志"),
-    mix("mix",2,"混合日志")
+    mix("mix",2,"混合操作日志")
     ;
 
     private String type;
