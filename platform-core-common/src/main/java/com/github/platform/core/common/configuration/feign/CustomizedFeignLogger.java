@@ -12,6 +12,7 @@ import org.slf4j.MDC;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static feign.Util.*;
@@ -123,20 +124,18 @@ public class CustomizedFeignLogger extends feign.Logger {
         }
 
         // 记录Body信息（如果需要）
-        byte[] bodyData = null;
         if (feignLogType.isBodyFlag() && response.body() != null && isBodyAllowed(response.status())) {
-            bodyData = Util.toByteArray(response.body().asInputStream());
-            appendBody(loggerStr, bodyData);
+            // 使用可重复读的方法读取body
+            String bodyContent = Util.toString(response.body().asReader(StandardCharsets.UTF_8));
+            appendBody(loggerStr, bodyContent);
         }
-
         // 打印日志
-        logResponse(loggerStr, elapsedTime, reason);
+        logger.info("{}耗时:{}ms;reason:{}", loggerStr, elapsedTime, reason);
 
         // 重新包装Response（如果body被读取）
-        if (bodyData != null) {
-            response = response.toBuilder().body(bodyData).build();
-        }
-
+//        if (bodyContent != null && !bodyContent.isEmpty()) {
+//            response = response.toBuilder().body(bodyContent,StandardCharsets.UTF_8).build();
+//        }
         MDC.remove(FEIGN_ID);
         return response;
     }
@@ -164,9 +163,8 @@ public class CustomizedFeignLogger extends feign.Logger {
         loggerStr.append(String.format("headers:[%s];", headersStr));
     }
 
-    private void appendBody(StringBuilder loggerStr, byte[] bodyData) {
-        if (bodyData != null && bodyData.length > 0) {
-            String bodyContent = decodeOrDefault(bodyData, UTF_8, "二进制数据");
+    private void appendBody(StringBuilder loggerStr, String bodyContent) {
+        if (bodyContent != null && !bodyContent.isEmpty()) {
             loggerStr.append(String.format("body:%s;", bodyContent));
         }
     }
@@ -174,14 +172,6 @@ public class CustomizedFeignLogger extends feign.Logger {
     private boolean isBodyAllowed(int status) {
         // 判断是否允许包含Body
         return !(status == 204 || status == 205);
-    }
-
-    private void logResponse(StringBuilder loggerStr, long elapsedTime, String reason) {
-        if (loggerStr.toString().contains("body:")) {
-            logger.info("{}耗时:{}ms;reason:{}", loggerStr, elapsedTime, reason);
-        } else {
-            logger.info("{}耗时:{}ms", loggerStr, elapsedTime);
-        }
     }
 
 
