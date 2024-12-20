@@ -38,7 +38,7 @@ public class CallBackUrlJobHandler extends AbstractJobMonitorHandler {
         header.put(HeaderConstant.ACCESS_TOKEN,jobDto.getAccessToken());
         header.put(HeaderConstant.CONTENT_TYPE,HeaderConstant.CONTENT_TYPE_JSON);
 
-        ResultBean resultBean = feignService.url(jobDto.getCallBackUrl()).request(requestMap).header(header).restful().resultBean();
+        ResultBean resultBean = feignService.url(jobDto.getCallBackUrl()).params(requestMap).header(header).restful().resultBean();
         if (log.isDebugEnabled()){
             log.warn("远程调用 url:{} 调用结果 {}/{}",jobDto.getCallBackUrl(),resultBean.getStatus(),resultBean.getMessage());
         }

@@ -101,62 +101,89 @@ public class CustomizedFeignLogger extends feign.Logger {
     @Override
     protected Response logAndRebufferResponse(String configKey, Level logLevel, Response response, long elapsedTime)
             throws IOException {
+        String protocolVersion = resolveProtocolVersion(response.protocolVersion());
 
-        int status = response.status();
-        byte[] bodyData = null;
-        if (response.body() != null && !(status == 204 || status == 205)) {
-            // HTTP 204 No Content "...response MUST NOT include a message-body"
-            // HTTP 205 Reset Content "...response MUST NOT include an entity"
-            bodyData = Util.toByteArray(response.body().asInputStream());
-        }
-        if (bodyData != null) {
-            response = response.toBuilder().body(bodyData).build();
-        }
-
-        if (!classFeignLog.value()) {
+        // 如果未开启日志记录或者日志级别不为INFO，直接返回
+        if (!classFeignLog.value() || !logger.isInfoEnabled()) {
             return response;
         }
+
         FeignLogType feignLogType = RESPONSE_FEIGN_LOG_MAP.get(configKey);
         if (!feignLogType.isRecordFlag()) {
             return response;
         }
-        // 记录响应日志
-        if (logger.isInfoEnabled()) {
-            StringBuilder loggerStr = new StringBuilder("feign响应,");
-            loggerStr.append(feignLogType.getKeyWord());
-            loggerStr.append(",");
-            loggerStr.append(configKey);
-            loggerStr.append(",");
-            if (feignLogType.isHeadersFlag()) {
-                Set<String> excludeHeaders = feignLogType.getExcludeHeaders();
-                StringBuilder headersStr = new StringBuilder();
-                for (String field : response.headers().keySet()) {
-                    for (String value : valuesOrEmpty(response.headers(), field)) {
-                        if (!excludeHeaders.contains(field)) {
-                            headersStr.append(field).append(":").append(value).append(";");
-                        }
-                    }
-                }
-                loggerStr.append(String.format("headers:[%s];", headersStr.toString()));
-            }
-            if (feignLogType.isBodyFlag()) {
-                StringBuilder bodyStr = new StringBuilder();
-                if (bodyData != null) {
-                    int bodyLength = bodyData.length;
-                    if (bodyLength > 0) {
-                        bodyStr.append(decodeOrDefault(bodyData, UTF_8, "二进制数据"));
-                    }
-                }
-                loggerStr.append(String.format("body:%s;", bodyStr.toString()));
-            }
-            String reason = response.reason() != null && logLevel.compareTo(Level.NONE) > 0 ?
-                    " " + response.reason() : "";
-            logger.info("{}耗时:{}ms;reason:{}", loggerStr.toString(), elapsedTime, reason);
 
+        // 构造基本日志信息
+        String reason = buildReason(logLevel, response);
+        StringBuilder loggerStr = buildBaseLog(configKey, protocolVersion, response, elapsedTime, reason, feignLogType);
+
+        // 记录Headers信息
+        if (feignLogType.isHeadersFlag()) {
+            appendHeaders(loggerStr, response, feignLogType.getExcludeHeaders());
         }
+
+        // 记录Body信息（如果需要）
+        byte[] bodyData = null;
+        if (feignLogType.isBodyFlag() && response.body() != null && isBodyAllowed(response.status())) {
+            bodyData = Util.toByteArray(response.body().asInputStream());
+            appendBody(loggerStr, bodyData);
+        }
+
+        // 打印日志
+        logResponse(loggerStr, elapsedTime, reason);
+
+        // 重新包装Response（如果body被读取）
+        if (bodyData != null) {
+            response = response.toBuilder().body(bodyData).build();
+        }
+
         MDC.remove(FEIGN_ID);
         return response;
     }
+
+    private String buildReason(Level logLevel, Response response) {
+        return response.reason() != null && logLevel.compareTo(Level.NONE) > 0 ? " " + response.reason() : "";
+    }
+
+    private StringBuilder buildBaseLog(String configKey, String protocolVersion, Response response, long elapsedTime,
+                                       String reason, FeignLogType feignLogType) {
+        return new StringBuilder(String.format("feign响应,%s,%s,%s %s %s,%s,耗时:%sms;",
+                feignLogType.getKeyWord(), configKey, protocolVersion, response.status(), reason,
+                response.request().url(), elapsedTime));
+    }
+
+    private void appendHeaders(StringBuilder loggerStr, Response response, Set<String> excludeHeaders) {
+        StringBuilder headersStr = new StringBuilder();
+        for (String field : response.headers().keySet()) {
+            for (String value : valuesOrEmpty(response.headers(), field)) {
+                if (!excludeHeaders.contains(field)) {
+                    headersStr.append(field).append(":").append(value).append(";");
+                }
+            }
+        }
+        loggerStr.append(String.format("headers:[%s];", headersStr));
+    }
+
+    private void appendBody(StringBuilder loggerStr, byte[] bodyData) {
+        if (bodyData != null && bodyData.length > 0) {
+            String bodyContent = decodeOrDefault(bodyData, UTF_8, "二进制数据");
+            loggerStr.append(String.format("body:%s;", bodyContent));
+        }
+    }
+
+    private boolean isBodyAllowed(int status) {
+        // 判断是否允许包含Body
+        return !(status == 204 || status == 205);
+    }
+
+    private void logResponse(StringBuilder loggerStr, long elapsedTime, String reason) {
+        if (loggerStr.toString().contains("body:")) {
+            logger.info("{}耗时:{}ms;reason:{}", loggerStr, elapsedTime, reason);
+        } else {
+            logger.info("{}耗时:{}ms", loggerStr, elapsedTime);
+        }
+    }
+
 
     @Override
     protected IOException logIOException(String configKey, Level logLevel, IOException ioe, long elapsedTime) {

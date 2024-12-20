@@ -15,9 +15,12 @@ import java.util.stream.Collectors;
 public class FeignLogType {
 
     Set<String> excludeHeaders;
+    /**是否记录日志*/
     private boolean recordFlag;
     private String keyWord;
+    /**是否记录请求头*/
     private boolean headersFlag;
+    /**是否记录请求体*/
     private boolean bodyFlag;
 
     FeignLogType(FeignLog.FeignLogType feignLogType, String keyWord) {
