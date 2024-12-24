@@ -53,6 +53,9 @@ public class DomainEvent implements Serializable {
 
 
     public void addUserInfo(LoginInfo loginInfo){
+        if ( loginInfo == null ) {
+            return;
+        }
         this.addUserInfo(loginInfo.getId(),loginInfo.getLoginName(),loginInfo.getLoginName(),null,loginInfo.getTenantId());
     }
     /**
@@ -107,6 +110,13 @@ public class DomainEvent implements Serializable {
         /** 租户*/
         @Schema(description = "租户")
         private Integer tenantId;
+
+        public String getLoginName() {
+            if (loginName == null || loginName.isEmpty()){
+                return "robot";
+            }
+            return loginName;
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ import feign.Logger;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.openfeign.FeignLoggerFactory;
@@ -19,12 +20,14 @@ import org.springframework.context.annotation.Primary;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = PropertyConstant.FEIGN)
+@Slf4j
 public class FeignConfiguration {
     private String level;
     @Bean
     @Primary
     @ConditionalOnMissingBean
     public FeignLoggerFactory customizedFeignLoggerFactory() {
+        log.warn("自定义日志工厂生效");
         return new CustomizedFeignLoggerFactory();
     }
 

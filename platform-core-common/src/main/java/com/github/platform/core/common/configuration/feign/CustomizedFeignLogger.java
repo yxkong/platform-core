@@ -103,7 +103,15 @@ public class CustomizedFeignLogger extends feign.Logger {
     protected Response logAndRebufferResponse(String configKey, Level logLevel, Response response, long elapsedTime)
             throws IOException {
         String protocolVersion = resolveProtocolVersion(response.protocolVersion());
-
+        // 统一读取body，并改成可重复读
+        byte[] bodyData = null;
+        if (response.body() != null && isBodyAllowed(response.status())){
+            bodyData = Util.toByteArray(response.body().asInputStream());
+        }
+        // 将Body数据回写，并改成可重复读
+        if (bodyData != null) {
+            response = response.toBuilder().body(bodyData).build();
+        }
         // 如果未开启日志记录或者日志级别不为INFO，直接返回
         if (!classFeignLog.value() || !logger.isInfoEnabled()) {
             return response;
@@ -113,7 +121,6 @@ public class CustomizedFeignLogger extends feign.Logger {
         if (!feignLogType.isRecordFlag()) {
             return response;
         }
-
         // 构造基本日志信息
         String reason = buildReason(logLevel, response);
         StringBuilder loggerStr = buildBaseLog(configKey, protocolVersion, response, elapsedTime, reason, feignLogType);
@@ -123,19 +130,14 @@ public class CustomizedFeignLogger extends feign.Logger {
             appendHeaders(loggerStr, response, feignLogType.getExcludeHeaders());
         }
 
-        // 记录Body信息（如果需要）
-        if (feignLogType.isBodyFlag() && response.body() != null && isBodyAllowed(response.status())) {
-            // 使用可重复读的方法读取body
-            String bodyContent = Util.toString(response.body().asReader(StandardCharsets.UTF_8));
-            appendBody(loggerStr, bodyContent);
+        if (feignLogType.isBodyFlag()) {
+            appendBody(loggerStr, bodyData);
         }
         // 打印日志
         logger.info("{}耗时:{}ms;reason:{}", loggerStr, elapsedTime, reason);
 
-        // 重新包装Response（如果body被读取）
-//        if (bodyContent != null && !bodyContent.isEmpty()) {
-//            response = response.toBuilder().body(bodyContent,StandardCharsets.UTF_8).build();
-//        }
+
+
         MDC.remove(FEIGN_ID);
         return response;
     }
@@ -163,8 +165,9 @@ public class CustomizedFeignLogger extends feign.Logger {
         loggerStr.append(String.format("headers:[%s];", headersStr));
     }
 
-    private void appendBody(StringBuilder loggerStr, String bodyContent) {
-        if (bodyContent != null && !bodyContent.isEmpty()) {
+    private void appendBody(StringBuilder loggerStr, byte[] bodyData) {
+        if (bodyData != null && bodyData.length > 0) {
+            String bodyContent = decodeOrDefault(bodyData, UTF_8, "二进制数据");
             loggerStr.append(String.format("body:%s;", bodyContent));
         }
     }
