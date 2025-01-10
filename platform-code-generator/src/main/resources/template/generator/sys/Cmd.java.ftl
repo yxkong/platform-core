@@ -15,7 +15,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper=true)
 @Schema(description = "${apiAlias}增加或修改")
 public class ${entityName}Cmd extends ${entityName}Base{
 }

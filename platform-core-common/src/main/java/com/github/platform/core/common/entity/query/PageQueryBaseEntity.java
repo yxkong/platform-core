@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.platform.core.common.entity.BaseAdminEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.tuple.Pair;
@@ -17,9 +18,11 @@ import java.util.Objects;
  * @date: 2023/7/27 8:43 下午
  * @version: 1.0
  */
+
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class PageQueryBaseEntity extends BaseAdminEntity {
 
     @Schema(description = "开始结束时间，接收页面传递过来的时间",example = "")
@@ -42,7 +45,7 @@ public class PageQueryBaseEntity extends BaseAdminEntity {
      */
     @JsonIgnore
     public int getStartOffset(){
-        if (Objects.nonNull(this.pageSize) && Objects.nonNull(this.pageSize)){
+        if (Objects.nonNull(this.pageSize) && Objects.nonNull(this.pageNum)){
             return this.pageSize* (this.pageNum-1);
         }
         return 0;
