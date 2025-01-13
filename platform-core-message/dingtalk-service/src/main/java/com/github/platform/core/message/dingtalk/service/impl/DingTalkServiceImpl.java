@@ -166,10 +166,7 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
         }
         cmd.addText(text);
         DingResultBean<String> response = imFeignClient.workNotice(token, cmd);
-        if (response.isSuc() && StringUtils.isNotEmpty(response.getResult())){
-            return true;
-        }
-        return false;
+        return response.isSuc();
     }
 
     @Override
@@ -184,10 +181,8 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
         String token = getAppAccessToken();
         cmd.addMarkdown(title,text);
         DingResultBean<String> response = imFeignClient.workNotice(token, cmd);
-        if (response.isSuc() && StringUtils.isNotEmpty(response.getResult())){
-            return true;
-        }
-        return false;
+
+        return response.isSuc();
     }
 
     private static boolean validate(List<String> userList, String  title) {
@@ -243,13 +238,10 @@ public class DingTalkServiceImpl extends BaseServiceImpl implements IDingTalkSer
             }
         }
         DingSendMessageDto result = imFeignClient.sendMessage(token, cmd);
-        if(result.isSuccess()){
-            if (log.isDebugEnabled()){
-                log.debug("groupId:{}, atAll:{} ,message:{} 发送 msgId为：{}",groupId,atAll,message,result.getOpenMsgId());
-            }
-            return true;
+        if (log.isDebugEnabled()){
+            log.debug("groupId:{}, atAll:{} ,message:{} 发送 msgId为：{}",groupId,atAll,message,result.getOpenMsgId());
         }
-        return false;
+        return result.isSuccess();
     }
 
     @Override
