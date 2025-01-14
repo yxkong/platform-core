@@ -1,5 +1,6 @@
-package com.github.platform.core.loadbalancer.configuration;
+package com.github.platform.core.gateway.infra.configuration;
 
+import com.github.platform.core.common.configuration.property.PlatformHttpProperties;
 import com.github.platform.core.loadbalancer.interceptor.GrayClientHttpRequestInterceptor;
 import com.github.platform.core.loadbalancer.interceptor.GrayRequestInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+
+import javax.annotation.Resource;
 
 /**
  * 灰度注入
@@ -16,15 +19,15 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 public class PublicAutoConfiguration {
-    private static final Integer DEFAULT_READ_TIMEOUT = 3000;
-    private static final Integer DEFAULT_CONNECT_TIMEOUT = 1000;
+    @Resource
+    private PlatformHttpProperties httpProperties;
     @Bean
     public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         // 单位为ms
-        factory.setReadTimeout(DEFAULT_READ_TIMEOUT);
+        factory.setReadTimeout(httpProperties.getReadTimeout());
         // 单位为ms
-        factory.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT);
+        factory.setConnectTimeout(httpProperties.getConnectTimeout());
         return factory;
     }
     @Bean
