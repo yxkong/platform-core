@@ -14,6 +14,7 @@ import com.github.platform.core.schedule.infra.configuration.ScheduleManager;
 import com.github.platform.core.schedule.infra.util.CronUtil;
 import com.github.platform.core.standard.constant.ResultStatusEnum;
 import com.github.platform.core.standard.constant.StatusEnum;
+import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.entity.dto.PageBean;
 import com.github.platform.core.standard.exception.ApplicationException;
 import lombok.extern.slf4j.Slf4j;
@@ -85,9 +86,13 @@ public class SysJobExecutorImpl extends SysExecutor implements ISysJobExecutor {
         if (Objects.isNull(sysJobDto.getId())){
             throw exception(ResultStatusEnum.COMMON_INSERT_ERROR);
         }
-        // 远程任务会更新beanName,因为设置唯一索引
-        if (context.isCallBack()){
-            sysJobDto.setBeanName("callBackUrlJobHandler:"+sysJobDto.getId());
+        // 多实例更新beanName
+        if (context.isMultiInstance()){
+            if (context.isCallBack()){
+                sysJobDto.setBeanName("callBackUrlJobHandler:"+sysJobDto.getId());
+            } else {
+                sysJobDto.setBeanName(sysJobDto.getBeanName() + SymbolConstant.colon + sysJobDto.getId());
+            }
             try {
                 scheduleManager.addOrUpdateJob(sysJobDto);
             } catch (SchedulerException e) {
