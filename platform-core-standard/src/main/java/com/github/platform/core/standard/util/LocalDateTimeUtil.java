@@ -447,6 +447,17 @@ public class LocalDateTimeUtil {
     }
 
     /**
+     * 根据指定日期获取指定时间
+     * @param date 指定日期
+     * @param hour 指定小时
+     * @param minute 指定分钟
+     * @return
+     */
+    public static LocalDateTime fromLocalDate(LocalDate date,int hour,int minute) {
+        return date.atTime(hour, minute);
+    }
+
+    /**
      * 当前时间增加天数
      * @param day
      * @return
@@ -559,25 +570,6 @@ public class LocalDateTimeUtil {
         return now.isAfter(startTime) && now.isBefore(endTime);
 
     }
-    /**
-     * 将字符串时间 转换为秒时间戳
-     * @param dateTime yyyy-mm-dd 的时间
-     * @return
-     */
-    public static Long stryyyymmddToSecond(String dateTime) {
-        LocalDate time = LocalDateUtil.parseDefault(dateTime);
-        long timestamp = Timestamp.valueOf(time.atStartOfDay()).getTime();
-        return timestamp/1000;
-    }
-    /**
-     * 将字符串时间 转换为豪秒时间戳
-     * @param dateTime yyyy-mm-dd 的时间
-     * @return
-     */
-    public static Long stryyyymmddToEpochMilli(String dateTime) {
-        LocalDate time = LocalDateUtil.parseDefault(dateTime);
-        long timestamp = Timestamp.valueOf(time.atStartOfDay()).getTime();
-        return timestamp;
-    }
+
 
 }

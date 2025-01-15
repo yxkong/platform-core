@@ -1,5 +1,6 @@
 package com.github.platform.core.standard.util;
 
+import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -358,6 +359,21 @@ public class LocalDateUtil {
     public static Long difDays(LocalDate startDate, LocalDate endDate) {
         return ChronoUnit.DAYS.between(startDate, endDate);
     }
+    /**
+     * 获取月份第一天
+     * @return
+     */
+    public static LocalDate getMothFirst(){
+        return LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+    }
+
+    /**
+     * 获取月份最后一天
+     * @return
+     */
+    public static LocalDate getMothLast(){
+        return LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+    }
 
     /**
      * 判断当天是否月初
@@ -413,6 +429,23 @@ public class LocalDateUtil {
         Instant instant = Instant.ofEpochMilli(timestampInMillis);
         return instant.atZone(ZoneId.systemDefault()).toLocalDate();
     }
+    /**
+     * 将字符串时间 转换为秒时间戳
+     * @param date yyyy-mm-dd 的时间
+     * @return
+     */
+    public static Long strYYYMMDDToSecond(String date) {
+        long timestamp = Timestamp.valueOf(parseDefault(date).atStartOfDay()).getTime();
+        return timestamp/1000;
+    }
 
+    /**
+     * 将字符串时间 转换为豪秒时间戳
+     * @param date yyyy-mm-dd 的时间
+     * @return
+     */
+    public static Long strYYYMMDDToEpochMilli(String date) {
+        return Timestamp.valueOf(parseDefault(date).atStartOfDay()).getTime();
+    }
 
 }
