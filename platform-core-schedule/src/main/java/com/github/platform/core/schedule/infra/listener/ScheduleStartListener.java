@@ -21,8 +21,8 @@ import java.util.List;
 @Slf4j
 public class ScheduleStartListener implements ApplicationListener<ApplicationReadyEvent> {
 
-    private SysJobMapper sysJobMapper;
-    private  ScheduleManager scheduleManager;
+    private final SysJobMapper sysJobMapper;
+    private final ScheduleManager scheduleManager;
 
     public ScheduleStartListener(SysJobMapper sysJobMapper, ScheduleManager scheduleManager) {
         this.sysJobMapper = sysJobMapper;
