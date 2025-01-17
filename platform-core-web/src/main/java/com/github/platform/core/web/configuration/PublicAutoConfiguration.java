@@ -1,5 +1,6 @@
 package com.github.platform.core.web.configuration;
 
+import com.github.platform.core.common.configuration.property.PlatformHttpProperties;
 import com.github.platform.core.loadbalancer.interceptor.GrayClientHttpRequestInterceptor;
 import com.github.platform.core.loadbalancer.interceptor.GrayRequestInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
@@ -22,15 +24,15 @@ import java.util.zip.GZIPInputStream;
  */
 @Configuration
 public class PublicAutoConfiguration {
-    private static final Integer DEFAULT_READ_TIMEOUT = 3000;
-    private static final Integer DEFAULT_CONNECT_TIMEOUT = 2000;
+    @Resource
+    private PlatformHttpProperties httpProperties;
     @Bean
     public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         // 单位为ms
-        factory.setReadTimeout(DEFAULT_READ_TIMEOUT);
+        factory.setReadTimeout(httpProperties.getReadTimeout());
         // 单位为ms
-        factory.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT);
+        factory.setConnectTimeout(httpProperties.getConnectTimeout());
         return factory;
     }
     @Bean
