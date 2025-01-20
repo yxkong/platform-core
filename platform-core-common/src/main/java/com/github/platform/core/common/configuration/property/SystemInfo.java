@@ -10,6 +10,8 @@ import lombok.Data;
  */
 @Data
 public class SystemInfo {
+    /**域名*/
+    private String domain;
     /**服务名称*/
     private String serviceName;
     /**版本*/

@@ -47,12 +47,13 @@ public class MessageNoticeExecutorImpl implements IMessageNoticeExecutor {
             noticeContext.getNoticeChannelInfo().setChannelType(noticeProperties.getChannelType());
         }
         Long logId =  null;
+        //幂等处理，并插入日志记录
         SysNoticeEventLogDto dto = sysNoticeEventLogGateway.findByMsgId(domainEvent.getMsgId());
         if(Objects.isNull(dto)){
             logId = logRecord(domainEvent, noticeContext);
         } else {
-            // 已经发送成功的，不再处理
             if (dto.isOn()){
+                log.warn("消息：{} 已经发送成功，不需要再处理！",dto.getId());
                 return true;
             }
             logId = dto.getId();

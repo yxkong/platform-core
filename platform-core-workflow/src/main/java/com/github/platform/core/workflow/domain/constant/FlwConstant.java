@@ -75,7 +75,7 @@ public interface FlwConstant {
      */
     String TASK_PROPERTY_PLAN_SCHEDULE_VALUE = "main";
     /**
-     * 任务属性，拥有角色
+     * 任务属性，主角色
      */
     String TASK_PROPERTY_MAIN_ROLE = "mainrole";
     /**

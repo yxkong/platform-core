@@ -4,6 +4,7 @@ import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.message.dingtalk.constant.DingUserTypeEnum;
 import com.github.platform.core.message.domain.gateway.IDingTalkNoticeGateway;
+import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.constant.UserChannelEnum;
 import com.github.platform.core.sys.domain.dto.SysThirdUserDto;
 import com.github.platform.core.sys.domain.gateway.ISysCommonGateway;
@@ -14,6 +15,7 @@ import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -30,7 +32,11 @@ public class DingTalkMessageNoticeSender extends AbstractMessageNoticeSender{
     @Resource
     private ISysCommonGateway sysCommonGateway;
     @Override
-    Map<String, String> getRecipient(List<String> users,Integer tenantId) {
+    Map<String, String> getRecipient(String templateRecipient,List<String> users,Integer tenantId) {
+        if (Objects.nonNull(templateRecipient)){
+            //添加固定用户
+            Collections.addAll(users, templateRecipient.split(SymbolConstant.comma));
+        }
         List<SysThirdUserDto> thirdUserDtos = sysCommonGateway.queryChannelUsers(users, UserChannelEnum.thirdDing,tenantId);
         if (CollectionUtil.isEmpty(thirdUserDtos)){
             return Collections.emptyMap();
@@ -40,7 +46,7 @@ public class DingTalkMessageNoticeSender extends AbstractMessageNoticeSender{
     }
 
     @Override
-    boolean sendMessage(String groupId, List<String> userList, String title, String content,Integer tenantId) {
+    boolean sendMessage(List<String> userList,String carbonCopy, String title, String content,String groupId, Integer tenantId) {
         if (StringUtils.isEmpty(groupId)){
             // 发送工作通知
             return dingTalkNoticeGateway.workNoticeMarkDown(userList,title,content,tenantId);

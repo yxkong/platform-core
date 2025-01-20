@@ -3,6 +3,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.platform.core.schedule.domain.common.entity.SysJobBase;
 import lombok.experimental.SuperBuilder;
 import lombok.*;
+
+import java.util.Objects;
+
 /**
 * 任务管理增加或修改上下文
 * @website <a href="https://www.5ycode.com/">5ycode</a>
@@ -26,6 +29,6 @@ public class SysJobContext extends SysJobBase {
      */
     @JsonIgnore
     public boolean isMultiInstance(){
-        return this.isCallBack() ||this.multiInstance == 1 ;
+        return this.isCallBack() || (Objects.nonNull(this.multiInstance) && Objects.equals(this.multiInstance,1))  ;
     }
 }

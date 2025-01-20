@@ -30,11 +30,13 @@ public class SysNoticeChannelConfigBase extends BaseAdminEntity   {
     /** 地址和 */
     @Schema(description = "地址")
     protected String host;
+    /** 端口*/
+    @Schema(description = "端口")
+    protected Integer port;
     /** 缓存前缀 */
     @Schema(description = "缓存前缀")
     protected String tokenKey;
     /** 渠道非标配置信息，JSON格式（如API地址、认证信息等） */
     @Schema(description = "渠道非标配置信息，JSON格式（如API地址、认证信息等）")
-    @NotEmpty(message="渠道非标配置信息，JSON格式（如API地址、认证信息等）（config）不能为空")
     protected String config;
 }

@@ -111,6 +111,7 @@ public class FormDataExecutorImpl extends SysExecutor implements IFormDataExecut
     /**
      * 获取表单数据
      * @param instanceDto
+     * @param isMain false 表示走的系统表单数据数据，true，直接将业务数据拍平
      * @param formKey
      * @return
      */
@@ -121,7 +122,7 @@ public class FormDataExecutorImpl extends SysExecutor implements IFormDataExecut
         if (instanceDto.isPm() && isMain){
             formNo = FlwConstant.PM_FORM_KEY ;
         }
-
+        //默认走的是系统表单数据，只有
         String beanName = ProcessTypeEnum.OA.getFormBean();
         if (isMain){
             beanName = processTypeEnum.getFormBean();

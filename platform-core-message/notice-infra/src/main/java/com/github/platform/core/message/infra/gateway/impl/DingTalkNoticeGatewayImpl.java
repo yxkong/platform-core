@@ -54,7 +54,7 @@ public class DingTalkNoticeGatewayImpl extends BaseGatewayImpl implements IDingT
     private DingTalkContext getByTenantId(Integer tenantId){
         SysNoticeChannelConfigDto dto = sysNoticeChannelConfigGateway.findChannel(MessageNoticeChannelTypeEnum.DING_TALK.getType(),tenantId);
         if (Objects.isNull(dto)){
-            throw exception(ResultStatusEnum.NO_DATA.getStatus(),"未找到对应渠道的钉钉配置");
+            throw exception(ResultStatusEnum.NO_DATA.getStatus(),"未找到对应租户的钉钉配置");
         }
         DingTalkContext context = JsonUtils.fromJson(dto.getConfig(),DingTalkContext.class);
         context.setAppKey(dto.getAppKey());

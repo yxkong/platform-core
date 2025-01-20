@@ -20,9 +20,9 @@
 		<id column="update_by" property="updateBy" />
 		<id column="update_time" property="updateTime" />
 		<id column="remark" property="remark" />
-    </resultMap>
+	</resultMap>
 	<!--通用查询字段封装-->
-    <sql id="BaseColumnList">
+	<sql id="BaseColumnList">
 		t.id,
 		t.temp_no,
 		t.channel_type,
@@ -39,7 +39,7 @@
 		t.update_by,
 		t.update_time,
 		t.remark
-    </sql>
+	</sql>
 
 	<insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.github.platform.core.message.domain.common.entity.SysNoticeTemplateBase">
 		insert into t_sys_notice_template
@@ -80,7 +80,7 @@
 			<if test="remark != null  and remark != ''">#{remark},</if>
 		</trim>
 	</insert>
-	
+
 	<update id="updateById" parameterType="com.github.platform.core.message.domain.common.entity.SysNoticeTemplateBase">
 		update t_sys_notice_template
 		<set>
@@ -106,7 +106,7 @@
 		select <include refid="BaseColumnList" /> from t_sys_notice_template t where t.id=#{id}
 	</select>
 	<select id="findByTempNo" resultMap="BaseResultMap">
-		select <include refid="BaseColumnList" /> from t_sys_notice_template t where t.tempNo=#{tempNo}
+		select <include refid="BaseColumnList" /> from t_sys_notice_template t where t.temp_no=#{tempNo}
 	</select>
 	<select id="findEventType" resultMap="BaseResultMap">
 		select <include refid="BaseColumnList" /> from t_sys_notice_template t where t.event_type=#{eventType} and t.tenant_id = #{tenantId} limit 1
@@ -121,7 +121,7 @@
 		limit 200
 	</select>
 	<select id="findListBy" resultMap="BaseResultMap" parameterType="com.github.platform.core.message.domain.common.entity.SysNoticeTemplateBase">
-		select 
+		select
 		<include refid="BaseColumnList" />
 		from t_sys_notice_template t
 		<where>
@@ -155,7 +155,7 @@
 		</where>
 	</select>
 
-    <delete id="deleteById" parameterType="java.lang.Long">
+	<delete id="deleteById" parameterType="java.lang.Long">
 		delete from t_sys_notice_template where id = #{id}
 	</delete>
 	<delete id="deleteByIds" parameterType="java.lang.Long">

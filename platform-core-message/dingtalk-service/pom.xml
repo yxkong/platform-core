@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.platform.message</groupId>
         <artifactId>platform-core-message</artifactId>
-        <version>0.2.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>dingtalk-service</artifactId>
