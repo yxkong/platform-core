@@ -3,7 +3,7 @@ import com.github.platform.core.sys.domain.common.entity.SysUserConfigBase;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 /**
- * 用户配置 mappper
+ * 用户配置 mapper
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author yxkong
  * @date 2024-03-27 16:10:38.663

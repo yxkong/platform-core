@@ -3,7 +3,7 @@ import com.github.platform.core.message.domain.common.entity.SysNoticeEventLogBa
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 /**
- * 通知事件日志 mappper
+ * 通知事件日志 mapper
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author yxkong
  * @date 2024-12-04 13:36:01.514

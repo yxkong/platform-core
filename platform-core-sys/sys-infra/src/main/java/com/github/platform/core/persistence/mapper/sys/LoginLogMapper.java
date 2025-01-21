@@ -5,7 +5,7 @@ import java.util.Map;
 import com.github.platform.core.sys.domain.common.entity.SysLoginLogBase;
 import org.apache.ibatis.annotations.Param;
 /**
-* 登录日志 mappper
+* 登录日志 mapper
 * @website <a href="https://www.5ycode.com/">5ycode</a>
 * @author yxkong
 * @time 2023-06-07 14:37:49.624

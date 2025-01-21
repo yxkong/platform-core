@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
-* 灰度规则表 mappper
+* 灰度规则表 mapper
 * @website <a href="https://www.5ycode.com/">5ycode</a>
 * @author yxkong
 * @datetime 2023-08-14 15:54:07.988

@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import javax.validation.constraints.NotNull;
 
 /**
-* 流程实例 mappper
+* 流程实例 mapper
 * @website <a href="https://www.5ycode.com/">5ycode</a>
 * @author yxkong
 * @datetime 2023-09-22 16:35:27.395

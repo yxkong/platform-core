@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 /**
- * 网关路由 mappper
+ * 网关路由 mapper
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author yxkong
  * @date 2024-08-13 14:58:53.823

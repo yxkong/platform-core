@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 /**
-* 表单配置 mappper
+* 表单配置 mapper
 * @website <a href="https://www.5ycode.com/">5ycode</a>
 * @author yxkong
 * @datetime 2023-11-17 18:23:18.130

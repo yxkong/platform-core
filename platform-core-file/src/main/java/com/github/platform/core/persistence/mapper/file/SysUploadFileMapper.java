@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
-* 上传文件表 mappper
+* 上传文件表 mapper
 * @website <a href="https://www.5ycode.com/">5ycode</a>
 * @author yxkong
 * @datetime 2023-08-14 18:22:38.776

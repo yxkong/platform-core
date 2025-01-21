@@ -3,7 +3,7 @@ import ${domainPackage}.common.entity.${entityName}Base;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 /**
- * ${apiAlias} mappper
+ * ${apiAlias} mapper
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author ${author}
  * @date ${date}

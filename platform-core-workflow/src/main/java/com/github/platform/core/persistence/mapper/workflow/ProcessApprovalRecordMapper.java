@@ -6,7 +6,7 @@ import java.util.Map;
 import com.github.platform.core.workflow.domain.dto.ProcessApprovalRecordDto;
 import org.apache.ibatis.annotations.Param;
 /**
-* 流程审批记录 mappper
+* 流程审批记录 mapper
 * @website <a href="https://www.5ycode.com/">5ycode</a>
 * @author yxkong
 * @datetime 2023-11-09 11:30:36.194

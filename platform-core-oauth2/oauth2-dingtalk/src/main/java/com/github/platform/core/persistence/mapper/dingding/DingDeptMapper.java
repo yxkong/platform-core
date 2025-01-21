@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 /**
- * 钉钉部门 mappper
+ * 钉钉部门 mapper
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author yxkong
  * @date 2024-01-18 15:49:32.694

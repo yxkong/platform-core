@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 /**
-* 流程管理 mappper
+* 流程管理 mapper
 * @website <a href="https://www.5ycode.com/">5ycode</a>
 * @author yxkong
 * @datetime 2023-09-22 16:35:24.551

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 /**
- * token缓存 mappper
+ * token缓存 mapper
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author yxkong
  * @date 2024-04-28 16:25:03.690

@@ -5,7 +5,7 @@ import java.util.List;
 import com.github.platform.core.sys.domain.dto.SysCascadeDto;
 import org.apache.ibatis.annotations.Param;
 /**
- * 级联表 mappper
+ * 级联表 mapper
  * @website <a href="https://www.5ycode.com/">5ycode</a>
  * @author yxkong
  * @date 2024-12-01 20:57:44.667

@@ -27,7 +27,7 @@ public class ${entityName}QueryBase extends PageQueryBaseEntity {
     /** ${column.remark} */
     @Schema(description = "${column.remark}")
     </#if>
-    private ${column.columnType} ${column.lowerColumnName};
+    protected ${column.columnType} ${column.lowerColumnName};
 </#if>
 </#list>
 </#if>

@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 /**
-* 三方用户 mappper
+* 三方用户 mapper
 * @website <a href="https://www.5ycode.com/">5ycode</a>
 * @author yxkong
 * @time 2023-05-31 16:04:49.640
