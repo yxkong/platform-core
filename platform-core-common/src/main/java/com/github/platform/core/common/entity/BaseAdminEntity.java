@@ -53,6 +53,11 @@ public class BaseAdminEntity extends BaseEntity {
     @JsonIgnore
     @Schema(description = "结束时间")
     protected String searchEndTime;
+    @Schema(description = "开始日期")
+    protected String searchStart;
+    @JsonIgnore
+    @Schema(description = "结束日期")
+    protected String searchEnd;
     @JsonIgnore
     @Schema(description = "扩展参数")
     private Map<String, Object> params;
@@ -77,6 +82,7 @@ public class BaseAdminEntity extends BaseEntity {
     /**
      * 设置主键id为null
      */
+    @JsonIgnore
     public void setIdNull() {
         this.strId = null;
         this.id = null;
@@ -89,6 +95,7 @@ public class BaseAdminEntity extends BaseEntity {
     public boolean isOff(){
         return Objects.equals(StatusEnum.OFF.getStatus(),this.status);
     }
+    @JsonIgnore
     public boolean statusIsNull(){
         return Objects.isNull(this.status);
     }

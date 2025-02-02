@@ -11,8 +11,9 @@ import lombok.Getter;
  */
 @Getter
 public enum JobTypeEnum {
-    LOCAL(1,"本地运行"),
-    CALLBACK(0,"回调类型")
+    LOCAL(1,"本地单实例"),
+    CALLBACK(0,"远程回调"),
+    MULTI_INSTANCE(2,"本地多实例"),
     ;
 
     private Integer type;

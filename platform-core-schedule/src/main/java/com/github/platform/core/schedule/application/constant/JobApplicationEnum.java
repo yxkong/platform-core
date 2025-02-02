@@ -12,10 +12,12 @@ public enum JobApplicationEnum implements BaseResult {
     CRON_VALIDATE("2001","cron 表达式校验异常"),
     CRON_UNIQUE("2002", "已存在对应beanName的job，请核验！"),
     ADD_ERROR("2003","添加job任务异常！" ),
-    UNPDATE_ERROR("2004","更新job任务异常！" ),
+    UPDATE_ERROR("2004","更新job任务异常！" ),
     QUARTZ_IS_DISABLED("2005","quartz已禁用，禁止操作！" ),
     JOB_NOT_EXIST("2006", "任务不存在"),
-    JOB_DELETE_ERROR("2007", "job删除异常！")
+    JOB_DELETE_ERROR("2007", "job删除异常！"),
+    JOB_BEAN_NAME_ERROR("2008", "job的BeanName异常，远程和多实例必须带:号！"),
+    JOB_BEAN_NAME_DOT_EXIST("2009", "job的BeanName并未在系统中实现！"),
     ;
 
 

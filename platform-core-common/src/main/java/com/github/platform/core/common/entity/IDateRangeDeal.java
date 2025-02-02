@@ -3,7 +3,9 @@ package com.github.platform.core.common.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
+import com.github.platform.core.standard.util.LocalDateUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +19,7 @@ import java.util.Objects;
 public interface IDateRangeDeal {
     List<String> getDateRange();
     @JsonIgnore
-    default LocalDateTime getDateRangeStartTime(){
+    default LocalDate getDateRangeStart(){
         if (CollectionUtil.isEmpty(this.getDateRange()) || this.getDateRange().size() != 2){
             return null;
         }
@@ -25,15 +27,10 @@ public interface IDateRangeDeal {
         if (Objects.isNull(s)){
             return null;
         }
-        int length = s.length();
-        if ( length == 10){
-            return LocalDateTimeUtil.parseDefaultShort(String.format("%s 00:00:00", s)) ;
-        } else {
-            return LocalDateTimeUtil.parseDefaultShort(s);
-        }
+        return LocalDateUtil.parseDefault(s);
     }
     @JsonIgnore
-    default LocalDateTime getDateRangeEndTime(){
+    default LocalDate getDateRangeEnd(){
         if (CollectionUtil.isEmpty(this.getDateRange()) || this.getDateRange().size() != 2){
             return null;
         }
@@ -41,11 +38,6 @@ public interface IDateRangeDeal {
         if (Objects.isNull(s)){
             return null;
         }
-        int length = s.length();
-        if ( length == 10){
-            return LocalDateTimeUtil.parseDefaultShort(String.format("%s 00:00:00", s)) ;
-        } else {
-            return LocalDateTimeUtil.parseDefaultShort(s);
-        }
+        return LocalDateUtil.parseDefault(s);
     }
 }

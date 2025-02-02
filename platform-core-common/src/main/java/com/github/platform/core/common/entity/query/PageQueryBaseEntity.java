@@ -51,20 +51,29 @@ public class PageQueryBaseEntity extends BaseAdminEntity {
         return 0;
     }
     @Override
+    @JsonIgnore
     public String getSearchStartTime() {
-        getSearchTime();
+        dealDate();
         return searchStartTime;
     }
     @Override
+    @JsonIgnore
     public String getSearchEndTime() {
-        getSearchTime();
+        dealDate();
         return searchEndTime;
     }
+    @Override
+    @JsonIgnore
+    public String getSearchStart() {
+        dealDate();
+        return this.searchStart;
+    }
 
-    private void getSearchTime() {
-        Pair<String, String> pair = this.dealDate(this.dateRange, this.searchStartTime, this.searchEndTime);
-        this.searchStartTime = pair.getLeft();
-        this.searchEndTime = pair.getRight();
+    @Override
+    @JsonIgnore
+    public String getSearchEnd() {
+        dealDate();
+        return this.searchEnd;
     }
 
     /**
@@ -72,26 +81,28 @@ public class PageQueryBaseEntity extends BaseAdminEntity {
      * 1，一种 yyyy-MM-dd  补上开始和结束
      * 2，一种 yyyy-MM-dd HH:mm:ss 不处理
      */
-    protected Pair<String,String> dealDate(List<String> dateRange, String start, String end){
-        if (Objects.nonNull(start) || Objects.nonNull(end)){
-            return Pair.of(start,end);
+    private void dealDate(){
+        if (Objects.nonNull(this.searchStartTime) || Objects.nonNull(this.searchEndTime)
+                || Objects.nonNull(this.searchStart)|| Objects.nonNull(this.searchEnd)){
+            return ;
         }
         //
-        if (dateRange != null && dateRange.size() == 2){
-            String s = dateRange.get(0);
+        if (this.dateRange != null && this.dateRange.size() == 2){
+            String s = this.dateRange.get(0);
             if ( s.length() == 10){
-                start = String.format("%s 00:00:00",s) ;
+                this.searchStart = s;
+                this.searchStartTime = String.format("%s 00:00:00",s) ;
             } else {
-                start = s;
+                this.searchStartTime = s;
             }
-           s = dateRange.get(1);
+            s = this.dateRange.get(1);
             if ( s.length() == 10){
-                end =  String.format("%s 23:59:59", s) ;
+                this.searchEnd = s;
+                this.searchEndTime =  String.format("%s 23:59:59", s) ;
             } else {
-                end = s;
+                this.searchEndTime = s;
             }
         }
-        return Pair.of(start,end);
     }
 
 

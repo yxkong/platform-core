@@ -45,7 +45,7 @@
     </modules>
     <properties>
         <!--公共配置-->
-        <revision>0.2.04-SNAPSHOT</revision>
+        <revision>0.2.05-SNAPSHOT</revision>
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <java.version>8</java.version>
         <maven.compiler.source>8</maven.compiler.source>

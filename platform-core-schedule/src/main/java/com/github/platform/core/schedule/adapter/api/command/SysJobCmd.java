@@ -1,7 +1,10 @@
 package com.github.platform.core.schedule.adapter.api.command;
+
 import com.github.platform.core.schedule.domain.common.entity.SysJobBase;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 /**
 * 任务管理增加或修改
@@ -16,8 +19,4 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper=true)
 @Schema(description = "任务管理增加或修改")
 public class SysJobCmd extends SysJobBase{
-    /**
-     * 是否多实例
-     */
-    private Integer multiInstance;
 }

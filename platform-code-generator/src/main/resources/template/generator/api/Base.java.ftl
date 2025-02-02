@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
 public class ${entityName}Base extends BaseEntity   {
 <#if entityColumns??>
     <#list entityColumns as column>
@@ -28,7 +29,6 @@ public class ${entityName}Base extends BaseEntity   {
     ${column.validated}
     </#if>
     <#if column.remark?? && column.remark != ''>
-    /** ${column.remark} */
     @Schema(description = "${column.remark}")
     </#if>
     protected ${column.columnType} ${column.lowerColumnName};

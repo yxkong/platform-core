@@ -3,6 +3,7 @@ package com.github.platform.core.schedule.application.executor.impl;
 import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.auth.util.LoginInfoUtil;
 import com.github.platform.core.common.service.IPublishService;
+import com.github.platform.core.common.utils.ApplicationContextHolder;
 import com.github.platform.core.schedule.application.constant.JobApplicationEnum;
 import com.github.platform.core.schedule.application.executor.ISysJobExecutor;
 import com.github.platform.core.schedule.domain.constant.JobStatusEnum;
@@ -112,6 +113,18 @@ public class SysJobExecutorImpl extends SysExecutor implements ISysJobExecutor {
         vlidateSchedule();
         validateCronExpression(context.getCronExpression());
         validateJobExist(context.getId());
+        if (context.isMultiInstance()){
+            String beanName = context.getBeanName();
+            if (!beanName.contains(SymbolConstant.colon)){
+                throw exception(JobApplicationEnum.JOB_BEAN_NAME_ERROR);
+            }
+            beanName = beanName.substring(0, beanName.indexOf(SymbolConstant.colon));
+            Boolean exist = ApplicationContextHolder.containsBean(beanName);
+            if (!exist){
+                throw exception(JobApplicationEnum.JOB_BEAN_NAME_ERROR);
+            }
+
+        }
         validateJobUnique(context);
         context.setTenantId(getTenantId(context));
         Pair<Boolean, SysJobDto> update = gateway.update(context);

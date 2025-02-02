@@ -26,7 +26,6 @@ public class ${entityName}Base extends BaseAdminEntity   {
 <#if entityColumns??>
     <#list entityColumns as column>
     <#if column.remark?? && column.remark != ''>
-    /** ${column.remark} */
     @Schema(description = "${column.remark}")
     </#if>
     <#if column.validated?? && column.validated != ''>

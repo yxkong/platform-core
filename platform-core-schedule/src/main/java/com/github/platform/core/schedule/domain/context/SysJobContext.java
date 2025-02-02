@@ -1,10 +1,10 @@
 package com.github.platform.core.schedule.domain.context;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.platform.core.schedule.domain.common.entity.SysJobBase;
-import lombok.experimental.SuperBuilder;
-import lombok.*;
 
-import java.util.Objects;
+import com.github.platform.core.schedule.domain.common.entity.SysJobBase;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
 * 任务管理增加或修改上下文
@@ -18,17 +18,4 @@ import java.util.Objects;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=true)
 public class SysJobContext extends SysJobBase {
-    /**
-     * 是否多实例
-     */
-    private Integer multiInstance;
-
-    /**
-     * 是否多实例
-     * @return
-     */
-    @JsonIgnore
-    public boolean isMultiInstance(){
-        return this.isCallBack() || (Objects.nonNull(this.multiInstance) && Objects.equals(this.multiInstance,1))  ;
-    }
 }

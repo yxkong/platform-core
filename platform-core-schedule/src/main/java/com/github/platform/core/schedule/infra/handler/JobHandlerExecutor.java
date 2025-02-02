@@ -87,7 +87,11 @@ public class JobHandlerExecutor extends QuartzJobBean {
         if (jobDto.isCallBack()) {
             return ApplicationContextHolder.getBean(CallBackUrlJobHandler.class);
         }
-        return ApplicationContextHolder.getBean(jobDto.getBeanName(), IJobMonitorHandler.class);
+        String beanName = jobDto.getBeanName();
+        if (jobDto.isMultiInstance() && beanName.contains(SymbolConstant.colon)){
+            beanName = beanName.substring(0, beanName.indexOf(SymbolConstant.colon));
+        }
+        return ApplicationContextHolder.getBean(beanName, IJobMonitorHandler.class);
     }
 
     private Long createExecutionLog(ISysJobLogGateway sysJobLogGateway, SysJobDto jobDto, String executeUser, String executeId, int refireCount) {
