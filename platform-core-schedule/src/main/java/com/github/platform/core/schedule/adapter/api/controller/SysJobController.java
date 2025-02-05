@@ -2,6 +2,7 @@ package com.github.platform.core.schedule.adapter.api.controller;
 
 import com.github.platform.core.common.entity.StrIdReq;
 import com.github.platform.core.log.infra.annotation.OptLog;
+import com.github.platform.core.schedule.adapter.api.command.TriggerJobCmd;
 import com.github.platform.core.schedule.application.executor.ISysJobExecutor;
 import com.github.platform.core.schedule.adapter.api.command.SysJobCmd;
 import com.github.platform.core.schedule.adapter.api.command.SysJobQuery;
@@ -95,8 +96,8 @@ public class SysJobController extends BaseController{
     @OptLog(module="sysJob",title="触发任务",optType = LogOptTypeEnum.trigger)
     @Operation(summary = "触发任务",tags = {"sysJob"})
     @PostMapping("/trigger")
-    public ResultBean triggerJob(@Validated @RequestBody StrIdReq id) throws SchedulerException {
-        executor.triggerJob(id.getId());
+    public ResultBean triggerJob(@Validated @RequestBody TriggerJobCmd cmd) throws SchedulerException {
+        executor.triggerJob(cmd.getId(),cmd.getHandlerParam());
         return buildSucResp();
     }
     @OptLog(module="sysJob",title="暂停任务",optType = LogOptTypeEnum.trigger)

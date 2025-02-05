@@ -4,6 +4,7 @@ import com.github.platform.core.auth.application.executor.SysExecutor;
 import com.github.platform.core.auth.util.LoginInfoUtil;
 import com.github.platform.core.common.service.IPublishService;
 import com.github.platform.core.common.utils.ApplicationContextHolder;
+import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.schedule.application.constant.JobApplicationEnum;
 import com.github.platform.core.schedule.application.executor.ISysJobExecutor;
 import com.github.platform.core.schedule.domain.constant.JobStatusEnum;
@@ -135,10 +136,13 @@ public class SysJobExecutorImpl extends SysExecutor implements ISysJobExecutor {
         scheduleManager.addOrUpdateJob(update.getRight());
     }
     @Override
-    public void triggerJob(Long id) throws SchedulerException {
+    public void triggerJob(Long id,String handlerParam) throws SchedulerException {
         vlidateSchedule();
         SysJobDto jobDto = validateJobExist(id);
-        scheduleManager.triggerJob(id,jobDto.getBeanName(),jobDto.getHandlerParam(), LoginInfoUtil.getLoginName(),null,jobDto.getCronExpression(),jobDto.getRetryCount(), jobDto.getRetryInterval());
+        if (StringUtils.isEmpty(handlerParam)){
+            handlerParam = jobDto.getHandlerParam();
+        }
+        scheduleManager.triggerJob(id,jobDto.getBeanName(),handlerParam, LoginInfoUtil.getLoginName(),null,jobDto.getCronExpression(),jobDto.getRetryCount(), jobDto.getRetryInterval());
     }
     private void validateCronExpression(String cronExpression) {
         if (!CronUtil.isValid(cronExpression)) {

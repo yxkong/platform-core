@@ -56,7 +56,7 @@ public interface ISysJobExecutor {
     @Transactional(rollbackFor = {Exception.class, IllegalArgumentException.class})
     void updateJob(SysJobContext context) throws SchedulerException, ApplicationException;
 
-    void triggerJob(Long id) throws SchedulerException;
+    void triggerJob(Long id,String handlerParam) throws SchedulerException;
 
     void pauseJob(Long id) throws SchedulerException;
 
