@@ -42,4 +42,7 @@ public class SysTokenCacheBase extends BaseAdminEntity   {
     @Schema(description = "登录方式")
     @NotEmpty(message="登录方式（loginWay）不能为空")
     protected String loginWay;
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(expireTime);
+    }
 }

@@ -148,7 +148,7 @@
 		select <include refid="BaseColumnList" />,t.login_info as loginInfo from t_sys_token_cache t where t.id=#{id}
 	</select>
 	<select id="findByToken" resultMap="BaseResultMap" parameterType="java.lang.String">
-		select <include refid="BaseColumnList" />,t.login_info as loginInfo from t_sys_token_cache t where t.token = #{token} and t.expire_time >= now()
+		select <include refid="BaseColumnList" />,t.login_info as loginInfo from t_sys_token_cache t where t.token = #{token}
 	</select>
 	<select id="findByIds" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select <include refid="BaseColumnList" />,t.login_info as loginInfo from t_sys_token_cache t

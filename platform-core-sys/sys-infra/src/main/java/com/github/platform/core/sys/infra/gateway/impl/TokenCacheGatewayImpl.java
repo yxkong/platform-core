@@ -4,13 +4,9 @@ import com.github.platform.core.auth.configuration.properties.AuthProperties;
 import com.github.platform.core.auth.entity.LoginUserInfo;
 import com.github.platform.core.auth.entity.TokenCacheEntity;
 import com.github.platform.core.auth.gateway.ITokenCacheGateway;
-import com.github.platform.core.auth.util.AuthUtil;
-import com.github.platform.core.auth.util.LoginUserInfoUtil;
-import com.github.platform.core.cache.domain.constant.CacheConstant;
 import com.github.platform.core.cache.infra.service.ICacheService;
 import com.github.platform.core.common.utils.CollectionUtil;
 import com.github.platform.core.common.utils.JsonUtils;
-import com.github.platform.core.common.utils.StringUtils;
 import com.github.platform.core.standard.constant.StatusEnum;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
 import com.github.platform.core.sys.domain.context.SysTokenCacheContext;
@@ -53,7 +49,7 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
     public TokenCacheEntity findByToken(String token) {
         //查询缓存或数据库
         SysTokenCacheDto tokenCacheDto = sysTokenCacheGateway.findByToken(token);
-        if (Objects.isNull(tokenCacheDto)){
+        if (Objects.isNull(tokenCacheDto) || tokenCacheDto.isExpired()){
             return null;
         }
         return sysTokenCacheConvert.toEntity(tokenCacheDto);
@@ -68,57 +64,57 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
 
     @Override
     public TokenCacheEntity saveOrUpdate(Integer tenantId, String token, String loginName,String optUser, String loginInfo ,boolean isLogin) {
+        /**
+         * 使用场景：
+         * 1，AuthorizeAspect切面续租  tenantId = null ，isLogin = false  不管状态，直接更新expireTime，续租
+         * 2, 登录成功，保持token isLogin = true   直接插入 sysTokenCacheGateway.insert
+         * 3，刷新token isLogin = false // 更新，但是不续租expireTime 不变
+         */
+
         SysTokenCacheDto cacheDto =  sysTokenCacheGateway.findByToken(token);
         LoginUserInfo userInfo = JsonUtils.fromJson(loginInfo,LoginUserInfo.class);
-
+        SysTokenCacheContext context = getSysTokenCacheContext(userInfo,tenantId, token, loginName, optUser, loginInfo, isLogin);
+        if (Objects.nonNull(cacheDto) ){
+            context.setId(cacheDto.getId());
+            if (Objects.isNull(tenantId)){
+                context.setRemark("last:"+cacheDto.getExpireTime());
+            }
+        }
+        if (Objects.isNull(cacheDto)){
+            cacheDto = sysTokenCacheGateway.insert(context);
+        } else {
+            cacheDto  = sysTokenCacheGateway.update(context);
+        }
+        return sysTokenCacheConvert.toEntity(cacheDto);
+    }
+    private SysTokenCacheContext getSysTokenCacheContext(LoginUserInfo userInfo,Integer tenantId,String token, String loginName,String optUser, String loginInfo ,boolean isLogin){
+        //构建上下文
         LocalDateTime localDateTime = LocalDateTimeUtil.dateTime();
         SysTokenCacheContext context = SysTokenCacheContext.builder()
                 .token(token)
                 .loginName(loginName)
                 .loginInfo(loginInfo)
-                .expireTime(localDateTime.plusSeconds( getSeconds()))
                 .build();
-        if (Objects.nonNull(userInfo)){
-            if (isLogin){
-                context.setLastLoginTime(LocalDateTimeUtil.parseDefault(userInfo.getLoginTime()));
-            }
-            context.setUpdateTime(localDateTime);
+        if (Objects.isNull(tenantId) || isLogin){
+            context.setExpireTime(localDateTime.plusSeconds( getSeconds()));
         }
-        SysTokenCacheDto tokenCacheDto =  null;
-        if (Objects.isNull(cacheDto)){
-            String lockKey = CacheConstant.getDistributeKey("token",token);
-            String lockId = cacheService.getLock(lockKey, CacheConstant.distributeLockTime_1);
-            try{
-                //再次查询
-                tokenCacheDto = sysTokenCacheGateway.findByToken(token);
-                if (Objects.nonNull(tokenCacheDto)){
-                    cacheDto = tokenCacheDto;
-                }
-                if (StringUtils.isNotEmpty(lockId) && Objects.isNull(tokenCacheDto)){
-                    context.setCreateBy(optUser);
-                    context.setCreateTime(localDateTime);
-                    context.setLoginWay(userInfo.getLoginWay());
-                    context.setTenantId(userInfo.getTenantId());
-                    tokenCacheDto = sysTokenCacheGateway.insert(context);
-                }
-            } finally {
-                cacheService.releaseLock(lockKey,lockId);
-            }
-        }
-        if (Objects.nonNull(cacheDto)){
-            context.setId(cacheDto.getId());
+        if (isLogin){
+            context.setCreateBy(optUser);
+            context.setCreateTime(localDateTime);
+            context.setLoginWay(userInfo.getLoginWay());
+            context.setTenantId(userInfo.getTenantId());
+        } else {
+            context.setLastLoginTime(LocalDateTimeUtil.parseDefault(userInfo.getLoginTime()));
             context.setUpdateBy(optUser);
             context.setUpdateTime(localDateTime);
-            context.setRemark("last:"+cacheDto.getExpireTime());
-            tokenCacheDto  = sysTokenCacheGateway.update(context);
         }
-        return sysTokenCacheConvert.toEntity(tokenCacheDto);
+        return context;
     }
 
     @Override
     public void expireByToken( String token) {
         SysTokenCacheDto cacheDto =  sysTokenCacheGateway.findByToken(token);
-        if (Objects.isNull(cacheDto)){
+        if (Objects.isNull(cacheDto) || cacheDto.isExpired()){
             return;
         }
         sysTokenCacheGateway.expire(toExpireContext(cacheDto));
@@ -127,7 +123,7 @@ public class TokenCacheGatewayImpl implements ITokenCacheGateway {
     @Override
     public void expireById(Long id){
         SysTokenCacheDto cacheDto = sysTokenCacheGateway.findById(id);
-        if (Objects.isNull(cacheDto)){
+        if (Objects.isNull(cacheDto) || cacheDto.isExpired()){
             return;
         }
         sysTokenCacheGateway.expire(toExpireContext(cacheDto));

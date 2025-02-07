@@ -7,8 +7,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotNull;
-
 /**
 * 三方用户增加或修改
 * @website <a href="https://www.5ycode.com/">5ycode</a>
