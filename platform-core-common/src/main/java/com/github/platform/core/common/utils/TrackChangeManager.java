@@ -10,9 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 追踪工具
@@ -96,51 +95,90 @@ public class TrackChangeManager {
      * @param prefixSplit
      * @return
      */
-    public String getChangeResult(String prefixSplit){
-        if (this.changes.isEmpty()){
+    public String getChangeResult(String prefixSplit) {
+        if (this.changes.isEmpty()) {
             return null;
         }
-        StringBuffer sb = new StringBuffer();
+
+        StringBuilder sb = new StringBuilder();
+
+        // 提前缓存需要的 merge 数据
+        Map<String, TrackChangeRecord> mergeCache = changes.stream()
+                .filter(x -> StringUtils.isNotEmpty(x.getMerge()))
+                .collect(Collectors.toMap(TrackChangeRecord::getFieldName, record -> record));
+
         changes.stream()
-                .filter(s-> !Objects.equals(s.getMerge(),"ignore"))
-                .sorted((a,b)->Integer.compare(a.getSort(),b.getSort()))
-                .forEach(s->{
+                .filter(s -> !Objects.equals(s.getMerge(), "ignore"))
+                .sorted(Comparator.comparingInt(TrackChangeRecord::getSort))
+                .forEach(s -> {
                     Object originalValue = s.getOriginalValue();
                     Object modifiedValue = s.getModifiedValue();
-                    if (StringUtils.isNotEmpty(s.getDateFormat())){
-                        originalValue = LocalDateTimeUtil.parseDateTime(s.getOriginalValue().toString(), s.getDateFormat());
-                        modifiedValue = LocalDateTimeUtil.parseDateTime(s.getModifiedValue().toString(), s.getDateFormat());
-                    }
-                    if (isNew){
-                        if(Objects.nonNull(s.getModifiedValue())){
-                            sb.append(prefixSplit);
-                            sb.append(s.getRemark()).append(SymbolConstant.colon).append(modifiedValue);
-                        }
-                    } else {
-                        if (StringUtils.isNotEmpty(s.getMerge())){
-                            sb.append(prefixSplit);
-                            TrackChangeRecord merge = changes.stream().filter(x -> x.getFieldName().equals(s.getMerge())).findAny().get();
-                            if (!Objects.equals(s.getOriginalValue(),s.getModifiedValue()) || !Objects.equals(merge.getOriginalValue(),merge.getModifiedValue())){
 
-                                sb.append(s.getRemark()).append("由【");
-                                sb.append(s.getOriginalValue()).append(SymbolConstant.colon).append(merge.getOriginalValue()).append("】变为：【")
-                                        .append(s.getModifiedValue()).append(SymbolConstant.colon).append(merge.getModifiedValue()).append("】");
-                            }
-                        } else{
-                            if (s.isCompare()) {
-                                sb.append(prefixSplit);
-                                sb.append(s.getRemark()).append("由【");
-                                sb.append(originalValue).append("】变为：【").append(modifiedValue);
-                                sb.append("】");
-                            } else{
-                                if(Objects.nonNull(s.getModifiedValue())){
-                                    sb.append(prefixSplit);
-                                    sb.append(s.getRemark()).append(SymbolConstant.colon).append(modifiedValue);
-                                }
-                            }
-                        }
+                    // 处理日期格式化
+                    if (StringUtils.isNotEmpty(s.getDateFormat())) {
+                        originalValue = LocalDateTimeUtil.parseDateTime(originalValue.toString(), s.getDateFormat());
+                        modifiedValue = LocalDateTimeUtil.parseDateTime(modifiedValue.toString(), s.getDateFormat());
+                    }
+
+                    if (isNew) {
+                        appendNewChange(sb, prefixSplit, s, modifiedValue);
+                    } else {
+                        appendExistingChange(sb, prefixSplit, s, originalValue, modifiedValue, mergeCache);
                     }
                 });
-        return sb.length()>0 ? sb.substring(prefixSplit.length()) : sb.toString();
+
+        return sb.length() > 0 ? sb.substring(prefixSplit.length()) : sb.toString();
     }
+
+    private void appendNewChange(StringBuilder sb, String prefixSplit, TrackChangeRecord s, Object modifiedValue) {
+        if (Objects.nonNull(modifiedValue)) {
+            sb.append(prefixSplit)
+                    .append(s.getRemark())
+                    .append(SymbolConstant.colon)
+                    .append(modifiedValue);
+        }
+    }
+
+    private void appendExistingChange(StringBuilder sb, String prefixSplit, TrackChangeRecord s,
+                                      Object originalValue, Object modifiedValue, Map<String, TrackChangeRecord> mergeCache) {
+        if (StringUtils.isNotEmpty(s.getMerge())) {
+            TrackChangeRecord merge = mergeCache.get(s.getMerge());
+            if (merge != null && hasMergedChanged(s, merge)) {
+                sb.append(prefixSplit)
+                        .append(s.getRemark())
+                        .append("由【")
+                        .append(s.getOriginalValue())
+                        .append(SymbolConstant.colon)
+                        .append(merge.getOriginalValue())
+                        .append("】变为：【")
+                        .append(s.getModifiedValue())
+                        .append(SymbolConstant.colon)
+                        .append(merge.getModifiedValue())
+                        .append("】");
+            }
+        } else {
+            if (s.isCompare()) {
+                sb.append(prefixSplit)
+                        .append(s.getRemark())
+                        .append("由【")
+                        .append(originalValue)
+                        .append("】变为：【")
+                        .append(modifiedValue)
+                        .append("】");
+            } else {
+                if (Objects.nonNull(modifiedValue)) {
+                    sb.append(prefixSplit)
+                            .append(s.getRemark())
+                            .append(SymbolConstant.colon)
+                            .append(modifiedValue);
+                }
+            }
+        }
+    }
+
+    private boolean hasMergedChanged(TrackChangeRecord s, TrackChangeRecord merge) {
+        return !Objects.equals(s.getOriginalValue(), s.getModifiedValue()) ||
+                !Objects.equals(merge.getOriginalValue(), merge.getModifiedValue());
+    }
+
 }
