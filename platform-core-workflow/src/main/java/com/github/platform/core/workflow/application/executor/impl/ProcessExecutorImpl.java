@@ -198,7 +198,7 @@ public class ProcessExecutorImpl extends SysExecutor implements IProcessExecutor
     }
 
     @Override
-    public Map<String, String> getTaskExtendProperty(String bizNo, String taskKey) {
+    public Map<String, String> getNodeExtendProperty(String bizNo, String taskKey) {
         ProcessInstanceDto instanceDto = instanceGateway.findByBizNoAndProcessNo(bizNo, null);
         // 获取指定版本的流程图
         ProcessDefinitionDto processDefinitionDto = definitionGateway.findByProcessNo(instanceDto.getProcessNo(), instanceDto.getProcessVersion());

@@ -50,7 +50,8 @@ public class WorkflowActivityEntity {
     private String currentActivityId;
     /**下一节点id*/
     private String nextActivityId;
-
+    /**流程内置变量*/
+    private Map<String, Object> variables;
     public boolean isPm(){
         return ProcessTypeEnum.PM.getType().equals(this.processType);
     }

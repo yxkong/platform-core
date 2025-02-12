@@ -1,5 +1,6 @@
-package com.github.platform.core.common.annotation;
+package com.github.platform.core.common.configuration.condition;
 
+import com.github.platform.core.common.annotation.ConditionalOnPropertyInList;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.Ordered;

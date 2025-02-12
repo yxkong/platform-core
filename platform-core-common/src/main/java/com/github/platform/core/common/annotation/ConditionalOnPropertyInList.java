@@ -1,5 +1,6 @@
 package com.github.platform.core.common.annotation;
 
+import com.github.platform.core.common.configuration.condition.InListConditional;
 import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.*;

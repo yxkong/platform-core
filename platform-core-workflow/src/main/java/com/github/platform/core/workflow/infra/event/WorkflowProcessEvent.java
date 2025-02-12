@@ -5,6 +5,7 @@ import com.github.platform.core.workflow.domain.constant.ProcessTypeEnum;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -23,6 +24,8 @@ public class WorkflowProcessEvent extends ApplicationEvent {
     private Boolean createGroup;
     @Setter
     private String createUser ;
+    @Setter
+    Map<String, Object> variables;
     private InstanceStatusEnum status;
 
     public WorkflowProcessEvent(String instanceId, String bizNo, String processType, InstanceStatusEnum status) {

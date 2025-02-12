@@ -66,15 +66,6 @@ public interface FlwConstant {
      */
     String INSTANCE_NAME = "instanceName";
     /**
-     * 任务属性-计划排期,全部转小写
-     */
-    String TASK_PROPERTY_PLAN_SCHEDULE = "planschedule";
-
-    /**
-     *任务属性- 计划排期节点属性值
-     */
-    String TASK_PROPERTY_PLAN_SCHEDULE_VALUE = "main";
-    /**
      * 任务属性，主角色
      */
     String TASK_PROPERTY_MAIN_ROLE = "mainrole";

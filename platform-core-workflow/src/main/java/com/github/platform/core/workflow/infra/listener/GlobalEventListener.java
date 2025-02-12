@@ -77,11 +77,17 @@ public class GlobalEventListener extends AbstractFlowableEngineEventListener {
         if (!ProcessTypeEnum.isPm(processType)){
             return;
         }
+        Map<String, Object> variables = entity.getVariables();
+        //TODO 后续需要把这块删除
+        if (log.isDebugEnabled()){
+            log.debug("获取bizNo:{}流程变量：{}",bizNo,JsonUtils.toJson(variables));
+        }
         Boolean createGroup = (Boolean) entity.getVariable(FlwConstant.CREATE_GROUP);
         String createUser = (String) entity.getVariable(BpmnXMLConstants.ATTRIBUTE_EVENT_START_INITIATOR);
         WorkflowProcessEvent processEvent = new WorkflowProcessEvent(instanceId, bizNo, processType, InstanceStatusEnum.ACTIVE);
         processEvent.setCreateGroup(createGroup);
         processEvent.setCreateUser(createUser);
+        processEvent.setVariables(variables);
         applicationContext.publishEvent(processEvent);
     }
     @Override
@@ -213,6 +219,7 @@ public class GlobalEventListener extends AbstractFlowableEngineEventListener {
                     .bizNo(bizNo).processType(processType).processTypeName(definitionDto.getProcessName())
                     .instanceId(instanceId).instanceNo(instanceNo)
                     .mainRole(mainRole).roles(roles)
+                    .variables(variables)
                     .sendTime(LocalDateTimeUtil.dateTime()).currentActivityId(flowElement.getId())
                     .build();
            applicationContext.publishEvent(new WorkflowActivityEvent(activityEntity));

@@ -71,7 +71,7 @@ public interface IProcessExecutor {
      * @return
      */
     @Cacheable(cacheNames = {CacheConstant.c12h}, key = "'pm:p:' + #bizNo + ':' + #taskKey", cacheManager = CacheConstant.cacheManager, unless = "#result == null or #result.size() == 0")
-    Map<String,String> getTaskExtendProperty(String bizNo,String taskKey);
+    Map<String,String> getNodeExtendProperty(String bizNo,String taskKey);
 
     /**
      * 查询流程表单
