@@ -10,5 +10,5 @@ import com.github.platform.core.standard.entity.event.DomainEvent;
  */
 public interface IMessageNoticeExecutor {
 
-    boolean execute(DomainEvent domainEvent);
+    boolean execute(DomainEvent domainEvent,boolean validate);
 }

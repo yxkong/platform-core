@@ -12,7 +12,7 @@ import org.flowable.engine.delegate.ExecutionListener;
 import org.springframework.context.ApplicationContext;
 
 /**
- * 实例启动监听
+ * 结束节点创建时间，需流程节点中配置，目前是程序注入
  * TaskListener 监听用户任务的生命周期，需要用户或系统需要执行的时候，适用于 UserTask<br>
  *  生命周期节点见  {@link org.flowable.task.service.delegate.BaseTaskListener} <br>
  *  执行顺序：assignment 分配办理人 → create 创建 → complete 完成 → delete 删除

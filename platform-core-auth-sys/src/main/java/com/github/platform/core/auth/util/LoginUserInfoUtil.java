@@ -234,7 +234,7 @@ public class LoginUserInfoUtil {
      *
      * @return
      */
-    public String getUserName() {
+    public static String getUserName() {
         LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getUserName();
@@ -247,7 +247,7 @@ public class LoginUserInfoUtil {
      *
      * @return
      */
-    public String getMobile() {
+    public static String getMobile() {
         LoginUserInfo userInfo = getLoginUserInfo();
         if(Objects.nonNull(userInfo)){
             return userInfo.getMobile();

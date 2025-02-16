@@ -27,7 +27,8 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 public class GenUtil {
 
-    private static final String LOCALDATETIME = "LocalDateTime";
+    private static final String LOCAL_DATE = "LocalDate";
+    private static final String LOCAL_DATE_TIME = "LocalDateTime";
 
     private static final String BIGDECIMAL = "BigDecimal";
 
@@ -231,8 +232,11 @@ public class GenUtil {
                 genMap.put("pkColumnName",pkColumnName);
                 pkMap = listMap;
             }
+            if (LOCAL_DATE.equals(colType)) {
+                genMap.put("hasLocalDate", true);
+            }
             // 是否存在 Timestamp 类型的字段
-            if (LOCALDATETIME.equals(colType)) {
+            if (LOCAL_DATE_TIME.equals(colType)) {
                 genMap.put("hasLocalDateTime", true);
             }
             // 是否存在 BigDecimal 类型的字段
@@ -374,8 +378,10 @@ public class GenUtil {
         } else {
             genMap.put("urlPrefix", "sys/"+ genConfig.getModuleName()+"/"+lowerEntityName);
         }
+        genMap.put("hasLocalDate", false);
         // 存在 Timestamp 字段
         genMap.put("hasLocalDateTime", false);
+        genMap.put("queryHasLocalDate", false);
         // 查询类中存在 Timestamp 字段
         genMap.put("queryHasLocalDateTime", false);
         // 存在 BigDecimal 字段
@@ -425,7 +431,11 @@ public class GenUtil {
         if (column.isQueryShow()) {
             // 是否存在查询
             genMap.put("hasQuery", true);
-            if (LOCALDATETIME.equals(colType)) {
+            if (LOCAL_DATE.equals(colType)) {
+                // 查询中存储 date 类型
+                genMap.put("queryHasLocalDate", true);
+            }
+            if (LOCAL_DATE_TIME.equals(colType)) {
                 // 查询中存储 Timestamp 类型
                 genMap.put("queryHasLocalDateTime", true);
             }
@@ -469,9 +479,9 @@ public class GenUtil {
         // 添加非空字段信息
         if (column.getNotNull() != null && 1== column.getNotNull() && StringUtils.isNotEmpty(column.getRemark())) {
             if ("String".equals(colType)){
-                listMap.put("validated","@NotEmpty(message=\""+ column.getRemark()+"（"+ lowerColumnName +"）不能为空\")");
+                listMap.put("validated","@NotEmpty(message=\""+ column.getRemark()+"不能为空\")");
             } else {
-                listMap.put("validated","@NotNull(message=\""+ column.getRemark()+"（"+ lowerColumnName +"）不能为空\")");
+                listMap.put("validated","@NotNull(message=\""+ column.getRemark()+"不能为空\")");
             }
 
             isNotNullColumns.add(listMap);

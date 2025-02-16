@@ -26,6 +26,7 @@ public class TypeUtil {
             case "longblob":
                 return "String";
             case "date":
+                return "LocalDate";
             case "time":
             case "datetime":
             case "timestamp":

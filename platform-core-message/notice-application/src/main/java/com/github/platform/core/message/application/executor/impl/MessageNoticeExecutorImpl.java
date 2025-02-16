@@ -11,6 +11,7 @@ import com.github.platform.core.message.domain.gateway.ISysNoticeEventLogGateway
 import com.github.platform.core.message.domain.gateway.ISysNoticeTemplateGateway;
 import com.github.platform.core.message.infra.configuration.properties.NoticeProperties;
 import com.github.platform.core.standard.constant.StatusEnum;
+import com.github.platform.core.standard.constant.SymbolConstant;
 import com.github.platform.core.standard.entity.context.MessageNoticeContext;
 import com.github.platform.core.standard.entity.event.DomainEvent;
 import com.github.platform.core.standard.util.LocalDateTimeUtil;
@@ -41,7 +42,7 @@ public class MessageNoticeExecutorImpl implements IMessageNoticeExecutor {
     @Resource
     private NoticeProperties noticeProperties;
     @Override
-    public boolean execute(DomainEvent domainEvent) {
+    public boolean execute(DomainEvent domainEvent,boolean validate) {
         MessageNoticeContext noticeContext = JsonUtils.convertValue(domainEvent.getData(),MessageNoticeContext.class) ;
         if (StringUtils.isEmpty(noticeContext.getNoticeChannelInfo().getChannelType())){
             noticeContext.getNoticeChannelInfo().setChannelType(noticeProperties.getChannelType());
@@ -52,7 +53,8 @@ public class MessageNoticeExecutorImpl implements IMessageNoticeExecutor {
         if(Objects.isNull(dto)){
             logId = logRecord(domainEvent, noticeContext);
         } else {
-            if (dto.isOn()){
+            //TODO 添加10分钟内只能发一条
+            if (dto.isOn() && validate){
                 log.warn("消息：{} 已经发送成功，不需要再处理！",dto.getId());
                 return true;
             }
@@ -82,8 +84,13 @@ public class MessageNoticeExecutorImpl implements IMessageNoticeExecutor {
 
     private SysNoticeTemplateDto getSysNoticeTemplateDto(MessageNoticeContext noticeContext, DomainEvent domainEvent) {
         SysNoticeTemplateDto templateDto = sysNoticeTemplateGateway.findByTempNo(noticeContext.getTempNo());
+        //全匹配，全量匹配，用于特殊定义
         if (Objects.isNull(templateDto)){
             templateDto =  sysNoticeTemplateGateway.findEventType(noticeContext.getEventType(), domainEvent.getTenantId());
+        }
+        // 半匹配
+        if (Objects.isNull(templateDto) && StringUtils.contains(noticeContext.getEventType(), SymbolConstant.colon)){
+            templateDto =  sysNoticeTemplateGateway.findEventType(noticeContext.getEventType().split(SymbolConstant.colon)[0], domainEvent.getTenantId());
         }
         return templateDto;
     }

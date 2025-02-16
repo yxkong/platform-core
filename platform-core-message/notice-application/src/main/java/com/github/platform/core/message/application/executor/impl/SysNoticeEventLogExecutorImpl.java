@@ -95,6 +95,6 @@ public class SysNoticeEventLogExecutorImpl extends SysExecutor implements ISysNo
             throw exception(ResultStatusEnum.NO_DATA);
         }
         DomainEvent domainEvent = JsonUtils.fromJson(dto.getPayload(), DomainEvent.class);
-        messageNoticeExecutor.execute(domainEvent);
+        messageNoticeExecutor.execute(domainEvent,false);
     }
 }

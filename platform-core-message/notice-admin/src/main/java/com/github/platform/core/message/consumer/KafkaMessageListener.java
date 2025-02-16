@@ -53,7 +53,7 @@ public class KafkaMessageListener {
                  * 3，使用模板方法发送消息
                  */
                 DomainEvent domainEvent = JsonUtils.fromJson(message, DomainEvent.class);
-                messageNoticeExecutor.execute(domainEvent);
+                messageNoticeExecutor.execute(domainEvent,false);
             } catch (Exception e) {
                 log.error("接收消息异常，提示信息为：{}，明细为：", message, e);
             }
