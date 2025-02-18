@@ -73,7 +73,7 @@ public class EmailUtil {
             log.info("邮件发送成功，主题: {}", subject);
             return true;
         } catch (Exception e) {
-            log.error("邮件发送失败，原因: {}", e.getMessage(), e);
+            log.error("邮件发送失败，主题：{} 原因: {}",subject, e.getMessage(), e);
             return false;
         }
     }

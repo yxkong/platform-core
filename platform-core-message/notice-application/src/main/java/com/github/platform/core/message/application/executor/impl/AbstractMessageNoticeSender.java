@@ -32,6 +32,8 @@ public abstract class AbstractMessageNoticeSender implements IMessageNoticeSende
         }
         Map<String, String> userMap = getRecipient(templateDto.getRecipient(),recipient,domainEvent.getTenantId());
         VelocityContext context = new VelocityContext(noticeContext.getMetas());
+        context.put("title",noticeContext.getTitle());
+        context.put("eventType",noticeContext.getEventType());
         context.put("userMap",userMap);
         List<String> users = new ArrayList<>(userMap.values());
         context.put("users",users);

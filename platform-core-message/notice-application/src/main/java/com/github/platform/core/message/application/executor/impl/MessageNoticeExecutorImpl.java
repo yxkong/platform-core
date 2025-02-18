@@ -75,11 +75,17 @@ public class MessageNoticeExecutorImpl implements IMessageNoticeExecutor {
             log.error("channelType:{} 租户：{} 对应的通道实现不存在",channelType,domainEvent.getTenantId());
             return false;
         }
-        boolean send = messageNoticeSender.send(domainEvent, noticeContext, templateDto);
-        if (send){
-            updateLog(logId, domainEvent.getMsgId(), StatusEnum.ON.getStatus(), "");
+        try {
+            boolean send = messageNoticeSender.send(domainEvent, noticeContext, templateDto);
+            if (send){
+                updateLog(logId, domainEvent.getMsgId(), StatusEnum.ON.getStatus(), "");
+            }
+            return send;
+        } catch (Exception e){
+            updateLog(logId,domainEvent.getMsgId(), StatusEnum.ERROR.getStatus(), e.getMessage());
+            log.error("eventType:{} 租户：{} 通道：{} 发送失败！",noticeContext.getEventType(),domainEvent.getTenantId(),channelType,e);
+            return false;
         }
-        return send;
     }
 
     private SysNoticeTemplateDto getSysNoticeTemplateDto(MessageNoticeContext noticeContext, DomainEvent domainEvent) {

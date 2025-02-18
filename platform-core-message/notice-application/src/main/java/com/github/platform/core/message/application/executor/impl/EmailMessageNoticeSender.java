@@ -56,10 +56,12 @@ public class EmailMessageNoticeSender extends AbstractMessageNoticeSender{
         //查询邮件配置
         SysNoticeChannelConfigDto dto = sysNoticeChannelConfigGateway.findChannel(MessageNoticeChannelTypeEnum.EMAIL.getType(),tenantId);
         if (Objects.isNull(dto)){
+            log.error("未找到对应租户{}的邮件配置",tenantId);
             throw new ApplicationException(ResultStatusEnum.NO_DATA.getStatus(),"未找到对应租户的邮件配置");
         }
         // 校验邮件配置是否完整
         if (Objects.isNull(dto.getHost()) || Objects.isNull(dto.getAppKey()) || Objects.isNull(dto.getAppSecret())) {
+            log.error("未找到对应租户{}的邮件配置不完整，请检查host,appKey和appSecret",tenantId);
             throw new ApplicationException(ResultStatusEnum.PARAM_ERROR.getStatus(), "邮件配置不完整");
         }
         int port = Objects.nonNull(dto.getPort()) ? dto.getPort() : 465;

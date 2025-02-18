@@ -42,26 +42,29 @@ public class MessageNoticeContext  implements Serializable {
     @Builder.Default
     private Map<String,Object> metas = new HashMap<>();
 
-    public void addNoticeChannel(String groupId,String channelType){
+    public MessageNoticeContext addNoticeChannel(String groupId,String channelType){
         this.noticeChannelInfo.groupId = groupId;
         this.noticeChannelInfo.channelType = channelType;
+        return this;
     }
     /**
      * 添加元数据
      * @param key 参数key
      * @param val 参数值
      */
-    public void addMeta(String key,Object val){
+    public MessageNoticeContext addMeta(String key,Object val){
         if (Objects.isNull(this.metas)){
             this.metas = new HashMap<>();
         }
         this.metas.put(key,val);
+        return this;
     }
-    public void addRecipient(String loginName){
+    public MessageNoticeContext addRecipient(String loginName){
         if (recipient == null) {
             recipient = new ArrayList<>();
         }
         this.recipient.add(loginName);
+        return this;
     }
 
 
