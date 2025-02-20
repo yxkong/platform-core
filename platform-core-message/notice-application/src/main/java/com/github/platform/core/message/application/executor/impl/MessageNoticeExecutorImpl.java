@@ -89,15 +89,33 @@ public class MessageNoticeExecutorImpl implements IMessageNoticeExecutor {
     }
 
     private SysNoticeTemplateDto getSysNoticeTemplateDto(MessageNoticeContext noticeContext, DomainEvent domainEvent) {
-        SysNoticeTemplateDto templateDto = sysNoticeTemplateGateway.findByTempNo(noticeContext.getTempNo());
-        //全匹配，全量匹配，用于特殊定义
-        if (Objects.isNull(templateDto)){
-            templateDto =  sysNoticeTemplateGateway.findEventType(noticeContext.getEventType(), domainEvent.getTenantId());
+        // 提前获取必要变量
+        String eventType = noticeContext.getEventType();
+        Integer tenantId = domainEvent.getTenantId();
+        String tempNo = noticeContext.getTempNo();
+        SysNoticeTemplateDto templateDto = null;
+        // 判断事件类型是否包含冒号
+        boolean containsColon = StringUtils.contains(eventType, SymbolConstant.colon);
+        // 如果包含冒号，优先进行全匹配
+        if (containsColon) {
+            templateDto = sysNoticeTemplateGateway.findEventType(eventType, tenantId);
         }
-        // 半匹配
-        if (Objects.isNull(templateDto) && StringUtils.contains(noticeContext.getEventType(), SymbolConstant.colon)){
-            templateDto =  sysNoticeTemplateGateway.findEventType(noticeContext.getEventType().split(SymbolConstant.colon)[0], domainEvent.getTenantId());
+
+        // 如果未匹配到且模板编号不为空，则通过模板编号查找
+        if (templateDto == null && StringUtils.isNotEmpty(tempNo)) {
+            templateDto = sysNoticeTemplateGateway.findByTempNo(tempNo);
         }
+
+        // 如果还未找到，并且事件类型不包含冒号，则进行全匹配
+        if (templateDto == null && !containsColon) {
+            templateDto = sysNoticeTemplateGateway.findEventType(eventType, tenantId);
+        }
+
+        // 如果仍未找到，且事件类型包含冒号，则尝试半匹配（取冒号前的部分）
+        if (templateDto == null && containsColon) {
+            templateDto = sysNoticeTemplateGateway.findEventType(eventType.split(SymbolConstant.colon)[0], tenantId);
+        }
+
         return templateDto;
     }
     private void updateLog(Long id,String msgId,Integer status,String remark){
